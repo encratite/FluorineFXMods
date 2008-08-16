@@ -1,0 +1,20 @@
+<%@ CodeTemplate Language="C#" OutputType="None"%>
+<%@ Assembly Name="FluorineFx.ServiceBrowser.dll" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="FluorineFx.Management" %>
+<%@ Import Namespace="FluorineFx.Management.Data" %>
+<%
+	Project project = this.Context["Project"] as Project;
+	foreach(DataAssembler dataAssembler in project.DataAssemblers)
+	{
+		string directory = EnsureDirectory(project.Package);
+		directory = Path.Combine(directory, "VO");
+		CreateDirectory(directory);
+	
+		Table table = dataAssembler.Table;
+		this.Context["Class"] = table.SafeName + "VO";
+		this.Context["Package"] = project.Package;
+		this.Context["DataAssembler"] = dataAssembler;
+		this.Generate("VO.cs.subtemplate", Path.Combine(directory, table.SafeName + "VO.cs") );
+	}
+%>

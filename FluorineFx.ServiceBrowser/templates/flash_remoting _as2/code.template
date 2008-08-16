@@ -1,0 +1,20 @@
+<%@ CodeTemplate Language="C#" OutputType="None"%>
+<%@ Assembly Name="FluorineFx.ServiceBrowser.dll" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="FluorineFx.Management" %>
+<%@ Import Namespace="FluorineFx.Management.Data" %>
+<%
+	Project project = this.Context["Project"] as Project;
+	foreach(AssemblyDescriptor assemblyDescriptor in project.Assemblies)
+	{
+		foreach(Namespace ns in assemblyDescriptor.Namespaces)
+		{
+			string directory = EnsureDirectory(ns.NamespacePath);
+			foreach(TypeDescriptor typeDescriptor in ns.RemotingServices)
+			{
+				this.Context["TypeDescriptor"] = typeDescriptor;
+				this.Generate("code.as.subtemplate", Path.Combine(directory, typeDescriptor.Name + ".as") );
+			}
+		}
+	}
+%>

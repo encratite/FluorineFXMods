@@ -1,0 +1,19 @@
+<%@ CodeTemplate Language="C#" OutputType="None"%>
+<%@ Assembly Name="FluorineFx.ServiceBrowser.dll" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="FluorineFx.Management" %>
+<%@ Import Namespace="FluorineFx.Management.Data" %>
+<%
+	this.ParseDirectory("_application", string.Empty);
+	this.ParseDirectory(Path.Combine("_application","_business"), string.Empty);
+	this.ParseDirectory(Path.Combine("_application","_commands"), string.Empty);
+	this.ParseDirectory(Path.Combine("_application","_control"), string.Empty);
+	this.ParseDirectory(Path.Combine("_application","_model"), string.Empty);
+	this.ParseDirectory(Path.Combine("_application","_vo"), string.Empty);
+	this.ParseDirectory("_settings", ".settings");
+	
+	this.Generate("app.mxml.subtemplate", (this.Context["Project"] as Project).Name + ".mxml" );
+	this.Generate("system.project.subtemplate", ".project" );
+	this.Generate("system.flexProperties.subtemplate", ".flexProperties" );
+	this.Generate("system.actionScriptProperties.subtemplate", ".actionScriptProperties" );
+%>

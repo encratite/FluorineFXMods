@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="message-service"
+    class="flex.messaging.services.MessageService"
+    messageTypes="flex.messaging.messages.AsyncMessage">
+
+	<adapters>
+		<adapter-definition id="messagingAdapter" class="FluorineFx.Messaging.Services.Messaging.MessagingAdapter" default="true"/>
+	</adapters>
+
+	<!-- Sample destination -->
+	<!--
+    <destination id="chat">
+		<adapter ref="messagingAdapter"/>
+		<channels>
+			<channel ref="my-rtmp"/>
+		</channels>
+		<properties>
+			<network>
+				<session-timeout>20</session-timeout>
+			</network>
+		</properties>
+		<security>
+			<security-constraint ref="privileged-users"/>
+		</security>                
+    </destination>
+    -->
+</service>

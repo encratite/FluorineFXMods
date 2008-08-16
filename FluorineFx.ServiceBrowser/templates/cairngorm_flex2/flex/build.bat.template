@@ -1,0 +1,6 @@
+<%@ CodeTemplate Language="C#"%>
+<%@ Assembly Name="FluorineFx.ServiceBrowser.dll" %>
+<%@ Import Namespace="FluorineFx.Management" %>
+<%@ Import Namespace="FluorineFx.Management.Data" %>
+
+mxmlc <%=(this.Context["Project"] as Project).Name%>.mxml --services "..\WEB-INF\flex\services-config.xml" --context-root <%=(this.Context["Project"] as Project).ContextRoot%>

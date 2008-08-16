@@ -1,0 +1,40 @@
+<%@ CodeTemplate Language="C#" OutputType="None"%>
+<%@ Assembly Name="FluorineFx.ServiceBrowser.dll" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="FluorineFx.Management" %>
+<%@ Import Namespace="FluorineFx.Management.Data" %>
+<%
+	Project project = this.Context["Project"] as Project;
+	//Handle transfer objects marked with the [TransferObject] attribute
+	foreach(AssemblyDescriptor assemblyDescriptor in project.Assemblies)
+	{
+		foreach(Namespace ns in assemblyDescriptor.Namespaces)
+		{
+			foreach(TypeDescriptor typeDescriptor in ns.TransferObjects)
+			{
+				string directory = EnsureDirectory(ns.NamespacePath);
+				directory = Path.Combine(directory, "vo");
+				CreateDirectory(directory);
+			
+				this.Context["Class"] = typeDescriptor.Name + "VO";
+				this.Context["Package"] = ns.Name;
+				this.Context["Alias"] = typeDescriptor.FullName + "VO";
+				this.Context["TypeDescriptor"] = typeDescriptor;
+				this.Generate("VO.as.subtemplate", Path.Combine(directory, typeDescriptor.Name + "VO.as") );
+			}		
+		}
+	}
+	//Handle transfer objects from the data assemblers
+	foreach(DataAssembler dataAssembler in project.DataAssemblers)
+	{
+		string directory = EnsureDirectory(project.Package);
+		directory = Path.Combine(directory, "vo");
+		CreateDirectory(directory);
+		Table table = dataAssembler.Table;
+		this.Context["Class"] = table.SafeName + "VO";
+		this.Context["Package"] = project.Package;
+		this.Context["DataAssembler"] = dataAssembler;
+		this.Context["Alias"] = project.Package + ".VO." + table.SafeName + "VO";
+		this.Generate("DataVO.as.subtemplate", Path.Combine(directory, table.SafeName + "VO.as") );
+	}	
+%>

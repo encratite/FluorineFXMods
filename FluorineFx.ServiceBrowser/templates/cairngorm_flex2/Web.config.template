@@ -1,0 +1,213 @@
+<%@ CodeTemplate Language="C#" %>
+<%@ Assembly Name="FluorineFx.ServiceBrowser.dll" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="FluorineFx.Management" %>
+<%@ Import Namespace="FluorineFx.Management.Data" %>
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <configSections>
+    <sectionGroup name="fluorinefx">
+	  <section name="settings" type="FluorineFx.Configuration.XmlConfigurator, FluorineFx" requirePermission="false"/>
+    </sectionGroup>
+  </configSections>
+
+	<connectionStrings>
+<%
+	Project project = Context["Project"] as Project;
+	foreach(DataDomain dataDomain in project.DataDomains)
+	{
+	%>
+		<add name="<%=dataDomain.Name%>" connectionString="<%=dataDomain.ConnectionString%>" providerName="<%=dataDomain.Provider%>"/>
+	<%
+	}
+%>
+	</connectionStrings>
+
+<fluorinefx>
+	<settings>
+		<!--  Reflection optimizer provider="codedom|il" debug="true|false" -->
+		<!-- <optimizer provider="codedom" debug="true"/> -->
+		<!-- <wsdlGenerateProxyClasses>true</wsdlGenerateProxyClasses> -->
+		<!-- <wsdlProxyNamespace>FluorineFx.Proxy</wsdlProxyNamespace> -->
+		<!--  Time Zone Compensation ="none|auto" -->
+		<!-- <timezoneCompensation>none</timezoneCompensation> -->
+		<!--  Any value-type that is not explicitly initialized with a value will contain the default value for that object type -->
+		<!-- <acceptNullValueTypes>false</acceptNullValueTypes> -->
+		<!-- value="browse|access" -->
+		<!-- <remotingServiceAttribute>browse</remotingServiceAttribute> -->
+		<!--
+		<classMappings>
+			<classMapping>
+				<type>SampleClassNet</type>
+				<customClass>SampleClassAS</customClass>
+			</classMapping>
+		</classMappings>
+		<services>
+			<service>
+				<name>ServiceName</name>
+				<service-location>.NET Full type name</service-location>
+				<methods>
+					<remote-method>
+						<name>MethodName</name>
+						<method>.NET Method name</method>
+					</remote-method>
+				</methods>
+			</service>
+		</services>
+		-->
+		<!--
+		<security>
+			<login-command class="FluorineFx.Messaging.Security.GenericLoginCommand" server="asp.net"/>
+		</security>
+		-->
+		<!--
+		<cache>
+			<cachedService timeout="30" slidingExpiration="false" type=".NET Full type name"/>
+		</cache>
+		-->
+		<!--
+		<importNamespaces>
+			<add namespace="Namespace name to import" assembly=""/>
+		</importNamespaces>
+		-->
+		<!--
+		<nullable>
+			<type name="System.Int32" value="MinValue"/>
+			<type name="System.Double" value="MinValue"/>
+			<type name="System.DateTime" value="MinValue"/>
+			<type name="System.Guid" value="Empty"/>
+		</nullable>
+		-->
+		<!-- <httpCompress preferredAlgorithm="deflate|gzip" compressionLevel="high|normal|low" handleRequest="all|amf|none" /> -->
+		<!--
+		<httpCompress preferredAlgorithm="gzip" compressionLevel="high" handleRequest="all">
+		<threshold>10240</threshold>
+		<excludedMimeTypes>
+			<add type="image/jpeg"/>
+			<add type="image/png"/>
+			<add type="image/gif" />
+			<add type="application/zip" />
+			<add type="application/x-zip-compressed" />
+			<add type="application/x-gzip-compressed" />
+			<add type="application/x-compressed" />
+			<add type="application/octet-stream" />
+			<add type="application/pdf" />
+		</excludedMimeTypes>
+		<excludedPaths>
+			<add path="FluorineWebResource.axd"/>
+			<add path="FluorineCodeGenerator.aspx"/>
+			<add path="WebResource.axd"/>
+			<add path="ScriptResource.axd"/>
+		</excludedPaths>
+		</httpCompress>
+		-->
+		<!-- <fluorineContextFactory type="FluorineFx.Context.FluorineRtmpContextFactory"/> -->
+		<!--
+		<rtmpServer>
+			<threadpool minWorkerThreads="0" maxWorkerThreads="25" idleTimeout="60000"/>
+		</rtmpServer>
+		-->
+	</settings>
+</fluorinefx>
+
+  <system.web>
+	<httpModules>
+		<add name="FluorineGateway" type="FluorineFx.FluorineGateway, FluorineFx" />
+    </httpModules>
+
+    <!--  DYNAMIC DEBUG COMPILATION
+          Set compilation debug="true" to enable ASPX debugging.  Otherwise, setting this value to
+          false will improve runtime performance of this application. 
+          Set compilation debug="true" to insert debugging symbols (.pdb information)
+          into the compiled page. Because this creates a larger file that executes
+          more slowly, you should set this value to true only when debugging and to
+          false at all other times. For more information, refer to the documentation about
+          debugging ASP.NET files.
+    -->
+    <compilation 
+         defaultLanguage="c#"
+         debug="true"
+    />
+
+    <!--  CUSTOM ERROR MESSAGES
+          Set customErrors mode="On" or "RemoteOnly" to enable custom error messages, "Off" to disable. 
+          Add <error> tags for each of the errors you want to handle.
+
+          "On" Always display custom (friendly) messages.
+          "Off" Always display detailed ASP.NET error information.
+          "RemoteOnly" Display custom (friendly) messages only to users not running 
+           on the local Web server. This setting is recommended for security purposes, so 
+           that you do not display application detail information to remote clients.
+    -->
+    <customErrors 
+    mode="RemoteOnly" 
+    /> 
+
+    <!--  AUTHENTICATION 
+          This section sets the authentication policies of the application. Possible modes are "Windows", 
+          "Forms", "Passport" and "None"
+
+          "None" No authentication is performed. 
+          "Windows" IIS performs authentication (Basic, Digest, or Integrated Windows) according to 
+           its settings for the application. Anonymous access must be disabled in IIS. 
+          "Forms" You provide a custom form (Web page) for users to enter their credentials, and then 
+           you authenticate them in your application. A user credential token is stored in a cookie.
+          "Passport" Authentication is performed via a centralized authentication service provided
+           by Microsoft that offers a single logon and core profile services for member sites.
+    -->
+    <authentication mode="Windows" /> 
+
+	<!--  AUTHORIZATION 
+          This section sets the authorization policies of the application. You can allow or deny access
+          to application resources by user or role. Wildcards: "*" mean everyone, "?" means anonymous 
+          (unauthenticated) users.
+    -->
+
+    <authorization>
+        <allow users="*" /> <!-- Allow all users -->
+            <!--  <allow     users="[comma separated list of users]"
+                             roles="[comma separated list of roles]"/>
+                  <deny      users="[comma separated list of users]"
+                             roles="[comma separated list of roles]"/>
+            -->
+    </authorization>
+
+    <!--  APPLICATION-LEVEL TRACE LOGGING
+          Application-level tracing enables trace log output for every page within an application. 
+          Set trace enabled="true" to enable application trace logging.  If pageOutput="true", the
+          trace information will be displayed at the bottom of each page.  Otherwise, you can view the 
+          application trace log by browsing the "trace.axd" page from your web application
+          root. 
+    -->
+    <trace
+        enabled="false"
+        requestLimit="10"
+        pageOutput="false"
+        traceMode="SortByTime"
+		localOnly="true"
+    />
+
+    <!--  SESSION STATE SETTINGS
+          By default ASP.NET uses cookies to identify which requests belong to a particular session. 
+          If cookies are not available, a session can be tracked by adding a session identifier to the URL. 
+          To disable cookies, set sessionState cookieless="true".
+    -->
+    <sessionState 
+            mode="InProc"
+            stateConnectionString="tcpip=127.0.0.1:42424"
+            sqlConnectionString="data source=127.0.0.1;Trusted_Connection=yes"
+            cookieless="false" 
+            timeout="20" 
+    />
+
+    <!--  GLOBALIZATION
+          This section sets the globalization settings of the application. 
+    -->
+    <globalization 
+            requestEncoding="utf-8" 
+            responseEncoding="utf-8" 
+   />
+   
+ </system.web>
+
+</configuration>

@@ -1,0 +1,43 @@
+<%@ CodeTemplate Language="C#"%>
+<%@ Assembly Name="FluorineFx.ServiceBrowser.dll" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="FluorineFx.Management" %>
+<%@ Import Namespace="FluorineFx.Management.Data" %>
+fl.outputPanel.clear();
+fl.openDocument( 'file:///test.fla' );
+var doc=fl.getDocumentDOM();
+var tl=doc.getTimeline();
+tl.setSelectedFrames([0,0,0],true);
+<%
+	string actionscript1 = string.Empty;
+	string actionscript2 = string.Empty;
+	Project project = Context["Project"] as Project;
+	foreach(AssemblyDescriptor assemblyDescriptor in project.Assemblies)
+	{
+		foreach(Namespace ns in assemblyDescriptor.Namespaces)
+		{
+			string directory = EnsureDirectory(ns.NamespacePath);
+			foreach(TypeDescriptor typeDescriptor in ns.RemotingServices)
+			{
+				actionscript1 += "\"import " + typeDescriptor.FullName + ";\\n\"+\n";
+			}
+		}
+	}
+	foreach(AssemblyDescriptor assemblyDescriptor in project.Assemblies)
+	{
+		foreach(Namespace ns in assemblyDescriptor.Namespaces)
+		{
+			string directory = EnsureDirectory(ns.NamespacePath);
+			foreach(TypeDescriptor typeDescriptor in ns.RemotingServices)
+			{
+				actionscript2 += "\"var inst = new " + typeDescriptor.FullName + "();\\n\"+\n";
+				foreach(MethodDescriptor methodDescriptor in typeDescriptor.Methods)
+				{
+					actionscript2 += "\"//inst." + methodDescriptor.Name + "(...);\\n\"+\n";
+				}				
+			}
+		}
+	}
+	string actionscript = actionscript1 + actionscript2 + "\"\"\n";
+%>	
+tl.layers[0].frames[0].actionScript=<%=actionscript%>;

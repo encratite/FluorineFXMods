@@ -1,0 +1,32 @@
+<%@ CodeTemplate Language="C#" OutputType="None"%>
+<%@ Assembly Name="FluorineFx.ServiceBrowser.dll" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="FluorineFx.Management" %>
+<%@ Import Namespace="FluorineFx.Management.Data" %>
+
+<%
+	Project project = this.Context["Project"] as Project;
+	foreach(AssemblyDescriptor assemblyDescriptor in project.Assemblies)
+	{
+		foreach(Namespace ns in assemblyDescriptor.Namespaces)
+		{
+			string directory = EnsureDirectory(ns.NamespacePath);
+			directory = Path.Combine(directory, "business");
+			CreateDirectory(directory);
+			this.Context["Namespace"] = ns;
+			this.Generate("Services.mxml.subtemplate", Path.Combine(directory, "Services.mxml") );
+	
+			foreach(TypeDescriptor typeDescriptor in ns.RemotingServices)
+			{
+				this.Context["Class"] = typeDescriptor.Name;
+				this.Context["Package"] = ns.Name;
+				this.Context["TypeDescriptor"] = typeDescriptor;
+				this.Generate("Delegate.as.subtemplate", Path.Combine(directory, typeDescriptor.Name + "Delegate.as") );
+			}
+		}
+	}
+	if( project.RequiresAuthentication )
+	{
+		//this.Generate("LoginDelegate.as.subtemplate", "LoginDelegate.as" );
+	}
+%>

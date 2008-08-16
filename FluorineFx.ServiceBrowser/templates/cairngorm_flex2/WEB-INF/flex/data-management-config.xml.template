@@ -1,0 +1,50 @@
+<%@ CodeTemplate Language="C#"%>
+<%@ Assembly Name="FluorineFx.ServiceBrowser.dll" %>
+<%@ Import Namespace="FluorineFx.Management" %>
+<%@ Import Namespace="FluorineFx.Management.Data" %>
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="data-service"
+    class="flex.data.DataService"
+    messageTypes="flex.data.messages.DataMessage">
+
+    <adapters>
+        <adapter-definition id="dotnet-dao" class="FluorineFx.DotNetAdapter" default="true"/>
+    </adapters>
+
+    <default-channels>
+        <channel ref="my-rtmp"/>
+    </default-channels>
+
+<%
+	Project project = this.Context["Project"] as Project;
+	foreach(DataDomain dataDomain in project.DataDomains)
+	{
+		foreach(Table table in dataDomain.Tables)
+		{
+		%>
+	<destination id="<%=project.Package%>.<%=table.SafeName%>">
+		<adapter ref="dotnet-dao" />
+		<properties>
+			<source><%=project.Package%>.<%=table.SafeName%>Assembler</source>
+			<scope>application</scope>
+			<metadata><%
+				foreach(Column column in table.Columns)
+				{
+					if( column.IsPrimaryKey )
+					{%>
+				<identity property="<%=column.SafeName%>"/><%
+					}
+				}
+			%>					
+			</metadata>
+			<network>
+				<session-timeout>20</session-timeout>
+				<paging enabled="true" pageSize="10" />
+			</network>
+		</properties>
+	</destination>
+		<%
+		}
+	}
+%>
+</service>

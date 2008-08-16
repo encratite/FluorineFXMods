@@ -1,0 +1,33 @@
+<%@ CodeTemplate Language="C#" OutputType="None"%>
+<%@ Assembly Name="FluorineFx.ServiceBrowser.dll" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="FluorineFx.Management" %>
+<%@ Import Namespace="FluorineFx.Management.Data" %>
+<%
+	Project project = this.Context["Project"] as Project;
+	foreach(AssemblyDescriptor assemblyDescriptor in project.Assemblies)
+	{
+		foreach(Namespace ns in assemblyDescriptor.Namespaces)
+		{
+			string directory = EnsureDirectory(ns.NamespacePath);
+			directory = Path.Combine(directory, "commands");
+			CreateDirectory(directory);
+	
+			foreach(TypeDescriptor typeDescriptor in ns.RemotingServices)
+			{
+				foreach(MethodDescriptor methodDescriptor in typeDescriptor.Methods)
+				{
+					Context["Class"] = methodDescriptor.Name;
+					Context["Package"] = ns.Name;
+					Context["TypeDescriptor"] = typeDescriptor;
+					Context["MethodDescriptor"] = methodDescriptor;
+					Generate("Command.as.subtemplate", Path.Combine(directory, methodDescriptor.Name + "Command.as") );
+				}
+			}
+		}
+	}
+	if( project.RequiresAuthentication )
+	{
+		//this.Generate("LoginCommand.as.subtemplate", "LoginCommand.as" );
+	}
+%>

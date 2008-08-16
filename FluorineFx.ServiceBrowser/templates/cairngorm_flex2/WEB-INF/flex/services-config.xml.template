@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services-config>
+    <services>
+        <service-include file-path="remoting-config.xml" />
+        <!-- <service-include file-path="messaging-config.xml" /> -->
+        <!-- <service-include file-path="data-management-config.xml" /> -->
+    </services>
+
+    <!-- Custom authentication -->
+    <security>
+      <security-constraint id="privileged-users">
+        <auth-method>Custom</auth-method>
+        <roles>
+          <role>privilegeduser</role>
+        </roles>
+      </security-constraint>
+      <login-command class="FluorineFx.Security.GenericLoginCommand" server="asp.net"/>
+    </security>
+    
+    <channels>
+      <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
+          <endpoint uri="http://{server.name}:{server.port}/{context.root}/Gateway.aspx" class="flex.messaging.endpoints.AMFEndpoint"/>
+      </channel-definition>
+      <!--
+      <channel-definition id="my-rtmp" class="mx.messaging.channels.RTMPChannel">
+	      <endpoint uri="rtmp://{server.name}:2037" class="flex.messaging.endpoints.RTMPEndpoint"/>
+      </channel-definition>
+      -->
+    </channels>
+</services-config>
