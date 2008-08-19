@@ -544,19 +544,14 @@ namespace FluorineFx
             }
             else if (targetType.IsEnum)
             {
-                if (obj is string)
+                try
                 {
-                    string enumName = obj.ToString().ToLower();
-                    foreach (string name in Enum.GetNames(targetType))
-                    {
-                        if (name.ToLower() == enumName)
-                            return true;
-                    }
-                    return false;
+                    Enum.Parse(targetType, obj.ToString(), true);
+                    return true;
                 }
-                else
+                catch (ArgumentException)
                 {
-                    return Enum.IsDefined(targetType, obj);
+                    return false;
                 }
             }
 
@@ -709,16 +704,13 @@ namespace FluorineFx
             }
             else if (conversionType.IsEnum)
             {
-                if (value is string)
-                    return Enum.Parse(conversionType, (string)value, true);
-                else
+                try
                 {
-                    Type numericType = Enum.GetUnderlyingType(conversionType);
-                    object newValue = ChangeType(value, numericType);
-                    if (Enum.IsDefined(conversionType, newValue))
-                        return Enum.ToObject(conversionType, newValue);
-                    else
-                        throw new InvalidCastException();
+                    return Enum.Parse(conversionType, value.ToString(), true);
+                }
+                catch (ArgumentException)
+                {
+                    throw;
                 }
             }
 
