@@ -466,6 +466,7 @@ namespace FluorineFx.Net
 
         internal void RaiseDisconnect()
         {
+            _initialSyncReceived = false;//Disconnected RSO
             if (_disconnectHandler != null)
             {
                 _disconnectHandler(this, new EventArgs());
