@@ -61,6 +61,7 @@ namespace FluorineFx.Net
         INetConnectionClient _netConnectionClient;
         ObjectEncoding _objectEncoding;
         string _playerVersion;
+        object _client;
 
         event NetStatusHandler _netStatusHandler;
         event ConnectHandler _connectHandler;
@@ -74,6 +75,7 @@ namespace FluorineFx.Net
             _clientId = null;
             _playerVersion = "WIN 9,0,115,0";
             _objectEncoding = ObjectEncoding.AMF0;
+            _client = this;
         }
         /// <summary>
         /// Dispatched when a NetConnection instance is reporting its status or error condition.
@@ -121,6 +123,19 @@ namespace FluorineFx.Net
         {
             get { return _objectEncoding; }
             set { _objectEncoding = value; }
+        }
+        /// <summary>
+        /// Indicates the object on which callback methods should be invoked. The default is this NetConnection instance.
+        /// If you set the client property to another object, callback methods will be invoked on that object. 
+        /// </summary>
+        public Object Client
+        {
+            get { return _client; }
+            set
+            {
+                ValidationUtils.ArgumentNotNull(value, "Client");
+                _client = value;
+            }
         }
         /// <summary>
         /// Gets the client identity.
