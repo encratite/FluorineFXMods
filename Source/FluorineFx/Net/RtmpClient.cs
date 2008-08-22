@@ -20,6 +20,8 @@ using System;
 using System.Collections;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
+using log4net;
 using FluorineFx.Configuration;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
@@ -27,6 +29,8 @@ using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Messaging.Rtmp;
 using FluorineFx.Util;
+using FluorineFx.Invocation;
+using FluorineFx.Exceptions;
 
 namespace FluorineFx.Net
 {
@@ -35,6 +39,8 @@ namespace FluorineFx.Net
     /// </summary>
     class RtmpClient : BaseRtmpHandler, INetConnectionClient, IPendingServiceCallback
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(RtmpClient));
+
         NetConnection _netConnection;
         Hashtable _connectionParameters;
         RtmpClientConnection _connection;
@@ -128,6 +134,8 @@ namespace FluorineFx.Net
             if (call is IPendingServiceCall)
             {
                 IPendingServiceCall psc = call as IPendingServiceCall;
+                /*
+                object result = psc.Result;
                 object result = psc.Result;
                 if (result is DeferredResult)
                 {
@@ -141,9 +149,53 @@ namespace FluorineFx.Net
                 {
                     Invoke reply = new Invoke();
                     reply.ServiceCall = call;
-                    reply.InvokeId = invoke.InvokeId;
+                    reply.InvokeId = invoke.InvokeId;                    
                     channel.Write(reply);
                 }
+                */
+                MethodInfo mi = MethodHandler.GetMethod(_netConnection.Client.GetType(), call.ServiceMethodName, call.Arguments, false, false);
+                if (mi != null)
+                {
+                    ParameterInfo[] parameterInfos = mi.GetParameters();
+                    object[] args = new object[parameterInfos.Length];
+                    call.Arguments.CopyTo(args, 0);
+                    TypeHelper.NarrowValues(args, parameterInfos);
+                    try
+                    {
+                        InvocationHandler invocationHandler = new InvocationHandler(mi);
+                        object result = invocationHandler.Invoke(_netConnection.Client, args);
+                        if (mi.ReturnType == typeof(void))
+                            call.Status = ServiceCall.STATUS_SUCCESS_VOID;
+                        else
+                        {
+                            call.Status = result == null ? ServiceCall.STATUS_SUCCESS_NULL : ServiceCall.STATUS_SUCCESS_RESULT;
+                            psc.Result = result;
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        call.Exception = exception;
+                        call.Status = ServiceCall.STATUS_INVOCATION_EXCEPTION;
+                        //log.Error("Error while invoking method " + call.ServiceMethodName + " on client", exception);
+                    }
+                }
+                else
+                {
+                    string msg = __Res.GetString(__Res.Invocation_NoSuitableMethod, call.ServiceMethodName);
+                    call.Status = ServiceCall.STATUS_METHOD_NOT_FOUND;
+                    call.Exception = new FluorineException(msg);
+                    //log.Error(msg, call.Exception);
+                }
+                if (call.Status == ServiceCall.STATUS_SUCCESS_VOID || call.Status == ServiceCall.STATUS_SUCCESS_NULL)
+                {
+                    if (log.IsDebugEnabled)
+                        log.Debug("Method does not have return value, do not reply");
+                    return;
+                }
+                Invoke reply = new Invoke();
+                reply.ServiceCall = call;
+                reply.InvokeId = invoke.InvokeId;
+                channel.Write(reply);
             }
         }
 
@@ -230,7 +282,7 @@ namespace FluorineFx.Net
         {
             ASObject info = call.Result as ASObject;
             _netConnection.RaiseNetStatus(info);
-            if (info.Contains("level") && info["level"].ToString() == "error")
+            if (info.ContainsKey("level") && info["level"].ToString() == "error")
                 return;
             _netConnection.RaiseOnConnect();
         }
