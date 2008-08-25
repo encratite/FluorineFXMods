@@ -563,14 +563,21 @@ namespace FluorineFx.Messaging.Rtmp
 						len = (int)output.Position - mark - 4;
 						output.PutInt(mark, len);
 						break;
-					default:
+                    case SharedObjectEventType.SERVER_DISCONNECT:
+                        writer.WriteByte(type);
+                        output.PutInt((int)output.Position, 0);
+                        break;
+                    default:
 						_log.Error("Unknown event " + sharedObjectEvent.Type.ToString());
 						writer.WriteByte(type);
 						mark = (int)output.Position;
 						output.Skip(4); // we will be back
-						writer.WriteUTF(sharedObjectEvent.Key);
-						writer.WriteData(context.ObjectEncoding, sharedObjectEvent.Value);
-						len = (int)output.Position - mark - 4;
+                        if (sharedObjectEvent.Key != null)
+                        {
+                            writer.WriteUTF(sharedObjectEvent.Key);
+                            writer.WriteData(context.ObjectEncoding, sharedObjectEvent.Value);
+                        }
+                        len = (int)output.Position - mark - 4;
 						output.PutInt(mark, len);
 						break;
 				}
