@@ -27,6 +27,7 @@ using FluorineFx.Util;
 using FluorineFx.Management;
 using FluorineFx.Messaging;
 using FluorineFx.Messaging.Messages;
+using FluorineFx.Json;
 
 namespace FluorineFx.ServiceBrowser
 {
@@ -219,6 +220,27 @@ namespace FluorineFx.ServiceBrowser
             remotingMessage.operation = operation;
             string destinationId = messageBroker.GetDestinationId(remotingMessage);
             remotingMessage.destination = destinationId;
+            if (args != null)
+            {
+                for (int i = 0; i < args.Length; i++)
+                {
+                    object obj = args[i];
+                    if (obj is ASObject)
+                    {
+                        ASObject aso = obj as ASObject;
+                        Type type = null;
+                        //if (aso.ContainsKey("TypeName"))
+                        //    type = TypeHelper.Locate(aso["TypeName"] as string);
+                        if (aso.ContainsKey("__type"))
+                            type = TypeHelper.Locate(aso["__type"] as string);
+                        if (type != null)
+                        {
+                            string tmp = JavaScriptConvert.SerializeObject(obj);
+                            args[i] = JavaScriptConvert.DeserializeObject(tmp, type);
+                        }
+                    }
+                }
+            }
             remotingMessage.body = args;
             remotingMessage.timestamp = Environment.TickCount;
             IMessage response = messageBroker.RouteMessage(remotingMessage);
