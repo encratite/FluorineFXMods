@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections;
+using FluorineFx.Exceptions;
 
 namespace FluorineFx.IO
 {
@@ -111,7 +112,11 @@ namespace FluorineFx.IO
 		{
 			get
 			{
-				return (ObjectEncoding) _version;
+                if( _version == 0 || _version == 1 )
+				    return ObjectEncoding.AMF0;
+                if (_version == 3)
+                    return ObjectEncoding.AMF3;
+                throw new UnexpectedAMF();
 			}
 		}
 	}
