@@ -222,7 +222,7 @@ namespace FluorineFx.ServiceBrowser
             remotingMessage.destination = destinationId;
             if (args != null)
             {
-                for (int i = 0; i < args.Length; i++)
+                for(int i = 0; i <args.Length; i++)
                 {
                     object obj = args[i];
                     if (obj is ASObject)
