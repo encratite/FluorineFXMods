@@ -19,7 +19,12 @@
 using System;
 using System.Collections;
 using System.Reflection;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Util;
 using FluorineFx.Invocation;
 using FluorineFx.Collections;
@@ -45,8 +50,9 @@ namespace FluorineFx.Net
     [CLSCompliant(false)]
     public class RemoteSharedObject : AttributeStore
     {
+#if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(RemoteSharedObject));
-
+#endif
         bool _secure;
         ObjectEncoding _objectEncoding;
         NetConnection _connection;
@@ -76,12 +82,20 @@ namespace FluorineFx.Net
         event DisconnectHandler _disconnectHandler;
         event NetStatusHandler _netStatusHandler;
         event SyncHandler _syncHandler;
-
+        
+#if !(NET_1_1)
+        static Dictionary<string, RemoteSharedObject> SharedObjects;
+#else
         static Hashtable SharedObjects;
+#endif
 
         static RemoteSharedObject()
         {
+#if !(NET_1_1)
+            SharedObjects = new Dictionary<string, RemoteSharedObject>();
+#else
             SharedObjects = new Hashtable();
+#endif
         }
 
         /// <summary>
@@ -218,9 +232,9 @@ namespace FluorineFx.Net
 
         private static RemoteSharedObject GetRemote(Type type, string name, string remotePath, object persistence, bool secure)
         {
-            lock (SharedObjects.SyncRoot)
+            lock ((SharedObjects as ICollection).SyncRoot)
             {
-                if (SharedObjects.Contains(name))
+                if (SharedObjects.ContainsKey(name))
                     return SharedObjects[name] as RemoteSharedObject;
                 RemoteSharedObject rso = Activator.CreateInstance(type) as RemoteSharedObject;
                 ValidationUtils.ArgumentConditionTrue(rso != null, "type", "Expecting a RemoteSharedObject type");
@@ -330,9 +344,10 @@ namespace FluorineFx.Net
         internal static void Dispatch(SharedObjectMessage message)
         {
             RemoteSharedObject rso = null;
-            lock (SharedObjects.SyncRoot)
+            lock ((SharedObjects as ICollection).SyncRoot)
             {
-                rso = SharedObjects[message.Name] as RemoteSharedObject;
+                if( SharedObjects.ContainsKey(message.Name) )
+                    rso = SharedObjects[message.Name] as RemoteSharedObject;
             }
             if (rso != null)
             {
@@ -349,8 +364,13 @@ namespace FluorineFx.Net
 
         internal void DispatchSharedObjectMessage(SharedObjectMessage message)
         {
+#if !(NET_1_1)
+            List<ASObject> changeList = null;
+            List<ASObject> notifications = null;
+#else
             ArrayList changeList = null;
             ArrayList notifications = null;
+#endif
             foreach (ISharedObjectEvent sharedObjectEvent in message.Events)
             {
                 switch (sharedObjectEvent.Type)
@@ -369,7 +389,11 @@ namespace FluorineFx.Net
                             infoObject["oldValue"] = this.GetAttribute(sharedObjectEvent.Key);
                             _attributes[sharedObjectEvent.Key] = sharedObjectEvent.Value;
                             if (changeList == null)
+#if !(NET_1_1)
+                                changeList = new List<ASObject>();
+#else
                                 changeList = new ArrayList();
+#endif
                             changeList.Add(infoObject);
                         }
                         break;
@@ -378,7 +402,11 @@ namespace FluorineFx.Net
                             ASObject infoObject = new ASObject();
                             infoObject["code"] = "clear";
                             if (changeList == null)
+#if !(NET_1_1)
+                                changeList = new List<ASObject>();
+#else
                                 changeList = new ArrayList();
+#endif
                             changeList.Add(infoObject);
                             _attributes.Clear();
                         }
@@ -391,7 +419,11 @@ namespace FluorineFx.Net
                             infoObject["code"] = "delete";
                             infoObject["name"] = sharedObjectEvent.Key;
                             if (changeList == null)
+#if !(NET_1_1)
+                                changeList = new List<ASObject>();
+#else
                                 changeList = new ArrayList();
+#endif
                             changeList.Add(infoObject);
                         }
                         break;
@@ -401,7 +433,11 @@ namespace FluorineFx.Net
                             infoObject["level"] = sharedObjectEvent.Value;
                             infoObject["code"] = sharedObjectEvent.Key;
                             if( notifications == null )
+#if !(NET_1_1)
+                                notifications = new List<ASObject>();
+#else
                                 notifications = new ArrayList();
+#endif
                             notifications.Add(infoObject);
                         }
                         break;
@@ -424,7 +460,9 @@ namespace FluorineFx.Net
                                 }
                                 catch (Exception exception)
                                 {
+#if !SILVERLIGHT
                                     log.Error("Error while invoking method " + handler + " on shared object", exception);
+#endif
                                 }
                             }
                         }
@@ -435,7 +473,11 @@ namespace FluorineFx.Net
             }
             if (changeList != null && changeList.Count > 0)
             {
+#if !(NET_1_1)
+                RaiseSync(changeList.ToArray());
+#else
                 RaiseSync(changeList.ToArray(typeof(ASObject)) as ASObject[]);
+#endif
             }
             if (notifications != null )
             {
@@ -446,7 +488,7 @@ namespace FluorineFx.Net
 
         internal static void DispatchDisconnect(NetConnection connection)
         {
-            lock (SharedObjects.SyncRoot)
+            lock ((SharedObjects as ICollection).SyncRoot)
             {
                 foreach (RemoteSharedObject rso in SharedObjects.Values)
                 {
@@ -569,6 +611,26 @@ namespace FluorineFx.Net
         /// Sets multiple attributes on this object.
         /// </summary>
         /// <param name="values">Dictionary of attributes.</param>
+#if !(NET_1_1)
+        public sealed override void SetAttributes(IDictionary<string, object> values)
+        {
+            if (values == null)
+                return;
+
+            BeginUpdate();
+            try
+            {
+                foreach (KeyValuePair<string, object> entry in values)
+                {
+                    SetAttribute(entry.Key, entry.Value);
+                }
+            }
+            finally
+            {
+                EndUpdate();
+            }
+        }
+#else
         public sealed override void SetAttributes(IDictionary values)
         {
             if (values == null)
@@ -577,9 +639,9 @@ namespace FluorineFx.Net
             BeginUpdate();
             try
             {
-                foreach (string name in values)
+                foreach (DictionaryEntry entry in values)
                 {
-                    SetAttribute(name, values[name]);
+                    SetAttribute(entry.Key.ToString(), entry.Value);
                 }
             }
             finally
@@ -587,6 +649,8 @@ namespace FluorineFx.Net
                 EndUpdate();
             }
         }
+#endif
+
         /// <summary>
         /// Sets multiple attributes on this object.
         /// </summary>
@@ -678,7 +742,9 @@ namespace FluorineFx.Net
                     }
                     else
                     {
+#if !SILVERLIGHT
                         log.Warn(__Res.GetString(__Res.Channel_NotFound));
+#endif
                     }
                 }
                 _ownerMessage.Events.Clear();

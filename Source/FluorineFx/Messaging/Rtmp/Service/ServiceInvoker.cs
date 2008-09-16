@@ -95,7 +95,7 @@ namespace FluorineFx.Messaging.Rtmp.Service
 			if (service == null) 
 			{
 				call.Exception = new ServiceNotFoundException(serviceName);
-				call.Status = ServiceCall.STATUS_SERVICE_NOT_FOUND;
+				call.Status = Call.STATUS_SERVICE_NOT_FOUND;
 				_log.Warn("Service not found: " + serviceName);
 				return false;
 			} 
@@ -142,7 +142,7 @@ namespace FluorineFx.Messaging.Rtmp.Service
                         if (mi == null)
                         {
                             string msg = __Res.GetString(__Res.Invocation_NoSuitableMethod, serviceMethod);
-                            call.Status = ServiceCall.STATUS_METHOD_NOT_FOUND;
+                            call.Status = Call.STATUS_METHOD_NOT_FOUND;
                             call.Exception = new FluorineException(msg);//MissingMethodException(service.GetType().Name, serviceMethod);
                             //_log.Error("Method " + serviceMethod + " not found in " + service);
                             _log.Error(msg, call.Exception);
@@ -173,13 +173,13 @@ namespace FluorineFx.Messaging.Rtmp.Service
                 {
                     InvocationHandler invocationHandler = new InvocationHandler(mi);
                     invocationHandler.Invoke(service, parameters);
-                    call.Status = ServiceCall.STATUS_SUCCESS_VOID;
+                    call.Status = Call.STATUS_SUCCESS_VOID;
                 }
                 else
                 {
                     InvocationHandler invocationHandler = new InvocationHandler(mi);
                     result = invocationHandler.Invoke(service, parameters);
-                    call.Status = result == null ? ServiceCall.STATUS_SUCCESS_NULL : ServiceCall.STATUS_SUCCESS_RESULT;
+                    call.Status = result == null ? Call.STATUS_SUCCESS_NULL : Call.STATUS_SUCCESS_RESULT;
                 }
                 if (call is IPendingServiceCall)
                     (call as IPendingServiceCall).Result = result;
@@ -195,7 +195,7 @@ namespace FluorineFx.Messaging.Rtmp.Service
             catch (TargetInvocationException exception)
             {
                 call.Exception = exception;
-                call.Status = ServiceCall.STATUS_INVOCATION_EXCEPTION;
+                call.Status = Call.STATUS_INVOCATION_EXCEPTION;
                 _log.Error("Error executing call: " + call);
                 _log.Error("Service invocation error", exception);
                 return false;
@@ -203,7 +203,7 @@ namespace FluorineFx.Messaging.Rtmp.Service
             catch (Exception exception)
             {
                 call.Exception = exception;
-                call.Status = ServiceCall.STATUS_GENERAL_EXCEPTION;
+                call.Status = Call.STATUS_GENERAL_EXCEPTION;
                 _log.Error("Error executing call: " + call);
                 _log.Error("Service invocation error", exception);
                 return false;

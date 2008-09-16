@@ -19,6 +19,9 @@
 using System;
 using System.Collections;
 using System.IO;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using log4net;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Messaging;
@@ -316,8 +319,6 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 OOBControlMessage setChunkSize = new OOBControlMessage();
                 setChunkSize.Target = "ConnectionConsumer";
                 setChunkSize.ServiceName = "chunkSize";
-                if (setChunkSize.ServiceParameterMap == null)
-                    setChunkSize.ServiceParameterMap = new Hashtable();
                 setChunkSize.ServiceParameterMap["chunkSize"] = _chunkSize;
                 _livePipe.SendOOBControlMessage(this.Provider, setChunkSize);
             }
@@ -430,7 +431,11 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 log.Debug("Recording file: " + file.FullName);
             }
             _recordingFile = new FileConsumer(scope, file);
+#if !(NET_1_1)
+            Dictionary<string, object> parameterMap = new Dictionary<string, object>();
+#else
             Hashtable parameterMap = new Hashtable();
+#endif
             if (isAppend)
             {
                 parameterMap.Add("mode", "append");
@@ -745,7 +750,11 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 _connMsgOut = consumerManager.GetConsumerOutput(this);
                 _connMsgOut.Subscribe(this, null);
                 _recordPipe = new InMemoryPushPushPipe();
+#if !(NET_1_1)
+                Dictionary<string, object> recordParameterMap = new Dictionary<string, object>();
+#else
                 Hashtable recordParameterMap = new Hashtable();
+#endif
                 // Clear record flag
                 recordParameterMap.Add("record", null);
                 _recordPipe.Subscribe(this as IProvider, recordParameterMap);

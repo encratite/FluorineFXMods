@@ -22,36 +22,47 @@ using System.Xml.Serialization;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
+#if !FXCLIENT
 using FluorineFx.HttpCompress;
+#endif
+#if !(NET_1_1)
+using System.Collections.Generic;
+using FluorineFx.Collections.Generic;
+#endif
 
 namespace FluorineFx.Configuration
 {
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
-	/// </summary>
+    /// </summary>
+#if !FXCLIENT
 	[XmlType(TypeName="settings")]
-	public sealed class FluorineSettings
+#endif
+    public sealed class FluorineSettings
 	{
 		private ClassMappingCollection _classMappings;
-		private ServiceCollection _services;
 		private NullableTypeCollection _nullables;
-		private LoginCommandCollection _loginCommandCollection;
-		private CacheCollection _cache;
+#if !FXCLIENT
+		private ServiceCollection _services;
 		private ImportNamespaceCollection _importedNamespaces;
-		private HttpCompressSettings _httpCompressSettings;
+		private LoginCommandCollection _loginCommandCollection;
+        private HttpCompressSettings _httpCompressSettings;
 		private bool _wsdlGenerateProxyClasses;
 		private string _wsdlProxyNamespace;
-		private bool _acceptNullValueTypes;
-		private RemotingServiceAttributeConstraint _remotingServiceAttributeConstraint;
-		private TimezoneCompensation _timezoneCompensation;
+		private CacheCollection _cache;
 		private RtmpServerSettings _rtmpServerSettings;
-		private OptimizerSettings _optimizerSettings;
 		private SwxSettings _swxSettings;
         private StreamableFileFactorySettings _streamableFileFactorySettings;
         private BWControlServiceSettings _bwControlServiceSettings;
         private SchedulingServiceSettings _schedulingServiceSettings;
         private PlaylistSubscriberStreamSettings _playlistSubscriberStreamSettings;
         private JSonSettings _jsonSettings;
+        private SilverlightSettings _silverlightSettings;
+#endif
+        private bool _acceptNullValueTypes;
+		private RemotingServiceAttributeConstraint _remotingServiceAttributeConstraint;
+		private TimezoneCompensation _timezoneCompensation;
+		private OptimizerSettings _optimizerSettings;
         private RuntimeSettings _runtimeSettings;
 
         /// <summary>
@@ -62,20 +73,24 @@ namespace FluorineFx.Configuration
 			_timezoneCompensation = TimezoneCompensation.None;
 			_remotingServiceAttributeConstraint = RemotingServiceAttributeConstraint.Access;
 			_acceptNullValueTypes = false;
+#if !FXCLIENT
 			_wsdlProxyNamespace = "FluorineFx.Proxy";
 			_wsdlGenerateProxyClasses = true;
 			_rtmpServerSettings = new RtmpServerSettings();
 			//_optimizerSettings = new OptimizerSettings();
 			_swxSettings = new SwxSettings();
+#endif
             _runtimeSettings = new RuntimeSettings();
 		}
 
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlArray("classMappings")]
 		[XmlArrayItem("classMapping",typeof(ClassMapping))]
-		public ClassMappingCollection ClassMappings
+#endif
+        public ClassMappingCollection ClassMappings
 		{
 			get
 			{
@@ -89,9 +104,27 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
+        [XmlArray("nullable")]
+		[XmlArrayItem("type",typeof(NullableType))]
+#endif
+        public NullableTypeCollection Nullables
+		{
+			get
+			{
+				if (_nullables == null)
+					_nullables = new NullableTypeCollection();
+				return _nullables;
+			}
+			//set{ _nullables = value; }
+        }
+#if !FXCLIENT
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         [XmlArray("services")]
 		[XmlArrayItem("service",typeof(ServiceConfiguration))]
-		public ServiceCollection Services
+        public ServiceCollection Services
 		{
 			get
 			{
@@ -101,45 +134,39 @@ namespace FluorineFx.Configuration
 			}
 			//set{ _services = value; }
 		}
-
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        [XmlArray("nullable")]
-		[XmlArrayItem("type",typeof(NullableType))]
-		public NullableTypeCollection Nullables
+        [XmlElement(ElementName = "httpCompress")]
+		public HttpCompressSettings HttpCompressSettings
 		{
-			get
-			{
-				if (_nullables == null)
-					_nullables = new NullableTypeCollection();
-				return _nullables;
-			}
-			//set{ _nullables = value; }
+			get{ return _httpCompressSettings; }
+			set{ _httpCompressSettings = value; }
 		}
-
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        [XmlArray("cache")]
-		[XmlArrayItem("cachedService",typeof(CachedService))]
-		public CacheCollection Cache
+        [XmlElement(ElementName = "wsdlGenerateProxyClasses")]
+		public bool WsdlGenerateProxyClasses
 		{
-			get
-			{
-				if (_cache == null)
-					_cache = new CacheCollection();
-				return _cache;
-			}
-			//set{ _cache = value; }
+			get{ return _wsdlGenerateProxyClasses; }
+			set{ _wsdlGenerateProxyClasses = value; }
 		}
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        [XmlElement(ElementName = "wsdlProxyNamespace")]
+		public string WsdlProxyNamespace
+		{
+			get{ return _wsdlProxyNamespace; }
+			set{ _wsdlProxyNamespace = value; }
+		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         [XmlArray("security")]
 		[XmlArrayItem("login-command",typeof(LoginCommandSettings))]
-		public LoginCommandCollection LoginCommands
+        public LoginCommandCollection LoginCommands
 		{
 			get
 			{ 
@@ -149,13 +176,27 @@ namespace FluorineFx.Configuration
 			}
 			//set{ _loginCommandCollection = value; }
 		}
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        [XmlArray("cache")]
+		[XmlArrayItem("cachedService",typeof(CachedService))]
+        public CacheCollection Cache
+		{
+			get
+			{
+				if (_cache == null)
+					_cache = new CacheCollection();
+				return _cache;
+			}
+			//set{ _cache = value; }
+		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         [XmlArray("importNamespaces")]
 		[XmlArrayItem("add",typeof(ImportNamespace))]
-		public ImportNamespaceCollection ImportNamespaces
+        public ImportNamespaceCollection ImportNamespaces
 		{
 			get
 			{
@@ -165,7 +206,6 @@ namespace FluorineFx.Configuration
 			}
 			//set{ _importedNamespaces = value; }
 		}
-
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -225,62 +265,8 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        [XmlElement(ElementName = "httpCompress")]
-		public HttpCompressSettings HttpCompressSettings
-		{
-			get{ return _httpCompressSettings; }
-			set{ _httpCompressSettings = value; }
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        [XmlElement(ElementName = "wsdlGenerateProxyClasses")]
-		public bool WsdlGenerateProxyClasses
-		{
-			get{ return _wsdlGenerateProxyClasses; }
-			set{ _wsdlGenerateProxyClasses = value; }
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        [XmlElement(ElementName = "wsdlProxyNamespace")]
-		public string WsdlProxyNamespace
-		{
-			get{ return _wsdlProxyNamespace; }
-			set{ _wsdlProxyNamespace = value; }
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        [XmlElement(ElementName = "timezoneCompensation")]
-		public TimezoneCompensation TimezoneCompensation
-		{
-			get{ return _timezoneCompensation; }
-			set{ _timezoneCompensation = value; }
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        [XmlElement(ElementName = "acceptNullValueTypes")]
-		public bool AcceptNullValueTypes
-		{
-			get{ return _acceptNullValueTypes; }
-			set{ _acceptNullValueTypes = value; }
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        [XmlElement(ElementName = "remotingServiceAttribute")]
-		public RemotingServiceAttributeConstraint RemotingServiceAttribute
-		{
-			get{ return _remotingServiceAttributeConstraint; }
-			set{ _remotingServiceAttributeConstraint = value; }
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
         [XmlElement(ElementName = "rtmpServer")]
-		public RtmpServerSettings RtmpServer
+        public RtmpServerSettings RtmpServer
 		{
 			get{ return _rtmpServerSettings; }
 			set{ _rtmpServerSettings = value; }
@@ -288,17 +274,8 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        [XmlElement(ElementName = "optimizer")]
-		public OptimizerSettings Optimizer
-		{
-			get{ return _optimizerSettings; }
-			set{ _optimizerSettings = value; }
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
         [XmlElement(ElementName = "swx")]
-		public SwxSettings SwxSettings
+        public SwxSettings SwxSettings
 		{
 			get{ return _swxSettings; }
 			set{ _swxSettings = value; }
@@ -320,7 +297,68 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+        [XmlElement(ElementName = "silverlight")]
+        public SilverlightSettings Silverlight
+        {
+            get
+            {
+                if (_silverlightSettings == null)
+                    _silverlightSettings = new SilverlightSettings();
+                return _silverlightSettings;
+            }
+            set { _silverlightSettings = value; }
+        }
+#endif
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+#if !FXCLIENT
+        [XmlElement(ElementName = "timezoneCompensation")]
+#endif
+        public TimezoneCompensation TimezoneCompensation
+		{
+			get{ return _timezoneCompensation; }
+			set{ _timezoneCompensation = value; }
+		}
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+#if !FXCLIENT
+        [XmlElement(ElementName = "acceptNullValueTypes")]
+#endif
+        public bool AcceptNullValueTypes
+		{
+			get{ return _acceptNullValueTypes; }
+			set{ _acceptNullValueTypes = value; }
+		}
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+#if !FXCLIENT
+        [XmlElement(ElementName = "remotingServiceAttribute")]
+#endif
+        public RemotingServiceAttributeConstraint RemotingServiceAttribute
+		{
+			get{ return _remotingServiceAttributeConstraint; }
+			set{ _remotingServiceAttributeConstraint = value; }
+		}
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+#if !FXCLIENT
+        [XmlElement(ElementName = "optimizer")]
+#endif
+        public OptimizerSettings Optimizer
+		{
+			get{ return _optimizerSettings; }
+			set{ _optimizerSettings = value; }
+		}
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+#if !FXCLIENT
         [XmlElement(ElementName = "runtime")]
+#endif
         public RuntimeSettings Runtime
         {
             get { return _runtimeSettings; }
@@ -331,20 +369,24 @@ namespace FluorineFx.Configuration
 
 	#region LoginCommandCollection
 
+#if !FXCLIENT
+
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !(NET_1_1)
+    public sealed class LoginCommandCollection : CollectionBase<LoginCommandSettings>
+#else
     public sealed class LoginCommandCollection : CollectionBase
-	{
-		Hashtable _loginCommands;
-
+#endif
+    {
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 		public LoginCommandCollection()
 		{
-			_loginCommands = new Hashtable();
 		}
+#if (NET_1_1)
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -352,7 +394,6 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public int Add( LoginCommandSettings value )  
 		{
-			_loginCommands[value.Server] = value.Type;
 			return List.Add(value);
 		}
         /// <summary>
@@ -371,7 +412,6 @@ namespace FluorineFx.Configuration
         /// <param name="value"></param>
 		public void Insert( int index, LoginCommandSettings value )  
 		{
-			_loginCommands[value.Server] = value.Type;
 			List.Insert(index, value);
 		}
         /// <summary>
@@ -380,7 +420,6 @@ namespace FluorineFx.Configuration
         /// <param name="value"></param>
 		public void Remove( LoginCommandSettings value )  
 		{
-			_loginCommands.Remove(value.Server);
 			List.Remove(value);
 		}
         /// <summary>
@@ -408,6 +447,7 @@ namespace FluorineFx.Configuration
 				List[index] = value;
 			}
 		}
+#endif
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -415,19 +455,23 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public string GetLoginCommand(string server)
 		{
-			return _loginCommands[server] as string;
+            foreach (LoginCommandSettings loginCommandSettings in this)
+                if (loginCommandSettings.Server == server)
+                    return loginCommandSettings.Type;
+			return null;
 		}
 	}
+#endif
 
 	#endregion LoginCommandCollection
 
 	#region LoginCommandSettings
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
     [XmlType(TypeName = "login-command")]
-	public sealed class LoginCommandSettings
+    public sealed class LoginCommandSettings
 	{
 		private string _type;
 		private string _server;
@@ -458,7 +502,7 @@ namespace FluorineFx.Configuration
 			set{_server = value;}
 		}
 	}
-
+#endif
 	#endregion LoginCommandSettings
 
 	#region ClassMappingCollection
@@ -466,19 +510,24 @@ namespace FluorineFx.Configuration
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !(NET_1_1)
+    public sealed class ClassMappingCollection : CollectionBase<ClassMapping>
+#else
     public sealed class ClassMappingCollection : CollectionBase
-	{
-		private Hashtable _typeToCustomClass;
-		private Hashtable _customClassToType;
-
+#endif
+    {
+#if !(NET_1_1)
+        private Dictionary<string, string> _typeToCustomClass = new Dictionary<string, string>();
+        private Dictionary<string, string> _customClassToType = new Dictionary<string, string>();
+#else
+		private Hashtable _typeToCustomClass = new Hashtable();
+        private Hashtable _customClassToType = new Hashtable();
+#endif
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 		public ClassMappingCollection()
 		{
-			_typeToCustomClass = new Hashtable();
-			_customClassToType = new Hashtable();
-
 			Add("FluorineFx.AMF3.ArrayCollection", "flex.messaging.io.ArrayCollection");
 			Add("FluorineFx.AMF3.ByteArray", "flex.messaging.io.ByteArray");
 			Add("FluorineFx.AMF3.ObjectProxy", "flex.messaging.io.ObjectProxy");
@@ -519,18 +568,8 @@ namespace FluorineFx.Configuration
 			classMapping.CustomClass = customClass;
 			this.Add(classMapping);
 		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-		public int Add( ClassMapping value )  
-		{
-			_typeToCustomClass[value.Type] = value.CustomClass;
-			_customClassToType[value.CustomClass] = value.Type;
+#if (NET_1_1)
 
-			return List.Add(value);
-		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -539,29 +578,6 @@ namespace FluorineFx.Configuration
 		public int IndexOf( ClassMapping value )  
 		{
 			return List.IndexOf(value) ;
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="value"></param>
-		public void Insert( int index, ClassMapping value )  
-		{
-			_typeToCustomClass[value.Type] = value.CustomClass;
-			_customClassToType[value.CustomClass] = value.Type;
-
-			List.Insert(index, value);
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="value"></param>
-		public void Remove( ClassMapping value )  
-		{
-			_typeToCustomClass.Remove(value.Type);
-			_customClassToType.Remove(value.CustomClass);
-
-			List.Remove(value);
 		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -588,6 +604,73 @@ namespace FluorineFx.Configuration
 				List[index] = value;
 			}
 		}
+#endif
+
+#if (NET_1_1)
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public int Add(ClassMapping value)
+        {
+            _typeToCustomClass[value.Type] = value.CustomClass;
+            _customClassToType[value.CustomClass] = value.Type;
+
+            return List.Add(value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+		public void Insert( int index, ClassMapping value )  
+		{
+			_typeToCustomClass[value.Type] = value.CustomClass;
+			_customClassToType[value.CustomClass] = value.Type;
+
+			List.Insert(index, value);
+		}
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+		public void Remove( ClassMapping value )  
+		{
+			_typeToCustomClass.Remove(value.Type);
+			_customClassToType.Remove(value.CustomClass);
+
+			List.Remove(value);
+		}
+#else
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public override void Add(ClassMapping value)
+        {
+            _typeToCustomClass[value.Type] = value.CustomClass;
+            _customClassToType[value.CustomClass] = value.Type;
+            base.Add(value);
+        }
+        public override void Insert(int index, ClassMapping value)
+        {
+            _typeToCustomClass[value.Type] = value.CustomClass;
+            _customClassToType[value.CustomClass] = value.Type;
+            base.Insert(index, value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        public override bool Remove(ClassMapping value)
+        {
+            _typeToCustomClass.Remove(value.Type);
+            _customClassToType.Remove(value.CustomClass);
+            return base.Remove(value);
+        }
+#endif
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -595,7 +678,7 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public string GetCustomClass(string type)
 		{
-			if( _typeToCustomClass.Contains( type ) )
+			if( _typeToCustomClass.ContainsKey( type ) )
 				return _typeToCustomClass[type] as string;
 			else
 				return type;
@@ -609,7 +692,7 @@ namespace FluorineFx.Configuration
 		{
 			if( customClass == null )
 				return null;
-			if( _customClassToType.Contains(customClass) )
+			if( _customClassToType.ContainsKey(customClass) )
 				return _customClassToType[customClass] as string;
 			else
 				return customClass;
@@ -623,8 +706,10 @@ namespace FluorineFx.Configuration
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !FXCLIENT
     [XmlType(TypeName = "classMapping")]
-	public sealed class ClassMapping
+#endif
+    public sealed class ClassMapping
 	{
 		private string _type;
 		private string _customClass;
@@ -637,7 +722,9 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlElement(DataType = "string", ElementName = "type")]
+#endif
 		public string Type
 		{
 			get{return _type;}
@@ -646,7 +733,9 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlElement(DataType = "string", ElementName = "customClass")]
+#endif
 		public string CustomClass
 		{
 			get{return _customClass;}
@@ -657,22 +746,63 @@ namespace FluorineFx.Configuration
 	#endregion ClassMapping
 
 	#region ServiceCollection
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !(NET_1_1)
+    public sealed class ServiceCollection : CollectionBase<ServiceConfiguration>
+#else
     public sealed class ServiceCollection : CollectionBase
-	{
-		private Hashtable _serviceNames;
-		private Hashtable _serviceLocations;
+#endif
+    {
+#if !(NET_1_1)
+        private Dictionary<string, ServiceConfiguration> _serviceNames = new Dictionary<string, ServiceConfiguration>(5);
+        private Dictionary<string, ServiceConfiguration> _serviceLocations = new Dictionary<string, ServiceConfiguration>(5);
+#else
+        private Hashtable _serviceNames = new Hashtable(5);
+        private Hashtable _serviceLocations = new Hashtable(5);
+#endif
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 		public ServiceCollection()
 		{
-			_serviceNames = new Hashtable(5);
-			_serviceLocations = new Hashtable(5);
 		}
+#if !(NET_1_1)
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public override void Add(ServiceConfiguration value)
+        {
+            _serviceNames[value.Name] = value;
+            _serviceLocations[value.ServiceLocation] = value;
+            base.Add(value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+        public override void Insert(int index, ServiceConfiguration value)
+        {
+            _serviceNames[value.Name] = value;
+            _serviceLocations[value.ServiceLocation] = value;
+            base.Insert(index, value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        public override bool Remove(ServiceConfiguration value)
+        {
+            _serviceNames.Remove(value.Name);
+            _serviceLocations.Remove(value.ServiceLocation);
+            return base.Remove(value);
+        }
+#else
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -683,15 +813,6 @@ namespace FluorineFx.Configuration
 			_serviceNames[value.Name] = value;
 			_serviceLocations[value.ServiceLocation] = value;
 			return List.Add(value);
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-		public int IndexOf( ServiceConfiguration value )  
-		{
-			return List.IndexOf(value) ;
 		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -710,7 +831,21 @@ namespace FluorineFx.Configuration
         /// <param name="value"></param>
 		public void Remove( ServiceConfiguration value )
 		{
+            _serviceNames.Remove(value.Name);
+            _serviceLocations.Remove(value.ServiceLocation);
 			List.Remove(value);
+		}
+#endif
+
+#if (NET_1_1)
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+		public int IndexOf( ServiceConfiguration value )  
+		{
+			return List.IndexOf(value) ;
 		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -720,15 +855,6 @@ namespace FluorineFx.Configuration
 		public bool Contains( ServiceConfiguration value )  
 		{
 			return List.Contains(value);
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="serviceName"></param>
-        /// <returns></returns>
-		public bool Contains(string serviceName)
-		{
-			return _serviceNames.Contains(serviceName);
 		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -746,6 +872,16 @@ namespace FluorineFx.Configuration
 				List[index] = value;
 			}
 		}
+#endif
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="serviceName"></param>
+        /// <returns></returns>
+		public bool Contains(string serviceName)
+		{
+			return _serviceNames.ContainsKey(serviceName);
+		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -753,7 +889,7 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public string GetServiceLocation(string serviceName)
 		{
-			if( _serviceNames.Contains(serviceName) )
+			if( _serviceNames.ContainsKey(serviceName) )
 				return (_serviceNames[serviceName] as ServiceConfiguration).ServiceLocation;
 			else
 				return serviceName;
@@ -765,7 +901,7 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public string GetServiceName(string serviceLocation)
 		{
-			if( _serviceLocations.Contains(serviceLocation) )
+			if( _serviceLocations.ContainsKey(serviceLocation) )
 				return (_serviceLocations[serviceLocation] as ServiceConfiguration).Name;
 			else
 				return serviceLocation;
@@ -778,7 +914,9 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public string GetMethod(string serviceName, string name)
 		{
-			ServiceConfiguration serviceConfiguration = _serviceNames[serviceName] as ServiceConfiguration;
+            ServiceConfiguration serviceConfiguration = null;
+            if( _serviceNames.ContainsKey(serviceName) )
+                serviceConfiguration = _serviceNames[serviceName] as ServiceConfiguration;
 			if( serviceConfiguration != null )
 				return serviceConfiguration.Methods.GetMethod(name);
 			return name;
@@ -791,22 +929,24 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public string GetMethodName(string serviceLocation, string method)
 		{
-			ServiceConfiguration serviceConfiguration = _serviceLocations[serviceLocation] as ServiceConfiguration;
+            ServiceConfiguration serviceConfiguration = null;
+            if( _serviceLocations.ContainsKey(serviceLocation) )
+                serviceConfiguration = _serviceLocations[serviceLocation] as ServiceConfiguration;
 			if( serviceConfiguration != null )
 				return serviceConfiguration.Methods.GetMethodName(method);
 			return method;
 		}
 	}
-
+#endif
 	#endregion ServiceCollection
 
 	#region ServiceConfiguration
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
     [XmlType(TypeName = "service")]
-	public sealed class ServiceConfiguration
+    public sealed class ServiceConfiguration
 	{
 		private string _name;
 		private string _serviceLocation;
@@ -821,7 +961,7 @@ namespace FluorineFx.Configuration
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         [XmlElement(DataType = "string", ElementName = "name")]
-		public string Name
+        public string Name
 		{
 			get{return _name;}
 			set{_name = value;}
@@ -830,7 +970,7 @@ namespace FluorineFx.Configuration
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         [XmlElement(DataType = "string", ElementName = "service-location")]
-		public string ServiceLocation
+        public string ServiceLocation
 		{
 			get{return _serviceLocation;}
 			set{_serviceLocation = value;}
@@ -851,27 +991,59 @@ namespace FluorineFx.Configuration
 			//set{ _remoteMethodCollection = value; }
 		}
 	}
-	
+#endif	
 	#endregion ServiceConfiguration
 
 	#region RemoteMethodCollection
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !(NET_1_1)
+    public sealed class RemoteMethodCollection : CollectionBase<RemoteMethod>
+#else
     public sealed class RemoteMethodCollection : CollectionBase
-	{
-		Hashtable	_methods;
-		Hashtable	_methodsNames;
+#endif
+    {
+#if !(NET_1_1)
+        Dictionary<string, string> _methods = new Dictionary<string, string>(3);
+        Dictionary<string, string> _methodsNames = new Dictionary<string, string>(3);
+#else
+        Hashtable _methods = new Hashtable(3);
+        Hashtable _methodsNames = new Hashtable(3);
+#endif
 
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 		public RemoteMethodCollection()
 		{
-			_methods = new Hashtable(3);
-			_methodsNames = new Hashtable(3);
 		}
+
+#if !(NET_1_1)
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public override void Add(RemoteMethod value)
+        {
+            _methods[value.Name] = value.Method;
+            _methodsNames[value.Method] = value.Name;
+            base.Add(value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+        public override void Insert(int index, RemoteMethod value)
+        {
+            _methods[value.Name] = value.Method;
+            _methodsNames[value.Method] = value.Name;
+            base.Insert(index, value);
+        }
+#else
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -937,6 +1109,7 @@ namespace FluorineFx.Configuration
 				List[index] = value;
 			}
 		}
+#endif
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -944,7 +1117,7 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public string GetMethod(string name)
 		{
-			if( _methods.Contains(name) )
+			if( _methods.ContainsKey(name) )
 				return _methods[name] as string;
 			return name;
 		}
@@ -955,16 +1128,16 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public string GetMethodName(string method)
 		{
-			if( _methodsNames.Contains(method) )
+			if( _methodsNames.ContainsKey(method) )
 				return _methodsNames[method] as string;
 			return method;
 		}
 	}
-
+#endif
 	#endregion RemoteMethodCollection
 
 	#region RemoteMethod
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -977,7 +1150,7 @@ namespace FluorineFx.Configuration
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         [XmlElement(DataType = "string", ElementName = "name")]
-		public string Name
+        public string Name
 		{
 			get{return _name;}
 			set{_name = value;}
@@ -986,13 +1159,13 @@ namespace FluorineFx.Configuration
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         [XmlElement(DataType = "string", ElementName = "method")]
-		public string Method
+        public string Method
 		{
 			get{return _method;}
 			set{_method = value;}
 		}
 	}
-
+#endif
 	#endregion RemoteMethod
 
 	#region NullableTypeCollection
@@ -1000,17 +1173,55 @@ namespace FluorineFx.Configuration
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !(NET_1_1)
+    public sealed class NullableTypeCollection : CollectionBase<NullableType>
+#else
     public sealed class NullableTypeCollection : CollectionBase
-	{
-		Hashtable _nullableDictionary;
+#endif
+    {
+#if !(NET_1_1)
+        Dictionary<string, NullableType> _nullableDictionary = new Dictionary<string, NullableType>(5);
+#else
+        Hashtable _nullableDictionary = new Hashtable(5);
+#endif
 
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 		public NullableTypeCollection()
 		{
-			_nullableDictionary = new Hashtable(5);
 		}
+#if !(NET_1_1)
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public override void Add(NullableType value)
+        {
+            _nullableDictionary[value.TypeName] = value;
+            base.Add(value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+        public override void Insert(int index, NullableType value)
+        {
+            _nullableDictionary[value.TypeName] = value;
+            base.Insert(index, value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        public override bool Remove(NullableType value)
+        {
+            _nullableDictionary.Remove(value.TypeName);
+            return base.Remove(value);
+        }
+#else
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -1061,15 +1272,6 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-		public bool ContainsKey( Type type )  
-		{
-			return _nullableDictionary.ContainsKey(type.FullName);
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
 		public NullableType this[ int index ]  
@@ -1082,6 +1284,16 @@ namespace FluorineFx.Configuration
 			{
 				List[index] = value;
 			}
+		}
+#endif
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+		public bool ContainsKey( Type type )  
+		{
+			return _nullableDictionary.ContainsKey(type.FullName);
 		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -1106,8 +1318,10 @@ namespace FluorineFx.Configuration
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !FXCLIENT
     [XmlType(TypeName = "type")]
-	public sealed class NullableType
+#endif
+    public sealed class NullableType
 	{
 		private string _typeName;
 		private string _value;
@@ -1116,8 +1330,10 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlAttribute(DataType = "string", AttributeName = "name")]
-		public string TypeName
+#endif
+        public string TypeName
 		{
 			get{return _typeName;}
 			set
@@ -1129,8 +1345,10 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlAttribute(DataType = "string", AttributeName = "value")]
-		public string Value
+#endif
+        public string Value
 		{
 			get{return _value;}
 			set
@@ -1142,8 +1360,10 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlIgnore]
-		public object NullValue
+#endif
+        public object NullValue
 		{
 			get{return _nullValue;}
 		}
@@ -1161,25 +1381,34 @@ namespace FluorineFx.Configuration
 			if( fi != null )
 				_nullValue = fi.GetValue(null);
 			else
+#if (NET_1_1)
 				_nullValue = System.Convert.ChangeType(_value, type);
+#else
+                _nullValue = System.Convert.ChangeType(_value, type, null);
+#endif
 		}
 	}
 
 	#endregion NullableType
 
 	#region CacheCollection
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !(NET_1_1)
+    public sealed class CacheCollection : CollectionBase<CachedService>
+#else
     public sealed class CacheCollection : CollectionBase
-	{
+#endif
+    {
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 		public CacheCollection()
 		{
 		}
+#if (NET_1_1)
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -1240,12 +1469,13 @@ namespace FluorineFx.Configuration
 				List[index] = value;
 			}
 		}
+#endif
 	}
-
+#endif
 	#endregion CacheCollection
 
 	#region CachedService
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -1293,22 +1523,27 @@ namespace FluorineFx.Configuration
 			set{_type = value;}
 		}
 	}
-
+#endif
 	#endregion CachedService
 
 	#region ImportNamespaceCollection
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !(NET_1_1)
+    public sealed class ImportNamespaceCollection : CollectionBase<ImportNamespace>
+#else
     public sealed class ImportNamespaceCollection : CollectionBase
-	{
+#endif
+    {
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 		public ImportNamespaceCollection()
 		{
 		}
+#if (NET_1_1)
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -1369,12 +1604,13 @@ namespace FluorineFx.Configuration
 				List[index] = value;
 			}
 		}
+#endif
 	}
-
+#endif
 	#endregion ImportNamespaceCollection
 
 	#region ImportNamespace
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -1408,11 +1644,11 @@ namespace FluorineFx.Configuration
 			set{_assembly = value;}
 		}
 	}
-
+#endif
 	#endregion ImportNamespace
 
     #region StreamableFileFactorySettings
-
+#if !FXCLIENT
     /// <summary>
     /// StreamableFileFactory settings.
     /// </summary>
@@ -1438,10 +1674,11 @@ namespace FluorineFx.Configuration
             set { _type = value; }
         }
     }
-
+#endif
     #endregion StreamableFileFactorySettings
 
     #region BWControlServiceSettings
+#if !FXCLIENT
 
     /// <summary>
     /// BWControlServiceSettings settings.
@@ -1490,11 +1727,11 @@ namespace FluorineFx.Configuration
             set { _defaultCapacity = value; }
         }
     }
-
+#endif
     #endregion BWControlServiceSettings
 
     #region SchedulingServiceSettings
-
+#if !FXCLIENT
     /// <summary>
     /// SchedulingServiceSettings settings.
     /// </summary>
@@ -1519,11 +1756,11 @@ namespace FluorineFx.Configuration
             set { _type = value; }
         }
     }
-
+#endif
     #endregion SchedulingServiceSettings
 
     #region PlaylistSubscriberStreamSettings
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -1559,11 +1796,12 @@ namespace FluorineFx.Configuration
             set { _bufferCheckInterval = value; }
         }
     }
-
+#endif
     #endregion PlaylistSubscriberStreamSettings
 
     #region HttpCompressSettings
 
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -1685,25 +1923,64 @@ namespace FluorineFx.Configuration
 			return _excludedPaths.Contains(relUrl.ToLower());
 		}
 	}
-
+#endif
 	#endregion HttpCompressSettings
 
 	#region MimeTypeEntryCollection
+#if !FXCLIENT
 
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !(NET_1_1)
+    public sealed class MimeTypeEntryCollection : CollectionBase<MimeTypeEntry>
+#else
     public sealed class MimeTypeEntryCollection : CollectionBase
-	{
-		StringCollection _excludedTypes;
-
+#endif
+    {
+#if !(NET_1_1)
+        Dictionary<string, MimeTypeEntry> _excludedTypes = new Dictionary<string, MimeTypeEntry>();
+#else
+		Hashtable _excludedTypes = new Hashtable();
+#endif
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 		public MimeTypeEntryCollection()
 		{
-			_excludedTypes = new StringCollection();
 		}
+
+#if !(NET_1_1)
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public override void Add(MimeTypeEntry value)
+        {
+            _excludedTypes.Add(value.Type, value);
+            base.Add(value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+        public override void Insert(int index, MimeTypeEntry value)
+        {
+            _excludedTypes.Add(value.Type, value);
+            base.Insert(index, value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+		public override bool Remove( MimeTypeEntry value )  
+		{
+			_excludedTypes.Remove(value.Type);
+			return base.Remove(value);
+		}
+#else
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -1711,7 +1988,7 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public int Add( MimeTypeEntry value )  
 		{
-			_excludedTypes.Add(value.Type);
+			_excludedTypes.Add(value.Type, value);
 			return List.Add(value);
 		}
         /// <summary>
@@ -1730,7 +2007,7 @@ namespace FluorineFx.Configuration
         /// <param name="value"></param>
 		public void Insert( int index, MimeTypeEntry value )  
 		{
-			_excludedTypes.Add(value.Type);
+			_excludedTypes.Add(value.Type, value);
 			List.Insert(index, value);
 		}
         /// <summary>
@@ -1754,15 +2031,6 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-		public bool Contains( string type )  
-		{
-			return _excludedTypes.Contains(type);
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
 		public MimeTypeEntry this[ int index ]  
@@ -1776,26 +2044,76 @@ namespace FluorineFx.Configuration
 				List[index] = value;
 			}
 		}
+#endif
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+		public bool Contains( string type )  
+		{
+			return _excludedTypes.ContainsKey(type);
+		}
 	}
-
+#endif
 	#endregion MimeTypeEntryCollection
 
 	#region PathEntryCollection
+#if !FXCLIENT
 
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !(NET_1_1)
+    public sealed class PathEntryCollection : CollectionBase<PathEntry>
+#else
     public sealed class PathEntryCollection : CollectionBase
-	{
-		StringCollection _excludedPaths;
+#endif
+    {
+#if !(NET_1_1)
+        Dictionary<string, PathEntry> _excludedPaths = new Dictionary<string, PathEntry>();
+#else
+        Hashtable _excludedPaths = new Hashtable();
+#endif
 
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 		public PathEntryCollection()
 		{
-			_excludedPaths = new StringCollection();
 		}
+
+#if !(NET_1_1)
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public override void Add(PathEntry value)
+        {
+            _excludedPaths.Add(value.Path, value);
+            base.Add(value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+        public override void Insert(int index, PathEntry value)
+        {
+            _excludedPaths.Add(value.Path, value);
+            base.Insert(index, value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        public override bool Remove(PathEntry value)
+        {
+            _excludedPaths.Remove(value.Path);
+            return base.Remove(value);
+        }
+#else
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -1803,7 +2121,7 @@ namespace FluorineFx.Configuration
         /// <returns></returns>
 		public int Add( PathEntry value )  
 		{
-			_excludedPaths.Add(value.Path);
+			_excludedPaths.Add(value.Path, value);
 			return List.Add(value);
 		}
         /// <summary>
@@ -1822,7 +2140,7 @@ namespace FluorineFx.Configuration
         /// <param name="value"></param>
 		public void Insert( int index, PathEntry value )  
 		{
-			_excludedPaths.Add(value.Path);
+			_excludedPaths.Add(value.Path, value);
 			List.Insert(index, value);
 		}
         /// <summary>
@@ -1846,15 +2164,6 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-		public bool Contains( string path )  
-		{
-			return _excludedPaths.Contains(path);
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
 		public PathEntry this[ int index ]  
@@ -1868,11 +2177,22 @@ namespace FluorineFx.Configuration
 				List[index] = value;
 			}
 		}
+#endif
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+		public bool Contains( string path )  
+		{
+			return _excludedPaths.ContainsKey(path);
+		}
 	}
-
+#endif
 	#endregion PathEntryCollection
 
 	#region MimeTypeEntry
+#if !FXCLIENT
 
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -1891,11 +2211,11 @@ namespace FluorineFx.Configuration
 			set { _type = value; }
 		}
 	}
-
+#endif
 	#endregion MimeTypeEntry
 
 	#region PathEntry
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -1913,11 +2233,11 @@ namespace FluorineFx.Configuration
 			set { _path = value; }
 		}
 	}
-
+#endif
 	#endregion PathEntry
 
 	#region RtmpServerSettings
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -1976,11 +2296,11 @@ namespace FluorineFx.Configuration
             set { _rtmpTransportSettings = value; }
         }
 	}
-
+#endif
 	#endregion RtmpServerSettings
 
 	#region ThreadPoolSettings
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -2027,11 +2347,11 @@ namespace FluorineFx.Configuration
 			set{_idleTimeout = value;}
 		}
 	}
-
+#endif
 	#endregion ThreadPoolSettings
 
     #region RtmpConnectionSettings
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -2078,11 +2398,11 @@ namespace FluorineFx.Configuration
             set { _maxHandshakeTimeout = value; }
         }
     }
-
+#endif
     #endregion RtmpConnectionSettings
 
     #region RtmptConnectionSettings
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -2129,11 +2449,10 @@ namespace FluorineFx.Configuration
             set { _maxHandshakeTimeout = value; }
         }
     }
-
+#endif
     #endregion RtmptConnectionSettings
 
     #region RtmpTransportSettings
-
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -2155,7 +2474,9 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlAttribute(DataType = "int", AttributeName = "receiveBufferSize")]
+#endif
         public int ReceiveBufferSize
         {
             get { return _receiveBufferSize; }
@@ -2164,7 +2485,9 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlAttribute(DataType = "int", AttributeName = "sendBufferSize")]
+#endif
         public int SendBufferSize
         {
             get { return _sendBufferSize; }
@@ -2173,7 +2496,9 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlAttribute(DataType = "boolean", AttributeName = "tcpNoDelay")]
+#endif
         public bool TcpNoDelay
         {
             get { return _tcpNoDelay; }
@@ -2206,8 +2531,10 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlAttribute(DataType = "string", AttributeName = "provider")]
-		public string Provider
+#endif
+        public string Provider
 		{
 			get{return _provider;}
 			set{_provider = value;}
@@ -2215,8 +2542,10 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlAttribute(DataType = "boolean", AttributeName = "debug")]
-		public bool Debug
+#endif
+        public bool Debug
 		{
 			get{return _debug;}
 			set{_debug = value;}
@@ -2224,7 +2553,9 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        //[XmlAttribute(DataType = "boolean", AttributeName = "typeCheck")]
+#if !FXCLIENT
+        [XmlAttribute(DataType = "boolean", AttributeName = "typeCheck")]
+#endif
         public bool TypeCheck
         {
             get { return _typeCheck; }
@@ -2235,7 +2566,7 @@ namespace FluorineFx.Configuration
 	#endregion OptimizerSettings
 
 	#region SwxSettings
-
+#if !FXCLIENT
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
@@ -2260,11 +2591,11 @@ namespace FluorineFx.Configuration
 			set{_allowDomain = value;}
 		}
 	}
-
+#endif
 	#endregion SwxSettings
 
 	#region JSonSettings
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -2295,25 +2626,64 @@ namespace FluorineFx.Configuration
             set { _jsonRpcGeneratorCollection = value; }
         }
     }
-
+#endif
     #endregion JSonSettings
 
     #region JsonRpcGeneratorCollection
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+#if !(NET_1_1)
+    public sealed class JsonRpcGeneratorCollection : CollectionBase<JsonRpcGenerator>
+#else
     public sealed class JsonRpcGeneratorCollection : CollectionBase
+#endif
     {
-        Hashtable _generators;
 
+#if !(NET_1_1)
+        Dictionary<string, JsonRpcGenerator> _generators = new Dictionary<string, JsonRpcGenerator>();
+#else
+        Hashtable _generators = new Hashtable();
+#endif
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         public JsonRpcGeneratorCollection()
         {
-            _generators = new Hashtable();
         }
+
+#if !(NET_1_1)
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public override void Add(JsonRpcGenerator value)
+        {
+            _generators.Add(value.Name, value);
+            base.Add(value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+        public override void Insert(int index, JsonRpcGenerator value)
+        {
+            _generators.Add(value.Name, value);
+            base.Insert(index, value);
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        public override bool Remove(JsonRpcGenerator value)
+        {
+            _generators.Remove(value.Name);
+            return base.Remove(value);
+        }
+#else
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -2364,15 +2734,6 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public bool Contains(string name)
-        {
-            return _generators.Contains(name);
-        }
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
         public JsonRpcGenerator this[int index]
@@ -2381,6 +2742,16 @@ namespace FluorineFx.Configuration
             {
                 return List[index] as JsonRpcGenerator;
             }
+        }
+#endif
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool Contains(string name)
+        {
+            return _generators.ContainsKey(name);
         }
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -2391,15 +2762,17 @@ namespace FluorineFx.Configuration
         {
             get
             {
-                return _generators[name] as JsonRpcGenerator;
+                if( _generators.ContainsKey(name) )
+                    return _generators[name] as JsonRpcGenerator;
+                return null;
             }
         }
     }
-
+#endif
     #endregion JsonRpcGeneratorCollection
 
     #region JsonRpcGenerator
-
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -2433,7 +2806,7 @@ namespace FluorineFx.Configuration
             set { _type = value; }
         }
     }
-
+#endif
     #endregion JsonRpcGenerator
 
     #region RuntimeSettings
@@ -2459,7 +2832,9 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlAttribute(DataType = "int", AttributeName = "minWorkerThreads")]
+#endif
         public int MinWorkerThreads
         {
             get { return _minWorkerThreads; }
@@ -2468,7 +2843,9 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlAttribute(DataType = "int", AttributeName = "maxWorkerThreads")]
+#endif
         public int MaxWorkerThreads
         {
             get { return _maxWorkerThreads; }
@@ -2477,7 +2854,9 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+#if !FXCLIENT
         [XmlAttribute(DataType = "boolean", AttributeName = "asyncHandler")]
+#endif
         public bool AsyncHandler
         {
             get { return _asyncHandler; }
@@ -2487,4 +2866,77 @@ namespace FluorineFx.Configuration
 
     #endregion RuntimeSettings
 
+    #region SilverlightSettings
+#if !FXCLIENT
+    /// <summary>
+    /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// </summary>
+    public sealed class SilverlightSettings
+    {
+        private PolicyServerSettings _policyServerSettings;
+
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public SilverlightSettings()
+        {
+        }
+
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        [XmlElement(ElementName = "policyServer")]
+        public PolicyServerSettings PolicyServerSettings
+        {
+            get 
+            {
+                if (_policyServerSettings == null)
+                    _policyServerSettings = new PolicyServerSettings();
+                return _policyServerSettings; 
+            }
+            set { _policyServerSettings = value; }
+        }
+    }
+#endif
+    #endregion SilverlightSettings
+
+    #region PolicyServerSettings
+#if !FXCLIENT
+    /// <summary>
+    /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// </summary>
+    public sealed class PolicyServerSettings
+    {
+        private bool _enable;
+        private string _policyFile;
+
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public PolicyServerSettings()
+        {
+            _enable = false;
+            _policyFile = "clientaccesspolicy.xml";
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        [XmlAttribute(DataType = "boolean", AttributeName = "enable")]
+        public bool Enable
+        {
+            get { return _enable; }
+            set { _enable = value; }
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        [XmlAttribute(DataType = "string", AttributeName = "policyFile")]
+        public string PolicyFile
+        {
+            get { return _policyFile; }
+            set { _policyFile = value; }
+        }
+    }
+#endif
+    #endregion PolicyServerSettings
 }

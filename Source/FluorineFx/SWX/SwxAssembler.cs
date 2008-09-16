@@ -21,7 +21,12 @@ using System.IO;
 using System.Text;
 using System.Reflection;
 using System.Collections;
-
+#if (NET_1_1)
+using ICSharpCode.SharpZipLib.Zip.Compression;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+#else
+using System.IO.Compression;
+#endif
 using FluorineFx.Util;
 using FluorineFx.SWX.Writers;
 using FluorineFx.HttpCompress;
@@ -307,9 +312,15 @@ namespace FluorineFx.SWX
             if (compressionLevel != CompressionLevels.None)
             {
                 MemoryStream msCompressed = new MemoryStream();
+#if (NET_1_1)
                 ICSharpCode.SharpZipLib.Zip.Compression.Streams.DeflaterOutputStream deflaterOutputStream = new ICSharpCode.SharpZipLib.Zip.Compression.Streams.DeflaterOutputStream(msCompressed, new ICSharpCode.SharpZipLib.Zip.Compression.Deflater((int)compressionLevel, false));
                 deflaterOutputStream.Write(buffer, 8, buffer.Length - 8);
                 deflaterOutputStream.Close();
+#else
+                DeflateStream deflateStream = new DeflateStream(msCompressed, CompressionMode.Compress, false);
+                deflateStream.Write(buffer, 8, buffer.Length - 8);
+                deflateStream.Close();
+#endif
                 byte[] msBuffer = msCompressed.ToArray();
                 byte[] compressedBuffer = new byte[msBuffer.Length + 8];
                 Buffer.BlockCopy(buffer, 0, compressedBuffer, 0, 8);

@@ -25,10 +25,10 @@ namespace FluorineFx
 	/// </summary>
 	public enum ObjectEncoding
 	{
-		/// <summary>
-		/// AMF0 serialization.
-		/// </summary>
-		AMF0 = 0,
+        /// <summary>
+        /// AMF0 serialization.
+        /// </summary>
+        AMF0 = 0,
 		/// <summary>
 		/// AMF3 serialization.
 		/// </summary>

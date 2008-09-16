@@ -18,7 +18,11 @@
 */
 using System;
 using System.Collections;
-
+#if !(NET_1_1)
+using System.Collections.Generic;
+using FluorineFx.Collections.Generic;
+#endif
+using FluorineFx.Collections;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Event;
 
@@ -31,7 +35,11 @@ namespace FluorineFx.Messaging
 	{
         object _syncLock = new object();
 		protected IScope	_parent;
-		protected ArrayList _listeners;
+#if !(NET_1_1)
+        protected CopyOnWriteArray<IEventListener> _listeners = new CopyOnWriteArray<IEventListener>();
+#else
+		protected CopyOnWriteArray _listeners = new CopyOnWriteArray();
+#endif
         /// <summary>
         /// Set to true to prevent the scope from being freed upon disconnect.
         /// </summary>
@@ -40,7 +48,6 @@ namespace FluorineFx.Messaging
 		public BasicScope(IScope parent, string type, string name, bool persistent) : base(type, name, null, persistent)
 		{
 			_parent = parent;
-			_listeners = new ArrayList();
 		}
 
 		#region IBasicScope Members

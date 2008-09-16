@@ -35,7 +35,7 @@ namespace FluorineFx.Messaging
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	public sealed class MessageClient
+    public sealed class MessageClient : IMessageClient
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(MessageClient));
         private static object _syncLock = new object();
@@ -84,11 +84,13 @@ namespace FluorineFx.Messaging
 
 		internal MessageDestination Destination{ get{ return _messageDestination; } }
 
+        public string DestinationId { get { return _messageDestination.Id; } }
+
         internal IMessageConnection MessageConnection { get { return _connection; } }
 
 		public string Endpoint{ get{ return _endpoint; } }
 
-		internal byte[] GetBinaryId()
+		public byte[] GetBinaryId()
 		{
 			if( _binaryId == null )
 			{
@@ -108,10 +110,14 @@ namespace FluorineFx.Messaging
 			}
 		}
 
-        internal bool IsDisconnecting
+        public bool IsDisconnecting
         {
             get{ return _isDisconnecting; }
-            set{ _isDisconnecting = value; }
+        }
+
+        internal void SetIsDisconnecting(bool value)
+        {
+            _isDisconnecting = value;
         }
 
 		internal Selector Selector
@@ -187,7 +193,7 @@ namespace FluorineFx.Messaging
 		{
 			if( log.IsDebugEnabled )
 				log.Debug(__Res.GetString(__Res.MessageClient_Disconnect, this.ClientId));
-            this.IsDisconnecting = true;
+            this.SetIsDisconnecting(true);
             Unsubscribe(false);
 		}
 

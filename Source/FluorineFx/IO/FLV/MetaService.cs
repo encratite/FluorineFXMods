@@ -203,7 +203,7 @@ namespace FluorineFx.IO.FLV
             MemoryStream ms = new MemoryStream(buffer);
             AMFReader reader = new AMFReader(ms);
             string metaType = reader.ReadData() as string;
-            Hashtable data = reader.ReadData() as Hashtable;
+            IDictionary data = reader.ReadData() as IDictionary;
 		    retMeta.PutAll(data);
 		    return retMeta;
 	    }

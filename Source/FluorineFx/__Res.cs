@@ -212,6 +212,7 @@ namespace FluorineFx
 
         internal const string TypeHelper_Probing = "TypeHelper_Probing";
         internal const string TypeHelper_LoadDllFail = "TypeHelper_LoadDllFail";
+        internal const string TypeHelper_ConversionFail = "TypeHelper_ConversionFail";
 
         internal const string Invocation_NoSuitableMethod = "Invocation_NoSuitableMethod";
         internal const string Invocation_Ambiguity = "Invocation_Ambiguity";
@@ -256,6 +257,9 @@ namespace FluorineFx
         internal const string Msmq_Fail = "Msmq_Fail";
         internal const string Msmq_Enable = "Msmq_Enable";
         internal const string Msmq_Poison = "Msmq_Poison";
+
+        internal const string Silverlight_StartPS = "Silverlight_StartPS";
+        internal const string Silverlight_PSError = "Silverlight_PSError";
 
 		internal static string GetString(string key)
 		{

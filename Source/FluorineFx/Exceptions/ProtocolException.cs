@@ -25,7 +25,9 @@ namespace FluorineFx.Exceptions
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	[Serializable]
+#if !SILVERLIGHT
+    [Serializable]
+#endif
 	class ProtocolException : FluorineException
 	{
 		/// <summary>
@@ -50,6 +52,7 @@ namespace FluorineFx.Exceptions
 		public ProtocolException(string message, Exception inner) : base(message, inner)																 
 		{																 
 		}
+#if !SILVERLIGHT
 		/// <summary>
 		/// Initializes a new instance of the ProtocolException class with serialized data.
 		/// </summary>
@@ -58,6 +61,6 @@ namespace FluorineFx.Exceptions
 		public ProtocolException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
-
+#endif
 	}
 }

@@ -26,7 +26,7 @@ namespace FluorineFx.IO.Bytecode
 	/// <summary>
 	/// Reflection optimizer interface.
 	/// </summary>
-	interface IReflectionOptimizer
+	public interface IReflectionOptimizer
 	{
 		/// <summary>
 		/// Performs instantiation of an instance of the underlying class.

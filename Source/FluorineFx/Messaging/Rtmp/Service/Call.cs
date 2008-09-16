@@ -19,7 +19,9 @@
 using System;
 using System.Collections;
 using System.Reflection;
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Invocation;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
@@ -27,7 +29,8 @@ using FluorineFx.Exceptions;
 
 namespace FluorineFx.Messaging.Rtmp.Service
 {
-    class Call : IServiceCall
+    [CLSCompliant(false)]
+    public class Call : IServiceCall
     {
         /// <summary>
         /// Pending status constant.

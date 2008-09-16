@@ -18,6 +18,9 @@
 */
 using System;
 using System.Xml;
+#if SILVERLIGHT
+using System.Xml.Linq;
+#endif
 
 namespace FluorineFx.IO.Writers
 {
@@ -33,11 +36,17 @@ namespace FluorineFx.IO.Writers
 
 		public bool IsPrimitive{ get{return false;} }
 
-		public void WriteData(AMFWriter writer, object data)
+#if SILVERLIGHT
+        public void WriteData(AMFWriter writer, object data)
+        {
+            writer.WriteAMF3XmlDocument(data as XDocument);
+        }
+#else
+        public void WriteData(AMFWriter writer, object data)
 		{
 			writer.WriteAMF3XmlDocument(data as XmlDocument);
 		}
-
+#endif
 		#endregion
 	}
 }

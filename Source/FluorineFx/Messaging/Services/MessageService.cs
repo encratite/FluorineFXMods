@@ -52,8 +52,11 @@ namespace FluorineFx.Messaging.Services
 		{
 			return new MessageDestination(this, destinationSettings);
 		}
-
-
+        /// <summary>
+        /// Handles a message routed to the service by the MessageBroker.
+        /// </summary>
+        /// <param name="message">The message that should be handled by the service.</param>
+        /// <returns>The result of the message processing.</returns>
 		public override object ServiceMessage(IMessage message)
 		{
 			CommandMessage commandMessage = message as CommandMessage;
@@ -87,11 +90,11 @@ namespace FluorineFx.Messaging.Services
                             Selector selector = null;
                             if (commandMessage.headers != null)
                             {
-                                if (commandMessage.headers.Contains(CommandMessage.SelectorHeader))
+                                if (commandMessage.headers.ContainsKey(CommandMessage.SelectorHeader))
                                 {
                                     selector = Selector.CreateSelector(commandMessage.headers[CommandMessage.SelectorHeader] as string);
                                 }
-                                if (commandMessage.headers.Contains(AsyncMessage.SubtopicHeader))
+                                if (commandMessage.headers.ContainsKey(AsyncMessage.SubtopicHeader))
                                 {
                                     subtopic = new Subtopic(commandMessage.headers[AsyncMessage.SubtopicHeader] as string);
                                 }
@@ -127,6 +130,12 @@ namespace FluorineFx.Messaging.Services
 						return new AcknowledgeMessage();
                     case CommandMessage.PollOperation:
                         {
+                            if (messageClient == null)
+                            {
+                                ServiceException serviceException = new ServiceException(string.Format("MessageClient is not subscribed to {0}", commandMessage.destination));
+                                serviceException.FaultCode = "Server.Processing.NotSubscribed";
+                                throw serviceException;
+                            }
                             IClient client = FluorineContext.Current.Client;
                             client.Renew();
                             messageDestination.ServiceAdapter.Manage(commandMessage);
@@ -161,6 +170,42 @@ namespace FluorineFx.Messaging.Services
 			}
 		}
 
+        /// <summary>
+        /// Returns a collection of client Ids of the clients subscribed to receive this message.
+        /// If the message has a subtopic header, the subtopics are used to filter the subscribers. 
+        /// If there is no subtopic header, subscribers to the destination with no subtopic are used.
+        /// Selector expressions if available will be evaluated to filter the subscribers.
+        /// </summary>
+        /// <param name="message">The message to send to subscribers.</param>
+        /// <returns>Collection of subscribers.</returns>
+        public ICollection GetSubscriber(IMessage message)
+        {
+            return GetSubscriber(message, true);
+        }
+        /// <summary>
+        /// Returns a collection of client Ids of the clients subscribed to receive this message.
+        /// If the message has a subtopic header, the subtopics are used to filter the subscribers. 
+        /// If there is no subtopic header, subscribers to the destination with no subtopic are used. 
+        /// If a subscription has a selector expression associated with it and evalSelector is true, 
+        /// the subscriber is only returned if the selector expression evaluates to true.
+        /// </summary>
+        /// <param name="message">The message to send to subscribers.</param>
+        /// <param name="evalSelector">Indicates whether evaluate selector expressions.</param>
+        /// <returns>Collection of subscribers.</returns>
+        /// <remarks>
+        /// Use this method to do additional processing to the subscribers list.
+        /// </remarks>
+        public ICollection GetSubscriber(IMessage message, bool evalSelector)
+        {
+            MessageDestination destination = GetDestination(message) as MessageDestination;
+            SubscriptionManager subscriptionManager = destination.SubscriptionManager;
+            ICollection subscribers = subscriptionManager.GetSubscribers(message, evalSelector);
+            return subscribers;
+        }
+        /// <summary>
+        /// Pushes a message to all clients that are subscribed to the destination targeted by this message.
+        /// </summary>
+        /// <param name="message">The Message to push to the destination's subscribers.</param>
 		public void PushMessageToClients(IMessage message)
 		{
 			MessageDestination destination = GetDestination(message) as MessageDestination;
@@ -171,8 +216,15 @@ namespace FluorineFx.Messaging.Services
 				PushMessageToClients(subscribers, message);
 			}
 		}
-
-		internal void PushMessageToClients(ICollection subscribers, IMessage message)
+        /// <summary>
+        /// Pushes a message to the specified clients (subscribers).
+        /// </summary>
+        /// <param name="subscribers">Collection of subscribers.</param>
+        /// <param name="message">The Message to push to the subscribers.</param>
+        /// <remarks>
+        /// The Collection of subscribers is a collection of client Id strings.
+        /// </remarks>
+        public void PushMessageToClients(ICollection subscribers, IMessage message)
 		{
 			MessageDestination destination = GetDestination(message) as MessageDestination;
 			SubscriptionManager subscriptionManager = destination.SubscriptionManager;

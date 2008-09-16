@@ -108,7 +108,11 @@ namespace FluorineFx.Expression
 		{
 			caseSensitiveLiterals = true;
 			setCaseSensitive(true);
+#if NET_1_1
 			literals = new Hashtable(100, (float) 0.4, null, Comparer.Default);
+#else
+            literals = new Hashtable(100, (float)0.4, StringComparer.OrdinalIgnoreCase);
+#endif
 			literals.Add("IS", 12);
 			literals.Add("NULL", 15);
 			literals.Add("LIKE", 14);

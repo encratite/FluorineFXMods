@@ -38,7 +38,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
     /// have been successfully sent, regular interframes will be sent in the next
     /// iteration as well. If these frames all went through, disposable interframes
     /// are sent again.
-    /// <p>
+    /// </p>
     /// So from highest to lowest bandwidth and back, the states go as follows:
     /// <ul>
     /// <li>all frames</li>

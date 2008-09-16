@@ -16,9 +16,11 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx.Exceptions;
 
 namespace FluorineFx.IO
@@ -30,10 +32,15 @@ namespace FluorineFx.IO
     public class AMFMessage
 	{
 		protected ushort _version = 0;
+#if !(NET_1_1)
+        protected List<AMFBody> _bodies;
+        protected List<AMFHeader> _headers;
+#else
 		protected ArrayList _bodies;
 		protected ArrayList _headers;
+#endif
 
-		/// <summary>
+        /// <summary>
 		/// Initializes a new instance of the AMFMessage class.
 		/// </summary>
 		public AMFMessage() : this(0)
@@ -46,8 +53,13 @@ namespace FluorineFx.IO
 		public AMFMessage(ushort version)
 		{
 			this._version = version;
+#if !(NET_1_1)
+            _headers = new List<AMFHeader>(1);
+            _bodies = new List<AMFBody>(1);
+#else
 			_headers = new ArrayList(1);
 			_bodies = new ArrayList(1);
+#endif
 		}
 
 		public ushort Version
@@ -60,13 +72,6 @@ namespace FluorineFx.IO
 			this._bodies.Add(body);
 		}
 
-		/*
-		public void AddBodyAt(AMFBody body, int index)
-		{
-			this._bodies.Insert(index, body);
-		}
-		*/
-
 		public void AddHeader(AMFHeader header)
 		{
 			this._headers.Add(header);
@@ -77,10 +82,17 @@ namespace FluorineFx.IO
 			get{ return _bodies.Count; }
 		}
 
-		public ArrayList Bodies
+#if !(NET_1_1)
+        public System.Collections.ObjectModel.ReadOnlyCollection<AMFBody> Bodies
+        {
+            get { return _bodies.AsReadOnly(); }
+        }
+#else
+        public ArrayList Bodies
 		{
 			get{ return ArrayList.ReadOnly(_bodies); }
 		}
+#endif
 		
 		public int HeaderCount
 		{
@@ -108,16 +120,28 @@ namespace FluorineFx.IO
 			return null;
 		}
 
+        public void RemoveHeader(string header)
+        {
+            for (int i = 0; _headers != null && i < _headers.Count; i++)
+            {
+                AMFHeader amfHeader = _headers[i] as AMFHeader;
+                if (amfHeader.Name == header)
+                {
+                    _headers.RemoveAt(i);
+                }
+            }
+        }
+
 		public ObjectEncoding ObjectEncoding
 		{
 			get
 			{
-                if( _version == 0 || _version == 1 )
-				    return ObjectEncoding.AMF0;
+                if (_version == 0 || _version == 1)
+                    return ObjectEncoding.AMF0;
                 if (_version == 3)
                     return ObjectEncoding.AMF3;
                 throw new UnexpectedAMF();
-			}
+            }
 		}
 	}
 }

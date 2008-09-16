@@ -94,6 +94,7 @@ namespace FluorineFx.Messaging.Endpoints
 		public override void Service()
 		{
 			AMFContext amfContext = new AMFContext(HttpContext.Current.Request.InputStream, HttpContext.Current.Response.OutputStream );
+            AMFContext.Current = amfContext;
 			_filterChain.InvokeFilters( amfContext );
 		}
 

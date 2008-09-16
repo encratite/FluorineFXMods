@@ -198,7 +198,7 @@ namespace FluorineFx
 					}
 					else
 					{
-						Hashtable identityMap = updateCollectionRange.identities[j] as Hashtable;
+                        IDictionary identityMap = updateCollectionRange.identities[j] as IDictionary;
 						if( identityMap != null )
 							identity = new Identity(identityMap);
 					}

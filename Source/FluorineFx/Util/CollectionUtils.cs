@@ -17,8 +17,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-#if (NET_1_1)
-#else
+#if !(NET_1_1)
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 #endif
@@ -53,9 +52,7 @@ namespace FluorineFx.Util
 			ValidationUtils.ArgumentNotNull(listType, "listType");
 
 			IList list;
-#if (NET_1_1)
-
-#else
+#if !(NET_1_1)
 			Type readOnlyCollectionType;
 #endif
 			bool isReadOnlyOrFixedSize = false;
@@ -64,12 +61,14 @@ namespace FluorineFx.Util
 			{
 				// have to use an arraylist when creating array
 				// there is no way to know the size until it is finised
+#if !(NET_1_1)
+                list = new List<object>();
+#else
 				list = new ArrayList();
+#endif
 				isReadOnlyOrFixedSize = true;
 			}
-#if (NET_1_1)
-
-#else
+#if !(NET_1_1)
             else if (ReflectionUtils.IsSubClass(listType, typeof(ReadOnlyCollection<>), out readOnlyCollectionType))
             {
                 Type readOnlyCollectionContentsType = readOnlyCollectionType.GetGenericArguments()[0];
@@ -112,10 +111,13 @@ namespace FluorineFx.Util
 			if (isReadOnlyOrFixedSize)
 			{
 				if (listType.IsArray)
-					list = ((ArrayList)list).ToArray(ReflectionUtils.GetListItemType(listType));
-#if (NET_1_1)
-
+#if !(NET_1_1)
+                    list = ((List<object>)list).ToArray();
 #else
+					list = ((ArrayList)list).ToArray(ReflectionUtils.GetListItemType(listType));
+#endif
+
+#if !(NET_1_1)
 				else if (ReflectionUtils.IsSubClass(listType, typeof(ReadOnlyCollection<>)))
 					list = (IList)Activator.CreateInstance(listType, list);
 #endif
@@ -131,8 +133,15 @@ namespace FluorineFx.Util
 			if (collection is Array)
 				return collection as Array;
 
+#if !(NET_1_1)
+            List<object> tempList = new List<object>();
+            foreach (object obj in collection)
+                tempList.Add(obj);
+            return tempList.ToArray();
+#else
 			ArrayList tempList = new ArrayList(collection);
 			return tempList.ToArray(type);
+#endif
 		}
 
 		#region GetSingleItem
@@ -154,10 +163,7 @@ namespace FluorineFx.Util
 		#endregion
 
 
-#if (NET_1_1)
-
-#else
-
+#if !(NET_1_1)
 		public static List<T> CreateList<T>(params T[] values)
 		{
 			return new List<T>(values);
@@ -388,8 +394,6 @@ namespace FluorineFx.Util
             else
                 return false;
         }
-
-
 #endif
 	}
 }

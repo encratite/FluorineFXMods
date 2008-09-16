@@ -19,7 +19,6 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Web;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Configuration;
@@ -27,8 +26,11 @@ using System.IO;
 using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
-
+#if !FXCLIENT
+using System.Web;
 using FluorineFx.HttpCompress;
+#endif
+
 
 namespace FluorineFx.Configuration
 {
@@ -37,10 +39,14 @@ namespace FluorineFx.Configuration
 	/// </summary>
 	public enum RemotingServiceAttributeConstraint
 	{
+#if !SILVERLIGHT
 		[XmlEnum(Name = "browse")]
-		Browse = 1,
+#endif
+        Browse = 1,
+#if !SILVERLIGHT
 		[XmlEnum(Name = "access")]
-		Access = 2
+#endif
+        Access = 2
 	}
 
     /// <summary>
@@ -48,10 +54,14 @@ namespace FluorineFx.Configuration
     /// </summary>
 	public enum TimezoneCompensation
 	{
+#if !SILVERLIGHT
 		[XmlEnum(Name = "none")]
+#endif
 		None = 0,
+#if !SILVERLIGHT
 		[XmlEnum(Name = "auto")]
-		Auto = 1
+#endif
+        Auto = 1
 	}
 
 	/// <summary>
@@ -63,8 +73,10 @@ namespace FluorineFx.Configuration
 		static FluorineConfiguration _instance;
 
 		static FluorineSettings		_fluorineSettings;
-		static CacheMap				_cacheMap = new CacheMap();
-		static bool					_fullTrust;
+#if !FXCLIENT
+        static CacheMap				_cacheMap = new CacheMap();
+#endif
+        static bool					_fullTrust;
 
 
 		private FluorineConfiguration()
@@ -85,10 +97,15 @@ namespace FluorineFx.Configuration
 #if (NET_1_1)
 							_fluorineSettings = ConfigurationSettings.GetConfig("fluorinefx/settings") as FluorineSettings;
 #else
+#if SILVERLIGHT
+                            _fluorineSettings = new FluorineSettings();
+#else
 							_fluorineSettings = ConfigurationManager.GetSection("fluorinefx/settings") as FluorineSettings;
+#endif
 #endif
                             if (_fluorineSettings == null)
                                 _fluorineSettings = new FluorineSettings();
+#if !FXCLIENT
 							if( _fluorineSettings != null && _fluorineSettings.Cache != null )
 							{
 								foreach(CachedService cachedService in _fluorineSettings.Cache)
@@ -96,8 +113,8 @@ namespace FluorineFx.Configuration
 									_cacheMap.AddCacheDescriptor( cachedService.Type, cachedService.Timeout, cachedService.SlidingExpiration);
 								}
 							}
-
-							_fullTrust = CheckApplicationPermissions();
+#endif
+                            _fullTrust = CheckApplicationPermissions();
                             System.Threading.Thread.MemoryBarrier();
                             _instance = instance;
 						}
@@ -113,8 +130,8 @@ namespace FluorineFx.Configuration
 			{
 				return _fluorineSettings;
 			}
-		}
-
+        }
+#if !FXCLIENT
 		internal ServiceCollection ServiceMap
 		{ 
 			get
@@ -124,23 +141,16 @@ namespace FluorineFx.Configuration
 				return null;
 			}
 		}
-
-		internal CacheMap CacheMap
-		{	
-			get
-			{
-				return _cacheMap;
-			}
-		}
-
-		internal ClassMappingCollection ClassMappings
+#endif
+        internal ClassMappingCollection ClassMappings
 		{
 			get
 			{
 				return _fluorineSettings.ClassMappings;
 			}
-		}
+        }
 
+#if !FXCLIENT
 		internal string GetServiceName(string serviceLocation)
 		{
 			if( this.ServiceMap != null )
@@ -161,8 +171,8 @@ namespace FluorineFx.Configuration
 				return this.ServiceMap.GetMethodName(serviceLocation, method);
 			return method;
 		}
-
-		internal string GetMappedTypeName(string customClass)
+#endif
+        internal string GetMappedTypeName(string customClass)
 		{
 			if( this.ClassMappings != null )
 				return this.ClassMappings.GetType(customClass);
@@ -176,9 +186,19 @@ namespace FluorineFx.Configuration
 				return this.ClassMappings.GetCustomClass(type);
 			else
 				return type;
+        }
+
+#if !FXCLIENT
+		internal CacheMap CacheMap
+		{	
+			get
+			{
+				return _cacheMap;
+			}
 		}
 
-		public bool WsdlGenerateProxyClasses
+
+        public bool WsdlGenerateProxyClasses
 		{ 
 			get
 			{ 
@@ -187,8 +207,8 @@ namespace FluorineFx.Configuration
 				return false;
 			}
 		}
-		
-		public string WsdlProxyNamespace
+
+        public string WsdlProxyNamespace
 		{
 			get
 			{ 
@@ -198,7 +218,7 @@ namespace FluorineFx.Configuration
 			}
 		}
 
-		public ImportNamespaceCollection ImportNamespaces
+        public ImportNamespaceCollection ImportNamespaces
 		{ 
 			get
 			{ 
@@ -207,8 +227,9 @@ namespace FluorineFx.Configuration
 				return null; 
 			}
 		}
+#endif
 
-		public NullableTypeCollection NullableValues
+        public NullableTypeCollection NullableValues
 		{ 
 			get
 			{ 
@@ -226,9 +247,10 @@ namespace FluorineFx.Configuration
 					return _fluorineSettings.AcceptNullValueTypes;
 				return false;
 			}
-		}
+        }
 
-		public RemotingServiceAttributeConstraint RemotingServiceAttributeConstraint
+#if !FXCLIENT
+        public RemotingServiceAttributeConstraint RemotingServiceAttributeConstraint
 		{
 			get
 			{
@@ -237,6 +259,7 @@ namespace FluorineFx.Configuration
 				return RemotingServiceAttributeConstraint.Access;
 			}
 		}
+#endif
 
         public TimezoneCompensation TimezoneCompensation
         {
@@ -247,7 +270,7 @@ namespace FluorineFx.Configuration
 				return TimezoneCompensation.None;
             }
         }
-
+#if !FXCLIENT
         public HttpCompressSettings HttpCompressSettings
         {
             get
@@ -258,7 +281,9 @@ namespace FluorineFx.Configuration
 					return HttpCompressSettings.Default;
             }
         }
+#endif
 
+#if !FXCLIENT
         internal LoginCommandCollection LoginCommands
         {
             get
@@ -268,8 +293,9 @@ namespace FluorineFx.Configuration
 				return null;
             }
         }
+#endif
 
-		internal OptimizerSettings OptimizerSettings
+        internal OptimizerSettings OptimizerSettings
 		{
 			get
 			{
@@ -277,9 +303,10 @@ namespace FluorineFx.Configuration
 					return _fluorineSettings.Optimizer;
 				return null;
 			}
-		}
+        }
 
-		internal SwxSettings SwxSettings
+#if !FXCLIENT
+        internal SwxSettings SwxSettings
 		{
 			get
 			{
@@ -288,14 +315,16 @@ namespace FluorineFx.Configuration
 				return null;
 			}
 		}
+#endif
 
-		public bool FullTrust
+        public bool FullTrust
 		{
 			get{ return _fullTrust; }
 		}
 
 		private static bool CheckApplicationPermissions()
-		{
+        {
+#if !FXCLIENT
 			try
 			{
 				// See if we're running in full trust
@@ -305,7 +334,8 @@ namespace FluorineFx.Configuration
 			catch (SecurityException)
 			{
 			}
-			return false;
+#endif
+            return false;
 		}
 	}
 }

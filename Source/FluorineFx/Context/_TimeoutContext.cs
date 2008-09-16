@@ -120,20 +120,34 @@ namespace FluorineFx.Context
             get { throw new NotImplementedException("The method or operation is not implemented."); }
         }
 
+        internal override string EncryptCredentials(FluorineFx.Messaging.Endpoints.IEndpoint endpoint, IPrincipal principal, string userId, string password)
+        {
+            throw new NotImplementedException("The method or operation is not implemented.");
+        }
+
         public override void StorePrincipal(IPrincipal principal, string userId, string password)
         {
-            //NA
+            throw new NotImplementedException("The method or operation is not implemented.");
+        }
+
+        internal override void StorePrincipal(IPrincipal principal, string key)
+        {
+            throw new NotImplementedException("The method or operation is not implemented.");
         }
 
         public override IPrincipal RestorePrincipal(ILoginCommand loginCommand)
         {
-            //NA
-            return Thread.CurrentPrincipal;
+            throw new NotImplementedException("The method or operation is not implemented.");
+        }
+
+        internal override IPrincipal RestorePrincipal(ILoginCommand loginCommand, string key)
+        {
+            throw new NotImplementedException("The method or operation is not implemented.");
         }
 
         public override void ClearPrincipal()
         {
-            //NA
+            throw new NotImplementedException("The method or operation is not implemented.");
         }
 
         public override IResource GetResource(string location)

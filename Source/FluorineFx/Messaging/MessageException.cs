@@ -146,10 +146,11 @@ namespace FluorineFx.Messaging
 			}
 			else
 				errorMessage.faultDetail = this.StackTrace;
+
+            if (this.RootCause != null)
+                errorMessage.rootCause = this.RootCause;
 #endif
             errorMessage.extendedData = this.ExtendedData;
-			if( this.RootCause != null )
-				errorMessage.rootCause = this.RootCause;
 			return errorMessage;
 		}
 

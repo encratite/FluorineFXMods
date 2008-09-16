@@ -183,7 +183,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
                     {
                         break;
                     }
-                    Hashtable paramMap = evt.ParameterMap;
+                    IDictionary paramMap = evt.ParameterMap as IDictionary;
                     if (paramMap != null)
                     {
                         _mode = paramMap["mode"] as string;

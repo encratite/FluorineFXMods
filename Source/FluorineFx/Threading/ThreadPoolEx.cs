@@ -572,8 +572,8 @@ namespace FluorineFx.Threading
 
 
 		internal static void LoopSleep(ref int loopIndex)
-		{
-#if NET_2_0
+        {
+#if !(NET_1_1)
             if (Environment.ProcessorCount == 1 || (++loopIndex % (Environment.ProcessorCount * 50)) == 0)
             {
                 //Single-core

@@ -65,11 +65,8 @@ namespace FluorineFx.Data
 	/// </summary>
     sealed class ListHashCodeProvider : IEqualityComparer
     {
-        private CaseInsensitiveComparer _comparer;
-
         public ListHashCodeProvider()
         {
-            _comparer = new CaseInsensitiveComparer();
         }
 
         #region IEqualityComparer Members

@@ -79,7 +79,7 @@ namespace FluorineFx.Messaging.Rtmpt
         static object[] EmptyList = new object[0];
 
         public RtmptConnection(RtmptServer rtmptServer, string path, Hashtable parameters)
-            : base(rtmptServer.Endpoint, path, parameters)
+            : base(path, parameters)
         {
             _rtmptServer = rtmptServer;
             IPAddress ipAddress = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
@@ -90,7 +90,7 @@ namespace FluorineFx.Messaging.Rtmpt
         }
 
         public RtmptConnection(IPEndPoint ipEndPoint, RtmptServer rtmptServer, string path, Hashtable parameters)
-            : base(rtmptServer.Endpoint, path, parameters)
+            : base(path, parameters)
         {
             _rtmptServer = rtmptServer;
             _remoteEndPoint = ipEndPoint;
@@ -103,6 +103,8 @@ namespace FluorineFx.Messaging.Rtmpt
         {
             get { return _remoteEndPoint; }
         }
+
+        public FluorineFx.Messaging.Endpoints.IEndpoint Endpoint { get { return _rtmptServer.Endpoint; } }
 
         public override long ReadBytes
         {
@@ -257,7 +259,7 @@ namespace FluorineFx.Messaging.Rtmpt
             }
         }
 
-        public override void Push(IMessage message, MessageClient messageClient)
+        public override void Push(IMessage message, IMessageClient messageClient)
         {
             if (this.State == RtmpState.Disconnected)
             {

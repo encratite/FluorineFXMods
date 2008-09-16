@@ -19,10 +19,16 @@
 using System;
 using System.Collections;
 using System.IO;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Exceptions;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.SO;
+using FluorineFx.Messaging.Rtmp.Service;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
 using FluorineFx.Util;
@@ -34,7 +40,9 @@ namespace FluorineFx.Messaging.Rtmp
 	/// </summary>
 	sealed class RtmpProtocolDecoder
 	{
+#if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(RtmpProtocolDecoder));
+#endif
 		public const int HandshakeSize = 1536;
 
 		static RtmpProtocolDecoder()
@@ -82,14 +90,21 @@ namespace FluorineFx.Messaging.Rtmp
 			}
 		}
 
-		public static ArrayList DecodeBuffer(RtmpContext context, ByteBuffer stream)
+#if !(NET_1_1)
+		public static List<object> DecodeBuffer(RtmpContext context, ByteBuffer stream)
+#else
+        public static ArrayList DecodeBuffer(RtmpContext context, ByteBuffer stream)
+#endif
 		{
 			// >> HEADER[1] + CLIENT_HANDSHAKE[1536] 
 			// << HEADER[1] + SERVER_HANDSHAKE[1536] + CLIENT_HANDSHAKE[1536];
 			// >> SERVER_HANDSHAKE[1536] + AMF[n]
-
+#if !(NET_1_1)
+            List<object> result = null;
+#else
 			ArrayList result = null;
-			try 
+#endif
+            try 
 			{
 				while (true) 
 				{
@@ -105,8 +120,13 @@ namespace FluorineFx.Messaging.Rtmp
 					object decodedObject = Decode(context, stream);
                     if (context.HasDecodedObject)
                     {
+#if !(NET_1_1)
+                        if (result == null)
+                            result = new List<object>();
+#else
                         if (result == null)
                             result = new ArrayList();
+#endif
                         result.Add(decodedObject);
                     }
                     else if (context.CanContinueDecoding)
@@ -163,8 +183,10 @@ namespace FluorineFx.Messaging.Rtmp
 				{
 					if(remaining < HandshakeSize + 1) 
 					{
-						if( log.IsDebugEnabled )
+#if !SILVERLIGHT
+                        if( log.IsDebugEnabled )
                             log.Debug(__Res.GetString(__Res.Rtmp_HSInitBuffering, remaining));
+#endif
 						context.SetBufferDecoding(HandshakeSize + 1);
 						return null;
 					}
@@ -193,8 +215,10 @@ namespace FluorineFx.Messaging.Rtmp
 				{
 					if(remaining < HandshakeSize)
 					{
-						if( log.IsDebugEnabled )
+#if !SILVERLIGHT
+                        if( log.IsDebugEnabled )
 							log.Debug(__Res.GetString(__Res.Rtmp_HSReplyBuffering, remaining));
+#endif
 						context.SetBufferDecoding(HandshakeSize);
 						return null;
 					}				 
@@ -215,8 +239,10 @@ namespace FluorineFx.Messaging.Rtmp
 					int size = (2 * HandshakeSize) + 1;
 					if(remaining < size) 
 					{
-						if( log.IsDebugEnabled )
+#if !SILVERLIGHT
+                        if( log.IsDebugEnabled )
 							log.Debug(__Res.GetString(__Res.Rtmp_HSInitBuffering, remaining));
+#endif
 						context.SetBufferDecoding(size);
 						return null;
 					}
@@ -281,8 +307,10 @@ namespace FluorineFx.Messaging.Rtmp
 
 			if(headerLength > remaining) 
 			{
-				if(log.IsDebugEnabled)
+#if !SILVERLIGHT
+                if(log.IsDebugEnabled)
 					log.Debug(__Res.GetString(__Res.Rtmp_HeaderBuffering, remaining));
+#endif
 				stream.Position = position;
 				context.SetBufferDecoding(headerLength);
 				return null;
@@ -291,7 +319,9 @@ namespace FluorineFx.Messaging.Rtmp
 			stream.Position = position;
 
 			RtmpHeader header = DecodeHeader(context, context.GetLastReadHeader(channelId), stream);
+#if !SILVERLIGHT
             log.Debug("Decoded header " + header);
+#endif
 
 			if (header == null) 
 				throw new ProtocolException("Header is null, check for error");
@@ -314,9 +344,10 @@ namespace FluorineFx.Messaging.Rtmp
 			int readAmount = (readRemaining > chunkSize) ? chunkSize : readRemaining;
 			if(stream.Remaining < readAmount) 
 			{
-				if( log.IsDebugEnabled )
+#if !SILVERLIGHT
+                if( log.IsDebugEnabled )
 					log.Debug(__Res.GetString(__Res.Rtmp_ChunkSmall, stream.Remaining, readAmount));
-				
+#endif
 				//Skip the position back to the start
 				stream.Position = position;
 				context.SetBufferDecoding(headerLength + readAmount);
@@ -378,9 +409,10 @@ namespace FluorineFx.Messaging.Rtmp
 			header.ChannelId = channelId;
 			header.IsTimerRelative = (HeaderType)headerSize != HeaderType.HeaderNew;
 
-			if( log.IsDebugEnabled )
+#if !SILVERLIGHT
+            if( log.IsDebugEnabled )
 				log.Debug(__Res.GetString(__Res.Rtmp_DecodeHeader, Enum.GetName(typeof(HeaderType), (HeaderType)headerSize)));
-
+#endif
 
 			switch((HeaderType)headerSize)
 			{
@@ -410,7 +442,9 @@ namespace FluorineFx.Messaging.Rtmp
                     header.IsTimerRelative = lastHeader.IsTimerRelative;
 					break;
 				default:
-					log.Error("Unexpected header size: " + headerSize);
+#if !SILVERLIGHT
+                    log.Error("Unexpected header size: " + headerSize);
+#endif
 					return null;
 			}
             if (header.Timer >= 0xffffff)
@@ -477,7 +511,9 @@ namespace FluorineFx.Messaging.Rtmp
 					message = DecodeClientBW(stream);
 					break;
 				default:
-					log.Warn("Unknown object type: " + header.DataType);
+#if !SILVERLIGHT
+                    log.Warn("Unknown object type: " + header.DataType);
+#endif
 					message = DecodeUnknown(stream);
 					break;
 			}
@@ -546,8 +582,12 @@ namespace FluorineFx.Messaging.Rtmp
 			int invokeId = System.Convert.ToInt32(reader.ReadData());
 			object cmdData = reader.ReadData();
 
-			ArrayList paramList = new ArrayList();
-			while(stream.HasRemaining)
+#if !(NET_1_1)
+            List<object> paramList = new List<object>();
+#else
+            ArrayList paramList = new ArrayList();
+#endif
+            while (stream.HasRemaining)
 			{
 				object obj = reader.ReadData();
 				paramList.Add(obj);
@@ -600,13 +640,17 @@ namespace FluorineFx.Messaging.Rtmp
 			object[] parameters = new object[]{};
 			if(stream.HasRemaining)
 			{
-				ArrayList paramList = new ArrayList();
-				object obj = reader.ReadData();
+#if !(NET_1_1)
+                List<object> paramList = new List<object>();
+#else
+                ArrayList paramList = new ArrayList();
+#endif
+                object obj = reader.ReadData();
 
-				if (obj is Hashtable)
+				if (obj is IDictionary)
 				{
 					// for connect we get a map
-					notify.ConnectionParameters = obj as Hashtable;
+					notify.ConnectionParameters = obj as IDictionary;
 				} 
 				else if (obj != null) 
 				{
@@ -631,7 +675,7 @@ namespace FluorineFx.Messaging.Rtmp
 			} 
 			else 
 			{
-				ServiceCall call = new ServiceCall(serviceName, serviceMethod, parameters);
+				Call call = new Call(serviceName, serviceMethod, parameters);
 				notify.ServiceCall = call;
 			}
 			return notify;
@@ -693,8 +737,12 @@ namespace FluorineFx.Messaging.Rtmp
 							// as complete AMF string including the string type byte
 							key = reader.ReadData() as string;
 							// read parameters
+#if !(NET_1_1)
+                            List<object> paramList = new List<object>();
+#else
 							ArrayList paramList = new ArrayList();
-							while(stream.Position - start < length)
+#endif
+                            while (stream.Position - start < length)
 							{
 								object tmp = reader.ReadData();
 								paramList.Add(tmp);

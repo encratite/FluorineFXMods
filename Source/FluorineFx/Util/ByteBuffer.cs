@@ -144,7 +144,7 @@ namespace FluorineFx.Util
             _bookmark = -1;
         }
 
-#if NET_2_0
+#if !(NET_1_1)
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Reflection;
 
-#if NET_2_0
+#if !(NET_1_1)
 namespace FluorineFx.IO.Bytecode.Lightweight
 {
 	/// <Summary>

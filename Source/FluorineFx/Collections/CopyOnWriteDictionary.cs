@@ -67,7 +67,7 @@ namespace FluorineFx.Collections
 
         public bool Contains(object key)
         {
-            return _dictionary.Contains(key);
+            return _dictionary.ContainsKey(key);
         }
 
         public IDictionaryEnumerator GetEnumerator()

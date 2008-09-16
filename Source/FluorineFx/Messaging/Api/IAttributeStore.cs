@@ -18,7 +18,9 @@
 */
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx.Messaging.Api
 {
@@ -39,11 +41,19 @@ namespace FluorineFx.Messaging.Api
 		/// <param name="value">The attribute value.</param>
         /// <returns>true if the attribute value changed otherwise false</returns>
 		bool SetAttribute(string name, object value);
+#if !(NET_1_1)
+        /// <summary>
+        /// Sets multiple attributes on this object.
+        /// </summary>
+        /// <param name="values">Dictionary of attributes.</param>
+        void SetAttributes(IDictionary<string, object> values);
+#else
 		/// <summary>
 		/// Sets multiple attributes on this object.
 		/// </summary>
 		/// <param name="values">Dictionary of attributes.</param>
         void SetAttributes(IDictionary values);
+#endif
 		/// <summary>
 		/// Sets multiple attributes on this object.
 		/// </summary>
@@ -89,25 +99,23 @@ namespace FluorineFx.Messaging.Api
         /// <returns>The value with the specified name.</returns>
         Object this[string name] { get; set; }
         /// <summary>
-        /// Gets or sets a value by numerical index.
-        /// </summary>
-        /// <param name="index">The numerical index of the value.</param>
-        /// <returns>The value stored at the specified index.</returns>
-        Object this[int index] { get; set; }
-        /// <summary>
-        /// Deletes an item at a specified index from the attributes collection.
-        /// </summary>
-        /// <param name="index">The index of the item to remove from the attributes collection.</param>
-        void RemoveAt(int index);
-        /// <summary>
         /// Gets the number of attributes in the collection.
         /// </summary>
         int AttributesCount { get; }
+#if !(NET_1_1)
+        /// <summary>
+        /// Copies the collection of attribute values to a one-dimensional array, starting at the specified index in the array.
+        /// </summary>
+        /// <param name="array">The Array that receives the values.</param>
+        /// <param name="index">The zero-based index in array from which copying starts.</param>
+        void CopyTo(object[] array, int index);
+#else
         /// <summary>
         /// Copies the collection of attribute values to a one-dimensional array, starting at the specified index in the array.
         /// </summary>
         /// <param name="array">The Array that receives the values.</param>
         /// <param name="index">The zero-based index in array from which copying starts.</param>
         void CopyTo(Array array, int index);
+#endif
 	}
 }

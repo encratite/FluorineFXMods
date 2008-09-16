@@ -18,7 +18,9 @@
 */
 using System;
 using System.Collections;
-
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Rtmp.Event;
 
@@ -41,12 +43,19 @@ namespace FluorineFx.Messaging.Rtmp.SO
 		/// Gets whether the message affects a persistent shared object.
 		/// </summary>
 		bool IsPersistent{ get; }
+
+#if !(NET_1_1)
+        /// <summary>
+        /// Returns a set of ISharedObjectEvent objects containing informations what to change.
+        /// </summary>
+        IList<ISharedObjectEvent> Events { get; }
+#else
 		/// <summary>
 		/// Returns a set of ISharedObjectEvent objects containing informations what to change.
 		/// </summary>
-		//ISharedObjectEvent[] Events{ get; }
 		IList Events{ get; }
-		void AddEvent(SharedObjectEventType type, string key, object value);
+#endif
+        void AddEvent(SharedObjectEventType type, string key, object value);
 		void AddEvent(ISharedObjectEvent sharedObjectEvent);
 		void Clear();
 		bool IsEmpty{ get; }

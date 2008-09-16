@@ -669,4 +669,13 @@
   <data name="Rtmpt_UnknownClient" xml:space="preserve">
     <value>Unknown client {0}</value>
   </data>
+  <data name="TypeHelper_ConversionFail" xml:space="preserve">
+    <value>Type conversion failed</value>
+  </data>
+  <data name="Silverlight_PSError" xml:space="preserve">
+    <value>Silverlight policy server error</value>
+  </data>
+  <data name="Silverlight_StartPS" xml:space="preserve">
+    <value>Starting Silverlight policy server, policy file: {0}</value>
+  </data>
 </root>

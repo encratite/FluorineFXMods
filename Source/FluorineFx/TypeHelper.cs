@@ -19,17 +19,22 @@
 
 using System;
 using System.Xml;
-using System.Data;
-using System.Data.SqlTypes;
 using System.ComponentModel;
 using System.Collections;
 using System.Reflection;
 using System.IO;
-using System.Web;
 using System.Security;
 using System.Security.Permissions;
 using System.Text;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+#if !SILVERLIGHT
+using System.Data;
+using System.Data.SqlTypes;
+using System.Web;
 using log4net;
+#endif
 using FluorineFx.Configuration;
 using FluorineFx.Util;
 
@@ -40,7 +45,10 @@ namespace FluorineFx
 	/// </summary>
 	public sealed class TypeHelper
 	{
+        static object _syncLock = new object();
+#if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(TypeHelper));
+#endif
 
 		static TypeHelper()
 		{
@@ -62,14 +70,56 @@ namespace FluorineFx
             _defaultDecimalNullValue = (Decimal)GetNullValue(typeof(Decimal));
             _defaultGuidNullValue = (Guid)GetNullValue(typeof(Guid));
             _defaultXmlReaderNullValue = (XmlReader)GetNullValue(typeof(XmlReader));
+#if !SILVERLIGHT
             _defaultXmlDocumentNullValue = (XmlDocument)GetNullValue(typeof(XmlDocument));
+#endif
+            _Init();
         }
 
-		static public Type Locate(string typeName)
+#if SILVERLIGHT
+        static Assembly[] Assemblies;
+#endif
+
+        internal static void _Init()
+        {
+#if SILVERLIGHT
+            if (Assemblies == null)
+            {
+                lock (_syncLock)
+                {
+                    if (Assemblies == null)
+                    {
+                        List<Assembly> assemblies = new List<Assembly>();
+                        foreach (System.Windows.AssemblyPart ap in System.Windows.Deployment.Current.Parts)
+                        {
+                            System.Windows.Resources.StreamResourceInfo sri = System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative));
+                            Assembly assembly = new System.Windows.AssemblyPart().Load(sri.Stream);
+                            assemblies.Add(assembly);
+                        }
+                        Assemblies = assemblies.ToArray();
+                    }
+                }
+            }
+#endif
+        }
+
+        static public Assembly[] GetAssemblies()
+        {
+#if SILVERLIGHT
+            lock (_syncLock)
+            {
+                return Assemblies;
+            }
+#else
+            return AppDomain.CurrentDomain.GetAssemblies();
+#endif
+        }
+
+        static public Type Locate(string typeName)
 		{
 			if( typeName == null || typeName == string.Empty )
 				return null;
-			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            Assembly[] assemblies = GetAssemblies();// AppDomain.CurrentDomain.GetAssemblies();
 			for (int i = 0; i < assemblies.Length; i++)
 			{
 				Assembly assembly = assemblies[i];
@@ -90,21 +140,28 @@ namespace FluorineFx
 			{
 				try
 				{
-					log.Debug(__Res.GetString(__Res.TypeHelper_Probing, file));
-
+#if !SILVERLIGHT
+                    log.Debug(__Res.GetString(__Res.TypeHelper_Probing, file));
+#endif
 					Assembly assembly = Assembly.LoadFrom(file);
 					Type type = assembly.GetType(typeName, false);
 					if (type != null)
 						return type;
 				}
+#if !SILVERLIGHT
 				catch(Exception ex)
 				{
-					if(log.IsWarnEnabled )
+                    if(log.IsWarnEnabled )
 					{
 						log.Warn(__Res.GetString(__Res.TypeHelper_LoadDllFail, file));
 						log.Warn(ex.Message);
 					}
 				}
+#else
+                catch (Exception)
+                {
+                }
+#endif
 			}
             foreach (string dir in Directory.GetDirectories(lac))
             {
@@ -115,6 +172,7 @@ namespace FluorineFx
             return null;
 		}
 
+#if !SILVERLIGHT
 		static public Type[] SearchAllTypes(string lac, Hashtable excludedBaseTypes)
 		{
 			ArrayList result = new ArrayList();
@@ -148,7 +206,7 @@ namespace FluorineFx
 			}
 			return (Type[])result.ToArray(typeof(Type));
 		}
-
+#endif
 
 		public static bool SkipMethod(MethodInfo methodInfo)
 		{
@@ -164,16 +222,16 @@ namespace FluorineFx
 
 		public static string GetDescription(Type type)
 		{
-			AttributeCollection attributes = new AttributeCollection((Attribute[])type.GetCustomAttributes(typeof(DescriptionAttribute), false));
-			if (attributes != null && attributes.Count > 0)
+            object[] attributes = type.GetCustomAttributes(typeof(DescriptionAttribute), false);
+			if (attributes != null && attributes.Length > 0)
 				return (attributes[0] as DescriptionAttribute).Description;
 			return null;
 		}
 
 		public static string GetDescription(MethodInfo methodInfo)
 		{
-			AttributeCollection attributes = new AttributeCollection((Attribute[])methodInfo.GetCustomAttributes(typeof(DescriptionAttribute), false));
-			if (attributes != null && attributes.Count > 0)
+            object[] attributes = methodInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+			if (attributes != null && attributes.Length > 0)
 				return (attributes[0] as DescriptionAttribute).Description;
 			return null;
 		}
@@ -224,6 +282,7 @@ namespace FluorineFx
                     if (type == typeof(Decimal)) return 0m;
                     if (type == typeof(Guid)) return Guid.Empty;
 
+#if !SILVERLIGHT
                     if (type == typeof(SqlInt32)) return SqlInt32.Null;
                     if (type == typeof(SqlString)) return SqlString.Null;
                     if (type == typeof(SqlBoolean)) return SqlBoolean.Null;
@@ -237,6 +296,7 @@ namespace FluorineFx
                     if (type == typeof(SqlMoney)) return SqlMoney.Null;
                     if (type == typeof(SqlSingle)) return SqlSingle.Null;
                     if (type == typeof(SqlBinary)) return SqlBinary.Null;
+#endif
                 }
             }
             else
@@ -266,11 +326,13 @@ namespace FluorineFx
 				object obj = Activator.CreateInstance(constructed);
 				if (obj == null)
 				{
-					if(log != null && log.IsErrorEnabled)
+#if !SILVERLIGHT
+                    if(log != null && log.IsErrorEnabled)
 					{
 						string msg = string.Format("Could not instantiate the generic type {0}.", type.FullName);
 						log.Error(msg);
 					}
+#endif
 				}
 				return obj;
 			}
@@ -288,6 +350,7 @@ namespace FluorineFx
 
 		public static string[] GetLacLocations()
 		{
+#if !FXCLIENT
 			ArrayList lacLocations = new ArrayList();
 
 			try
@@ -361,6 +424,9 @@ namespace FluorineFx
 				log.Error("An error occurred while configuring LAC locations. This may lead to assembly load failures.", ex);
 			}
 			return lacLocations.ToArray(typeof(string)) as string[];
+#else
+            return new string[0];
+#endif
 		}
 
         public static bool GetTypeIsAccessible(Type type)
@@ -369,6 +435,7 @@ namespace FluorineFx
                 return false;
             if (type.Assembly == typeof(TypeHelper).Assembly)
                 return false;
+#if !FXCLIENT
             if (FluorineConfiguration.Instance.RemotingServiceAttributeConstraint == RemotingServiceAttributeConstraint.Access)
             {
                 //Additional check for RemotingServiceAttribute presence
@@ -380,6 +447,9 @@ namespace FluorineFx
             }
             else
                 return true;
+#else
+            return true;
+#endif
         }
 
         /// <summary>
@@ -397,7 +467,7 @@ namespace FluorineFx
         {
             if (type == null) throw new ArgumentNullException("type");
 
-#if NET_2_0
+#if !(NET_1_1)
             if (ReflectionUtils.IsNullable(type))
 				type = type.GetGenericArguments()[0];
 #endif
@@ -557,15 +627,15 @@ namespace FluorineFx
 
             if (obj != null)
             {
-                TypeConverter typeConverter = TypeDescriptor.GetConverter(obj);
+                TypeConverter typeConverter = ReflectionUtils.GetTypeConverter(obj);//TypeDescriptor.GetConverter(obj);
                 if (typeConverter != null && typeConverter.CanConvertTo(targetType))
                     return true;
-                typeConverter = TypeDescriptor.GetConverter(targetType);
+                typeConverter = ReflectionUtils.GetTypeConverter(targetType);// TypeDescriptor.GetConverter(targetType);
                 if (typeConverter != null && typeConverter.CanConvertFrom(obj.GetType()))
                     return true;
 
                 //Collections
-#if (NET_2_0)
+#if !(NET_1_1)
                 if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.Generic.ICollection`1") && obj is IList)
                 {
                     //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
@@ -573,7 +643,7 @@ namespace FluorineFx
                     if (typeParameters != null && typeParameters.Length == 1)
                     {
                         //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
-                        Type typeGenericICollection = targetType.GetInterface("System.Collections.Generic.ICollection`1");
+                        Type typeGenericICollection = targetType.GetInterface("System.Collections.Generic.ICollection`1", true);
                         return typeGenericICollection != null;
                     }
                     else
@@ -585,14 +655,14 @@ namespace FluorineFx
                     return true;
                 }
 
-#if (NET_2_0)
+#if !(NET_1_1)
                 if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.Generic.IDictionary`2") && obj is IDictionary)
                 {
                     Type[] typeParameters = ReflectionUtils.GetGenericArguments(targetType);
                     if (typeParameters != null && typeParameters.Length == 2)
                     {
                         //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
-                        Type typeGenericIDictionary = targetType.GetInterface("System.Collections.Generic.IDictionary`2");
+                        Type typeGenericIDictionary = targetType.GetInterface("System.Collections.Generic.IDictionary`2", true);
                         return typeGenericIDictionary != null;
                     }
                     else
@@ -608,8 +678,10 @@ namespace FluorineFx
             }
             else
             {
+#if !SILVERLIGHT
                 if (targetType is System.Data.SqlTypes.INullable)
                     return true;
+#endif
                 if (targetType.IsValueType)
                 {
                     if (FluorineConfiguration.Instance.AcceptNullValueTypes)
@@ -674,6 +746,7 @@ namespace FluorineFx
                     }
                     else
                     {
+#if !SILVERLIGHT
                         int arrayLength = 1;
                         int[] dimensions = new int[rank];
                         int[] indices = new int[rank];
@@ -697,6 +770,9 @@ namespace FluorineFx
 
                             dstArray.SetValue(ConvertChangeType(srcArray.GetValue(indices), dstElementType, isNullable), indices);
                         }
+#else
+                        throw new InvalidCastException();
+#endif
                     }
 
                     return dstArray;
@@ -708,13 +784,13 @@ namespace FluorineFx
                 {
                     return Enum.Parse(conversionType, value.ToString(), true);
                 }
-                catch (ArgumentException)
+                catch (ArgumentException ex)
                 {
-                    throw;
+                    throw new InvalidCastException(__Res.GetString(__Res.TypeHelper_ConversionFail), ex);
                 }
             }
 
-#if (NET_2_0)
+#if !(NET_1_1)
             if (isNullable)
             {
                 switch (Type.GetTypeCode(TypeHelper.GetUnderlyingType(conversionType)))
@@ -758,10 +834,13 @@ namespace FluorineFx
             }
 
             if (typeof(Guid) == conversionType) return ConvertToGuid(value);
+#if !SILVERLIGHT
             if (typeof(System.Xml.XmlDocument) == conversionType) return ConvertToXmlDocument(value);
+#endif
             if (typeof(byte[]) == conversionType) return ConvertToByteArray(value);
             if (typeof(char[]) == conversionType) return ConvertToCharArray(value);
 
+#if !SILVERLIGHT
             if (typeof(SqlInt32) == conversionType) return ConvertToSqlInt32(value);
             if (typeof(SqlString) == conversionType) return ConvertToSqlString(value);
             if (typeof(SqlDecimal) == conversionType) return ConvertToSqlDecimal(value);
@@ -775,7 +854,7 @@ namespace FluorineFx
             if (typeof(SqlInt64) == conversionType) return ConvertToSqlInt64(value);
             if (typeof(SqlSingle) == conversionType) return ConvertToSqlSingle(value);
             if (typeof(SqlBinary) == conversionType) return ConvertToSqlBinary(value);
-
+#endif
             if (value == null)
                 return null;
             //Check whether the target Type can be assigned from the value's Type
@@ -783,16 +862,16 @@ namespace FluorineFx
                 return value;//Skip further adapting
 
             //Try to convert using a type converter
-            TypeConverter typeConverter = TypeDescriptor.GetConverter(conversionType);
+            TypeConverter typeConverter = ReflectionUtils.GetTypeConverter(conversionType);// TypeDescriptor.GetConverter(conversionType);
             if (typeConverter != null && typeConverter.CanConvertFrom(value.GetType()))
                 return typeConverter.ConvertFrom(value);
             //Custom type converters handled here (for example ByteArray)
-            typeConverter = TypeDescriptor.GetConverter(value);
+            typeConverter = ReflectionUtils.GetTypeConverter(value);// TypeDescriptor.GetConverter(value);
             if (typeConverter != null && typeConverter.CanConvertTo(conversionType))
                 return typeConverter.ConvertTo(value, conversionType);
 
             //Collections
-#if (NET_2_0)
+#if !(NET_1_1)
             if (ReflectionUtils.ImplementsInterface(conversionType, "System.Collections.Generic.ICollection`1") && value is IList)
             {
                 object obj = CreateInstance(conversionType);
@@ -803,7 +882,7 @@ namespace FluorineFx
                     if (typeParameters != null && typeParameters.Length == 1)
                     {
                         //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
-                        Type typeGenericICollection = conversionType.GetInterface("System.Collections.Generic.ICollection`1");
+                        Type typeGenericICollection = conversionType.GetInterface("System.Collections.Generic.ICollection`1", true);
                         MethodInfo miAddCollection = conversionType.GetMethod("Add");
                         IList source = value as IList;
                         for (int i = 0; i < (value as IList).Count; i++)
@@ -811,8 +890,10 @@ namespace FluorineFx
                     }
                     else
                     {
+#if !SILVERLIGHT
                         if (log.IsErrorEnabled)
                             log.Error(string.Format("{0} type arguments of the generic type {1} expecting 1.", typeParameters.Length, conversionType.FullName));
+#endif
                     }
                     return obj;
                 }
@@ -830,7 +911,7 @@ namespace FluorineFx
                     return obj;
                 }
             }
-#if (NET_2_0)
+#if !(NET_1_1)
             if (ReflectionUtils.ImplementsInterface(conversionType, "System.Collections.Generic.IDictionary`2") && value is IDictionary)
             {
                 object obj = CreateInstance(conversionType);
@@ -841,7 +922,7 @@ namespace FluorineFx
                     if (typeParameters != null && typeParameters.Length == 2)
                     {
                         //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
-                        Type typeGenericIDictionary = conversionType.GetInterface("System.Collections.Generic.IDictionary`2");
+                        Type typeGenericIDictionary = conversionType.GetInterface("System.Collections.Generic.IDictionary`2", true);
                         MethodInfo miAddCollection = conversionType.GetMethod("Add");
                         IDictionary dictionary = value as IDictionary;
                         foreach (DictionaryEntry entry in dictionary)
@@ -854,8 +935,10 @@ namespace FluorineFx
                     }
                     else
                     {
+#if !SILVERLIGHT
                         if (log.IsErrorEnabled)
                             log.Error(string.Format("{0} type arguments of the generic type {1} expecting 1.", typeParameters.Length, conversionType.FullName));
+#endif
                     }
                     return obj;
                 }
@@ -875,10 +958,10 @@ namespace FluorineFx
                 }
             }
 
-            return System.Convert.ChangeType(value, conversionType);
+            return System.Convert.ChangeType(value, conversionType, null);
         }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         #region Nullable Types
 
         [CLSCompliant(false)]
@@ -1166,6 +1249,7 @@ namespace FluorineFx
                 value == null ? _defaultXmlReaderNullValue :
                     FluorineFx.Util.Convert.ToXmlReader(value);
         }
+#if !SILVERLIGHT
         static XmlDocument _defaultXmlDocumentNullValue;
         public static XmlDocument ConvertToXmlDocument(object value)
         {
@@ -1174,7 +1258,7 @@ namespace FluorineFx
                 value == null ? _defaultXmlDocumentNullValue :
                     FluorineFx.Util.Convert.ToXmlDocument(value);
         }
-
+#endif
         public static byte[] ConvertToByteArray(object value)
         {
             return
@@ -1194,7 +1278,7 @@ namespace FluorineFx
         #endregion
 
         #region SqlTypes
-
+#if !SILVERLIGHT
         public static SqlByte ConvertToSqlByte(object value)
         {
             return
@@ -1300,11 +1384,11 @@ namespace FluorineFx
                 value is SqlGuid ? (SqlGuid)value :
                     FluorineFx.Util.Convert.ToSqlGuid(value);
         }
-
+#endif
         #endregion
 
         #region DataSet conversions
-
+#if !SILVERLIGHT
         public static ASObject ConvertDataTableToASO(DataTable dataTable, bool stronglyTyped)
         {
             if (dataTable.ExtendedProperties.Contains("DynamicPage"))
@@ -1374,7 +1458,7 @@ namespace FluorineFx
             }
             return asDataSet;
         }
-
+#endif
         #endregion DataSet conversions
     }
 }

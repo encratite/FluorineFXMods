@@ -34,16 +34,14 @@ using System.Diagnostics;
 using System.Threading;
 using System.Security;
 using System.Security.Permissions;
-// Import log4net classes.
 using log4net;
 using log4net.Config;
-
 using FluorineFx.Browser;
 using FluorineFx.Configuration;
 using FluorineFx.Context;
 using FluorineFx.HttpCompress;
-
 using FluorineFx.Messaging;
+using FluorineFx.Silverlight;
 
 //Compressing http content based on "The open compression engine for ASP.NET"
 //http://www.blowery.org/code/HttpCompressionModule.html

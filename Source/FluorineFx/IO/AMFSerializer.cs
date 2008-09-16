@@ -20,7 +20,9 @@
 using System;
 using System.Collections;
 using System.IO;
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Messaging;
 using FluorineFx.Messaging.Messages;
 
@@ -31,7 +33,9 @@ namespace FluorineFx.IO
 	/// </summary>
 	public class AMFSerializer : AMFWriter
 	{
+#if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(AMFSerializer));
+#endif
 
 		/// <summary>
 		/// Initializes a new instance of the AMFSerializer class.
@@ -87,8 +91,10 @@ namespace FluorineFx.IO
                                 this.BaseStream.Seek(position, SeekOrigin.Begin);
                                 //this.BaseStream.Position = position;
 
+#if !SILVERLIGHT
                                 if (log.IsFatalEnabled)
                                     log.Fatal(__Res.GetString(__Res.Amf_SerializationFail), exception);
+#endif
 
                                 ErrorResponseBody errorResponseBody;
                                 if (responseBody.RequestBody.IsEmptyTarget)
@@ -108,12 +114,19 @@ namespace FluorineFx.IO
                                 {
                                     errorResponseBody.WriteBody(amfMessage.ObjectEncoding, this);
                                 }
+#if !SILVERLIGHT
                                 catch (Exception exception2)
                                 {
                                     if (log.IsFatalEnabled)
                                         log.Fatal(__Res.GetString(__Res.Amf_ResponseFail), exception2);
                                     throw;
                                 }
+#else
+                                catch (Exception)
+                                {
+                                    throw;
+                                }
+#endif
                             }
                         }
                         else
@@ -127,13 +140,20 @@ namespace FluorineFx.IO
                     }
 				}
 			}
+#if !SILVERLIGHT
 			catch(Exception exception)
 			{
-				if( log.IsFatalEnabled )
+                if( log.IsFatalEnabled )
                     log.Fatal(__Res.GetString(__Res.Amf_SerializationFail), exception);
 				throw;
 			}
-		}
+#else
+            catch (Exception)
+            {
+                throw;
+            }
+#endif
+        }
 
 		private void WriteHeader(AMFHeader header, ObjectEncoding objectEncoding)
 		{

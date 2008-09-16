@@ -18,8 +18,7 @@
 */
 
 using System;
-#if (NET_1_1)
-#else
+#if !(NET_1_1)
 using System.Collections.Generic;
 #endif
 using System.Text;
@@ -135,7 +134,7 @@ namespace FluorineFx.Util
 
 		public static bool ImplementsInterface(Type type, string interfaceName)
 		{
-			return type.GetInterface(interfaceName) != null;
+			return type.GetInterface(interfaceName, true) != null;
 		}
 
 		public static bool IsSubClass(Type type, Type check)
@@ -507,7 +506,7 @@ namespace FluorineFx.Util
 					}
 					catch (TargetParameterCountException e)
 					{
-						throw new ArgumentException(string.Format("MemberInfo '{0}' has index parameters", member.Name), "member", e);
+						throw new ArgumentException(string.Format("MemberInfo '{0}' has index parameters", member.Name), e);
 					}
 				default:
 					throw new ArgumentException(string.Format("MemberInfo '{0}' is not of type FieldInfo or PropertyInfo", member.Name), "member");
@@ -580,12 +579,20 @@ namespace FluorineFx.Util
 
 		public static MemberInfo[] GetFieldsAndProperties(Type type, BindingFlags bindingAttr)
 		{
+#if !(NET_1_1)
+            List<MemberInfo> targetMembers = new List<MemberInfo>();
+#else
 			ArrayList targetMembers = new ArrayList();
+#endif
 
 			targetMembers.AddRange(type.GetFields(bindingAttr));
 			targetMembers.AddRange(type.GetProperties(bindingAttr));
 
+#if !(NET_1_1)
+            return targetMembers.ToArray();
+#else
 			return targetMembers.ToArray(typeof(MemberInfo)) as MemberInfo[];
+#endif
 		}
 
 		public static Attribute GetAttribute(Type type, ICustomAttributeProvider attributeProvider)
@@ -616,7 +623,11 @@ namespace FluorineFx.Util
 		{
 			ValidationUtils.ArgumentNotNull(targetType, "targetType");
 
-			ArrayList memberInfos = new ArrayList(targetType.FindMembers(memberType, bindingAttr, filter, filterCriteria));
+#if !(NET_1_1)
+            List<MemberInfo> memberInfos = new List<MemberInfo>(targetType.FindMembers(memberType, bindingAttr, filter, filterCriteria));
+#else
+            ArrayList memberInfos = new ArrayList(targetType.FindMembers(memberType, bindingAttr, filter, filterCriteria));
+#endif
 
 			// fix weirdness with FieldInfos only being returned for the current Type
 			// find base type fields and add them to result
@@ -632,8 +643,12 @@ namespace FluorineFx.Util
 				}
 			}
 
-			return memberInfos.ToArray(typeof(MemberInfo)) as MemberInfo[];
-		}
+#if !(NET_1_1)
+            return memberInfos.ToArray();
+#else
+            return memberInfos.ToArray(typeof(MemberInfo)) as MemberInfo[];
+#endif
+        }
 
 
 		public static object CreateGeneric(Type genericTypeDefinition, Type innerType, params object[] args)
@@ -650,5 +665,22 @@ namespace FluorineFx.Util
 
 			return Activator.CreateInstance(specificType, args);
 		}
+
+        public static TypeConverter GetTypeConverter(object obj)
+        {
+            if (obj == null)
+                return null;
+#if !SILVERLIGHT
+            TypeConverter typeConverter = TypeDescriptor.GetConverter(obj);
+            return typeConverter;
+#else
+			ICustomAttributeProvider attributeProvider = obj as ICustomAttributeProvider;
+			if (attributeProvider == null)
+                attributeProvider = obj.GetType();
+
+            TypeConverterAttribute typeConverterAttribute = GetAttribute(typeof(TypeConverterAttribute), attributeProvider, true) as TypeConverterAttribute;
+            return ObjectFactory.CreateInstance(typeConverterAttribute.ConverterTypeName) as TypeConverter;
+#endif
+        }
 	}
 }

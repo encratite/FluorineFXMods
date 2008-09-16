@@ -20,13 +20,20 @@ using System;
 using System.Collections;
 using System.Net;
 using System.Net.Sockets;
+using FluorineFx.IO;
 using FluorineFx.Configuration;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx.Messaging.Rtmp;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Util;
+
+//Network Security Access Restrictions in Silverlight 2
+//http://msdn.microsoft.com/en-us/library/cc645032(VS.95).aspx
 
 namespace FluorineFx.Net
 {
@@ -62,6 +69,11 @@ namespace FluorineFx.Net
         ObjectEncoding _objectEncoding;
         string _playerVersion;
         object _client;
+#if !(NET_1_1)
+        Dictionary<string, AMFHeader> _headers;
+#else
+        Hashtable _headers;
+#endif
 
         event NetStatusHandler _netStatusHandler;
         event ConnectHandler _connectHandler;
@@ -75,7 +87,14 @@ namespace FluorineFx.Net
             _clientId = null;
             _playerVersion = "WIN 9,0,115,0";
             _objectEncoding = ObjectEncoding.AMF0;
+#if !(NET_1_1)
+            _headers = new Dictionary<string,AMFHeader>();
+#else
+            _headers = new Hashtable();
+#endif
             _client = this;
+
+            TypeHelper._Init();
         }
         /// <summary>
         /// Dispatched when a NetConnection instance is reporting its status or error condition.
@@ -150,6 +169,15 @@ namespace FluorineFx.Net
             _clientId = clientId;
         }
 
+#if !(NET_1_1)
+        internal Dictionary<string, AMFHeader> Headers
+#else
+        internal Hashtable Headers
+#endif
+        {
+            get { return _headers; }
+        }
+
         internal INetConnectionClient NetConnectionClient
         {
             get { return _netConnectionClient; }
@@ -171,6 +199,8 @@ namespace FluorineFx.Net
 
         /// <summary>
         /// Adds a context header to the Action Message Format (AMF) packet structure.
+        /// This header is sent with every future AMF packet.
+        /// To remove a header call AddHeader with the name of the header to remove an undefined object.
         /// </summary>
         /// <param name="operation">Identifies the header and the ActionScript object data associated with it.</param>
         /// <param name="mustUnderstand">A value of true indicates that the server must understand and process this header before it handles any of the following headers or messages.</param>
@@ -178,9 +208,27 @@ namespace FluorineFx.Net
         /// <remarks>Not implemented.</remarks>
         public void AddHeader(string operation, bool mustUnderstand, object param)
         {
-            throw new NotImplementedException();
+            if (param == null)
+            {
+                if (_headers.ContainsKey(operation))
+                    _headers.Remove(operation);
+                return;
+            }
+            AMFHeader header = new AMFHeader(operation, mustUnderstand, param);
+            _headers[operation] = header;
         }
-
+        /// <summary>
+        /// Authenticates a user with a credentials header
+        /// </summary>
+        /// <param name="userid">A username to be used by the server for authentication.</param>
+        /// <param name="password"> password to be used by the server for authentication.</param>
+        public void SetCredentials(string userid, string password)
+        {
+            ASObject aso = new ASObject();
+            aso.Add("userid", userid);
+            aso.Add("password", password);
+            AddHeader("Credentials", false, aso);
+        }
         /// <summary>
         /// Opens a connection to a server. Through this connection, you can invoke commands on a remote server. 
         /// </summary>
@@ -304,6 +352,14 @@ namespace FluorineFx.Net
             if (_netStatusHandler != null)
             {
                 _netStatusHandler(this, new NetStatusEventArgs(info));
+            }
+        }
+
+        internal void RaiseNetStatus(string message)
+        {
+            if (_netStatusHandler != null)
+            {
+                _netStatusHandler(this, new NetStatusEventArgs(message));
             }
         }
 

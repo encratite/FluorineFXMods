@@ -17,7 +17,6 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Messaging.Messages;
 
 namespace FluorineFx.Messaging.Api

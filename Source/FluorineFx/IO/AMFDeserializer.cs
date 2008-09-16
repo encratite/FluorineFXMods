@@ -20,9 +20,13 @@
 using System;
 using System.Collections;
 using System.IO;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Configuration;
-using FluorineFx.Context;
 
 namespace FluorineFx.IO
 {
@@ -31,17 +35,21 @@ namespace FluorineFx.IO
 	/// </summary>
 	public class AMFDeserializer : AMFReader
 	{
+#if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(AMFDeserializer));
+#endif
+#if !(NET_1_1)
+        List<AMFBody> _failedAMFBodies = new List<AMFBody>(1);
+#else
+		ArrayList _failedAMFBodies = new ArrayList(1);
+#endif
 
-		ArrayList _failedAMFBodies;
-
-		/// <summary>
+        /// <summary>
 		/// Initializes a new instance of the AMFDeserializer class.
 		/// </summary>
 		/// <param name="stream"></param>
 		public AMFDeserializer(Stream stream) : base(stream)
 		{
-			_failedAMFBodies = new ArrayList(1);
             this.FaultTolerancy = true;
 		}
         /// <summary>
@@ -106,8 +114,10 @@ namespace FluorineFx.IO
                     {
                         ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);
                         _failedAMFBodies.Add(errorResponseBody);
+#if !SILVERLIGHT
                         if (log.IsFatalEnabled)
                             log.Fatal(__Res.GetString(__Res.Amf_ReadBodyFail), exception);
+#endif
                         return null;
                     }
                     return amfBody;
@@ -115,14 +125,14 @@ namespace FluorineFx.IO
 				catch(Exception exception)
 				{
 					base.BaseStream.Position = position + length;
-					//FluorineContext.Current.Fail( new AMFBody(target, response, null), exception);
-
                     //Try to build a valid response from partialy deserialized amf body
                     AMFBody amfBody = new AMFBody(target, response, null);
                     ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);
                     _failedAMFBodies.Add(errorResponseBody);
+#if !SILVERLIGHT
 					if( log.IsFatalEnabled )
 						log.Fatal(__Res.GetString(__Res.Amf_ReadBodyFail), exception);
+#endif
 					return null;
 				}
 			}
@@ -137,8 +147,10 @@ namespace FluorineFx.IO
                     {
                         ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);
                         _failedAMFBodies.Add(errorResponseBody);
+#if !SILVERLIGHT
                         if (log.IsFatalEnabled)
                             log.Fatal(__Res.GetString(__Res.Amf_ReadBodyFail), exception);
+#endif
                         return null;
                     }
                     return amfBody;
@@ -149,9 +161,10 @@ namespace FluorineFx.IO
                     AMFBody amfBody = new AMFBody(target, response, null);
                     ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);
                     _failedAMFBodies.Add(errorResponseBody);
-
+#if !SILVERLIGHT
 					if( log.IsFatalEnabled )
                         log.Fatal(__Res.GetString(__Res.Amf_ReadBodyFail), exception);
+#endif
 					throw;
 				}
 			}
@@ -185,7 +198,11 @@ namespace FluorineFx.IO
 		{ 
 			get
 			{
-				return _failedAMFBodies.ToArray(typeof(AMFBody)) as AMFBody[];
+#if !(NET_1_1)
+                return _failedAMFBodies.ToArray();
+#else
+                return _failedAMFBodies.ToArray(typeof(AMFBody)) as AMFBody[];
+#endif
 			}
 		}
 	}

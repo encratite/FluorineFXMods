@@ -18,7 +18,9 @@
 */
 using System;
 using System.Collections;
-
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx;
 
 namespace FluorineFx.AMF3
@@ -27,7 +29,11 @@ namespace FluorineFx.AMF3
 	/// Flex ObjectProxy class.
 	/// </summary>
     [CLSCompliant(false)]
+#if !(NET_1_1)
+    public class ObjectProxy : Dictionary<string, Object>
+#else
     public class ObjectProxy : Hashtable, IExternalizable
+#endif
 	{
 		public ObjectProxy()
 		{
@@ -42,12 +48,12 @@ namespace FluorineFx.AMF3
         public void ReadExternal(IDataInput input)
 		{
 			object value = input.ReadObject();
-			if( value is Hashtable )
+			if( value is IDictionary )
 			{
-				Hashtable hash = value as Hashtable;
-				foreach(DictionaryEntry entry in hash)
+                IDictionary dictionary = value as IDictionary;
+                foreach (DictionaryEntry entry in dictionary)
 				{
-					this.Add(entry.Key, entry.Value);
+					this.Add(entry.Key as string, entry.Value);
 				}
 			}
 		}
@@ -58,8 +64,12 @@ namespace FluorineFx.AMF3
         public void WriteExternal(IDataOutput output)
 		{
 			ASObject asObject = new ASObject();
+#if !(NET_1_1)
+			foreach(KeyValuePair<string, object> entry in this)
+#else
 			foreach(DictionaryEntry entry in this)
-			{
+#endif
+            {
 				asObject.Add(entry.Key, entry.Value);
 			}
 			output.WriteObject(asObject);

@@ -75,6 +75,9 @@
     <Compile Include="Collections\CollectionComparer.cs" />
     <Compile Include="Collections\CopyOnWriteArraySet.cs" />
     <Compile Include="Collections\CopyOnWriteDictionary.cs" />
+    <Compile Include="Collections\Generic\CollectionBase.cs" />
+    <Compile Include="Collections\Generic\CopyOnWriteArray.cs" />
+    <Compile Include="Collections\Generic\CopyOnWriteArraySet.cs" />
     <Compile Include="Collections\IModifiableCollection.cs" />
     <Compile Include="Collections\Inserter.cs" />
     <Compile Include="Collections\IOutputIterator.cs" />
@@ -110,6 +113,7 @@
     <Compile Include="Context\ISessionListener.cs" />
     <Compile Include="Context\RtmpApplicationState.cs" />
     <Compile Include="Context\ISessionState.cs" />
+    <Compile Include="Context\WebSafeCallContext.cs" />
     <Compile Include="Context\_TimeoutContext.cs" />
     <Compile Include="Data\DataServiceException.cs" />
     <Compile Include="Exceptions\IllegalStateException.cs" />
@@ -155,6 +159,7 @@
     <Compile Include="Expression\StringLiteralNode.cs" />
     <Compile Include="Expression\UnaryOperator.cs" />
     <Compile Include="Expression\VariableNode.cs" />
+    <Compile Include="IO\Writers\RawBinaryWriter.cs" />
     <Compile Include="Json\IJsonRpcProxyGenerator.cs" />
     <Compile Include="Json\JsonRpcMethodAttribute.cs" />
     <Compile Include="Json\Rpc\DefaultJsonRpcProxyGenerator.cs" />
@@ -169,6 +174,8 @@
     <Compile Include="Json\Services\Method.cs" />
     <Compile Include="Json\Services\Parameter.cs" />
     <Compile Include="Json\Services\ServiceClass.cs" />
+    <Compile Include="Messaging\Api\IMessageClient.cs" />
+    <Compile Include="Messaging\ServiceException.cs" />
     <Compile Include="Net\INetConnectionClient.cs" />
     <Compile Include="Net\NetConnection.cs" />
     <Compile Include="Messaging\Config\FlexClientSettings.cs" />
@@ -338,6 +345,7 @@
     <Compile Include="Messaging\Rtmp\Stream\VideoFrameDropper.cs" />
     <Compile Include="Messaging\Services\Messaging\MsmqAdapter.cs" />
     <Compile Include="Scheduling\TriggerFiredBundle.cs" />
+    <Compile Include="Silverlight\PolicyServer.cs" />
     <Compile Include="SWX\SwxAssembler.cs" />
     <Compile Include="SWX\SwxHandler.cs" />
     <Compile Include="SWX\Writers\ISWXWriter.cs" />
@@ -347,6 +355,7 @@
     <Compile Include="SWX\Writers\SWXObjectWriter.cs" />
     <Compile Include="SWX\Writers\SWXStringWriter.cs" />
     <Compile Include="Util\ArrayUtils.cs" />
+    <Compile Include="Util\AsyncResult.cs" />
     <Compile Include="Util\AsyncResultNoResult.cs" />
     <Compile Include="Util\AtomicInteger.cs" />
     <Compile Include="Util\BufferStreamReader.cs" />
@@ -493,7 +502,6 @@
     <Compile Include="IO\Writers\AMF3\AMF3StringWriter.cs" />
     <Compile Include="IO\Writers\AMF3\AMF3XmlDocumentWriter.cs" />
     <Compile Include="IO\Writers\IAMFWriter.cs" />
-    <Compile Include="IO\Writers\RawBinaryWriter.cs" />
     <Compile Include="Messaging\Api\BasicScopeEnumerator.cs" />
     <Compile Include="Messaging\Api\Event\IEvent.cs" />
     <Compile Include="Messaging\Api\Event\IEventDispatcher.cs" />
@@ -519,8 +527,7 @@
     <Compile Include="Messaging\Api\Service\IPendingServiceCallback.cs" />
     <Compile Include="Messaging\Api\Service\IServiceCall.cs" />
     <Compile Include="Messaging\Api\Service\IServiceInvoker.cs" />
-    <Compile Include="Messaging\Api\Service\PendingCall.cs" />
-    <Compile Include="Messaging\Api\Service\ServiceCall.cs" />
+    <Compile Include="Messaging\Rtmp\Service\PendingCall.cs" />
     <Compile Include="Messaging\Api\SO\ISharedObject.cs" />
     <Compile Include="Messaging\Api\SO\ISharedObjectListener.cs" />
     <Compile Include="Messaging\Api\SO\ISharedObjectService.cs" />
@@ -559,8 +566,8 @@
     <Compile Include="Messaging\Endpoints\RtmpEndpoint.cs" />
     <Compile Include="Messaging\FactoryInstance.cs" />
     <Compile Include="Messaging\IFlexFactory.cs" />
-    <Compile Include="Messaging\IMessageClientListener.cs" />
-    <Compile Include="Messaging\IMessageConnection.cs" />
+    <Compile Include="Messaging\Api\IMessageClientListener.cs" />
+    <Compile Include="Messaging\Api\IMessageConnection.cs" />
     <Compile Include="Messaging\MessageBroker.cs" />
     <Compile Include="Messaging\MessageClient.cs" />
     <Compile Include="Messaging\MessageDestination.cs" />
@@ -698,10 +705,6 @@
     <Reference Include="antlr.runtime, Version=2.7.5.2, Culture=neutral, PublicKeyToken=1875756ba09931ab">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\antlr\antlr.runtime\bin\antlr.runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\sharpziplib\net\2.0\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

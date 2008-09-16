@@ -19,6 +19,9 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using System.Threading;
 using System.Reflection;
 using log4net;
@@ -293,6 +296,24 @@ namespace FluorineFx.Messaging.Rtmp.SO
 			return success;
 		}
 
+#if !(NET_1_1)
+        public override void SetAttributes(IDictionary<string, object> values)
+        {
+            BeginUpdate();
+            try
+            {
+                _so.SetAttributes(values);
+            }
+            finally
+            {
+                EndUpdate();
+            }
+            foreach (ISharedObjectListener listener in _serverListeners)
+            {
+                listener.OnSharedObjectUpdate(this, values);
+            }
+        }
+#else
         public override void SetAttributes(IDictionary values)
 		{
             BeginUpdate();
@@ -309,6 +330,7 @@ namespace FluorineFx.Messaging.Rtmp.SO
 				listener.OnSharedObjectUpdate(this, values);
 			}
 		}
+#endif
 
 		public override void SetAttributes(IAttributeStore values)
 		{

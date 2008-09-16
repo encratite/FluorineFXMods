@@ -20,8 +20,6 @@ using System;
 using System.Reflection;
 using FluorineFx.Exceptions;
 
-using log4net;
-
 namespace FluorineFx.IO.Readers
 {
 	/// <summary>

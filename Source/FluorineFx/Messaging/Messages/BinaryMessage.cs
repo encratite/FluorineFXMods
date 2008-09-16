@@ -18,8 +18,8 @@
 */
 
 using System;
-using System.Collections;
 using System.Text;
+using FluorineFx.Messaging.Api;
 
 namespace FluorineFx.Messaging.Messages
 {
@@ -78,7 +78,7 @@ namespace FluorineFx.Messaging.Messages
 			return -1;
 		}
 
-		public void Update(MessageClient messageClient)
+		public void Update(IMessageClient messageClient)
 		{
 			byte[] binaryContent = this.body as byte[];
 			byte[] destClientBinaryId = messageClient.GetBinaryId();

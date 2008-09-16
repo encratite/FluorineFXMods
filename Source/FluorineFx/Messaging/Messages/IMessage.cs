@@ -19,13 +19,20 @@
 
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx.Messaging.Messages
 {
 	/// <summary>
     /// Represents a Flex message object.
 	/// </summary>
-	public interface IMessage : ICloneable
+#if SILVERLIGHT
+    public interface IMessage
+#else
+    public interface IMessage : ICloneable
+#endif
 	{
         /// <summary>
         /// Gets or sets the client identity indicating which client sent the message.
@@ -63,7 +70,11 @@ namespace FluorineFx.Messaging.Messages
         /// This property provides access to the specialized meta information for the specific message instance. 
         /// Flex core header names begin with a 'DS' prefix. Custom header names should start with a unique prefix to avoid name collisions.
         /// </remarks>
+#if !(NET_1_1)
+        Dictionary<string, object> headers { get; set; }
+#else
         Hashtable headers { get; set; }
+#endif
         /// <summary>
         /// Retrieves the specified header value.
         /// </summary>

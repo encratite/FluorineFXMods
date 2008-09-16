@@ -98,7 +98,11 @@ namespace FluorineFx.Util
         {
             get
             {
+#if SILVERLIGHT
+                return _completedState == StateCompletedSynchronously;
+#else
                 return Thread.VolatileRead(ref _completedState) == StateCompletedSynchronously;
+#endif
             }
         }
 
@@ -142,7 +146,11 @@ namespace FluorineFx.Util
         {
             get
             {
+#if SILVERLIGHT
+                return _completedState != StatePending;
+#else
                 return Thread.VolatileRead(ref _completedState) != StatePending;
+#endif
             }
         }
         #endregion

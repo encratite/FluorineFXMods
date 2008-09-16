@@ -259,12 +259,19 @@ namespace FluorineFx.Util
 
 			if (leftTypeCode > rightTypeCode)
 			{
-                n = System.Convert.ChangeType(n, leftTypeCode);
-			}
+#if SILVERLIGHT
+#else
+                n = System.Convert.ChangeType(n, leftTypeCode, null);
+#endif
+            }
 			else
 			{
+#if SILVERLIGHT
+                m = System.Convert.ChangeType(m, rightTypeCode, null);
+#else
                 m = System.Convert.ChangeType(m, rightTypeCode);
-			}
+#endif
+            }
 		}
 
 		public static int HexToInt(char h)

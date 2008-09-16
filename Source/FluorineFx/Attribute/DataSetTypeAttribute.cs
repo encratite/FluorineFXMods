@@ -20,6 +20,9 @@ using System;
 using System.Data;
 using System.Collections;
 using System.Reflection;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx.Invocation;
 
 namespace FluorineFx
@@ -69,7 +72,11 @@ namespace FluorineFx
 				DataSet dataSet = result as DataSet;
 				ASObject asoResult = new ASObject(_remoteClass);
 
+#if !(NET_1_1)
+                foreach (KeyValuePair<object, object> entry in invocationManager.Properties)
+#else
 				foreach(DictionaryEntry entry in invocationManager.Properties)
+#endif
 				{
 					if( entry.Key is DataTable )
 					{

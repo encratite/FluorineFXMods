@@ -20,12 +20,20 @@ using System;
 using System.Collections;
 using FluorineFx.Collections;
 using FluorineFx.Util;
+#if !(NET_1_1)
+using System.Collections.Generic;
+using FluorineFx.Collections.Generic;
+#endif
 
 namespace FluorineFx.Messaging.Api
 {
     class ServiceContainer : IServiceContainer
     {
-        private SynchronizedHashtable _services;
+#if !(NET_1_1)
+        private Dictionary<Type, object> _services = new Dictionary<Type, object>();
+#else
+        private Hashtable _services = new Hashtable();
+#endif
         private IServiceProvider _parentProvider;
  
 
@@ -35,7 +43,6 @@ namespace FluorineFx.Messaging.Api
 
         public ServiceContainer(IServiceProvider parentProvider)
         {
-            _services = new SynchronizedHashtable();
             _parentProvider = parentProvider;
         }
 
@@ -55,7 +62,13 @@ namespace FluorineFx.Messaging.Api
         /// <summary>
         /// Gets an object that can be used to synchronize access. 
         /// </summary>
-        public object SyncRoot { get { return _services.SyncRoot; } }
+        public object SyncRoot 
+        { 
+            get 
+            {
+                return ((ICollection)_services).SyncRoot;
+            } 
+        }
 
         #region IServiceContainer Members
 
@@ -124,7 +137,8 @@ namespace FluorineFx.Messaging.Api
             object service = null;
             lock (this.SyncRoot)
             {
-                service = _services[serviceType];
+                if( _services.ContainsKey(serviceType) )
+                    service = _services[serviceType];
                 if (service == null && _parentProvider != null)
                 {
                     service = _parentProvider.GetService(serviceType);

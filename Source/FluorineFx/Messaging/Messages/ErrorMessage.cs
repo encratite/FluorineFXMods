@@ -19,7 +19,6 @@
 
 using System;
 using System.Security;
-using FluorineFx.Messaging.Services;
 
 namespace FluorineFx.Messaging.Messages
 {
@@ -30,6 +29,9 @@ namespace FluorineFx.Messaging.Messages
     [CLSCompliant(false)]
     public class ErrorMessage : AcknowledgeMessage
 	{
+        public const string ClientAuthenticationError = "Client.Authentication";
+        public const string ClientAuthorizationError = "Client.Authorization";
+
 		string _faultCode;
 		string _faultString;
 		string _faultDetail;
@@ -101,9 +103,9 @@ namespace FluorineFx.Messaging.Messages
 			errorMessage.correlationId = message.messageId;
 			errorMessage.destination = message.destination;
 			if(exception is SecurityException)
-                errorMessage.faultCode = AuthenticationService.ClientAuthenticationError;
+                errorMessage.faultCode = ErrorMessage.ClientAuthenticationError;
 			if(exception is UnauthorizedAccessException)
-				errorMessage.faultCode = AuthenticationService.ClientAuthorizationError;
+                errorMessage.faultCode = ErrorMessage.ClientAuthorizationError;
 			return errorMessage;
 		}
 

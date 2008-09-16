@@ -130,7 +130,7 @@ namespace FluorineFx.IO.FLV
             }
         }
 
-        public void PutAll(Hashtable data)
+        public void PutAll(IDictionary data)
         {
             foreach (DictionaryEntry entry in data)
             {

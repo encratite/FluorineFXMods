@@ -25,8 +25,10 @@ namespace FluorineFx.Exceptions
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	[Serializable]
-	public class UnexpectedAMF : FluorineException
+#if !SILVERLIGHT
+    [Serializable]
+#endif
+    public class UnexpectedAMF : FluorineException
 	{
 		/// <summary>
 		/// Initializes a new instance of the UnexpectedAMF class.

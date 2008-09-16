@@ -24,7 +24,14 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using System.Reflection;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+#if SILVERLIGHT
+using System.Xml.Linq;
+#else
 using log4net;
+#endif
 using FluorineFx.Exceptions;
 using FluorineFx.AMF3;
 using FluorineFx.Configuration;
@@ -37,18 +44,27 @@ namespace FluorineFx.IO
 	/// </summary>
 	public class AMFReader : BinaryReader
 	{
+#if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(AMFReader));
+#endif
 
 		bool _useLegacyCollection = true;
         bool _faultTolerancy = false;
         Exception _lastError;
 
-		ArrayList _amf0ObjectReferences;
+#if !(NET_1_1)
+        List<Object> _amf0ObjectReferences;
+        List<Object> _objectReferences;
+        List<Object> _stringReferences;
+        List<ClassDefinition> _classDefinitions;
+#else
+        ArrayList _amf0ObjectReferences;
         ArrayList _objectReferences;
 		ArrayList _stringReferences;
 		ArrayList _classDefinitions;
+#endif
 
-		private static IAMFReader[][] AmfTypeTable;
+        private static IAMFReader[][] AmfTypeTable;
 
 		static AMFReader()
 		{
@@ -70,7 +86,11 @@ namespace FluorineFx.IO
 				new AMFUnknownTagReader(),
 				new AMFUnknownTagReader(),
 				new AMF0XmlReader(), /*15*/
+#if !FXCLIENT
 				(FluorineConfiguration.Instance.OptimizerSettings != null && FluorineConfiguration.Instance.FullTrust) ? (IAMFReader)(new  AMF0OptimizedObjectReader()) : (IAMFReader)(new AMF0ObjectReader()), /*16*/
+#else
+                new AMF0ObjectReader(), /*16*/
+#endif
 				new AMF0AMF3TagReader() /*17*/
 			};
 
@@ -86,7 +106,11 @@ namespace FluorineFx.IO
 				new AMF3XmlReader(), /*7*/
 				new AMF3DateTimeReader(), /*8*/
 				new AMF3ArrayReader(),  /*9*/
+#if !FXCLIENT
 				(FluorineConfiguration.Instance.OptimizerSettings != null && FluorineConfiguration.Instance.FullTrust) ? (IAMFReader)(new AMF3OptimizedObjectReader()) : (IAMFReader)(new AMF3ObjectReader()), /*10*/
+#else
+                new AMF3ObjectReader(), /*10*/
+#endif
 				new AMF3XmlReader(), /*11*/
 				new AMF3ByteArrayReader(), /*12*/
 				new AMFUnknownTagReader(),
@@ -96,7 +120,7 @@ namespace FluorineFx.IO
 				new AMFUnknownTagReader()
 			};
 
-			AmfTypeTable = new IAMFReader[4][]{amf0Readers, null, null, amf3Readers};
+            AmfTypeTable = new IAMFReader[4][] { amf0Readers, null, null, amf3Readers };
 		}
 
 		/// <summary>
@@ -110,10 +134,17 @@ namespace FluorineFx.IO
 
 		public void Reset()
 		{
+#if !(NET_1_1)
+            _amf0ObjectReferences = new List<Object>(5);
+            _objectReferences = new List<Object>(15);
+            _stringReferences = new List<Object>(15);
+            _classDefinitions = new List<ClassDefinition>(2);
+#else
 			_amf0ObjectReferences = new ArrayList(5);
             _objectReferences = new ArrayList(15);
 			_stringReferences = new ArrayList(15);
 			_classDefinitions = new ArrayList(2);
+#endif
             _lastError = null;
 		}
 
@@ -238,8 +269,10 @@ namespace FluorineFx.IO
 		{
 			string typeIdentifier = ReadString();
 
-			if(log.IsDebugEnabled )
+#if !SILVERLIGHT
+            if(log.IsDebugEnabled )
 				log.Debug(__Res.GetString(__Res.TypeIdentifier_Loaded, typeIdentifier));
+#endif
 
 			Type type = ObjectFactory.Locate(typeIdentifier);
 			if( type != null )
@@ -258,8 +291,10 @@ namespace FluorineFx.IO
 			}
 			else
 			{
-				if( log.IsWarnEnabled )
+#if !SILVERLIGHT
+                if( log.IsWarnEnabled )
 					log.Warn(__Res.GetString(__Res.TypeLoad_ASO, typeIdentifier));
+#endif
 
 				ASObject asObject;
 				//Reference added in ReadASObject
@@ -287,11 +322,15 @@ namespace FluorineFx.IO
 		public string ReadUTF(int length)
 		{
 			if( length == 0 )
-                return null;// string.Empty;
+                return string.Empty;
 			UTF8Encoding utf8 = new UTF8Encoding(false, true);
 			byte[] encodedBytes = this.ReadBytes(length);
-			string decodedString = utf8.GetString(encodedBytes);
-			return decodedString;
+#if !(NET_1_1)
+            string decodedString = utf8.GetString(encodedBytes, 0, encodedBytes.Length);
+#else
+            string decodedString = utf8.GetString(encodedBytes);
+#endif
+            return decodedString;
 		}
 		
 		public string ReadLongString()
@@ -300,7 +339,24 @@ namespace FluorineFx.IO
 			return this.ReadUTF(length);
 		}
 
-		internal Hashtable ReadAssociativeArray()
+#if !(NET_1_1)
+        internal Dictionary<string, Object> ReadAssociativeArray()
+        {
+            // Get the length property set by flash.
+            int length = this.ReadInt32();
+            Dictionary<string, Object> result = new Dictionary<string, Object>(length);
+            AddReference(result);
+            string key = ReadString();
+            for (byte typeCode = ReadByte(); typeCode != AMF0TypeCode.EndOfObject; typeCode = ReadByte())
+            {
+                object value = ReadData(typeCode);
+                result.Add(key, value);
+                key = ReadString();
+            }
+            return result;
+        }
+#else
+        internal Hashtable ReadAssociativeArray()
 		{
 			// Get the length property set by flash.
 			int length = this.ReadInt32();
@@ -315,6 +371,7 @@ namespace FluorineFx.IO
 			}
 			return result;
 		}
+#endif
 
 		internal IList ReadArray()
 		{
@@ -363,6 +420,7 @@ namespace FluorineFx.IO
 			return date;
 		}
  
+#if !SILVERLIGHT
 		public XmlDocument ReadXmlDocument()
 		{
 			string text = this.ReadLongString();
@@ -371,6 +429,18 @@ namespace FluorineFx.IO
 			    document.LoadXml(text);
 			return document;
 		}
+#else
+        public XDocument ReadXmlDocument()
+        {
+            string text = this.ReadLongString();
+            XDocument document;
+            if (text != null && text != string.Empty)
+                document = XDocument.Parse(text);
+            else
+                document = new XDocument();
+            return document;
+        }
+#endif
 
 
 		#region AMF3
@@ -498,7 +568,7 @@ namespace FluorineFx.IO
 			{
 				int length = handle;
                 if (length == 0)
-                    return null;//string.Empty;
+                    return string.Empty;
 				string str = ReadUTF(length);
                 AddStringReference(str);
 				return str;
@@ -509,6 +579,7 @@ namespace FluorineFx.IO
 			}
 		}
 
+#if !SILVERLIGHT
 		public XmlDocument ReadAMF3XmlDocument()
 		{
 			int handle = ReadAMF3IntegerData();
@@ -530,6 +601,31 @@ namespace FluorineFx.IO
                 xmlDocument.LoadXml(xml);
 			return xmlDocument;
 		}
+#else
+        public XDocument ReadAMF3XmlDocument()
+        {
+            int handle = ReadAMF3IntegerData();
+            bool inline = ((handle & 1) != 0);
+            handle = handle >> 1;
+            string xml = string.Empty;
+            if (inline)
+            {
+                if (handle > 0)//length
+                    xml = this.ReadUTF(handle);
+                AddAMF3ObjectReference(xml);
+            }
+            else
+            {
+                xml = ReadAMF3ObjectReference(handle) as string;
+            }
+            XDocument document;
+            if (xml != null && xml != string.Empty)
+                document = XDocument.Parse(xml);
+            else
+                document = new XDocument();
+            return document;
+        }
+#endif
 
         [CLSCompliant(false)]
 		public ByteArray ReadAMF3ByteArray()
@@ -555,13 +651,21 @@ namespace FluorineFx.IO
 			bool inline = ((handle & 1)  != 0 ); handle = handle >> 1;
 			if( inline )
 			{
-				Hashtable hashtable = null;
+#if !(NET_1_1)
+                Dictionary<string, object> hashtable = null;
+#else
+                Hashtable hashtable = null;
+#endif
 				string key = ReadAMF3String();
                 while (key != null && key != string.Empty)
 				{
 					if( hashtable == null )
 					{
-						hashtable = new Hashtable();
+#if !(NET_1_1)
+                        hashtable = new Dictionary<string, object>();
+#else
+                        hashtable = new Hashtable();
+#endif
 						AddAMF3ObjectReference(hashtable);
 					}
 					object value = ReadAMF3Data();
@@ -571,21 +675,14 @@ namespace FluorineFx.IO
 				//Not an associative array
 				if( hashtable == null )
 				{
-					IList array;
-					//if(!_useLegacyCollection)
-						array = new object[handle];
-					//else
-					//	array = new ArrayList(handle);
+                    object[] array = new object[handle];
                     AddAMF3ObjectReference(array);
 					for(int i = 0; i < handle; i++)
 					{
 						//Grab the type for each element.
 						byte typeCode = this.ReadByte();
 						object value = ReadAMF3Data(typeCode);
-						if( array is ArrayList )
-							array.Add(value);
-						else
-							array[i] = value;
+						array[i] = value;
 					}
 					return array;
 				}
@@ -643,13 +740,15 @@ namespace FluorineFx.IO
 				//A reference to a previously passed class-def
 				classDefinition = ReadClassReference(handle);
 			}
-			if (log.IsDebugEnabled)
+#if !SILVERLIGHT
+            if (log.IsDebugEnabled)
 			{
 				if (classDefinition.IsTypedObject)
 					log.Debug(__Res.GetString(__Res.ClassDefinition_Loaded, classDefinition.ClassName));
 				else
 					log.Debug(__Res.GetString(__Res.ClassDefinition_LoadedUntyped));
 			}
+#endif
 			return classDefinition;
 		}
 
@@ -663,9 +762,10 @@ namespace FluorineFx.IO
 				instance = ObjectFactory.CreateInstance(classDefinition.ClassName);
                 if (instance == null)
                 {
+#if !SILVERLIGHT
                     if (log.IsWarnEnabled)
                         log.Warn(__Res.GetString(__Res.TypeLoad_ASO, classDefinition.ClassName));
-
+#endif
                     instance = new ASObject(classDefinition.ClassName);
                 }
 			}
@@ -681,8 +781,6 @@ namespace FluorineFx.IO
 				else
 				{
 					string msg = __Res.GetString(__Res.Externalizable_CastFail, instance.GetType().FullName);
-					if (log.IsErrorEnabled)
-						log.Error(msg);
 					throw new FluorineException(msg);
 				}
 			}
@@ -759,8 +857,10 @@ namespace FluorineFx.IO
                         else
                         {
                             string msg = __Res.GetString(__Res.Reflection_PropertyIndexFail, string.Format("{0}.{1}", type.FullName, memberName));
+#if !SILVERLIGHT
                             if (log.IsErrorEnabled)
                                 log.Error(msg);
+#endif
                             if( !_faultTolerancy )
                                 throw new FluorineException(msg);
                             else
@@ -771,15 +871,19 @@ namespace FluorineFx.IO
                     else
                     {
                         string msg = __Res.GetString(__Res.Reflection_PropertyReadOnly, string.Format("{0}.{1}", type.FullName, memberName));
+#if !SILVERLIGHT
                         if (log.IsWarnEnabled)
                             log.Warn(msg);
+#endif
                     }
                 }
                 catch (Exception ex)
                 {
                     string msg = __Res.GetString(__Res.Reflection_PropertySetFail, string.Format("{0}.{1}", type.FullName, memberName), ex.Message);
+#if !SILVERLIGHT
                     if (log.IsErrorEnabled)
                         log.Error(msg, ex);
+#endif
                     if (!_faultTolerancy)
                         throw new FluorineException(msg);
                     else
@@ -799,15 +903,19 @@ namespace FluorineFx.IO
                     else
                     {
                         string msg = __Res.GetString(__Res.Reflection_MemberNotFound, string.Format("{0}.{1}", type.FullName, memberName));
+#if !SILVERLIGHT
                         if (log.IsWarnEnabled)
                             log.Warn(msg);
+#endif
                     }
                 }
                 catch (Exception ex)
                 {
                     string msg = __Res.GetString(__Res.Reflection_FieldSetFail, string.Format("{0}.{1}", type.FullName, memberName), ex.Message);
+#if !SILVERLIGHT
                     if (log.IsErrorEnabled)
                         log.Error(msg, ex);
+#endif
                     if (!_faultTolerancy)
                         throw new FluorineException(msg);
                     else

@@ -20,8 +20,14 @@
 using System;
 using System.IO;
 using System.ComponentModel;
+#if (NET_1_1)
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+#else
+#if !SILVERLIGHT
+using System.IO.Compression;
+#endif
+#endif
 using FluorineFx;
 using FluorineFx.IO;
 
@@ -38,11 +44,19 @@ namespace FluorineFx.AMF3
 		/// <param name="context">An ITypeDescriptorContext that provides a format context.</param>
 		/// <param name="destinationType">A Type that represents the type you want to convert to.</param>
 		/// <returns>true if this converter can perform the conversion; otherwise, false.</returns>
-		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+#if !SILVERLIGHT
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+#else
+        public override bool CanConvertTo(Type destinationType)
+#endif
 		{
 			if( destinationType == typeof(byte[]) )
 				return true;
+#if !SILVERLIGHT
 			return base.CanConvertTo(context, destinationType);
+#else
+            return base.CanConvertTo(destinationType);
+#endif
 		}
 		/// <summary>
 		/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -52,13 +66,21 @@ namespace FluorineFx.AMF3
 		/// <param name="value">The Object to convert.</param>
 		/// <param name="destinationType">The Type to convert the value parameter to.</param>
 		/// <returns>An Object that represents the converted value.</returns>
-		public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+#if !SILVERLIGHT
+        public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+#else
+        public override object ConvertTo(object value, Type destinationType)
+#endif
 		{
 			if( destinationType == typeof(byte[]) )
 			{
 				return (value as ByteArray).MemoryStream.ToArray();
 			}
+#if !SILVERLIGHT
 			return base.ConvertTo (context, culture, value, destinationType);
+#else
+            return base.ConvertTo(value, destinationType);
+#endif
 		}
 	}
 
@@ -374,6 +396,10 @@ namespace FluorineFx.AMF3
         /// </summary>
         public void Compress()
         {
+#if SILVERLIGHT
+            throw new NotSupportedException();
+#else
+#if (NET_1_1)
             Deflater deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, false);
             MemoryStream ms = new MemoryStream();
             DeflaterOutputStream stream = new DeflaterOutputStream(ms, deflater);
@@ -381,20 +407,32 @@ namespace FluorineFx.AMF3
             stream.Write(buffer, 0, buffer.Length);
             stream.Close();
             _memoryStream.Close();
-#if NET_2_0
-            _memoryStream.Dispose();
-#endif
             _memoryStream = new MemoryStream(ms.GetBuffer());
             AMFReader amfReader = new AMFReader(_memoryStream);
             AMFWriter amfWriter = new AMFWriter(_memoryStream);
             _dataOutput = new DataOutput(amfWriter);
             _dataInput = new DataInput(amfReader);
+#else
+            byte[] buffer = _memoryStream.GetBuffer();
+            DeflateStream deflateStream = new DeflateStream(_memoryStream, CompressionMode.Compress, true);
+            deflateStream.Write(buffer, 0, buffer.Length);
+            deflateStream.Close();
+            AMFReader amfReader = new AMFReader(_memoryStream);
+            AMFWriter amfWriter = new AMFWriter(_memoryStream);
+            _dataOutput = new DataOutput(amfWriter);
+            _dataInput = new DataInput(amfReader);
+#endif
+#endif
         }
         /// <summary>
         /// Decompresses the byte array. The byte array must have been previously compressed with the Compress() method.
         /// </summary>
         public void Uncompress()
         {
+#if SILVERLIGHT
+            throw new NotSupportedException();
+#else
+#if (NET_1_1)
             Inflater inflater = new Inflater(true);
             InflaterInputStream stream = new InflaterInputStream(_memoryStream);
             MemoryStream ms = new MemoryStream();
@@ -409,15 +447,38 @@ namespace FluorineFx.AMF3
             }
             stream.Close();
             _memoryStream.Close();
-#if NET_2_0
-            _memoryStream.Dispose();
-#endif
 			_memoryStream = ms;
             _memoryStream.Position = 0;
             AMFReader amfReader = new AMFReader(_memoryStream);
             AMFWriter amfWriter = new AMFWriter(_memoryStream);
             _dataOutput = new DataOutput(amfWriter);
             _dataInput = new DataInput(amfReader);
+#else
+            DeflateStream deflateStream = new DeflateStream(_memoryStream, CompressionMode.Decompress, false);
+            MemoryStream ms = new MemoryStream();
+            byte[] buffer = new byte[1024];
+            // Skip first two bytes
+            _memoryStream.ReadByte();
+            _memoryStream.ReadByte();
+            while (true)
+            {
+                int readCount = deflateStream.Read(buffer, 0, buffer.Length);
+                if (readCount > 0)
+                    ms.Write(buffer, 0, readCount);
+                else
+                    break;
+            }
+            deflateStream.Close();
+            _memoryStream.Close();
+            _memoryStream.Dispose();
+            _memoryStream = ms;
+            _memoryStream.Position = 0;
+            AMFReader amfReader = new AMFReader(_memoryStream);
+            AMFWriter amfWriter = new AMFWriter(_memoryStream);
+            _dataOutput = new DataOutput(amfWriter);
+            _dataInput = new DataInput(amfReader);
+#endif
+#endif
         }
 	}
 }

@@ -17,7 +17,6 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using log4net;
 using FluorineFx.AMF3;
 using FluorineFx.IO.Bytecode;
 using FluorineFx.Exceptions;
@@ -29,7 +28,6 @@ namespace FluorineFx.IO.Readers
 	/// </summary>
     class AMF3ExternalizableReader : IReflectionOptimizer
 	{
-        private static readonly ILog log = LogManager.GetLogger(typeof(AMF3ExternalizableReader));
 
         public AMF3ExternalizableReader()
 		{
@@ -48,8 +46,6 @@ namespace FluorineFx.IO.Readers
             if (instance == null)
             {
                 string msg = __Res.GetString(__Res.Type_InitError, classDefinition.ClassName);
-                if (log.IsErrorEnabled)
-                    log.Error(msg);
                 throw new FluorineException(msg);
             }
             reader.AddAMF3ObjectReference(instance);
@@ -63,8 +59,6 @@ namespace FluorineFx.IO.Readers
             else
             {
                 string msg = __Res.GetString(__Res.Externalizable_CastFail, instance.GetType().FullName);
-                if (log.IsErrorEnabled)
-                    log.Error(msg);
                 throw new FluorineException(msg);
             }
         }

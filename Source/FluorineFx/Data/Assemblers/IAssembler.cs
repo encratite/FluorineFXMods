@@ -71,7 +71,7 @@ namespace FluorineFx.Data.Assemblers
 		/// </summary>
 		/// <param name="identity">A Hashtable which contains key/value pairs for each identity property.</param>
 		/// <returns>The item corresponding to this identity property or null if there is no item for this identity.</returns>
-		object GetItem(Hashtable identity);
+        object GetItem(IDictionary identity);
 		/// <summary>
 		/// Given a list of identities, returns the list of items.
 		/// </summary>

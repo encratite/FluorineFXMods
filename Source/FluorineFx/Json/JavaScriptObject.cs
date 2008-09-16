@@ -21,6 +21,9 @@ using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 using FluorineFx.Util;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx.Json
 {
@@ -77,7 +80,11 @@ namespace FluorineFx.Json
 				return TypeHelper.ChangeType(javaScriptObject, destinationType);
 
 			object newObject = Activator.CreateInstance(destinationType);
+#if !(NET_1_1)
+            foreach (KeyValuePair<string, object> entry in value as JavaScriptObject)
+#else
 			foreach(DictionaryEntry entry in value as JavaScriptObject)
+#endif
 			{
 				string memberName = entry.Key as string;
 				MemberInfo memberInfo = ReflectionUtils.GetMember(destinationType, memberName, MemberTypes.Field | MemberTypes.Property);
@@ -96,6 +103,28 @@ namespace FluorineFx.Json
     /// Represents a JavaScript object.
     /// </summary>
     [TypeConverter(typeof(JavaScriptObjectConverter))]
+#if !(NET_1_1)
+    public class JavaScriptObject : Dictionary<string, object>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JavaScriptObject"/> class.
+        /// </summary>
+        public JavaScriptObject()
+            : base(EqualityComparer<string>.Default)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JavaScriptObject"/> class that
+        /// contains values copied from the specified <see cref="JavaScriptObject"/>.
+        /// </summary>
+        /// <param name="javaScriptObject">The <see cref="JavaScriptObject"/> whose elements are copied to the new object.</param>
+        public JavaScriptObject(JavaScriptObject javaScriptObject)
+            : base(javaScriptObject, EqualityComparer<string>.Default)
+        {
+        }
+    }
+#else
     public class JavaScriptObject : Hashtable //Dictionary<string, object>
     {
         /// <summary>
@@ -116,4 +145,5 @@ namespace FluorineFx.Json
         {
         }
     }
+#endif
 }

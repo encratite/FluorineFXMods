@@ -95,7 +95,7 @@ namespace FluorineFx.Data
                 }
                 else
                 {
-                    Hashtable sequenceIdMap = _itemIdToSequenceIdMapHash[new Identity(fillParameters)] as Hashtable;
+                    IDictionary sequenceIdMap = _itemIdToSequenceIdMapHash[new Identity(fillParameters)] as IDictionary;
                     if (sequenceIdMap != null)
                     {
                         foreach (Sequence sequence in sequenceIdMap.Values)
@@ -174,7 +174,7 @@ namespace FluorineFx.Data
 				else
 					sequence.Insert(position, identity);
 
-				Hashtable sequenceIdMap = _itemIdToSequenceIdMapHash[identity] as Hashtable;
+                IDictionary sequenceIdMap = _itemIdToSequenceIdMapHash[identity] as IDictionary;
 				if( sequenceIdMap == null )
 				{
 					sequenceIdMap = new Hashtable();
@@ -205,7 +205,7 @@ namespace FluorineFx.Data
 				return;
 			lock(_objLock)
 			{
-				Hashtable sequenceIdMap = _itemIdToSequenceIdMapHash[identity] as Hashtable;
+                IDictionary sequenceIdMap = _itemIdToSequenceIdMapHash[identity] as IDictionary;
                 if (sequenceIdMap != null)
                 {
                     sequenceIdMap.Remove(sequence.Id);
@@ -269,7 +269,7 @@ namespace FluorineFx.Data
                 }
                 else
                 {
-				    Hashtable sequenceIdMap = _itemIdToSequenceIdMapHash[identities[0]] as Hashtable;
+                    IDictionary sequenceIdMap = _itemIdToSequenceIdMapHash[identities[0]] as IDictionary;
                     if (sequenceIdMap != null)
                     {
                         foreach (Sequence sequenceTmp in sequenceIdMap.Values)
@@ -446,7 +446,7 @@ namespace FluorineFx.Data
 					Identity identity = updateCollectionRange.identities[l] as Identity;
 					if( identity == null )
 					{
-						identity = new Identity(updateCollectionRange.identities[l] as Hashtable);
+                        identity = new Identity(updateCollectionRange.identities[l] as IDictionary);
 					}
 					if( updateCollectionRange.updateType == UpdateCollectionRange.InsertIntoCollection )
 					{
@@ -586,7 +586,7 @@ namespace FluorineFx.Data
                 {
                     for (int i = 0; i < DSids.Count; i++)
                     {
-                        Identity identity = new Identity(DSids[i] as Hashtable);
+                        Identity identity = new Identity(DSids[i] as IDictionary);
                         ItemWrapper itemWrapper = GetItem(identity);
                         //items.Add(item);
                         items[i] = itemWrapper.Instance;

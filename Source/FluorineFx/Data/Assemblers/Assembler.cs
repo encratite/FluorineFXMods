@@ -110,7 +110,7 @@ namespace FluorineFx.Data.Assemblers
 		/// </summary>
 		/// <param name="identity">A Hashtable which contains key/value pairs for each identity property.</param>
 		/// <returns>The item corresponding to this identity property or null if there is no item for this identity.</returns>
-		public virtual object GetItem(Hashtable identity)
+        public virtual object GetItem(IDictionary identity)
 		{
 			throw new NotSupportedException("Assembler does not implement GetItem method");
 		}
@@ -123,7 +123,7 @@ namespace FluorineFx.Data.Assemblers
 		{
 			ArrayList result = new ArrayList(identityList.Count);
 			for(int i = 0; i < identityList.Count; i++)
-				result.Add( GetItem(identityList[i] as Hashtable) );
+                result.Add(GetItem(identityList[i] as IDictionary));
 			return result;
 		}
 		/// <summary>

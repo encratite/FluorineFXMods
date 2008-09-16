@@ -20,6 +20,9 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Specialized;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using log4net;
 using FluorineFx;
 using FluorineFx.Util;
@@ -79,7 +82,12 @@ namespace FluorineFx.Messaging.Rtmp.SO
 		protected bool _modified = false;
         protected SharedObjectMessage _ownerMessage;
         //Synchronization events (ISharedObjectEvent)
-        protected ArrayList _syncEvents = new ArrayList();
+#if !(NET_1_1)
+        private List<ISharedObjectEvent> _syncEvents = new List<ISharedObjectEvent>();
+#else
+        private ArrayList _syncEvents = new ArrayList();
+#endif
+
         //Listeners (IEventListener)
         protected CopyOnWriteArray _listeners = new CopyOnWriteArray();
         /// <summary>
@@ -96,6 +104,37 @@ namespace FluorineFx.Messaging.Rtmp.SO
             _persistentSO = false;
             _creationTime = System.Environment.TickCount;
 		}
+#if !(NET_1_1)
+		/// <summary>
+		/// Initializes a new instance of the SharedObject class.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="name"></param>
+		/// <param name="path"></param>
+		/// <param name="persistent"></param>
+        public SharedObject(IDictionary<string, object> data, string name, string path, bool persistent)
+		{
+			base.SetAttributes(data);
+			_name = name;
+			_path = path;
+			_persistentSO = persistent;
+			_ownerMessage = new SharedObjectMessage(null, name, 0, persistent);
+            _creationTime = System.Environment.TickCount;
+		}
+		/// <summary>
+		/// Initializes a new instance of the SharedObject class.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="name"></param>
+		/// <param name="path"></param>
+		/// <param name="persistent"></param>
+		/// <param name="storage"></param>
+        public SharedObject(IDictionary<string, object> data, string name, string path, bool persistent, IPersistenceStore storage)
+            : this(data, name, path, persistent)
+        {
+            this.Store = storage;
+        }
+#else
 		/// <summary>
 		/// Initializes a new instance of the SharedObject class.
 		/// </summary>
@@ -111,7 +150,6 @@ namespace FluorineFx.Messaging.Rtmp.SO
 			_persistentSO = persistent;
 			_ownerMessage = new SharedObjectMessage(null, name, 0, persistent);
             _creationTime = System.Environment.TickCount;
-            base.SetAttributes(data);
 		}
 		/// <summary>
 		/// Initializes a new instance of the SharedObject class.
@@ -126,10 +164,11 @@ namespace FluorineFx.Messaging.Rtmp.SO
         {
             this.Store = storage;
         }
+#endif
 
-		#region IPersistable Members
+        #region IPersistable Members
 
-		public bool IsPersistent
+        public bool IsPersistent
 		{
 			get
 			{
@@ -202,8 +241,11 @@ namespace FluorineFx.Messaging.Rtmp.SO
             _name = reader.ReadData() as string;
             _path = reader.ReadData() as string;
             _attributes.Clear();
-            //_attributes = new SynchronizedHashtable(reader.ReadData() as IDictionary);
-            _attributes = new SortedList(reader.ReadData() as IDictionary);
+#if !(NET_1_1)
+            _attributes = new Dictionary<string, object>(reader.ReadData() as IDictionary<string, object>);
+#else
+            _attributes = new Hashtable(reader.ReadData() as IDictionary);
+#endif
 			_persistent = true; _persistentSO = true;
             _ownerMessage.SetName(_name);
             _ownerMessage.SetIsPersistent(true);
@@ -384,6 +426,26 @@ namespace FluorineFx.Messaging.Rtmp.SO
             }
 		}
 
+#if !(NET_1_1)
+        public override void SetAttributes(IDictionary<string, object> values)
+		{
+			if (values == null) 
+				return;
+
+			BeginUpdate();
+            try
+            {
+                foreach (KeyValuePair<string, object> entry in values)
+                {
+                    SetAttribute(entry.Key, entry.Value);
+                }
+            }
+            finally
+            {
+                EndUpdate();
+            }
+		}
+#else
         public override void SetAttributes(IDictionary values) 
 		{
 			if (values == null) 
@@ -392,9 +454,9 @@ namespace FluorineFx.Messaging.Rtmp.SO
 			BeginUpdate();
             try
             {
-                foreach (string name in values)
+                foreach (DictionaryEntry entry in values)
                 {
-                    SetAttribute(name, values[name]);
+                    SetAttribute(entry.Key as string, entry.Value);
                 }
             }
             finally
@@ -402,6 +464,7 @@ namespace FluorineFx.Messaging.Rtmp.SO
                 EndUpdate();
             }
 		}
+#endif
 
         public override void SetAttributes(IAttributeStore values) 
 		{

@@ -18,6 +18,9 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx.Messaging.Api.Messaging
 {
@@ -39,10 +42,17 @@ namespace FluorineFx.Messaging.Api.Messaging
         /// Service name.
         /// </summary>
         private string _serviceName;
+#if !(NET_1_1)
+        /// <summary>
+        /// Service parameters.
+        /// </summary>
+        private Dictionary<string, object> _serviceParameterMap;
+#else
         /// <summary>
         /// Service parameters.
         /// </summary>
         private Hashtable _serviceParameterMap;
+#endif
         /// <summary>
         /// Result.
         /// </summary>
@@ -55,14 +65,35 @@ namespace FluorineFx.Messaging.Api.Messaging
             get { return _serviceName; }
             set { _serviceName = value; }
         }
+#if !(NET_1_1)
+        /// <summary>
+        /// Gets or sets service parameters.
+        /// </summary>
+        public Dictionary<string, object> ServiceParameterMap
+        {
+            get 
+            {
+                if (_serviceParameterMap == null)
+                    _serviceParameterMap = new Dictionary<string, object>();
+                return _serviceParameterMap; 
+            }
+            set { _serviceParameterMap = value; }
+        }
+#else
         /// <summary>
         /// Gets or sets service parameters.
         /// </summary>
         public Hashtable ServiceParameterMap
         {
-            get { return _serviceParameterMap; }
+            get 
+            { 
+                if (_serviceParameterMap == null)
+                    _serviceParameterMap = new Hashtable();
+                return _serviceParameterMap; 
+            }
             set { _serviceParameterMap = value; }
         }
+#endif
         /// <summary>
         /// Gets or sets target.
         /// </summary>

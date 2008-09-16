@@ -52,7 +52,7 @@ namespace FluorineFx.Messaging.Rtmp
             set
             {
                 if (_resultSent)
-                    throw new ApplicationException("You can only set the result once.");
+                    throw new Exception("You can only set the result once.");
                 _resultSent = true;
                 if (_channel.IsAlive)
                 {

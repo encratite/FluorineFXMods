@@ -27,11 +27,23 @@ namespace FluorineFx.Messaging.Rtmp.Event
     [CLSCompliant(false)]
 	public class BaseEvent : IRtmpEvent
 	{
+        /// <summary>
+        /// Event RTMP packet header.
+        /// </summary>
 		protected RtmpHeader _header;
+        /// <summary>
+        /// Event target object.
+        /// </summary>
 		protected object _object;
 		protected int _timestamp;
 		protected byte _dataType;
+        /// <summary>
+        /// Event type.
+        /// </summary>
 		protected EventType _eventType;
+        /// <summary>
+        /// Event listener.
+        /// </summary>
 		protected IEventListener _source;
 
         internal BaseEvent(EventType eventType)

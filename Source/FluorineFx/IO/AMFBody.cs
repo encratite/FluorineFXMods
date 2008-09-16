@@ -21,8 +21,9 @@ using System;
 using System.Collections;
 using System.Text;
 using System.IO;
-
-using FluorineFx.Context;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx.Messaging;
 using FluorineFx.Messaging.Messages;
 
@@ -234,7 +235,11 @@ namespace FluorineFx.IO
 			{
 				if(!(_content is IList))
 				{
-					list = new ArrayList();
+#if !(NET_1_1)
+                    list = new List<object>();
+#else
+                    list = new ArrayList();
+#endif
 					list.Add(_content );
 				}
 				else 
@@ -256,9 +261,14 @@ namespace FluorineFx.IO
 				}
 			}
 
+#if !(NET_1_1)
+			if( list == null )
+				list = new List<object>();
+#else
 			if( list == null )
 				list = new ArrayList();
-			return list;
+#endif
+            return list;
 		}
 
         internal void WriteBody(ObjectEncoding objectEncoding, AMFWriter writer)

@@ -59,27 +59,27 @@
 		<!-- <httpCompress preferredAlgorithm="deflate|gzip" compressionLevel="high|normal|low" handleRequest="all|amf|none" /> -->
 		<httpCompress preferredAlgorithm="gzip" compressionLevel="high" handleRequest="all">
 		<!-- compress responses larger then threshold bytes-->
-		<threshold>10240</threshold>
-		<excludedMimeTypes>
-			<add type="image/jpeg"/>
-			<add type="image/png"/>
-			<add type="image/gif" />
-			<add type="application/zip" />
-			<add type="application/x-zip-compressed" />
-			<add type="application/x-gzip-compressed" />
-			<add type="application/x-compressed" />
-			<add type="application/octet-stream" />
-			<add type="application/pdf" />
-		</excludedMimeTypes>
-		<excludedPaths>
-			<!--Fluorine service browser scripts and resources -->
-			<add path="FluorineWebResource.axd"/>
-			<add path="FluorineCodeGenerator.aspx"/>
-			<!--standard .NET validating scripts and postback script -->
-			<add path="WebResource.axd"/>
-			<!--MS AJAX and has it's own compression module that will take care of the AJAX scripts -->
-			<add path="ScriptResource.axd"/>
-		</excludedPaths>
+			<threshold>10240</threshold>
+			<excludedMimeTypes>
+				<add type="image/jpeg"/>
+				<add type="image/png"/>
+				<add type="image/gif" />
+				<add type="application/zip" />
+				<add type="application/x-zip-compressed" />
+				<add type="application/x-gzip-compressed" />
+				<add type="application/x-compressed" />
+				<add type="application/octet-stream" />
+				<add type="application/pdf" />
+			</excludedMimeTypes>
+			<excludedPaths>
+				<!--Fluorine service browser scripts and resources -->
+				<add path="FluorineWebResource.axd"/>
+				<add path="FluorineCodeGenerator.aspx"/>
+				<!--standard .NET validating scripts and postback script -->
+				<add path="WebResource.axd"/>
+				<!--MS AJAX and has it's own compression module that will take care of the AJAX scripts -->
+				<add path="ScriptResource.axd"/>
+			</excludedPaths>
 		</httpCompress>
 		<fluorineContextFactory type="FluorineFx.Context.FluorineRtmpContextFactory"/>
 		<rtmpServer>
@@ -112,6 +112,10 @@
 				<add name="mygenerator" type=".NET Full type name" />
 			</jsonRpcGenerators>
 		</json>
+		<silverlight>
+			<!-- Starts policy server for Silverlight clients policyServer="true|false" -->
+			<policyServer enable="false" policyFile="clientaccesspolicy.xml"/>
+		</silverlight>
 	</settings>
 </fluorinefx>
 </configuration>

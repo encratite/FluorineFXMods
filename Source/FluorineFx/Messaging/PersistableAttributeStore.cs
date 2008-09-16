@@ -19,6 +19,9 @@
 using System;
 using System.IO;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx.IO;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Persistence;
@@ -134,10 +137,26 @@ namespace FluorineFx.Messaging
 			OnModified();
 		}
 
+#if !(NET_1_1)
+        /// <summary>
+        /// Sets multiple attributes on this object.
+        /// </summary>
+        /// <param name="values">Dictionary of attributes.</param>
+        public override void SetAttributes(IDictionary<string, object> values)
+        {
+            base.SetAttributes(values);
+            OnModified();
+        }
+#else
+        /// <summary>
+        /// Sets multiple attributes on this object.
+        /// </summary>
+        /// <param name="values">Dictionary of attributes.</param>
         public override void SetAttributes(IDictionary values)
 		{
 			base.SetAttributes (values);
 			OnModified();
 		}
-	}
+#endif
+    }
 }

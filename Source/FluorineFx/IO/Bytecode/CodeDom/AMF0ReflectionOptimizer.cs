@@ -126,8 +126,8 @@ namespace FluorineFx.IO.Bytecode.CodeDom
 				_cp.TempFiles = new TempFileCollection(Path.GetTempPath());
 				_cp.TempFiles.KeepFiles = true;
 
-#if NET_2_0
-					res = provider.CompileAssemblyFromFile( _cp, file );
+#if !(NET_1_1)
+                res = provider.CompileAssemblyFromFile( _cp, file );
 #else
 				ICodeCompiler compiler = provider.CreateCompiler();
 				res = compiler.CompileAssemblyFromFile( _cp, file );
@@ -135,9 +135,9 @@ namespace FluorineFx.IO.Bytecode.CodeDom
 
 			}
 			else
-			{
-#if NET_2_0
-					res = provider.CompileAssemblyFromSource( _cp, new string[] {code});
+            {
+#if !(NET_1_1)
+                res = provider.CompileAssemblyFromSource( _cp, new string[] {code});
 #else
 				ICodeCompiler compiler = provider.CreateCompiler();
 				res = compiler.CompileAssemblyFromSource( _cp, code );

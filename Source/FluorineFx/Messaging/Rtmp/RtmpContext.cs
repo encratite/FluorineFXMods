@@ -18,6 +18,9 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx.Messaging.Rtmp
 {
@@ -54,11 +57,17 @@ namespace FluorineFx.Messaging.Rtmp
 
 		int _lastReadChannel = 0x00;
 		int _lastWriteChannel = 0x00;
+#if !(NET_1_1)
+        Dictionary<int, RtmpHeader> _readHeaders = new Dictionary<int, RtmpHeader>();
+        Dictionary<int, RtmpHeader> _writeHeaders = new Dictionary<int, RtmpHeader>();
+        Dictionary<int, RtmpPacket> _readPackets = new Dictionary<int, RtmpPacket>();
+        Dictionary<int, RtmpPacket> _writePackets = new Dictionary<int, RtmpPacket>();
+#else
 		Hashtable _readHeaders = new Hashtable();
 		Hashtable _writeHeaders = new Hashtable();
 		Hashtable _readPackets = new Hashtable();
 		Hashtable _writePackets = new Hashtable();
-
+#endif
 		const int DefaultChunkSize = 128;
 		int _readChunkSize = DefaultChunkSize;
 		int _writeChunkSize = DefaultChunkSize;
@@ -103,6 +112,19 @@ namespace FluorineFx.Messaging.Rtmp
             _mode = value;
         }
 
+#if !(NET_1_1)
+        private void FreePackets(Dictionary<int, RtmpPacket> packets)
+        {
+            foreach (RtmpPacket packet in packets.Values)
+            {
+                if (packet != null && packet.Data != null)
+                {
+                    packet.Data = null;
+                }
+            }
+            packets.Clear();
+        }
+#else
 		private void FreePackets(Hashtable packets) 
 		{
 			foreach(RtmpPacket packet in packets.Values) 
@@ -114,6 +136,7 @@ namespace FluorineFx.Messaging.Rtmp
 			}
 			packets.Clear();
 		}
+#endif
 
 		public void SetLastReadHeader(int channelId, RtmpHeader header) 
 		{
@@ -123,7 +146,9 @@ namespace FluorineFx.Messaging.Rtmp
 
 		public RtmpHeader GetLastReadHeader(int channelId) 
 		{
-			return _readHeaders[channelId] as RtmpHeader;
+            if( _readHeaders.ContainsKey(channelId) )
+			    return _readHeaders[channelId] as RtmpHeader;
+            return null;
 		}
 
 		public void SetLastWriteHeader(int channelId, RtmpHeader header) 
@@ -134,12 +159,16 @@ namespace FluorineFx.Messaging.Rtmp
 
 		public RtmpHeader GetLastWriteHeader(int channelId) 
 		{
-			return _writeHeaders[channelId] as RtmpHeader;
+            if( _writeHeaders.ContainsKey(channelId) )
+			    return _writeHeaders[channelId] as RtmpHeader;
+            return null;
 		}
 
 		public void SetLastReadPacket(int channelId, RtmpPacket packet) 
 		{
-			RtmpPacket prevPacket = _readPackets[channelId] as RtmpPacket;
+            RtmpPacket prevPacket = null;
+            if( _readPackets.ContainsKey(channelId) )
+                prevPacket = _readPackets[channelId] as RtmpPacket;
 			if (prevPacket != null && prevPacket.Data != null) 
 			{
 				prevPacket.Data = null;
@@ -149,12 +178,16 @@ namespace FluorineFx.Messaging.Rtmp
 
 		public RtmpPacket GetLastReadPacket(int channelId) 
 		{
-			return _readPackets[channelId] as RtmpPacket;
+            if( _readPackets.ContainsKey(channelId) )
+			    return _readPackets[channelId] as RtmpPacket;
+            return null;
 		}
 
 		public void SetLastWritePacket(int channelId, RtmpPacket packet) 
 		{
-			RtmpPacket prevPacket = _writePackets[channelId] as RtmpPacket;
+            RtmpPacket prevPacket = null;
+            if (_writePackets.ContainsKey(channelId))
+                prevPacket = _writePackets[channelId] as RtmpPacket;
 			if (prevPacket != null && prevPacket.Data != null) 
 			{
 				prevPacket.Data = null;
@@ -164,7 +197,9 @@ namespace FluorineFx.Messaging.Rtmp
 
 		public RtmpPacket GetLastWritePacket(int channelId) 
 		{
-			return _writePackets[channelId] as RtmpPacket;
+            if (_writePackets.ContainsKey(channelId))
+                return _writePackets[channelId] as RtmpPacket;
+            return null;
 		}
 
 		public int GetLastReadChannel() 

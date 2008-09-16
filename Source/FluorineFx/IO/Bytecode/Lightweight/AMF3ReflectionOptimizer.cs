@@ -29,7 +29,7 @@ using FluorineFx.AMF3;
 using FluorineFx.Configuration;
 using FluorineFx.Exceptions;
 
-#if NET_2_0
+#if !(NET_1_1)
 
 namespace FluorineFx.IO.Bytecode.Lightweight
 {

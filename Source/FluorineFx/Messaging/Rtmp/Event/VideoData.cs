@@ -23,7 +23,6 @@ using FluorineFx.IO;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Event;
 using FluorineFx.Messaging.Rtmp.Stream;
-using FluorineFx.Messaging.Rtmp.IO;
 
 namespace FluorineFx.Messaging.Rtmp.Event
 {

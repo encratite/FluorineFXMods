@@ -57,8 +57,8 @@ namespace FluorineFx.Messaging.Services.Messaging
 		{
 			IExpression expressionObj = FluorineFx.Expression.Expression.Parse(expression);
 
-#if NET_2_0
-			if( expressionObj is IExpressionGenerator )
+#if !(NET_1_1)
+            if ( expressionObj is IExpressionGenerator )
 			{
                 /*
 				IExpressionGenerator expressionGenerator = expressionObj as IExpressionGenerator;

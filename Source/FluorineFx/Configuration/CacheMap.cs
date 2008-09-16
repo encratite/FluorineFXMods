@@ -18,11 +18,13 @@
 */
 using System;
 using System.Collections;
+using FluorineFx.Collections;
 using System.Web;
 using System.Web.Caching;
 using log4net;
-using FluorineFx.Context;
-using FluorineFx.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx.Configuration
 {
@@ -60,40 +62,51 @@ namespace FluorineFx.Configuration
             }
         }
 
-        private ILog _log;
-        private SynchronizedHashtable _cacheMap;
-
+        private static readonly ILog log = LogManager.GetLogger(typeof(CacheMap));
+#if (NET_1_1)
+        private Hashtable _cacheMap = new Hashtable();
+#else
+        private Dictionary<string, CacheDescriptor> _cacheMap = new Dictionary<string,CacheDescriptor>();
+#endif
         public CacheMap()
         {
-            try
-            {
-                _log = LogManager.GetLogger(typeof(CacheMap));
-            }
-            catch { }
-            _cacheMap = new SynchronizedHashtable();
         }
 
         public void AddCacheDescriptor(string name, int timeout, bool slidingExpiration)
         {
             CacheDescriptor cacheDescriptor = new CacheDescriptor(name, timeout, slidingExpiration);
-            _cacheMap[name] = cacheDescriptor;
-            if (_log != null && _log.IsDebugEnabled)
+            lock (((ICollection)_cacheMap).SyncRoot)
+            {
+                _cacheMap[name] = cacheDescriptor;
+            }
+            if (log != null && log.IsDebugEnabled)
             {
                 string msg = "Loading key: " + name + " to cache map, timeout: " + timeout + " sliding expiration: " + slidingExpiration;
-                _log.Debug(msg);
+                log.Debug(msg);
             }
         }
 
         public bool ContainsCacheDescriptor(string source)
         {
             if (source != null)
-                return _cacheMap.Contains(source);
+            {
+                lock (((ICollection)_cacheMap).SyncRoot)
+                {
+                    return _cacheMap.ContainsKey(source);
+                }
+            }
             return false;
         }
 
         public int Count
         {
-            get { return _cacheMap.Count; }
+            get 
+            {
+                lock (((ICollection)_cacheMap).SyncRoot)
+                {
+                    return _cacheMap.Count;
+                }
+            }
         }
 
         public bool ContainsValue(string cacheKey)
@@ -106,18 +119,18 @@ namespace FluorineFx.Configuration
             object value = HttpRuntime.Cache.Get(cacheKey);
             if (value != null)
             {
-                if (_log != null && _log.IsDebugEnabled)
+                if (log != null && log.IsDebugEnabled)
                 {
                     string msg = "Cache hit, name: " + cacheKey;
-                    _log.Debug(msg);
+                    log.Debug(msg);
                 }
             }
             else
             {
-                if (_log != null && _log.IsDebugEnabled)
+                if (log != null && log.IsDebugEnabled)
                 {
                     string msg = "Cache miss, name: " + cacheKey;
-                    _log.Debug(msg);
+                    log.Debug(msg);
                 }
             }
             return value;
@@ -125,24 +138,27 @@ namespace FluorineFx.Configuration
 
         public object Add(string source, string cacheKey, object value)
         {
-            if (_cacheMap.Contains(source))
+            lock (((ICollection)_cacheMap).SyncRoot)
             {
-                if (_log != null && _log.IsDebugEnabled)
+                if (_cacheMap.ContainsKey(source))
                 {
-                    string msg = "Add to ASP.NET cache name: " + source + " key: " + cacheKey;
-                    _log.Debug(msg);
-                }
+                    if (log != null && log.IsDebugEnabled)
+                    {
+                        string msg = "Add to ASP.NET cache name: " + source + " key: " + cacheKey;
+                        log.Debug(msg);
+                    }
 
-                CacheDescriptor cacheDescriptor = _cacheMap[source] as CacheDescriptor;
-                if (!cacheDescriptor.SlidingExpiration)
-                    return HttpRuntime.Cache.Add(cacheKey, value, null, DateTime.Now.AddMinutes(cacheDescriptor.Timeout), TimeSpan.Zero, CacheItemPriority.Default, null);
-                else
-                    return HttpRuntime.Cache.Add(cacheKey, value, null, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(cacheDescriptor.Timeout), CacheItemPriority.Default, null);
+                    CacheDescriptor cacheDescriptor = _cacheMap[source] as CacheDescriptor;
+                    if (!cacheDescriptor.SlidingExpiration)
+                        return HttpRuntime.Cache.Add(cacheKey, value, null, DateTime.Now.AddMinutes(cacheDescriptor.Timeout), TimeSpan.Zero, CacheItemPriority.Default, null);
+                    else
+                        return HttpRuntime.Cache.Add(cacheKey, value, null, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(cacheDescriptor.Timeout), CacheItemPriority.Default, null);
+                }
             }
-            if (_log != null && _log.IsDebugEnabled)
+            if (log != null && log.IsDebugEnabled)
             {
                 string msg = "Cannot add to ASP.NET cache the name: " + source + " key: " + cacheKey + ". Check your web.config file.";
-                _log.Debug(msg);
+                log.Debug(msg);
             }
             return null;
         }

@@ -225,6 +225,18 @@ namespace FluorineFx.Messaging.Rtmp
         /// Initializes a new instance of the StatusASO class.
         /// </summary>
         /// <param name="code">Status code.</param>
+        /// <param name="level">Level.</param>
+        /// <param name="description">Description.</param>
+        internal StatusASO(string code, string level, string description)
+        {
+            Add("code", code);
+            Add("level", level);
+            Add("description", description);
+        }
+        /// <summary>
+        /// Initializes a new instance of the StatusASO class.
+        /// </summary>
+        /// <param name="code">Status code.</param>
         internal StatusASO(string code) 
         {
             Add("code", code);
@@ -239,37 +251,67 @@ namespace FluorineFx.Messaging.Rtmp
 		public double objectEncoding
 		{
 			set{ this["objectEncoding"] = value; }
-			get{ return (double)this["objectEncoding"]; }
+			get
+            { 
+                if( this.ContainsKey("objectEncoding") )
+                    return (double)this["objectEncoding"];
+                return (double)ObjectEncoding.AMF0;
+            }
 		}
 
         public int clientid
         {
             set { this["clientid"] = value; }
-            get { return (int)this["clientid"]; }
+            get 
+            {
+                if (this.ContainsKey("clientid"))
+                    return (int)this["clientid"];
+                return 0;
+            }
         }
 
         public string level
         {
             set { this["level"] = value; }
-            get { return (string)this["level"]; }
+            get 
+            {
+                if (this.ContainsKey("level"))
+                    return (string)this["level"];
+                return null;
+            }
         }
 
         public string code
         {
             set { this["code"] = value; }
-            get { return (string)this["code"]; }
+            get 
+            {
+                if (this.ContainsKey("code"))
+                    return (string)this["code"];
+                return null;
+            }
         }
 
         public string description
         {
             set { this["description"] = value; }
-            get { return (string)this["description"]; }
+            get 
+            {
+                if (this.ContainsKey("description"))
+                    return (string)this["description"];
+                return null;
+            }
         }
 
         public string details
         {
             set { this["details"] = value; }
-            get { return (string)this["details"]; }
+            get 
+            {
+                if (this.ContainsKey("details"))
+                    return (string)this["details"];
+                return null;
+            }
         }
 
 		public static StatusASO GetStatusObject(string statusCode, ObjectEncoding objectEncoding)

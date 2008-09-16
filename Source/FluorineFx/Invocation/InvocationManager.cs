@@ -19,6 +19,9 @@
 using System;
 using System.Reflection;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx.Invocation
 {
@@ -27,10 +30,55 @@ namespace FluorineFx.Invocation
 	/// </summary>
 	class InvocationManager : IInvocationManager
 	{
-		Stack		_context;
-		Hashtable	_properties;
-		object		_result;
+#if !(NET_1_1)
+        Stack<object> _context;
+        Dictionary<object, object> _properties;
+#else
+        Stack		_context;
+        Hashtable	_properties;
+#endif
+        object		_result;
 
+#if !(NET_1_1)
+        public InvocationManager()
+        {
+            _context = new Stack<object>();
+            _properties = new Dictionary<object, object>();
+        }
+
+        #region IInvocationManager Members
+
+        public Stack<object> Context
+        {
+            get
+            {
+                return _context;
+            }
+        }
+
+        public Dictionary<object, object> Properties
+        {
+            get
+            {
+                return _properties;
+            }
+        }
+
+        public object Result
+        {
+            get
+            {
+                return _result;
+            }
+            set
+            {
+                _result = value;
+            }
+        }
+
+        #endregion
+
+#else
 		public InvocationManager()
 		{
 			_context = new Stack();
@@ -68,5 +116,6 @@ namespace FluorineFx.Invocation
 		}
 
 		#endregion
+#endif
 	}
 }

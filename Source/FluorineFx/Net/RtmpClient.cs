@@ -18,16 +18,22 @@
 */
 using System;
 using System.Collections;
+using System.Reflection;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Configuration;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Messaging.Rtmp;
+using FluorineFx.Messaging.Rtmp.Service;
 using FluorineFx.Util;
 using FluorineFx.Invocation;
 using FluorineFx.Exceptions;
@@ -39,18 +45,29 @@ namespace FluorineFx.Net
     /// </summary>
     class RtmpClient : BaseRtmpHandler, INetConnectionClient, IPendingServiceCallback
     {
+#if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(RtmpClient));
+#endif
 
         NetConnection _netConnection;
+#if !(NET_1_1)
+        Dictionary<string, object> _connectionParameters;
+#else
         Hashtable _connectionParameters;
+#endif
+
         RtmpClientConnection _connection;
         object[] _connectArguments;
 
         public RtmpClient(NetConnection netConnection)
-            : base(null)
+            : base()
         {
             _netConnection = netConnection;
+#if !(NET_1_1)
+            _connectionParameters = new Dictionary<string,object>();
+#else
             _connectionParameters = new Hashtable();
+#endif
             //_connectionParams.Add("pageUrl", "");
             _connectionParameters.Add("objectEncoding", (double)_netConnection.ObjectEncoding);
             _connectionParameters.Add("capabilities", 15);
@@ -127,6 +144,10 @@ namespace FluorineFx.Net
             IServiceCall call = invoke.ServiceCall;
             if (call.ServiceMethodName == "_result" || call.ServiceMethodName == "_error")
             {
+                if (call.ServiceMethodName == "_error")
+                    call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_INVOCATION_EXCEPTION;
+                if (call.ServiceMethodName == "_result")
+                    call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_RESULT;
                 HandlePendingCallResult(connection, invoke);
                 return;
             }
@@ -152,7 +173,7 @@ namespace FluorineFx.Net
                     reply.InvokeId = invoke.InvokeId;                    
                     channel.Write(reply);
                 }
-                */
+                */                
                 MethodInfo mi = MethodHandler.GetMethod(_netConnection.Client.GetType(), call.ServiceMethodName, call.Arguments, false, false);
                 if (mi != null)
                 {
@@ -165,31 +186,33 @@ namespace FluorineFx.Net
                         InvocationHandler invocationHandler = new InvocationHandler(mi);
                         object result = invocationHandler.Invoke(_netConnection.Client, args);
                         if (mi.ReturnType == typeof(void))
-                            call.Status = ServiceCall.STATUS_SUCCESS_VOID;
+                            call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_VOID;
                         else
                         {
-                            call.Status = result == null ? ServiceCall.STATUS_SUCCESS_NULL : ServiceCall.STATUS_SUCCESS_RESULT;
+                            call.Status = result == null ? FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_NULL : FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_RESULT;
                             psc.Result = result;
                         }
                     }
                     catch (Exception exception)
                     {
                         call.Exception = exception;
-                        call.Status = ServiceCall.STATUS_INVOCATION_EXCEPTION;
+                        call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_INVOCATION_EXCEPTION;
                         //log.Error("Error while invoking method " + call.ServiceMethodName + " on client", exception);
                     }
                 }
                 else
                 {
                     string msg = __Res.GetString(__Res.Invocation_NoSuitableMethod, call.ServiceMethodName);
-                    call.Status = ServiceCall.STATUS_METHOD_NOT_FOUND;
+                    call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_METHOD_NOT_FOUND;
                     call.Exception = new FluorineException(msg);
                     //log.Error(msg, call.Exception);
                 }
-                if (call.Status == ServiceCall.STATUS_SUCCESS_VOID || call.Status == ServiceCall.STATUS_SUCCESS_NULL)
+                if (call.Status == FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_VOID || call.Status == FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_NULL)
                 {
+#if !SILVERLIGHT
                     if (log.IsDebugEnabled)
                         log.Debug("Method does not have return value, do not reply");
+#endif
                     return;
                 }
                 Invoke reply = new Invoke();
@@ -226,19 +249,53 @@ namespace FluorineFx.Net
         {
             Uri uri = new Uri(command);
             _connectArguments = arguments;
+            //_connectionParameters["tcUrl"] = "rtmp://" + uri.Host + ':' + uri.Port + '/' + uri.PathAndQuery;
+            _connectionParameters["tcUrl"] = "rtmp://" + uri.Host + ':' + uri.Port + '/' + uri.Query;
+            _connectionParameters["app"] = uri.LocalPath.TrimStart(new char[] { '/' });
+
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 #if NET_1_1
 			IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port);
 			socket.Connect(endpoint);
 #else
+#if !SILVERLIGHT
             socket.Connect(uri.Host, uri.Port);
-#endif
-            _connectionParameters["tcUrl"] = "rtmp://" + uri.Host + ':' + uri.Port + '/' + uri.PathAndQuery;
-            _connectionParameters["app"] = uri.LocalPath.TrimStart(new char[] { '/' });
-
             _connection = new RtmpClientConnection(this, socket);
             _connection.BeginHandshake();
+#else
+            DnsEndPoint endPoint = new DnsEndPoint(uri.Host, uri.Port);
+            SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+            args.UserToken = socket;
+            args.RemoteEndPoint = endPoint;
+            args.Completed += new EventHandler<SocketAsyncEventArgs>(OnSocketConnectCompleted);
+            socket.ConnectAsync(args); 
+#endif
+#endif
         }
+
+#if SILVERLIGHT
+        private void OnSocketConnectCompleted(object sender, SocketAsyncEventArgs e)
+        {
+            try
+            {
+                Socket socket = (Socket)e.UserToken;
+                if (e.SocketError != SocketError.Success)
+                {
+                    _netConnection.RaiseNetStatus(new SocketException((int)e.SocketError));
+                    socket.Close();
+                }
+                else
+                {
+                    _connection = new RtmpClientConnection(this, socket);
+                    _connection.BeginHandshake();
+                }
+            }
+            catch (Exception ex)
+            {
+                _netConnection.RaiseNetStatus(ex);
+            }
+        }
+#endif
 
         public void Close()
         {

@@ -20,7 +20,12 @@ using System;
 using System.ComponentModel;
 using System.Collections;
 using System.Reflection;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Exceptions;
 
 namespace FluorineFx
@@ -30,8 +35,9 @@ namespace FluorineFx
 	/// </summary>
 	public sealed class MethodHandler
 	{
+#if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(MethodHandler));
-
+#endif
         /// <summary>
         /// Initializes a new instance of the MethodHandler class.
         /// </summary>
@@ -90,13 +96,19 @@ namespace FluorineFx
         public static MethodInfo GetMethod(Type type, string methodName, IList arguments, bool exactMatch, bool throwException, bool traceError)
 		{
 			MethodInfo[] methodInfos = type.GetMethods(BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static);
+#if !(NET_1_1)
+            List<MethodInfo> suitableMethodInfos = new List<MethodInfo>();
+#else
 			ArrayList suitableMethodInfos = new ArrayList();
+#endif
             for (int i = 0; i < methodInfos.Length; i++)
             {
                 MethodInfo methodInfo = methodInfos[i];
-                if (methodInfo.Name == methodName && methodInfo.GetParameters().Length == arguments.Count)
+                if (methodInfo.Name == methodName)
                 {
-                    suitableMethodInfos.Add(methodInfo);
+                    if ((methodInfo.GetParameters().Length == 0 && arguments == null)
+                        || (arguments != null && methodInfo.GetParameters().Length == arguments.Count))
+                        suitableMethodInfos.Add(methodInfo);
                 }
             }
             if (suitableMethodInfos.Count > 0)
@@ -137,10 +149,11 @@ namespace FluorineFx
                 string msg = __Res.GetString(__Res.Invocation_NoSuitableMethod, methodName);
                 if (traceError)
                 {
+#if !SILVERLIGHT
                     if (log.IsErrorEnabled)
                     {
                         log.Error(msg);
-                        for (int j = 0; j < arguments.Count; j++)
+                        for (int j = 0; arguments != null && j < arguments.Count; j++)
                         {
                             object arg = arguments[j];
                             string trace;
@@ -151,6 +164,7 @@ namespace FluorineFx
                             log.Error(trace);
                         }
                     }
+#endif
                 }
 				if( throwException )
 					throw new FluorineException(msg);

@@ -17,7 +17,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+#if !FXCLIENT
 using System.Web;
+#endif
 using System.IO;
 using System.Runtime.Remoting.Messaging;
 using System.Collections;
@@ -25,58 +27,16 @@ using System.Collections.Specialized;
 using System.Security;
 using System.Security.Principal;
 using System.Security.Permissions;
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Security;
 using FluorineFx.Messaging.Api;
+using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Configuration;
 
 namespace FluorineFx.Context
 {
-    sealed class WebSafeCallContext
-    {
-        private WebSafeCallContext()
-        {
-        }
-
-        public static object GetData(string name)
-        {
-            HttpContext ctx = HttpContext.Current;
-            if (ctx == null)
-            {
-                return CallContext.GetData(name);
-            }
-            else
-            {
-                return ctx.Items[name];
-            }
-        }
-
-        public static void SetData(string name, object value)
-        {
-            HttpContext ctx = HttpContext.Current;
-            if (ctx == null)
-            {
-                CallContext.SetData(name, value);
-            }
-            else
-            {
-                ctx.Items[name] = value;
-            }
-        }
-
-        public static void FreeNamedDataSlot(string name)
-        {
-            HttpContext ctx = HttpContext.Current;
-            if (ctx == null)
-            {
-                CallContext.FreeNamedDataSlot(name);
-            }
-            else
-            {
-                ctx.Items.Remove(name);
-            }
-        }
-    }
 	/// <summary>
 	/// Similary to the ASP.NET HttpContext class you can access the Fluorine context for the current request from any code inside the same application domain.
 	/// </summary>
@@ -236,9 +196,15 @@ namespace FluorineFx.Context
 
 		public abstract string ActivationMode{ get; }
 
+        internal abstract string EncryptCredentials(IEndpoint endpoint, IPrincipal principal, string userId, string password);
+
 		public abstract void StorePrincipal(IPrincipal principal, string userId, string password);
 
+        internal abstract void StorePrincipal(IPrincipal principal, string key);
+
 		public abstract IPrincipal RestorePrincipal(ILoginCommand loginCommand);
+
+        internal abstract IPrincipal RestorePrincipal(ILoginCommand loginCommand, string key);
 
         public abstract void ClearPrincipal();
 

@@ -164,10 +164,20 @@ namespace FluorineFx.Context
 			}
 		}
 
+        internal override string EncryptCredentials(FluorineFx.Messaging.Endpoints.IEndpoint endpoint, IPrincipal principal, string userId, string password)
+        {
+            throw new NotImplementedException("The method or operation is not implemented.");
+        }
+
 		public override void StorePrincipal(IPrincipal principal, string userId, string password)
 		{
 			_connection.SetAttribute(FluorineContext.FluorinePrincipalAttribute, principal);
 		}
+
+        internal override void StorePrincipal(IPrincipal principal, string key)
+        {
+            _connection.SetAttribute(key, principal);
+        }
 
 		public override IPrincipal RestorePrincipal(ILoginCommand loginCommand)
 		{
@@ -176,6 +186,14 @@ namespace FluorineFx.Context
                 Thread.CurrentPrincipal = principal;
             return principal;
 		}
+
+        internal override IPrincipal RestorePrincipal(ILoginCommand loginCommand, string key)
+        {
+            IPrincipal principal = _connection.GetAttribute(key) as IPrincipal;
+            if (principal != null)
+                Thread.CurrentPrincipal = principal;
+            return principal;
+        }
 
         public override void ClearPrincipal()
         {
@@ -220,7 +238,7 @@ namespace FluorineFx.Context
 
         public void RemoveAt(int index)
         {
-            _connection.RemoveAt(index);
+            throw new NotSupportedException();
         }
 
         public string SessionID
@@ -244,11 +262,13 @@ namespace FluorineFx.Context
         {
             get
             {
-                return _connection[index];
+                throw new NotSupportedException();
+                //return _connection[index];
             }
             set
             {
-                _connection[index] = value;
+                throw new NotSupportedException();
+                //_connection[index] = value;
             }
         }
 
@@ -258,7 +278,13 @@ namespace FluorineFx.Context
 
         public void CopyTo(Array array, int index)
         {
+#if !(NET_1_1)
+            object[] tmp = null;
+            _connection.CopyTo(tmp, index);
+            array = tmp;
+#else
             _connection.CopyTo(array, index);
+#endif
         }
 
         public int Count

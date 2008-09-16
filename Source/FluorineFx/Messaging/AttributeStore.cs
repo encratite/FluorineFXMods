@@ -19,7 +19,9 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx.Util;
 using FluorineFx.Collections;
 using FluorineFx.Messaging.Api;
@@ -32,12 +34,13 @@ namespace FluorineFx.Messaging
     [CLSCompliant(false)]
 	public class AttributeStore : DisposableBase, IAttributeStore
 	{
-		//protected SynchronizedHashtable _attributes;
-        protected SortedList _attributes;
-
+#if !(NET_1_1)
+        protected Dictionary<string, object> _attributes = new Dictionary<string,object>();
+#else
+        protected Hashtable _attributes = new Hashtable();
+#endif
 		public AttributeStore()
 		{
-            _attributes = new SortedList();
 		}
 
 		#region IAttributeStore Members
@@ -48,11 +51,11 @@ namespace FluorineFx.Messaging
         /// <returns>Collection of attribute names.</returns>
         public virtual ICollection GetAttributeNames()
 		{
-            lock (_attributes.SyncRoot)
+            lock (((ICollection)_attributes).SyncRoot)
             {
-                return new ReadOnlyCollection(_attributes.Keys);
+                return _attributes.Keys;
             }
-		}
+        }
         /// <summary>
         /// Sets an attribute on this object.
         /// </summary>
@@ -63,46 +66,39 @@ namespace FluorineFx.Messaging
 		{
 			if(name == null )
 				return false;
-            /*
-            if (value == null)
-            {
-                lock (_attributes.SyncRoot)
-                {
-                    // Remove value
-                    if (_attributes.ContainsKey(name))
-                    {
-                        _attributes.Remove(name);
-                        return true;
-                    }
-                }
-                return false;
-            }
-            else
-            {
-                lock (_attributes.SyncRoot)
-                {
-                    // Update with new value
-                    object previous = _attributes[name];
-                    _attributes[name] = value;
-                    return (previous == null || value == previous || !value.Equals(previous));
-                }
-            }
-            */
-            lock (_attributes.SyncRoot)
+            lock (((ICollection)_attributes).SyncRoot)
             {
                 // Update with new value
-                object previous = _attributes[name];
+                object previous = null;
+                if( _attributes.ContainsKey(name) )
+                    previous = _attributes[name];
                 _attributes[name] = value;
                 return (previous == null || value == previous || !value.Equals(previous));
             }
         }
+#if !(NET_1_1)
+        /// <summary>
+        /// Sets multiple attributes on this object.
+        /// </summary>
+        /// <param name="values">Dictionary of attributes.</param>
+        public virtual void SetAttributes(IDictionary<string, object> values)
+        {
+            lock (((ICollection)_attributes).SyncRoot)
+            {
+                foreach (KeyValuePair<string, object> entry in values)
+                {
+                    SetAttribute(entry.Key, entry.Value);
+                }
+            }
+        }
+#else
         /// <summary>
         /// Sets multiple attributes on this object.
         /// </summary>
         /// <param name="values">Dictionary of attributes.</param>
         public virtual void SetAttributes(IDictionary values)
 		{
-            lock (_attributes.SyncRoot)
+            lock (((ICollection)_attributes).SyncRoot)
             {
                 foreach (DictionaryEntry entry in values)
                 {
@@ -110,13 +106,14 @@ namespace FluorineFx.Messaging
                 }
             }
 		}
+#endif
         /// <summary>
         /// Sets multiple attributes on this object.
         /// </summary>
         /// <param name="values">Attribute store.</param>
 		public virtual void SetAttributes(IAttributeStore values)
 		{
-            lock (_attributes.SyncRoot)
+            lock (((ICollection)_attributes).SyncRoot)
             {
                 foreach (string name in values.GetAttributeNames())
                 {
@@ -134,10 +131,12 @@ namespace FluorineFx.Messaging
 		{
             if (name == null)
                 return null;
-            lock (_attributes.SyncRoot)
+            lock (((ICollection)_attributes).SyncRoot)
             {
-                return _attributes[name];
+                if( _attributes.ContainsKey(name) )
+                    return _attributes[name];
             }
+            return null;
 		}
         /// <summary>
         /// Returns the value for a given attribute and sets it if it doesn't exist.
@@ -151,7 +150,7 @@ namespace FluorineFx.Messaging
                 return null;
     	    if (defaultValue == null)
     		    throw new NullReferenceException("The default value may not be null.");
-            lock (_attributes.SyncRoot)
+            lock (((ICollection)_attributes).SyncRoot)
             {
                 if (_attributes.ContainsKey(name))
                     return _attributes[name];
@@ -171,7 +170,7 @@ namespace FluorineFx.Messaging
 		{
             if (name == null)
                 return false;
-            lock (_attributes.SyncRoot)
+            lock (((ICollection)_attributes).SyncRoot)
             {
                 return _attributes.ContainsKey(name);
             }
@@ -183,7 +182,7 @@ namespace FluorineFx.Messaging
         /// <returns>true if the attribute was found and removed otherwise false.</returns>
 		public virtual bool RemoveAttribute(string name)
 		{
-            lock (_attributes.SyncRoot)
+            lock (((ICollection)_attributes).SyncRoot)
             {
                 if (HasAttribute(name))
                 {
@@ -198,7 +197,7 @@ namespace FluorineFx.Messaging
         /// </summary>
 		public virtual void RemoveAttributes()
 		{
-            lock (_attributes.SyncRoot)
+            lock (((ICollection)_attributes).SyncRoot)
             {
                 _attributes.Clear();
             }
@@ -210,7 +209,7 @@ namespace FluorineFx.Messaging
         {
             get
             {
-                lock (_attributes.SyncRoot)
+                lock (((ICollection)_attributes).SyncRoot)
                 {
                     return _attributes.Count == 0;
                 }
@@ -234,43 +233,32 @@ namespace FluorineFx.Messaging
             }
         }
         /// <summary>
-        /// Gets or sets a value by numerical index.
-        /// </summary>
-        /// <param name="index">The numerical index of the value.</param>
-        /// <returns>The value stored at the specified index.</returns>
-        public Object this[int index] 
-        {
-            get
-            {
-                lock (_attributes.SyncRoot)
-                {
-                    return _attributes.GetByIndex(index);
-                }
-            }
-            set
-            {
-                lock (_attributes.SyncRoot)
-                {
-                    _attributes.SetByIndex(index, value);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Deletes an item at a specified index from the attributes collection.
-        /// </summary>
-        /// <param name="index">The index of the item to remove from the attributes collection.</param>
-        public void RemoveAt(int index)
-        {
-            _attributes.RemoveAt(index);
-        }
-        /// <summary>
         /// Gets the number of attributes in the collection.
         /// </summary>
         public int AttributesCount 
         {
-            get { return _attributes.Count; }
+            get 
+            {
+                lock (((ICollection)_attributes).SyncRoot)
+                {
+                    return _attributes.Count;
+                }
+            }
         }
+#if !(NET_1_1)
+        /// <summary>
+        /// Copies the collection of attribute values to a one-dimensional array, starting at the specified index in the array.
+        /// </summary>
+        /// <param name="array">The Array that receives the values.</param>
+        /// <param name="index">The zero-based index in array from which copying starts.</param>
+        public void CopyTo(object[] array, int index)
+        {
+            lock (((ICollection)_attributes).SyncRoot)
+            {
+                _attributes.Values.CopyTo(array, index);
+            }
+        }
+#else
         /// <summary>
         /// Copies the collection of attribute values to a one-dimensional array, starting at the specified index in the array.
         /// </summary>
@@ -278,9 +266,12 @@ namespace FluorineFx.Messaging
         /// <param name="index">The zero-based index in array from which copying starts.</param>
         public void CopyTo(Array array, int index)
         {
-            _attributes.Values.CopyTo(array, index);
+            lock (((ICollection)_attributes).SyncRoot)
+            {
+                _attributes.Values.CopyTo(array, index);
+            }
         }
-
+#endif
 		#endregion
     }
 }

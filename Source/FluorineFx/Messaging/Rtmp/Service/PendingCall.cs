@@ -18,19 +18,26 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+using FluorineFx.Messaging.Api.Service;
 
-namespace FluorineFx.Messaging.Api.Service
+namespace FluorineFx.Messaging.Rtmp.Service
 {
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-    [CLSCompliant(false)]
-    public class PendingCall : ServiceCall, IPendingServiceCall
+    class PendingCall : Call, IPendingServiceCall
 	{
 		object		_result;
+#if !(NET_1_1)
+        List<IPendingServiceCallback> _callbacks = new List<IPendingServiceCallback>();
+#else
 		ArrayList	_callbacks = new ArrayList();
+#endif
 
-		public PendingCall(string method) : base(method)
+        public PendingCall(string method) : base(method)
 		{
 		}
 
@@ -68,7 +75,11 @@ namespace FluorineFx.Messaging.Api.Service
 
 		public IPendingServiceCallback[] GetCallbacks()
 		{
+#if !(NET_1_1)
+            return _callbacks.ToArray();
+#else
 			return _callbacks.ToArray(typeof(IPendingServiceCallback)) as IPendingServiceCallback[];
+#endif
 		}
 
 		#endregion

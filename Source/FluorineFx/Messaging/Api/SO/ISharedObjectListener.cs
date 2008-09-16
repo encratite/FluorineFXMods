@@ -18,7 +18,10 @@
 */
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+
 
 namespace FluorineFx.Messaging.Api.SO
 {
@@ -50,12 +53,21 @@ namespace FluorineFx.Messaging.Api.SO
         /// <param name="so">The shared object.</param>
         /// <param name="values">The new attributes of the shared object.</param>
 		void OnSharedObjectUpdate(ISharedObject so, IAttributeStore values);
+#if !(NET_1_1)
+        /// <summary>
+        /// Called when multiple attributes of a shared object are updated.
+        /// </summary>
+        /// <param name="so">The shared object.</param>
+        /// <param name="values">The new attributes of the shared object.</param>
+        void OnSharedObjectUpdate(ISharedObject so, IDictionary<string, object> values);
+#else
         /// <summary>
         /// Called when multiple attributes of a shared object are updated.
         /// </summary>
         /// <param name="so">The shared object.</param>
         /// <param name="values">The new attributes of the shared object.</param>
         void OnSharedObjectUpdate(ISharedObject so, IDictionary values);
+#endif
         /// <summary>
         /// Called when an attribute is deleted from the shared object.
         /// </summary>

@@ -41,10 +41,12 @@ namespace FluorineFx.Messaging.Endpoints
     {
         private static ILog log = LogManager.GetLogger(typeof(RemotingConnection));
         IPEndPoint _remoteEndPoint;
+        IEndpoint _endpoint;
 
         public RemotingConnection(IEndpoint endpoint, string path, string connectionId, Hashtable parameters)
-            : base(endpoint, path, connectionId, parameters)
+            : base(path, connectionId, parameters)
         {
+            _endpoint = endpoint;
             IPAddress ipAddress = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
             _remoteEndPoint = new IPEndPoint(ipAddress, 80);
         }
@@ -53,6 +55,8 @@ namespace FluorineFx.Messaging.Endpoints
         {
             get { return _remoteEndPoint; }
         }
+
+        public FluorineFx.Messaging.Endpoints.IEndpoint Endpoint { get { return _endpoint; } }
 
         public override long ReadBytes
         {

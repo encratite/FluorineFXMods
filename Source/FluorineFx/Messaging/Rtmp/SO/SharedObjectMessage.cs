@@ -21,6 +21,9 @@ using System.Collections;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Event;
 using FluorineFx.Messaging.Rtmp.Event;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx.Messaging.Rtmp.SO
 {
@@ -32,7 +35,11 @@ namespace FluorineFx.Messaging.Rtmp.SO
 	{
 		private string _name;
 		//ISharedObjectEvent
-		private ArrayList _events = new ArrayList();
+#if !(NET_1_1)
+        private List<ISharedObjectEvent> _events = new List<ISharedObjectEvent>();
+#else
+        private ArrayList _events = new ArrayList();
+#endif
 		private int _version = 0;
 		private bool _persistent = false;
 
@@ -86,15 +93,6 @@ namespace FluorineFx.Messaging.Rtmp.SO
             _persistent = persistent;
         }
 
-		public IList Events
-		{
-			get
-			{
-				//return _events.ToArray(typeof(ISharedObjectEvent)) as ISharedObjectEvent[];
-				return _events;
-			}
-		}
-
 		public void AddEvent(SharedObjectEventType type, string key, object value)
 		{
 			_events.Add(new SharedObjectEvent(type, key, value));
@@ -120,15 +118,38 @@ namespace FluorineFx.Messaging.Rtmp.SO
 
 		#endregion
 
+#if !(NET_1_1)
+        public IList<ISharedObjectEvent> Events
+        {
+            get
+            {
+                return _events;
+            }
+        }
+
+        public void AddEvents(IList<ISharedObjectEvent> events)
+        {
+            _events.AddRange(events);
+        }
+#else
+		public IList Events
+		{
+			get
+			{
+				//return _events.ToArray(typeof(ISharedObjectEvent)) as ISharedObjectEvent[];
+				return _events;
+			}
+		}
+
 		public void AddEvents(IList events) 
 		{
 			_events.AddRange(events);
 		}
+#endif
 
+        #region IEvent Members
 
-		#region IEvent Members
-
-		public override object Object
+        public override object Object
 		{
 			get
 			{

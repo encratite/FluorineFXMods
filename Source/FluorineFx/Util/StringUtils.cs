@@ -18,7 +18,9 @@
 */
 
 using System;
+#if !SILVERLIGHT
 using System.Data.SqlTypes;
+#endif
 using System.IO;
 using System.Globalization;
 using System.Text;
@@ -117,6 +119,7 @@ namespace FluorineFx.Util
 			return target + value;
 		}
 
+#if !SILVERLIGHT
 		/// <summary>
 		/// Determines whether the SqlString is null or empty.
 		/// </summary>
@@ -131,6 +134,7 @@ namespace FluorineFx.Util
 			else
 				return IsNullOrEmpty(s.Value);
 		}
+#endif
 
 		public static bool IsNullOrEmptyOrWhiteSpace(string s)
 		{
@@ -329,7 +333,11 @@ namespace FluorineFx.Util
 
         public static bool CaselessEquals(string a, string b)
         {
+#if SILVERLIGHT
+            return string.Compare(a, b, CultureInfo.InvariantCulture, CompareOptions.IgnoreCase) == 0;
+#else
             return string.Compare(a, b, true, CultureInfo.InvariantCulture) == 0;
+#endif
         }
 	}
 }

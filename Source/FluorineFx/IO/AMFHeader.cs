@@ -26,11 +26,12 @@ namespace FluorineFx.IO
 	/// </summary>
 	public class AMFHeader
 	{
-		public static string CredentialsHeader = "Credentials";
-		public static string DebugHeader = "amf_server_debug";
-		public static string ServiceBrowserHeader = "DescribeService";
-
-		public static string ClearedCredentials = "ClearedCredentials";
+		public const string CredentialsHeader = "Credentials";
+		public const string DebugHeader = "amf_server_debug";
+		public const string ServiceBrowserHeader = "DescribeService";
+		public const string ClearedCredentials = "ClearedCredentials";
+        public const string CredentialsIdHeader = "CredentialsId";        
+        public const string RequestPersistentHeader = "RequestPersistentHeader";
 
 		object	_content;
 		bool	_mustUnderstand;

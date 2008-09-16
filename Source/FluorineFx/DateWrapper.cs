@@ -17,6 +17,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+using FluorineFx.Context;
 
 namespace FluorineFx
 {
@@ -26,6 +27,8 @@ namespace FluorineFx
 	/// <remarks>DateWrapper uses time zone in the last Date encountered during deserialization.</remarks>
 	public sealed class DateWrapper
 	{
+        public const string FluorineContextKey = "__@fluorinetimezone";
+
 		/// <summary>
 		/// Initializes a new instance of the DateWrapper class.
 		/// </summary>
@@ -35,18 +38,15 @@ namespace FluorineFx
 
 		internal static int GetTimeZone()
 		{
-			if( System.Web.HttpContext.Current != null &&
-				System.Web.HttpContext.Current.Items.Contains("TimeZone") )
-			{
-				return (int)System.Web.HttpContext.Current.Items["TimeZone"];
-			}
+            object value = WebSafeCallContext.GetData(FluorineContextKey);
+            if( value != null )
+                System.Convert.ToInt32(value);
 			return 0;
 		}
 
 		internal static void SetTimeZone(int timezone)
 		{
-			if( System.Web.HttpContext.Current != null )
-				System.Web.HttpContext.Current.Items["TimeZone"] = timezone;
+            WebSafeCallContext.SetData(FluorineContextKey, timezone);
 		}
 		/// <summary>
 		/// Gets the client time zone.

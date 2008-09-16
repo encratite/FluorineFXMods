@@ -45,8 +45,6 @@ namespace FluorineFx.Messaging.Services
         private static readonly ILog log = LogManager.GetLogger(typeof(AuthenticationService));
 
 		public const string ServiceId = "authentication-service";
-        public const string ClientAuthenticationError = "Client.Authentication";
-        public const string ClientAuthorizationError = "Client.Authorization";
 
 		public AuthenticationService(MessageBroker broker, ServiceSettings settings) : base(broker, settings)
 		{

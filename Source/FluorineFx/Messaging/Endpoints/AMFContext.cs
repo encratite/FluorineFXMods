@@ -19,7 +19,9 @@
 using System;
 using System.Web;
 using System.IO;
-
+using System.Security;
+using System.Security.Permissions;
+using FluorineFx.Context;
 using FluorineFx.Configuration;
 using FluorineFx.IO;
 
@@ -30,6 +32,11 @@ namespace FluorineFx.Messaging.Endpoints
 	/// </summary>
 	class AMFContext
 	{
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const string FluorineAMFContextKey = "__@fluorineamfcontext";
+
 		AMFMessage		_amfMessage;
 		MessageOutput	_messageOutput;
 		Stream			_inputStream;
@@ -66,5 +73,44 @@ namespace FluorineFx.Messaging.Endpoints
 		{
 			get{ return _outputStream; }
 		}
+
+        /// <summary>
+        /// Gets the FluorineContext object for the current HTTP request.
+        /// </summary>
+        static public AMFContext Current
+        {
+            get
+            {
+                AMFContext context = null;
+                HttpContext ctx = HttpContext.Current;
+                if (ctx != null)
+                    return ctx.Items[AMFContext.FluorineAMFContextKey] as AMFContext;
+                try
+                {
+                    // See if we're running in full trust
+                    new SecurityPermission(PermissionState.Unrestricted).Demand();
+                    context = WebSafeCallContext.GetData(AMFContext.FluorineAMFContextKey) as AMFContext;
+                }
+                catch (SecurityException)
+                {
+                }
+                return context;
+            }
+            set
+            {
+                HttpContext ctx = HttpContext.Current;
+                if (ctx != null)
+                    ctx.Items[AMFContext.FluorineAMFContextKey] = value;
+                try
+                {
+                    // See if we're running in full trust
+                    new SecurityPermission(PermissionState.Unrestricted).Demand();
+                    WebSafeCallContext.SetData(AMFContext.FluorineAMFContextKey, value);
+                }
+                catch (SecurityException)
+                {
+                }
+            }
+        }        
 	}
 }

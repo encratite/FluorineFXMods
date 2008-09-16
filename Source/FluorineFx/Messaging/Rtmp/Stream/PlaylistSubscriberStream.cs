@@ -2270,9 +2270,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 OOBControlMessage oobCtrlMsg = new OOBControlMessage();
                 oobCtrlMsg.Target = typeof(IPassive).Name;
                 oobCtrlMsg.ServiceName = "init";
-                Hashtable paramMap = new Hashtable();
-                paramMap.Add("startTS", item.Start);
-                oobCtrlMsg.ServiceParameterMap = paramMap;
+                oobCtrlMsg.ServiceParameterMap.Add("startTS", item.Start);
                 _msgIn.SendOOBControlMessage(this, oobCtrlMsg);
             }
 
@@ -2287,9 +2285,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 OOBControlMessage oobCtrlMsg = new OOBControlMessage();
                 oobCtrlMsg.Target = typeof(ISeekableProvider).Name;
                 oobCtrlMsg.ServiceName = "seek";
-                Hashtable paramMap = new Hashtable();
-                paramMap.Add("position", position);
-                oobCtrlMsg.ServiceParameterMap = paramMap;
+                oobCtrlMsg.ServiceParameterMap.Add("position", position);
                 msgIn.SendOOBControlMessage(this, oobCtrlMsg);
                 if (oobCtrlMsg.Result is int)
                 {

@@ -26,9 +26,10 @@ using System.Collections.Specialized;
 using System.Security.Principal;
 using System.Threading;
 using System.Security.Cryptography;
-
+using FluorineFx.IO;
 using FluorineFx.Messaging;
 using FluorineFx.Messaging.Messages;
+using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Security;
 
 namespace FluorineFx.Context
@@ -167,6 +168,19 @@ namespace FluorineFx.Context
 			}
 		}
 
+        internal override string EncryptCredentials(IEndpoint endpoint, IPrincipal principal, string userId, string password)
+        {
+            string uniqueKey = endpoint.Id;//HttpContext.Current.Session.SessionID;
+            HttpCookie cookie = FormsAuthentication.GetAuthCookie("fluorine", false);
+            FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
+
+            string cacheKey = string.Join("|", new string[] { GenericLoginCommand.FluorineTicket, uniqueKey, userId, password });
+            // Store the Guid inside the Forms Ticket with all the attributes aligned with 
+            // the config Forms section.
+            FormsAuthenticationTicket newTicket = new FormsAuthenticationTicket(ticket.Version, ticket.Name, ticket.IssueDate, ticket.Expiration, ticket.IsPersistent, cacheKey, ticket.CookiePath);
+            return FormsAuthentication.Encrypt(newTicket);
+        }
+
 		public override void StorePrincipal(IPrincipal principal, string userId, string password)
 		{
 			string uniqueKey = Guid.NewGuid().ToString("N");
@@ -191,6 +205,7 @@ namespace FluorineFx.Context
 				ticket.CookiePath);
 			// Add the encrypted ticket to the cookie as data.
 			cookie.Value = FormsAuthentication.Encrypt(newTicket);
+            cookie.Secure = FormsAuthentication.RequireSSL;
 			// Update the outgoing cookies collection.
 			HttpContext.Current.Response.Cookies.Add(cookie);
 			// Add the principal to the Cache with the expiration item sync with the FormsAuthentication ticket timeout
@@ -199,6 +214,17 @@ namespace FluorineFx.Context
 				newTicket.Expiration.Subtract( newTicket.IssueDate ), 
 				CacheItemPriority.Default, null );
 		}
+
+        internal override void StorePrincipal(IPrincipal principal, string key)
+        {
+            HttpCookie cookie = FormsAuthentication.GetAuthCookie("fluorine", false);
+            FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
+            // Add the principal to the Cache with the expiration item sync with the FormsAuthentication ticket timeout
+            HttpRuntime.Cache.Insert(key, principal, null,
+                Cache.NoAbsoluteExpiration,
+                ticket.Expiration.Subtract(ticket.IssueDate),
+                CacheItemPriority.Default, null);
+        }
 
 		public static string GetFormsAuthCookieName()
 		{
@@ -278,6 +304,45 @@ namespace FluorineFx.Context
 			return principal;
 		}
 
+        internal override IPrincipal RestorePrincipal(ILoginCommand loginCommand, string key)
+        {
+            IPrincipal principal = null;
+            if (key != null)
+            {
+                principal = HttpContext.Current.Cache[key] as IPrincipal;
+                if (principal == null)
+                {
+				    FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(key);
+                    if (ticket != null)
+                    {
+                        //Get the principal as the cache lost the data
+                        string[] userData = ticket.UserData.Split(new char[] { '|' });
+                        string userId = userData[2];
+                        string password = userData[3];
+                        if (loginCommand != null)
+                        {
+                            Hashtable credentials = new Hashtable(1);
+                            credentials["password"] = password;
+                            principal = loginCommand.DoAuthentication(userId, credentials);
+                            if (principal == null)
+                                throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AuthenticationFailed));
+                            StorePrincipal(principal, key);
+                        }
+                        else
+                            throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_LoginMissing));
+                    }
+                    else
+                        throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AuthenticationFailed));
+                }
+            }
+            if (principal != null)
+            {
+                this.User = principal;
+                Thread.CurrentPrincipal = principal;
+            }
+            return principal;
+        }
+
         public override void ClearPrincipal()
         {
 			HttpCookie authCookie = HttpContext.Current.Request.Cookies.Get(GetFormsAuthCookieName());
@@ -290,6 +355,21 @@ namespace FluorineFx.Context
 				}
 			}
             FormsAuthentication.SignOut();
+            if (AMFContext.Current != null)
+            {
+                AMFContext amfContext = AMFContext.Current;
+                AMFHeader amfHeader = amfContext.AMFMessage.GetHeader(AMFHeader.CredentialsIdHeader);
+                if (amfHeader != null)
+                {
+                    amfContext.AMFMessage.RemoveHeader(AMFHeader.CredentialsIdHeader);
+                    ASObject asoObjectCredentialsId = new ASObject();
+                    asoObjectCredentialsId["name"] = AMFHeader.CredentialsIdHeader;
+                    asoObjectCredentialsId["mustUnderstand"] = false;
+                    asoObjectCredentialsId["data"] = null;//clear
+                    AMFHeader headerCredentialsId = new AMFHeader(AMFHeader.RequestPersistentHeader, true, asoObjectCredentialsId);
+                    amfContext.MessageOutput.AddHeader(headerCredentialsId);
+                }
+            }
         }
 
         /// <summary>

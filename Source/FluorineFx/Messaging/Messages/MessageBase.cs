@@ -19,6 +19,9 @@
 
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx.Messaging.Messages
 {
@@ -33,10 +36,18 @@ namespace FluorineFx.Messaging.Messages
 	/// The body is an object and is the payload for a message.
 	/// </summary>
     [CLSCompliant(false)]
+#if SILVERLIGHT
+    public class MessageBase : IMessage
+#else
     public class MessageBase : IMessage, ICloneable
+#endif
 	{
-		protected Hashtable _headers;
-		protected long _timestamp;
+#if !(NET_1_1)
+        protected Dictionary<string, object> _headers = new Dictionary<string,object>();
+#else
+        protected Hashtable _headers = new Hashtable();
+#endif
+        protected long _timestamp;
 		protected object _clientId;
 		protected string _destination;
 		protected string _messageId;
@@ -78,7 +89,6 @@ namespace FluorineFx.Messaging.Messages
 		/// </summary>
 		public MessageBase()
 		{
-			_headers = new ASObject();
 		}
 
 		#region IMessage Members
@@ -143,11 +153,19 @@ namespace FluorineFx.Messaging.Messages
 		/// This property provides access to the specialized meta information for the specific message instance. 
         /// Flex core header names begin with a 'DS' prefix. Custom header names should start with a unique prefix to avoid name collisions.
 		/// </remarks>
-		public Hashtable headers
+#if !(NET_1_1)
+        public Dictionary<string, object> headers
+        {
+            get { return _headers; }
+            set { _headers = value; }
+        }
+#else
+        public Hashtable headers
 		{
 			get{ return _headers; }
 			set{ _headers = value; }
 		}
+#endif
         /// <summary>
         /// Retrieves the specified header value.
         /// </summary>
@@ -178,7 +196,7 @@ namespace FluorineFx.Messaging.Messages
 		public bool HeaderExists(string name)
 		{
 			if( _headers != null )
-				return _headers.Contains(name);
+				return _headers.ContainsKey(name);
 			return false;
 		}
         /// <summary>
@@ -189,7 +207,11 @@ namespace FluorineFx.Messaging.Messages
 		{
 			MessageBase message = base.MemberwiseClone() as MessageBase;
 			if( _headers != null )
+#if !(NET_1_1)
+                message.headers = new Dictionary<string, object>(_headers);
+#else
 				message.headers = _headers.Clone() as Hashtable;
+#endif
 			return message;
 		}
 

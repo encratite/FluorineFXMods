@@ -360,6 +360,12 @@ namespace FluorineFx.Messaging
 					result = service.ServiceMessage(commandMessage);
 					responseMessage = result as IMessage;
 				}
+                catch (SecurityException exception)
+                {
+                    if (log.IsDebugEnabled)
+                        log.Debug(exception.Message);
+                    responseMessage = ErrorMessage.GetErrorMessage(message, exception);
+                }
 				catch(Exception exception)
 				{
 					if(log.IsErrorEnabled)

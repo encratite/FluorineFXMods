@@ -96,8 +96,8 @@ namespace FluorineFx.IO.FLV
                             MemoryStream ms = new MemoryStream(buffer);
                             AMFReader input = new AMFReader(ms);
                             string onMetaData = input.ReadData() as string;//input.ReadString();
-                            Hashtable properties = input.ReadData() as Hashtable;
-                            if (properties.ContainsKey("duration"))
+                            IDictionary properties = input.ReadData() as IDictionary;
+                            if (properties.Contains("duration"))
                                 _duration = System.Convert.ToInt32(properties["duration"]);
                             else
                                 log.Warn("Could not read Flv duration from metadata");

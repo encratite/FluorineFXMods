@@ -18,6 +18,9 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx.Messaging.Messages;
 
 namespace FluorineFx.Messaging.Api.Messaging
@@ -39,6 +42,15 @@ namespace FluorineFx.Messaging.Api.Messaging
         /// <param name="wait">Milliseconds to wait when message is not available.</param>
         /// <returns>The pulled message or null if message is not available.</returns>
         IMessage PullMessage(long wait);
+#if !(NET_1_1)
+        /// <summary>
+        /// Connect to a consumer.
+        /// </summary>
+        /// <param name="consumer">Consumer object.</param>
+        /// <param name="parameterMap">Parameters map.</param>
+        /// <returns>true when successfully subscribed, false otherwise.</returns>
+        bool Subscribe(IConsumer consumer, Dictionary<string, object> parameterMap);
+#else
         /// <summary>
         /// Connect to a consumer.
         /// </summary>
@@ -46,6 +58,7 @@ namespace FluorineFx.Messaging.Api.Messaging
         /// <param name="parameterMap">Parameters map.</param>
         /// <returns>true when successfully subscribed, false otherwise.</returns>
         bool Subscribe(IConsumer consumer, Hashtable parameterMap);
+#endif
         /// <summary>
         /// Disconnect from a consumer.
         /// </summary>

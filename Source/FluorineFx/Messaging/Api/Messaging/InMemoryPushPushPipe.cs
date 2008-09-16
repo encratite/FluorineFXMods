@@ -18,6 +18,9 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using log4net;
 using FluorineFx.Util;
 using FluorineFx.Messaging.Messages;
@@ -33,7 +36,11 @@ namespace FluorineFx.Messaging.Api.Messaging
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(InMemoryPushPushPipe));
 
+#if !(NET_1_1)
+        public override bool Subscribe(IConsumer consumer, Dictionary<string, object> parameterMap)
+#else
         public override bool Subscribe(IConsumer consumer, Hashtable parameterMap)
+#endif
         {
 		    if (!(consumer is IPushableConsumer)) 
 			    throw new FluorineException("Non-pushable consumer not supported by PushPushPipe");
@@ -43,7 +50,11 @@ namespace FluorineFx.Messaging.Api.Messaging
 		    return success;
         }
 
+#if !(NET_1_1)
+        public override bool Subscribe(IProvider provider, Dictionary<string, object> parameterMap)
+#else
         public override bool Subscribe(IProvider provider, Hashtable parameterMap)
+#endif
         {
             bool success = base.Subscribe(provider, parameterMap);
             if (success)

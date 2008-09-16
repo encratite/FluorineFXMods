@@ -99,7 +99,7 @@ namespace FluorineFx.Messaging.Endpoints.Filter
 						{
 							ErrorMessage errorMessage = resultMessage as ErrorMessage;
 							responseBody = new ErrorResponseBody(amfBody, message, resultMessage as ErrorMessage);
-							if (errorMessage.faultCode == AuthenticationService.ClientAuthenticationError )
+                            if (errorMessage.faultCode == ErrorMessage.ClientAuthenticationError)
 							{
 								messageOutput.AddBody(responseBody);
 								for (int j = i + 1; j < context.AMFMessage.BodyCount; j++)

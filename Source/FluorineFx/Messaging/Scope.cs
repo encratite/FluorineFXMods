@@ -18,7 +18,13 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+using FluorineFx.Collections.Generic;
+#endif
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Collections;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Persistence;
@@ -38,7 +44,9 @@ namespace FluorineFx.Messaging
 	/// </summary>
 	class Scope : BasicScope, IScope
 	{
+#if !SILVERLIGHT
         static ILog log = LogManager.GetLogger(typeof(Scope));
+#endif
 
 		private static string ScopeType = "scope";
 		public static string Separator = ":";
@@ -51,6 +59,16 @@ namespace FluorineFx.Messaging
 		private bool _running = false;
         protected ServiceContainer _serviceContainer;
 
+#if !(NET_1_1)
+        /// <summary>
+        /// String, IBasicScope
+        /// </summary>
+        private Dictionary<string, IBasicScope> _children = new Dictionary<string, IBasicScope>();
+        /// <summary>
+        /// IClient, Set(IConnection)
+        /// </summary>
+        private Dictionary<IClient, CopyOnWriteArraySet<IConnection>> _clients = new Dictionary<IClient, CopyOnWriteArraySet<IConnection>>();
+#else
 		/// <summary>
 		/// String, IBasicScope
 		/// </summary>
@@ -59,8 +77,9 @@ namespace FluorineFx.Messaging
 		/// IClient, Set(IConnection)
 		/// </summary>
         private SynchronizedHashtable _clients = new SynchronizedHashtable();
+#endif
 
-		protected Scope():this(string.Empty)
+        protected Scope():this(string.Empty)
 		{
 		}
 
@@ -204,13 +223,17 @@ namespace FluorineFx.Messaging
                         }
                         catch (Exception ex)
                         {
+#if !SILVERLIGHT
                             log.Error("Could not start scope " + this, ex);
+#endif
                         }
                     }
                     else
                     {
                         // Always start scopes without handlers
+#if !SILVERLIGHT
                         log.Debug(string.Format("Scope {0} has no handler, allowing start.", this));
+#endif
                         result = true;
                     }
                     _running = result;
@@ -237,7 +260,9 @@ namespace FluorineFx.Messaging
                     }
                     catch (Exception ex)
                     {
+#if !SILVERLIGHT
                         log.Error("Could not stop scope " + this, ex);
+#endif
                     }
                 }
                 _serviceContainer.Shutdown();
@@ -288,12 +313,25 @@ namespace FluorineFx.Messaging
                 return false;
             }
 
-            CopyOnWriteArraySet connections = _clients[client] as CopyOnWriteArraySet;
-            if (connections == null)
+#if !(NET_1_1)
+            CopyOnWriteArraySet<IConnection> connections = null;
+            if (_clients.ContainsKey(client))
+                connections = _clients[client];
+            else
+            {
+                connections = new CopyOnWriteArraySet<IConnection>();
+                _clients[client] = connections;
+            }
+#else
+            CopyOnWriteArraySet connections = null;
+            if( _clients.ContainsKey(client) )
+                connections = _clients[client] as CopyOnWriteArraySet;
+            else
             {
                 connections = new CopyOnWriteArraySet();
                 _clients[client] = connections;
             }
+#endif
             connections.Add(connection);
             AddEventListener(connection);
 			return true;
@@ -307,7 +345,11 @@ namespace FluorineFx.Messaging
 			IClient client = connection.Client;
 			if(_clients.ContainsKey(client)) 
 			{
+#if !(NET_1_1)
+                CopyOnWriteArraySet<IConnection> connections = _clients[client];
+#else
                 CopyOnWriteArraySet connections = _clients[client] as CopyOnWriteArraySet;
+#endif
 				connections.Remove(connection);
 				IScopeHandler handler = null;
 				if(HasHandler) 
@@ -319,8 +361,10 @@ namespace FluorineFx.Messaging
 					} 
 					catch(Exception ex)
 					{
-						if( log != null && log.IsErrorEnabled )
+#if !SILVERLIGHT
+                        if( log != null && log.IsErrorEnabled )
 							log.Error("Error while executing \"disconnect\" for connection " + connection + " on handler " + handler, ex);
+#endif
 					}
 				}
 
@@ -336,8 +380,10 @@ namespace FluorineFx.Messaging
 						} 
 						catch (Exception ex)
 						{
-							if( log != null && log.IsErrorEnabled )
+#if !SILVERLIGHT
+                            if( log != null && log.IsErrorEnabled )
 								log.Error("Error while executing \"leave\" for client " + client + " on handler " + handler, ex);
+#endif
 						}
 					}
 				}
@@ -383,8 +429,10 @@ namespace FluorineFx.Messaging
 		{
 			if(HasHandler && !Handler.AddChildScope(scope)) 
 			{
-				if( log != null && log.IsDebugEnabled )
+#if !SILVERLIGHT
+                if( log != null && log.IsDebugEnabled )
 					log.Debug("Failed to add child scope: " + scope + " to " + this);
+#endif
 				return false;
 			}
 			if(scope is IScope) 
@@ -392,13 +440,17 @@ namespace FluorineFx.Messaging
 				// Start the scope
 				if(HasHandler && !Handler.Start((IScope) scope)) 
 				{
-					if( log != null && log.IsDebugEnabled )
+#if !SILVERLIGHT
+                    if( log != null && log.IsDebugEnabled )
 						log.Debug("Failed to start child scope: " + scope + " in " + this);
+#endif
 					return false;
 				}
 			}
-			if( log != null && log.IsDebugEnabled )
+#if !SILVERLIGHT
+            if( log != null && log.IsDebugEnabled )
 				log.Debug("Add child scope: " + scope + " to " + this);
+#endif
 			_children[scope.Type + Separator + scope.Name] = scope;
 			return true;
 		}
@@ -410,11 +462,15 @@ namespace FluorineFx.Messaging
 				if(HasHandler)
 					this.Handler.Stop((IScope) scope);				
 			}
-			_children.Remove(scope.Type + Separator + scope.Name);
+            string child = scope.Type + Separator + scope.Name;
+            if( _children.ContainsKey(child) )
+			    _children.Remove(child);
 			if(HasHandler)
 			{
-				if( log != null && log.IsDebugEnabled )
+#if !SILVERLIGHT
+                if( log != null && log.IsDebugEnabled )
 					log.Debug("Remove child scope");
+#endif
 				this.Handler.RemoveChildScope(scope);
 			}
 		}
@@ -432,15 +488,21 @@ namespace FluorineFx.Messaging
 				return new PrefixFilteringStringEnumerator(_children.Keys, type + Separator);
 		}
 
-		public IBasicScope GetBasicScope(string type, string name)
-		{
-			return _children[type + Separator + name] as IBasicScope;
-		}
+        public IBasicScope GetBasicScope(string type, string name)
+        {
+            string child = type + Separator + name;
+            if (_children.ContainsKey(child))
+                return _children[child] as IBasicScope;
+            return null;
+        }
 
 		public IScope GetScope(string name)
 		{
-			return _children[ScopeType + Separator + name] as IScope;
-		}
+            string child = ScopeType + Separator + name;
+            if (_children.ContainsKey(child))
+                return _children[child] as IScope;
+            return null;
+        }
 
 		public ICollection GetClients()
 		{
@@ -512,8 +574,8 @@ namespace FluorineFx.Messaging
 
 		public ICollection LookupConnections(IClient client)
 		{
-			if( _clients.Contains(client) )
-				return _clients[client] as CopyOnWriteArraySet;
+			if( _clients.ContainsKey(client) )
+                return _clients[client] as ICollection;
 			else
 				return null;
 		}
@@ -631,8 +693,11 @@ namespace FluorineFx.Messaging
                     // No more clients
                     return false;
                 }
-
+#if !(NET_1_1)
+                _connectionIterator = (_setIterator.Value as CopyOnWriteArraySet<IConnection>).GetEnumerator();
+#else
                 _connectionIterator = (_setIterator.Value as CopyOnWriteArraySet).GetEnumerator();
+#endif
                 while (_connectionIterator != null)
                 {
                     if (_connectionIterator.MoveNext())
@@ -646,7 +711,11 @@ namespace FluorineFx.Messaging
                         return false;
                     }
                     // Advance to next client
+#if !(NET_1_1)
+                    _connectionIterator = (_setIterator.Value as CopyOnWriteArraySet<IConnection>).GetEnumerator();
+#else
                     _connectionIterator = (_setIterator.Value as CopyOnWriteArraySet).GetEnumerator();
+#endif
                 }
                 return false;
             }

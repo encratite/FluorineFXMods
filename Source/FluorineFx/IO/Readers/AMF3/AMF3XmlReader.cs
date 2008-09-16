@@ -35,8 +35,7 @@ namespace FluorineFx.IO.Readers
 
 		public object ReadData(AMFReader reader)
 		{
-			XmlDocument xmlDocument = reader.ReadAMF3XmlDocument();
-			return xmlDocument;
+			return reader.ReadAMF3XmlDocument();
 		}
 
 		#endregion

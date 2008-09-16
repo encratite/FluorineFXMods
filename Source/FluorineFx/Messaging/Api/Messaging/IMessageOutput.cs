@@ -18,6 +18,9 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx.Messaging.Messages;
 
 namespace FluorineFx.Messaging.Api.Messaging
@@ -33,6 +36,15 @@ namespace FluorineFx.Messaging.Api.Messaging
         /// </summary>
         /// <param name="message">Message to be pushed.</param>
         void PushMessage(IMessage message);
+#if !(NET_1_1)
+        /// <summary>
+        /// Connect to a provider. Note that parameters passed have nothing to deal with NetConnection.connect in client-side Flex/Flash RIA.
+        /// </summary>
+        /// <param name="provider">Provider object.</param>
+        /// <param name="parameterMap">Parameters passed with connection</param>
+        /// <returns>true when successfully subscribed, false otherwise.</returns>
+        bool Subscribe(IProvider provider, Dictionary<string, object> parameterMap);
+#else
         /// <summary>
         /// Connect to a provider. Note that parameters passed have nothing to deal with NetConnection.connect in client-side Flex/Flash RIA.
         /// </summary>
@@ -40,6 +52,7 @@ namespace FluorineFx.Messaging.Api.Messaging
         /// <param name="parameterMap">Parameters passed with connection</param>
         /// <returns>true when successfully subscribed, false otherwise.</returns>
         bool Subscribe(IProvider provider, Hashtable parameterMap);
+#endif
         /// <summary>
         /// Disconnect from a provider.
         /// </summary>

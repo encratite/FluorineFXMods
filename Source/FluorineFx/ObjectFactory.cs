@@ -23,15 +23,18 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Reflection;
-using System.Web;
-
-//using FluorineFx.Gateway;
 using FluorineFx.Exceptions;
 using FluorineFx.Configuration;
+#if !FXCLIENT
+using System.Web;
 using FluorineFx.Context;
-
-// Import log4net classes.
+#endif
+#if !SILVERLIGHT
 using log4net;
+#endif
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx
 {
@@ -40,9 +43,15 @@ namespace FluorineFx
 	/// </summary>
 	class ObjectFactory
 	{
+#if !SILVERLIGHT
 		private static readonly ILog log = LogManager.GetLogger(typeof(ObjectFactory));
+#endif
 
+#if !(NET_1_1)
+        private static Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
+#else
 		private static Hashtable _typeCache = new Hashtable();
+#endif
 		private static string[] _lacLocations;
 
 		static ObjectFactory()
@@ -61,7 +70,9 @@ namespace FluorineFx
 			//Lookup first in our cache.
 			lock(typeof(Type))
 			{
-				Type type = _typeCache[mappedTypeName] as Type;
+                Type type = null;
+                if( _typeCache.ContainsKey(mappedTypeName) )
+                    type = _typeCache[mappedTypeName] as Type;
 				if( type == null )
 				{
 
@@ -93,7 +104,9 @@ namespace FluorineFx
 			//Lookup first in our cache.
 			lock(typeof(Type))
 			{
-				Type type = _typeCache[mappedTypeName] as Type;
+                Type type = null;
+                if (_typeCache.ContainsKey(mappedTypeName))
+                    type = _typeCache[mappedTypeName] as Type;
 				if( type == null )
 				{
 
@@ -129,7 +142,7 @@ namespace FluorineFx
 			{
 				lock(typeof(Type))
 				{
-					return _typeCache.Contains(typeName);
+					return _typeCache.ContainsKey(typeName);
 				}
 			}
 			return false;
@@ -153,9 +166,17 @@ namespace FluorineFx
 					else
 					{
 						if( args == null )
+#if SILVERLIGHT
+                            return type.InvokeMember(null, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance | BindingFlags.Static, null, null, new object[] { });
+#else
 							return Activator.CreateInstance(type, BindingFlags.CreateInstance|BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static, null, new object[]{}, null);
+#endif
 						else
-							return Activator.CreateInstance(type, BindingFlags.CreateInstance|BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static, null, args, null);
+#if SILVERLIGHT
+                            return type.InvokeMember(null, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance | BindingFlags.Static, null, null, args);
+#else
+                            return Activator.CreateInstance(type, BindingFlags.CreateInstance|BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static, null, args, null);
+#endif
 					}
 				}
 			}

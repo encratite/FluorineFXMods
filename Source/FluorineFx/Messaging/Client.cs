@@ -65,12 +65,12 @@ namespace FluorineFx.Messaging
             }
         }
 
-        internal void Register(IConnection connection)
+        public void Register(IConnection connection)
         {
             _connectionToScope.Add(connection, connection.Scope);
         }
 
-        internal void Unregister(IConnection connection)
+        public void Unregister(IConnection connection)
         {
             _connectionToScope.Remove(connection);
             if (_connectionToScope.Count == 0)
@@ -109,7 +109,7 @@ namespace FluorineFx.Messaging
             get { return _connectionToScope.Keys; }
         }
 
-        public void RegisterMessageClient(MessageClient messageClient)
+        public void RegisterMessageClient(IMessageClient messageClient)
         {
             if (!this.MessageClients.Contains(messageClient))
             {
@@ -117,7 +117,7 @@ namespace FluorineFx.Messaging
             }
         }
 
-        public void UnregisterMessageClient(MessageClient messageClient)
+        public void UnregisterMessageClient(IMessageClient messageClient)
         {
             //This operation was possibly initiated by this client
             if (messageClient.IsDisconnecting)

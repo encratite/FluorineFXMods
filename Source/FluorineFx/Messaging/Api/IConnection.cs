@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Net;
 
 namespace FluorineFx.Messaging.Api
 {
@@ -50,6 +51,9 @@ namespace FluorineFx.Messaging.Api
         /// Gets whether the client is connected to the scope.
         /// </summary>
 		bool IsConnected { get; }
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         void Timeout();
         /// <summary>
         /// Close the connection. This will disconnect the client from the associated scope.
@@ -58,7 +62,7 @@ namespace FluorineFx.Messaging.Api
         /// <summary>
         /// Returns the parameters of the "connect" call.
         /// </summary>
-		Hashtable Parameters{ get; }
+		IDictionary Parameters{ get; }
         /// <summary>
         /// Gets the client object associated with this connection.
         /// </summary>
@@ -84,18 +88,19 @@ namespace FluorineFx.Messaging.Api
         /// Gets the object encoding (AMF version) for this connection.
         /// </summary>
 		ObjectEncoding ObjectEncoding{ get; }
+        /// <summary>
+        /// Returns a String that represents the current Object. 
+        /// </summary>
+        /// <returns>A String that represents the current Object.</returns>
 		string ToString();
+        /// <summary>
+        /// Gets an object that can be used to synchronize access to the connection.
+        /// </summary>
         object SyncRoot { get; }
         /// <summary>
         /// Start measuring the roundtrip time for a packet on the connection.
         /// </summary>
         void Ping();
-
-        //string Host { get; }
-        //string RemoteAddress { get; }
-        //int RemotePort { get; }
-        //string Path { get; }
-
         /// <summary>
         /// Gets the total number of bytes read from the connection.
         /// </summary>
@@ -132,10 +137,21 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
         /// <returns></returns>
         int LastPingTime { get; }
-
-        FluorineFx.Messaging.Endpoints.IEndpoint Endpoint { get; }
+        /// <summary>
+        /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         int ClientLeaseTime { get; }
-
+        /// <summary>
+        /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         bool IsFlexClient { get; }
+        /// <summary>
+        /// Gets the network endpoint.
+        /// </summary>
+        IPEndPoint RemoteEndPoint { get; }
+        /// <summary>
+        /// Gets the path for this connection. This is not updated if you switch scope.
+        /// </summary>
+        string Path { get; }
 	}
 }

@@ -347,8 +347,8 @@ namespace FluorineFx.Json
 			}
 			else
 			{
-                if (memberName != "__type")
-                    throw new JsonSerializationException(string.Format("Could not find member '{0}' on object of type '{1}'", memberName, targetType.GetType().Name));
+                if( memberName != "__type" )
+				    throw new JsonSerializationException(string.Format("Could not find member '{0}' on object of type '{1}'", memberName, targetType.GetType().Name));
 			}
 		}
 

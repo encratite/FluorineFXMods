@@ -19,7 +19,9 @@
 using System;
 using System.IO;
 using System.Xml;
+#if !SILVERLIGHT
 using System.Data.SqlTypes;
+#endif
 using FluorineFx.AMF3;
 
 namespace FluorineFx.Util
@@ -136,7 +138,7 @@ namespace FluorineFx.Util
         /// <returns>The String equivalent of the value of value.</returns>
         public static String ToString(Guid value) { return value.ToString(); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
         /// <summary>
@@ -242,7 +244,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified SqlString to its equivalent String representation.
         /// </summary>
@@ -309,7 +311,7 @@ namespace FluorineFx.Util
         /// <param name="value">An SqlGuid.</param>
         /// <returns>The String equivalent of the value of value.</returns>        
         public static String ToString(SqlGuid value) { return value.ToString(); }
-#if (NET_2_0)
+#if !(NET_1_1)
         /// <summary>
         /// Converts the value of the specified SqlChars to its equivalent String representation.
         /// </summary>
@@ -323,18 +325,21 @@ namespace FluorineFx.Util
         /// <returns>The String equivalent of the value of value.</returns>        
         public static String ToString(SqlXml value) { return value.IsNull ? null : value.Value; }
 #endif
+#endif
         /// <summary>
         /// Converts the value of the specified Type to its equivalent String representation.
         /// </summary>
         /// <param name="value">A Type.</param>
         /// <returns>The String equivalent of the value of value.</returns>
         public static String ToString(Type value) { return value == null ? null : value.FullName; }
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified XmlDocument to its equivalent String representation.
         /// </summary>
         /// <param name="value">An XmlDocument.</param>
         /// <returns>The String equivalent of the value of value.</returns>
         public static String ToString(XmlDocument value) { return value == null ? null : value.InnerXml; }
+#endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent String representation.
         /// </summary>
@@ -354,14 +359,15 @@ namespace FluorineFx.Util
             if (value is Guid) return ToString((Guid)value);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (value is SqlGuid) return ToString((SqlGuid)value);
-#if (NET_2_0)
+#if !(NET_1_1)
             if (value is SqlChars) return ToString((SqlChars)value);
             if (value is SqlXml) return ToString((SqlXml)value);
 #endif
-            if (value is Type) return ToString((Type)value);
             if (value is XmlDocument) return ToString((XmlDocument)value);
+#endif
+            if (value is Type) return ToString((Type)value);
 
             if (value is IConvertible) return ((IConvertible)value).ToString(null);
             if (value is IFormattable) return ((IFormattable)value).ToString(null, null);
@@ -467,7 +473,7 @@ namespace FluorineFx.Util
         [CLSCompliant(false)]
         public static SByte ToSByte(Char value) { return checked((SByte)value); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 
         /// <summary>
@@ -564,7 +570,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified SqlString to its equivalent 8-bit signed integer.
         /// </summary>
@@ -635,6 +641,7 @@ namespace FluorineFx.Util
         /// <returns>The equivalent 8-bit signed integer value.</returns>
         [CLSCompliant(false)]
         public static SByte ToSByte(SqlBoolean value) { return value.IsNull ? (SByte)0 : ToSByte(value.Value); }
+#endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 8-bit signed integer.
         /// </summary>
@@ -751,7 +758,7 @@ namespace FluorineFx.Util
         /// <returns>The equivalent 16-bit signed integer value.</returns>
         public static Int16 ToInt16(Char value) { return checked((Int16)value); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 
         /// <summary>
@@ -839,7 +846,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified SqlInt16 to its equivalent 16-bit signed integer.
         /// </summary>
@@ -900,6 +907,7 @@ namespace FluorineFx.Util
         /// <param name="value">An SqlBoolean.</param>
         /// <returns>The equivalent 16-bit signed integer value.</returns>
         public static Int16 ToInt16(SqlBoolean value) { return value.IsNull ? (Int16)0 : ToInt16(value.Value); }
+#endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 16-bit signed integer.
         /// </summary>
@@ -919,9 +927,9 @@ namespace FluorineFx.Util
             if (value is Char) return ToInt16((Char)value);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (value is SqlInt16) return ToInt16((SqlInt16)value);
-
+#endif
             if (value is IConvertible) return ((IConvertible)value).ToInt16(null);
 
             throw CreateInvalidCastException(value.GetType(), typeof(Int16));
@@ -1016,7 +1024,7 @@ namespace FluorineFx.Util
         /// <returns>The equivalent 32-bit signed integer value.</returns>
         public static Int32 ToInt32(Char value) { return checked((Int32)value); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 
         /// <summary>
@@ -1104,7 +1112,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified SqlInt32 to its equivalent 32-bit signed integer.
         /// </summary>
@@ -1165,6 +1173,7 @@ namespace FluorineFx.Util
         /// <param name="value">An SqlBoolean.</param>
         /// <returns>The equivalent 32-bit signed integer value.</returns>
         public static Int32 ToInt32(SqlBoolean value) { return value.IsNull ? 0 : ToInt32(value.Value); }
+#endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 32-bit signed integer.
         /// </summary>
@@ -1184,9 +1193,9 @@ namespace FluorineFx.Util
             if (value is Char) return ToInt32((Char)value);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (value is SqlInt32) return ToInt32((SqlInt32)value);
-
+#endif
             if (value is IConvertible) return ((IConvertible)value).ToInt32(null);
 
             throw CreateInvalidCastException(value.GetType(), typeof(Int32));
@@ -1293,7 +1302,7 @@ namespace FluorineFx.Util
         /// <returns>The equivalent 64-bit signed integer value.</returns>
         public static Int64 ToInt64(TimeSpan value) { return value.Ticks; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 
         /// <summary>
@@ -1393,7 +1402,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified SqlInt64 to its equivalent 64-bit signed integer.
         /// </summary>
@@ -1460,6 +1469,7 @@ namespace FluorineFx.Util
         /// <param name="value">An SqlDateTime.</param>
         /// <returns>The equivalent 64-bit signed integer value.</returns>
         public static Int64 ToInt64(SqlDateTime value) { return value.IsNull ? 0 : ToInt64(value.Value); }
+#endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 64-bit signed integer.
         /// </summary>
@@ -1481,10 +1491,10 @@ namespace FluorineFx.Util
             if (value is TimeSpan) return ToInt64((TimeSpan)value);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (value is SqlInt64) return ToInt64((SqlInt64)value);
             if (value is SqlDateTime) return ToInt64((SqlDateTime)value);
-
+#endif
             if (value is IConvertible) return ((IConvertible)value).ToInt64(null);
 
             throw CreateInvalidCastException(value.GetType(), typeof(Int64));
@@ -1579,7 +1589,7 @@ namespace FluorineFx.Util
         /// <returns>The equivalent 8-bit unsigned integer value.</returns>
         public static Byte ToByte(Char value) { return checked((Byte)value); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 
         /// <summary>
@@ -1667,7 +1677,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified SqlByte to its equivalent 8-bit unsigned integer.
         /// </summary>
@@ -1728,6 +1738,7 @@ namespace FluorineFx.Util
         /// <param name="value">An SqlBoolean.</param>
         /// <returns>The equivalent 8-bit unsigned integer value.</returns>
         public static Byte ToByte(SqlBoolean value) { return value.IsNull ? (Byte)0 : ToByte(value.Value); }
+#endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 8-bit unsigned integer.
         /// </summary>
@@ -1747,9 +1758,9 @@ namespace FluorineFx.Util
             if (value is Char) return ToByte((Char)value);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (value is SqlByte) return ToByte((SqlByte)value);
-
+#endif
             if (value is IConvertible) return ((IConvertible)value).ToByte(null);
 
             throw CreateInvalidCastException(value.GetType(), typeof(Byte));
@@ -1853,7 +1864,7 @@ namespace FluorineFx.Util
         [CLSCompliant(false)]
         public static UInt16 ToUInt16(Char value) { return checked((UInt16)value); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 
         /// <summary>
@@ -1950,7 +1961,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified SqlString to its equivalent 16-bit unsigned integer.
         /// </summary>
@@ -2021,6 +2032,7 @@ namespace FluorineFx.Util
         /// <returns>The equivalent 16-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static UInt16 ToUInt16(SqlBoolean value) { return value.IsNull ? (UInt16)0 : ToUInt16(value.Value); }
+#endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 16-bit unsigned integer.
         /// </summary>
@@ -2143,7 +2155,7 @@ namespace FluorineFx.Util
         [CLSCompliant(false)]
         public static UInt32 ToUInt32(Char value) { return checked((UInt32)value); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 
         /// <summary>
@@ -2240,7 +2252,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified SqlString to its equivalent 32-bit unsigned integer.
         /// </summary>
@@ -2311,6 +2323,7 @@ namespace FluorineFx.Util
         /// <returns>The equivalent 32-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static UInt32 ToUInt32(SqlBoolean value) { return value.IsNull ? 0 : ToUInt32(value.Value); }
+#endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 32-bit unsigned integer.
         /// </summary>
@@ -2433,7 +2446,7 @@ namespace FluorineFx.Util
         [CLSCompliant(false)]
         public static UInt64 ToUInt64(Char value) { return checked((UInt64)value); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 
         /// <summary>
@@ -2530,7 +2543,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified SqlString to its equivalent 64-bit unsigned integer.
         /// </summary>
@@ -2601,6 +2614,7 @@ namespace FluorineFx.Util
         /// <returns>The equivalent 64-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static UInt64 ToUInt64(SqlBoolean value) { return value.IsNull ? 0 : ToUInt64(value.Value); }
+#endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 64-bit unsigned integer.
         /// </summary>
@@ -2636,7 +2650,17 @@ namespace FluorineFx.Util
         /// </summary>
         /// <param name="value">A String.</param>
         /// <returns>The equivalent 32-bit unsigned integer value.</returns>
-        public static Char ToChar(String value) { return value == null ? (Char)0 : Char.Parse(value); }
+        public static Char ToChar(String value) 
+        {
+#if !(NET_1_1)
+            Char result;
+            if (Char.TryParse(value, out result))
+                return result;
+            return (Char)0;
+#else
+            return (value == null) ? (Char)0 : Char.Parse(value);
+#endif
+        }
         /// <summary>
         /// Converts the value of the specified 8-bit signed integer to its equivalent Unicode character.
         /// </summary>
@@ -2714,7 +2738,7 @@ namespace FluorineFx.Util
         /// <returns>The Unicode character value.</returns>
         public static Char ToChar(Boolean value) { return (Char)(value ? 1 : 0); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 
         /// <summary>
@@ -2802,7 +2826,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-
+#if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified SqlString to its equivalent Unicode character.
         /// </summary>
@@ -2863,6 +2887,7 @@ namespace FluorineFx.Util
         /// <param name="value">An SqlBoolean.</param>
         /// <returns>The Unicode character value.</returns>
         public static Char ToChar(SqlBoolean value) { return value.IsNull ? (Char)0 : ToChar(value.Value); }
+#endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent Unicode character.
         /// </summary>
@@ -2912,7 +2937,7 @@ namespace FluorineFx.Util
         public static Single ToSingle(Boolean p) { return p ? 1.0f : 0.0f; }
         public static Single ToSingle(Char p) { return checked((Single)p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static Single ToSingle(Single? p)     { return p.HasValue?                 p.Value:  0.0f; }
@@ -2939,7 +2964,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-        // 
+#if! SILVERLIGHT
         public static Single ToSingle(SqlSingle p) { return p.IsNull ? 0.0f : p.Value; }
         public static Single ToSingle(SqlString p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
 
@@ -2953,7 +2978,7 @@ namespace FluorineFx.Util
         public static Single ToSingle(SqlMoney p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
 
         public static Single ToSingle(SqlBoolean p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
-
+#endif
         public static Single ToSingle(object p)
         {
             if (p == null || p is DBNull) return 0.0f;
@@ -2968,9 +2993,9 @@ namespace FluorineFx.Util
             if (p is Char) return ToSingle((Char)p);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (p is SqlSingle) return ToSingle((SqlSingle)p);
-
+#endif
             if (p is IConvertible) return ((IConvertible)p).ToSingle(null);
 
             throw CreateInvalidCastException(p.GetType(), typeof(Single));
@@ -3006,7 +3031,7 @@ namespace FluorineFx.Util
         public static Double ToDouble(DateTime p) { return (p - DateTime.MinValue).TotalDays; }
         public static Double ToDouble(TimeSpan p) { return p.TotalDays; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static Double ToDouble(Double? p)     { return p.HasValue?                 p.Value:  0.0; }
@@ -3035,7 +3060,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-        // 
+#if! SILVERLIGHT
         public static Double ToDouble(SqlDouble p) { return p.IsNull ? 0.0 : p.Value; }
         public static Double ToDouble(SqlString p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
 
@@ -3050,7 +3075,7 @@ namespace FluorineFx.Util
 
         public static Double ToDouble(SqlBoolean p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
         public static Double ToDouble(SqlDateTime p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
-
+#endif
         public static Double ToDouble(object p)
         {
             if (p == null || p is DBNull) return 0.0;
@@ -3067,10 +3092,10 @@ namespace FluorineFx.Util
             if (p is TimeSpan) return ToDouble((TimeSpan)p);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (p is SqlDouble) return ToDouble((SqlDouble)p);
             if (p is SqlDateTime) return ToDouble((SqlDateTime)p);
-
+#endif
             if (p is IConvertible) return ((IConvertible)p).ToDouble(null);
 
             throw CreateInvalidCastException(p.GetType(), typeof(Double));
@@ -3127,7 +3152,7 @@ namespace FluorineFx.Util
 
         }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static Boolean ToBoolean(Boolean? p)    { return p.HasValue? p.Value:      false; }
@@ -3155,7 +3180,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-        // 
+#if! SILVERLIGHT
         public static Boolean ToBoolean(SqlBoolean p) { return p.IsNull ? false : p.Value; }
         public static Boolean ToBoolean(SqlString p) { return p.IsNull ? false : ToBoolean(p.Value); }
 
@@ -3168,7 +3193,7 @@ namespace FluorineFx.Util
         public static Boolean ToBoolean(SqlDouble p) { return p.IsNull ? false : ToBoolean(p.Value); }
         public static Boolean ToBoolean(SqlDecimal p) { return p.IsNull ? false : ToBoolean(p.Value); }
         public static Boolean ToBoolean(SqlMoney p) { return p.IsNull ? false : ToBoolean(p.Value); }
-
+#endif
 
         public static Boolean ToBoolean(object p)
         {
@@ -3183,9 +3208,9 @@ namespace FluorineFx.Util
             if (p is Char) return ToBoolean((Char)p);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (p is SqlBoolean) return ToBoolean((SqlBoolean)p);
-
+#endif
             if (p is IConvertible) return ((IConvertible)p).ToBoolean(null);
 
             throw CreateInvalidCastException(p.GetType(), typeof(Boolean));
@@ -3219,7 +3244,7 @@ namespace FluorineFx.Util
         public static Decimal ToDecimal(Boolean p) { return p ? 1.0m : 0.0m; }
         public static Decimal ToDecimal(Char p) { return checked((Decimal)p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static Decimal ToDecimal(Decimal? p)    { return p.HasValue?                  p.Value:  0.0m; }
@@ -3246,7 +3271,7 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-        // 
+#if! SILVERLIGHT
         public static Decimal ToDecimal(SqlDecimal p) { return p.IsNull ? 0.0m : p.Value; }
         public static Decimal ToDecimal(SqlMoney p) { return p.IsNull ? 0.0m : p.Value; }
         public static Decimal ToDecimal(SqlString p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
@@ -3260,7 +3285,7 @@ namespace FluorineFx.Util
         public static Decimal ToDecimal(SqlDouble p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
 
         public static Decimal ToDecimal(SqlBoolean p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
-
+#endif
         public static Decimal ToDecimal(object p)
         {
             if (p == null || p is DBNull) return 0.0m;
@@ -3275,10 +3300,10 @@ namespace FluorineFx.Util
             if (p is Char) return ToDecimal((Char)p);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (p is SqlDecimal) return ToDecimal((SqlDecimal)p);
             if (p is SqlMoney) return ToDecimal((SqlMoney)p);
-
+#endif
             if (p is IConvertible) return ((IConvertible)p).ToDecimal(null);
 
             throw CreateInvalidCastException(p.GetType(), typeof(Decimal));
@@ -3295,7 +3320,7 @@ namespace FluorineFx.Util
         public static DateTime ToDateTime(Int64 p) { return DateTime.MinValue + TimeSpan.FromTicks(p); }
         public static DateTime ToDateTime(Double p) { return DateTime.MinValue + TimeSpan.FromDays(p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static DateTime ToDateTime(DateTime? p)   { return p.HasValue?                                               p.Value:  DateTime.MinValue; }
@@ -3305,12 +3330,12 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-        // 
+#if! SILVERLIGHT
         public static DateTime ToDateTime(SqlDateTime p) { return p.IsNull ? DateTime.MinValue : p.Value; }
         public static DateTime ToDateTime(SqlString p) { return p.IsNull ? DateTime.MinValue : ToDateTime(p.Value); }
         public static DateTime ToDateTime(SqlInt64 p) { return p.IsNull ? DateTime.MinValue : DateTime.MinValue + TimeSpan.FromTicks(p.Value); }
         public static DateTime ToDateTime(SqlDouble p) { return p.IsNull ? DateTime.MinValue : DateTime.MinValue + TimeSpan.FromDays(p.Value); }
-
+#endif
         public static DateTime ToDateTime(object p)
         {
             if (p == null || p is DBNull) return DateTime.MinValue;
@@ -3325,12 +3350,12 @@ namespace FluorineFx.Util
             if (p is Double) return ToDateTime((Double)p);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (p is SqlDateTime) return ToDateTime((SqlDateTime)p);
             if (p is SqlString) return ToDateTime((SqlString)p);
             if (p is SqlInt64) return ToDateTime((SqlInt64)p);
             if (p is SqlDouble) return ToDateTime((SqlDouble)p);
-
+#endif
             if (p is IConvertible) return ((IConvertible)p).ToDateTime(null);
 
             throw CreateInvalidCastException(p.GetType(), typeof(DateTime));
@@ -3347,7 +3372,7 @@ namespace FluorineFx.Util
         public static TimeSpan ToTimeSpan(Int64 p) { return TimeSpan.FromTicks(p); }
         public static TimeSpan ToTimeSpan(Double p) { return TimeSpan.FromDays(p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static TimeSpan ToTimeSpan(TimeSpan? p)   { return p.HasValue? p.Value:                            TimeSpan.MinValue; }
@@ -3357,12 +3382,12 @@ namespace FluorineFx.Util
 
 #endif
         // SqlTypes.
-        // 
+#if! SILVERLIGHT
         public static TimeSpan ToTimeSpan(SqlString p) { return p.IsNull ? TimeSpan.MinValue : TimeSpan.Parse(p.Value); }
         public static TimeSpan ToTimeSpan(SqlDateTime p) { return p.IsNull ? TimeSpan.MinValue : p.Value - DateTime.MinValue; }
         public static TimeSpan ToTimeSpan(SqlInt64 p) { return p.IsNull ? TimeSpan.MinValue : TimeSpan.FromTicks(p.Value); }
         public static TimeSpan ToTimeSpan(SqlDouble p) { return p.IsNull ? TimeSpan.MinValue : TimeSpan.FromDays(p.Value); }
-
+#endif
         public static TimeSpan ToTimeSpan(object p)
         {
             if (p == null || p is DBNull) return TimeSpan.MinValue;
@@ -3377,12 +3402,12 @@ namespace FluorineFx.Util
             if (p is Double) return ToTimeSpan((Double)p);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (p is SqlString) return ToTimeSpan((SqlString)p);
             if (p is SqlDateTime) return ToTimeSpan((SqlDateTime)p);
             if (p is SqlInt64) return ToTimeSpan((SqlInt64)p);
             if (p is SqlDouble) return ToTimeSpan((SqlDouble)p);
-
+#endif
             throw CreateInvalidCastException(p.GetType(), typeof(TimeSpan));
         }
 
@@ -3394,18 +3419,18 @@ namespace FluorineFx.Util
         // 
         public static Guid ToGuid(String p) { return p == null ? Guid.Empty : new Guid(p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static Guid ToGuid(Guid? p)       { return p.HasValue? p.Value : Guid.Empty; }
 
 #endif
         // SqlTypes.
-        // 
+#if! SILVERLIGHT
         public static Guid ToGuid(SqlGuid p) { return p.IsNull ? Guid.Empty : p.Value; }
         public static Guid ToGuid(SqlString p) { return p.IsNull ? Guid.Empty : new Guid(p.Value); }
         public static Guid ToGuid(SqlBinary p) { return p.IsNull ? Guid.Empty : p.ToSqlGuid().Value; }
-
+#endif
         // Other Types.
         // 
         public static Guid ToGuid(Byte[] p) { return p == null ? Guid.Empty : new Guid(p); }
@@ -3422,11 +3447,11 @@ namespace FluorineFx.Util
             if (p is String) return ToGuid((String)p);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (p is SqlGuid) return ToGuid((SqlGuid)p);
             if (p is SqlString) return ToGuid((SqlString)p);
             if (p is SqlBinary) return ToGuid((SqlBinary)p);
-
+#endif
             // Other Types.
             //
             if (p is Byte[]) return ToGuid((Byte[])p);
@@ -3439,7 +3464,7 @@ namespace FluorineFx.Util
 
         #endregion
 
-#if (NET_2_0)
+#if !(NET_1_1)
         #region Nullable Types
 
         #region SByte?
@@ -3479,7 +3504,7 @@ namespace FluorineFx.Util
 		[CLSCompliant(false)]
 		public static SByte? ToNullableSByte(Boolean p)     { return       (SByte?)(p? 1: 0); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -3512,7 +3537,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		[CLSCompliant(false)]
 		public static SByte? ToNullableSByte(SqlString p)   { return p.IsNull? null: ToNullableSByte(p.Value); }
 
@@ -3536,7 +3561,7 @@ namespace FluorineFx.Util
 
 		[CLSCompliant(false)]
 		public static SByte? ToNullableSByte(SqlBoolean p)  { return p.IsNull? null: ToNullableSByte(p.Value); }
-
+#endif
 		[CLSCompliant(false)]
 		public static SByte? ToNullableSByte(object p)
 		{
@@ -3584,7 +3609,7 @@ namespace FluorineFx.Util
 		public static Int16? ToNullableInt16(Char p)        { return      checked((Int16?)p); }
 		public static Int16? ToNullableInt16(Boolean p)     { return       (Int16?)(p? 1: 0); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -3609,7 +3634,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static Int16? ToNullableInt16(SqlInt16 p)    { return p.IsNull? null:         (Int16?)p.Value;  }
 		public static Int16? ToNullableInt16(SqlString p)   { return p.IsNull? null: ToNullableInt16(p.Value); }
 
@@ -3623,7 +3648,7 @@ namespace FluorineFx.Util
 		public static Int16? ToNullableInt16(SqlMoney p)    { return p.IsNull? null: ToNullableInt16(p.Value); }
 
 		public static Int16? ToNullableInt16(SqlBoolean p)  { return p.IsNull? null: ToNullableInt16(p.Value); }
-
+#endif
 		public static Int16? ToNullableInt16(object p)
 		{
 			if (p == null || p is DBNull) return null;
@@ -3637,9 +3662,9 @@ namespace FluorineFx.Util
 			if (p is Boolean)     return ToNullableInt16((Boolean)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlInt16)    return ToNullableInt16((SqlInt16)p);
-
+#endif
 			if (p is IConvertible) return ((IConvertible)p).ToInt16(null);
 			
 			throw CreateInvalidCastException(p.GetType(), typeof(Int16?));
@@ -3674,7 +3699,7 @@ namespace FluorineFx.Util
 		public static Int32? ToNullableInt32(Char p)        { return checked((Int32?)p); }
 		public static Int32? ToNullableInt32(Boolean p)     { return p? 1: 0; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -3699,7 +3724,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static Int32? ToNullableInt32(SqlInt32 p)    { return p.IsNull? null:         (Int32?)p.Value;  }
 		public static Int32? ToNullableInt32(SqlString p)   { return p.IsNull? null: ToNullableInt32(p.Value); }
 
@@ -3713,7 +3738,7 @@ namespace FluorineFx.Util
 		public static Int32? ToNullableInt32(SqlMoney p)    { return p.IsNull? null: ToNullableInt32(p.Value); }
 
 		public static Int32? ToNullableInt32(SqlBoolean p)  { return p.IsNull? null: ToNullableInt32(p.Value); }
-
+#endif
 		public static Int32? ToNullableInt32(object p)
 		{
 			if (p == null || p is DBNull) return null;
@@ -3727,9 +3752,9 @@ namespace FluorineFx.Util
 			if (p is Boolean)     return ToNullableInt32((Boolean)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlInt32)    return ToNullableInt32((SqlInt32)p);
-
+#endif
 			if (p is IConvertible) return ((IConvertible)p).ToInt32(null);
 			
 			throw CreateInvalidCastException(p.GetType(), typeof(Int32?));
@@ -3766,7 +3791,7 @@ namespace FluorineFx.Util
 		public static Int64? ToNullableInt64(DateTime p)    { return (p - DateTime.MinValue).Ticks; }
 		public static Int64? ToNullableInt64(TimeSpan p)    { return p.Ticks; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -3793,7 +3818,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static Int64? ToNullableInt64(SqlInt64 p)    { return p.IsNull? null:         (Int64?)p.Value;  }
 		public static Int64? ToNullableInt64(SqlString p)   { return p.IsNull? null: ToNullableInt64(p.Value); }
 
@@ -3808,7 +3833,7 @@ namespace FluorineFx.Util
 
 		public static Int64? ToNullableInt64(SqlBoolean p)  { return p.IsNull? null: ToNullableInt64(p.Value); }
 		public static Int64? ToNullableInt64(SqlDateTime p) { return p.IsNull? null: ToNullableInt64(p.Value); }
-
+#endif
 		public static Int64? ToNullableInt64(object p)
 		{
 			if (p == null || p is DBNull) return null;
@@ -3824,11 +3849,11 @@ namespace FluorineFx.Util
 			if (p is TimeSpan)    return ToNullableInt64((TimeSpan)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlInt64)    return ToNullableInt64((SqlInt64)p);
 			if (p is SqlDateTime) return ToNullableInt64((SqlDateTime)p);
-
-				if (p is IConvertible) return ((IConvertible)p).ToInt64(null);
+#endif
+			if (p is IConvertible) return ((IConvertible)p).ToInt64(null);
 			
 			throw CreateInvalidCastException(p.GetType(), typeof(Int64?));
 		}
@@ -3862,7 +3887,7 @@ namespace FluorineFx.Util
 		public static Byte? ToNullableByte(Char p)        { return      checked((Byte?)p); }
 		public static Byte? ToNullableByte(Boolean p)     { return       (Byte?)(p? 1: 0); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -3887,7 +3912,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static Byte? ToNullableByte(SqlByte p)     { return p.IsNull? null:         (Byte?)p.Value;  }
 		public static Byte? ToNullableByte(SqlString p)   { return p.IsNull? null: ToNullableByte(p.Value); }
 
@@ -3901,7 +3926,7 @@ namespace FluorineFx.Util
 		public static Byte? ToNullableByte(SqlMoney p)    { return p.IsNull? null: ToNullableByte(p.Value); }
 
 		public static Byte? ToNullableByte(SqlBoolean p)  { return p.IsNull? null: ToNullableByte(p.Value); }
-
+#endif
 		public static Byte? ToNullableByte(object p)
 		{
 			if (p == null || p is DBNull) return null;
@@ -3915,9 +3940,9 @@ namespace FluorineFx.Util
 			if (p is Boolean)     return ToNullableByte((Boolean)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlByte)     return ToNullableByte((SqlByte)p);
-
+#endif
 			if (p is IConvertible) return ((IConvertible)p).ToByte(null);
 			
 			throw CreateInvalidCastException(p.GetType(), typeof(Byte?));
@@ -3962,7 +3987,7 @@ namespace FluorineFx.Util
 		[CLSCompliant(false)]
 		public static UInt16? ToNullableUInt16(Boolean p)     { return       (UInt16?)(p? 1: 0); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -3995,7 +4020,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		[CLSCompliant(false)]
 		public static UInt16? ToNullableUInt16(SqlString p)   { return p.IsNull? null: ToNullableUInt16(p.Value); }
 
@@ -4019,7 +4044,7 @@ namespace FluorineFx.Util
 
 		[CLSCompliant(false)]
 		public static UInt16? ToNullableUInt16(SqlBoolean p)  { return p.IsNull? null: ToNullableUInt16(p.Value); }
-
+#endif
 		[CLSCompliant(false)]
 		public static UInt16? ToNullableUInt16(object p)
 		{
@@ -4077,7 +4102,7 @@ namespace FluorineFx.Util
 		[CLSCompliant(false)]
 		public static UInt32? ToNullableUInt32(Boolean p)     { return       (UInt32?)(p? 1: 0); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -4110,7 +4135,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		[CLSCompliant(false)]
 		public static UInt32? ToNullableUInt32(SqlString p)   { return p.IsNull? null: ToNullableUInt32(p.Value); }
 
@@ -4134,7 +4159,7 @@ namespace FluorineFx.Util
 
 		[CLSCompliant(false)]
 		public static UInt32? ToNullableUInt32(SqlBoolean p)  { return p.IsNull? null: ToNullableUInt32(p.Value); }
-
+#endif
 		[CLSCompliant(false)]
 		public static UInt32? ToNullableUInt32(object p)
 		{
@@ -4192,7 +4217,7 @@ namespace FluorineFx.Util
 		[CLSCompliant(false)]
 		public static UInt64? ToNullableUInt64(Boolean p)     { return (UInt64?)(p? 1: 0); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -4225,7 +4250,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		[CLSCompliant(false)]
 		public static UInt64? ToNullableUInt64(SqlString p)   { return p.IsNull? null: ToNullableUInt64(p.Value); }
 
@@ -4249,7 +4274,7 @@ namespace FluorineFx.Util
 
 		[CLSCompliant(false)]
 		public static UInt64? ToNullableUInt64(SqlBoolean p)  { return p.IsNull? null: ToNullableUInt64(p.Value); }
-
+#endif
 		[CLSCompliant(false)]
 		public static UInt64? ToNullableUInt64(object p)
 		{
@@ -4275,7 +4300,17 @@ namespace FluorineFx.Util
 		// Scalar Types.
 		// 
 		public static Char? ToNullableChar(Char p)        { return p; }
-		public static Char? ToNullableChar(String p)      { return p == null? null: (Char?)Char.Parse(p); }
+		public static Char? ToNullableChar(String p)      
+        { 
+#if !(NET_1_1)
+            Char result;
+            if (Char.TryParse(p, out result))
+                return result;
+            return (Char)0;
+#else
+            return p == null? null: (Char?)Char.Parse(p); 
+#endif
+        }
 
 		[CLSCompliant(false)]
 		public static Char? ToNullableChar(SByte p)       { return checked((Char?)p); }
@@ -4297,7 +4332,7 @@ namespace FluorineFx.Util
 		public static Char? ToNullableChar(Decimal p)     { return checked((Char?)p); }
 		public static Char? ToNullableChar(Boolean p)     { return (Char?)(p? 1: 0); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -4322,7 +4357,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static Char? ToNullableChar(SqlString p)   { return p.IsNull? null: ToNullableChar(p.Value); }
 
 		public static Char? ToNullableChar(SqlByte p)     { return p.IsNull? null: ToNullableChar(p.Value); }
@@ -4336,7 +4371,7 @@ namespace FluorineFx.Util
 		public static Char? ToNullableChar(SqlMoney p)    { return p.IsNull? null: ToNullableChar(p.Value); }
 
 		public static Char? ToNullableChar(SqlBoolean p)  { return p.IsNull? null: ToNullableChar(p.Value); }
-
+#endif
 		public static Char? ToNullableChar(object p)
 		{
 			if (p == null || p is DBNull) return null;
@@ -4382,7 +4417,7 @@ namespace FluorineFx.Util
 		public static Single? ToNullableSingle(Char p)        { return checked((Single?)p); }
 		public static Single? ToNullableSingle(Boolean p)     { return p? 1.0f: 0.0f; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -4407,7 +4442,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static Single? ToNullableSingle(SqlSingle p)   { return p.IsNull? null:         (Single?)p.Value;  }
 		public static Single? ToNullableSingle(SqlString p)   { return p.IsNull? null: ToNullableSingle(p.Value); }
 
@@ -4421,7 +4456,7 @@ namespace FluorineFx.Util
 		public static Single? ToNullableSingle(SqlMoney p)    { return p.IsNull? null: ToNullableSingle(p.Value); }
 
 		public static Single? ToNullableSingle(SqlBoolean p)  { return p.IsNull? null: ToNullableSingle(p.Value); }
-
+#endif
 		public static Single? ToNullableSingle(object p)
 		{
 			if (p == null || p is DBNull) return null;
@@ -4435,9 +4470,9 @@ namespace FluorineFx.Util
 			if (p is Boolean)     return ToNullableSingle((Boolean)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlSingle)   return ToNullableSingle((SqlSingle)p);
-
+#endif
 			if (p is IConvertible) return ((IConvertible)p).ToSingle(null);
 			
 			throw CreateInvalidCastException(p.GetType(), typeof(Single?));
@@ -4474,7 +4509,7 @@ namespace FluorineFx.Util
 		public static Double? ToNullableDouble(DateTime p)    { return (p - DateTime.MinValue).TotalDays; }
 		public static Double? ToNullableDouble(TimeSpan p)    { return p.TotalDays; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -4501,7 +4536,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static Double? ToNullableDouble(SqlDouble p)   { return p.IsNull? null:         (Double?)p.Value;  }
 		public static Double? ToNullableDouble(SqlString p)   { return p.IsNull? null: ToNullableDouble(p.Value); }
 
@@ -4516,7 +4551,7 @@ namespace FluorineFx.Util
 
 		public static Double? ToNullableDouble(SqlBoolean p)  { return p.IsNull? null: ToNullableDouble(p.Value); }
 		public static Double? ToNullableDouble(SqlDateTime p) { return p.IsNull? null: (Double?)(p.Value - DateTime.MinValue).TotalDays; }
-
+#endif
 		public static Double? ToNullableDouble(object p)
 		{
 			if (p == null || p is DBNull) return null;
@@ -4532,10 +4567,10 @@ namespace FluorineFx.Util
 			if (p is TimeSpan)    return ToNullableDouble((TimeSpan)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlDouble)   return ToNullableDouble((SqlDouble)p);
 			if (p is SqlDateTime) return ToNullableDouble((SqlDateTime)p);
-
+#endif
 			if (p is IConvertible) return ((IConvertible)p).ToDouble(null);
 			
 			throw CreateInvalidCastException(p.GetType(), typeof(Double?));
@@ -4570,7 +4605,7 @@ namespace FluorineFx.Util
 		public static Boolean? ToNullableBoolean(Decimal p)     { return ToBoolean(p); }
 		public static Boolean? ToNullableBoolean(Char p)        { return ToBoolean(p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -4595,7 +4630,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static Boolean? ToNullableBoolean(SqlBoolean p)  { return p.IsNull? null: (Boolean?)          p.Value;  }
 		public static Boolean? ToNullableBoolean(SqlString p)   { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
 
@@ -4608,7 +4643,7 @@ namespace FluorineFx.Util
 		public static Boolean? ToNullableBoolean(SqlDouble p)   { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
 		public static Boolean? ToNullableBoolean(SqlDecimal p)  { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
 		public static Boolean? ToNullableBoolean(SqlMoney p)    { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
-
+#endif
 
 		public static Boolean? ToNullableBoolean(object p)
 		{
@@ -4622,9 +4657,9 @@ namespace FluorineFx.Util
 			if (p is Char)        return ToNullableBoolean((Char)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlBoolean)  return ToNullableBoolean((SqlBoolean)p);
-
+#endif
 			if (p is IConvertible) return ((IConvertible)p).ToBoolean(null);
 			
 			throw CreateInvalidCastException(p.GetType(), typeof(Boolean?));
@@ -4659,7 +4694,7 @@ namespace FluorineFx.Util
 		public static Decimal? ToNullableDecimal(Char p)        { return checked((Decimal?)p); }
 		public static Decimal? ToNullableDecimal(Boolean p)     { return p? 1.0m: 0.0m; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -4684,7 +4719,7 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static Decimal? ToNullableDecimal(SqlDecimal p)  { return p.IsNull? null:         (Decimal?)p.Value;  }
 		public static Decimal? ToNullableDecimal(SqlMoney p)    { return p.IsNull? null:         (Decimal?)p.Value;  }
 		public static Decimal? ToNullableDecimal(SqlString p)   { return p.IsNull? null: ToNullableDecimal(p.Value); }
@@ -4698,7 +4733,7 @@ namespace FluorineFx.Util
 		public static Decimal? ToNullableDecimal(SqlDouble p)   { return p.IsNull? null: ToNullableDecimal(p.Value); }
 
 		public static Decimal? ToNullableDecimal(SqlBoolean p)  { return p.IsNull? null: ToNullableDecimal(p.Value); }
-
+#endif
 		public static Decimal? ToNullableDecimal(object p)
 		{
 			if (p == null || p is DBNull) return null;
@@ -4713,10 +4748,10 @@ namespace FluorineFx.Util
 			if (p is Boolean)     return ToNullableDecimal((Boolean)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlDecimal)  return ToNullableDecimal((SqlDecimal)p);
 			if (p is SqlMoney)    return ToNullableDecimal((SqlMoney)p);
-
+#endif
 			if (p is IConvertible) return ((IConvertible)p).ToDecimal(null);
 			
 			throw CreateInvalidCastException(p.GetType(), typeof(Decimal?));
@@ -4735,7 +4770,7 @@ namespace FluorineFx.Util
 		public static DateTime? ToNullableDateTime(Int64 p)       { return DateTime.MinValue + TimeSpan.FromTicks(p); }
 		public static DateTime? ToNullableDateTime(Double p)      { return DateTime.MinValue + TimeSpan.FromDays(p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static DateTime? ToNullableDateTime(TimeSpan? p)   { return p.HasValue? DateTime.MinValue +                           p.Value:  (DateTime?)null; }
@@ -4744,12 +4779,12 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static DateTime? ToNullableDateTime(SqlDateTime p) { return p.IsNull? (DateTime?)null:                                               p.Value;  }
 		public static DateTime? ToNullableDateTime(SqlString p)   { return p.IsNull? (DateTime?)null:                                    ToDateTime(p.Value); }
 		public static DateTime? ToNullableDateTime(SqlInt64 p)    { return p.IsNull? (DateTime?)null: DateTime.MinValue +        TimeSpan.FromTicks(p.Value); }
 		public static DateTime? ToNullableDateTime(SqlDouble p)   { return p.IsNull? (DateTime?)null: DateTime.MinValue + TimeSpan.FromDays(p.Value); }
-
+#endif
 		public static DateTime? ToNullableDateTime(object p)
 		{
 			if (p == null || p is DBNull) return null;
@@ -4764,12 +4799,12 @@ namespace FluorineFx.Util
 			if (p is Double)      return ToNullableDateTime((Double)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlDateTime) return ToNullableDateTime((SqlDateTime)p);
 			if (p is SqlString)   return ToNullableDateTime((SqlString)p);
 			if (p is SqlInt64)    return ToNullableDateTime((SqlInt64)p);
 			if (p is SqlDouble)   return ToNullableDateTime((SqlDouble)p);
-
+#endif
 			if (p is IConvertible) return ((IConvertible)p).ToDateTime(null);
 			
 			throw CreateInvalidCastException(p.GetType(), typeof(DateTime?));
@@ -4787,7 +4822,7 @@ namespace FluorineFx.Util
 		public static TimeSpan? ToNullableTimeSpan(Int64 p)       { return TimeSpan.FromTicks(p); }
 		public static TimeSpan? ToNullableTimeSpan(Double p)      { return TimeSpan.FromDays(p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static TimeSpan? ToNullableTimeSpan(DateTime? p)   { return p.HasValue? p.Value - DateTime.MinValue: (TimeSpan?)null; }
@@ -4796,12 +4831,12 @@ namespace FluorineFx.Util
 
 #endif
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static TimeSpan? ToNullableTimeSpan(SqlString p)   { return p.IsNull? (TimeSpan?)null: TimeSpan.Parse(p.Value);     }
 		public static TimeSpan? ToNullableTimeSpan(SqlDateTime p) { return p.IsNull? (TimeSpan?)null: p.Value - DateTime.MinValue; }
 		public static TimeSpan? ToNullableTimeSpan(SqlInt64 p)    { return p.IsNull? (TimeSpan?)null: TimeSpan.FromTicks(p.Value); }
 		public static TimeSpan? ToNullableTimeSpan(SqlDouble p)   { return p.IsNull? (TimeSpan?)null: TimeSpan.FromDays(p.Value); }
-
+#endif
 		public static TimeSpan? ToNullableTimeSpan(object p)
 		{
 			if (p == null || p is DBNull) return null;
@@ -4815,12 +4850,12 @@ namespace FluorineFx.Util
 			if (p is Double)      return ToNullableTimeSpan((Double)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlString)   return ToNullableTimeSpan((SqlString)p);
 			if (p is SqlDateTime) return ToNullableTimeSpan((SqlDateTime)p);
 			if (p is SqlInt64)    return ToNullableTimeSpan((SqlInt64)p);
 			if (p is SqlDouble)   return ToNullableTimeSpan((SqlDouble)p);
-
+#endif
 			throw CreateInvalidCastException(p.GetType(), typeof(TimeSpan?));
 		}
 
@@ -4834,11 +4869,11 @@ namespace FluorineFx.Util
 		public static Guid? ToNullableGuid(String p)      { return p == null? null: (Guid?)new Guid(p); }
 
 		// SqlTypes.
-		// 
+#if! SILVERLIGHT
 		public static Guid? ToNullableGuid(SqlGuid p)     { return p.IsNull? null: (Guid?)p.Value;             }
 		public static Guid? ToNullableGuid(SqlString p)   { return p.IsNull? null: (Guid?)new Guid(p.Value);   }
 		public static Guid? ToNullableGuid(SqlBinary p)   { return p.IsNull? null: (Guid?)p.ToSqlGuid().Value; }
-
+#endif
 		// Other Types.
 		// 
 		public static Guid? ToNullableGuid(Type p)        { return p == null? null: (Guid?)p.GUID; }
@@ -4854,11 +4889,11 @@ namespace FluorineFx.Util
 			if (p is String)      return ToNullableGuid((String)p);
 
 			// SqlTypes.
-			//
+#if! SILVERLIGHT
 			if (p is SqlGuid)     return ToNullableGuid((SqlGuid)p);
 			if (p is SqlString)   return ToNullableGuid((SqlString)p);
 			if (p is SqlBinary)   return ToNullableGuid((SqlBinary)p);
-
+#endif
 			// Other Types.
 			//
 			if (p is Type)        return ToNullableGuid((Type)p);
@@ -4875,9 +4910,8 @@ namespace FluorineFx.Util
         #region SqlTypes
 
         #region SqlString
-
+#if! SILVERLIGHT
         // Scalar Types.
-        // 
         public static SqlString ToSqlString(String p) { return p == null ? SqlString.Null : p; }
 
         [CLSCompliant(false)]
@@ -4905,7 +4939,7 @@ namespace FluorineFx.Util
         public static SqlString ToSqlString(Guid p) { return p.ToString(); }
         public static SqlString ToSqlString(Char[] p) { return new String(p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		[CLSCompliant(false)]
@@ -4947,7 +4981,7 @@ namespace FluorineFx.Util
         public static SqlString ToSqlString(SqlMoney p) { return p.ToSqlString(); }
 
         public static SqlString ToSqlString(SqlBoolean p) { return p.ToSqlString(); }
-#if (NET_2_0)
+#if !(NET_1_1)
         public static SqlString ToSqlString(SqlChars p)    { return p.ToSqlString(); }
 		public static SqlString ToSqlString(SqlXml p)      { return p.IsNull? SqlString.Null: p.Value; }
 #endif
@@ -4976,7 +5010,7 @@ namespace FluorineFx.Util
 
             // SqlTypes.
             //
-#if (NET_2_0)
+#if !(NET_1_1)
             if (p is SqlChars)    return ToSqlString((SqlChars)p);
 			if (p is SqlXml)      return ToSqlString((SqlXml)p);
 #endif
@@ -4989,10 +5023,11 @@ namespace FluorineFx.Util
 
             return ToString(p);
         }
-
+#endif
         #endregion
 
         #region SqlByte
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
@@ -5019,7 +5054,7 @@ namespace FluorineFx.Util
         public static SqlByte ToSqlByte(Char p) { return checked((Byte)p); }
         public static SqlByte ToSqlByte(Boolean p) { return (Byte)(p ? 1 : 0); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlByte ToSqlByte(Byte? p)       { return p.HasValue?        p.Value:  SqlByte.Null; }
@@ -5080,10 +5115,11 @@ namespace FluorineFx.Util
 
             return ToByte(p);
         }
-
+#endif
         #endregion
 
         #region SqlInt16
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
@@ -5110,7 +5146,7 @@ namespace FluorineFx.Util
         public static SqlInt16 ToSqlInt16(Char p) { return checked((Int16)p); }
         public static SqlInt16 ToSqlInt16(Boolean p) { return (Int16)(p ? 1 : 0); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlInt16 ToSqlInt16(Int16? p)      { return p.HasValue?         p.Value:  SqlInt16.Null; }
@@ -5171,10 +5207,11 @@ namespace FluorineFx.Util
 
             return ToInt16(p);
         }
-
+#endif
         #endregion
 
         #region SqlInt32
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
@@ -5201,7 +5238,7 @@ namespace FluorineFx.Util
         public static SqlInt32 ToSqlInt32(Char p) { return checked((Int32)p); }
         public static SqlInt32 ToSqlInt32(Boolean p) { return p ? 1 : 0; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlInt32 ToSqlInt32(Int32? p)      { return p.HasValue?         p.Value:  SqlInt32.Null; }
@@ -5262,10 +5299,11 @@ namespace FluorineFx.Util
 
             return ToInt32(p);
         }
-
+#endif
         #endregion
 
         #region SqlInt64
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
@@ -5294,7 +5332,7 @@ namespace FluorineFx.Util
         public static SqlInt64 ToSqlInt64(DateTime p) { return (p - DateTime.MinValue).Ticks; }
         public static SqlInt64 ToSqlInt64(TimeSpan p) { return p.Ticks; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlInt64 ToSqlInt64(Int64? p)      { return p.HasValue?         p.Value:  SqlInt64.Null; }
@@ -5359,11 +5397,11 @@ namespace FluorineFx.Util
 
             return ToInt64(p);
         }
-
+#endif
         #endregion
 
         #region SqlSingle
-
+#if! SILVERLIGHT
         // Scalar Types.
         // 
         public static SqlSingle ToSqlSingle(Single p) { return p; }
@@ -5389,7 +5427,7 @@ namespace FluorineFx.Util
         public static SqlSingle ToSqlSingle(Char p) { return checked((Single)p); }
         public static SqlSingle ToSqlSingle(Boolean p) { return p ? 1.0f : 0.0f; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlSingle ToSqlSingle(Single? p)     { return p.HasValue?          p.Value:  SqlSingle.Null; }
@@ -5444,10 +5482,11 @@ namespace FluorineFx.Util
 
             return ToSingle(p);
         }
-
+#endif
         #endregion
 
         #region SqlDouble
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
@@ -5476,7 +5515,7 @@ namespace FluorineFx.Util
         public static SqlDouble ToSqlDouble(DateTime p) { return (p - DateTime.MinValue).TotalDays; }
         public static SqlDouble ToSqlDouble(TimeSpan p) { return p.TotalDays; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlDouble ToSqlDouble(Double? p)     { return p.HasValue?          p.Value:  SqlDouble.Null; }
@@ -5540,10 +5579,11 @@ namespace FluorineFx.Util
 
             return ToDouble(p);
         }
-
+#endif
         #endregion
 
         #region SqlDecimal
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
@@ -5570,7 +5610,7 @@ namespace FluorineFx.Util
         public static SqlDecimal ToSqlDecimal(Char p) { return checked((Decimal)p); }
         public static SqlDecimal ToSqlDecimal(Boolean p) { return p ? 1.0m : 0.0m; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlDecimal ToSqlDecimal(Decimal? p)    { return p.HasValue?           p.Value:  SqlDecimal.Null; }
@@ -5625,10 +5665,11 @@ namespace FluorineFx.Util
 
             return ToDecimal(p);
         }
-
+#endif
         #endregion
 
         #region SqlMoney
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
@@ -5655,7 +5696,7 @@ namespace FluorineFx.Util
         public static SqlMoney ToSqlMoney(Char p) { return checked((Decimal)p); }
         public static SqlMoney ToSqlMoney(Boolean p) { return p ? 1.0m : 0.0m; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlMoney ToSqlMoney(Decimal? p)    { return p.HasValue?           p.Value:  SqlMoney.Null; }
@@ -5710,10 +5751,11 @@ namespace FluorineFx.Util
 
             return ToDecimal(p);
         }
-
+#endif
         #endregion
 
         #region SqlBoolean
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
@@ -5740,7 +5782,7 @@ namespace FluorineFx.Util
         public static SqlBoolean ToSqlBoolean(Decimal p) { return p != 0; }
         public static SqlBoolean ToSqlBoolean(Char p) { return p != 0; }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlBoolean ToSqlBoolean(Boolean? p)    { return p.HasValue?           p.Value:  SqlBoolean.Null; }
@@ -5795,10 +5837,11 @@ namespace FluorineFx.Util
 
             return ToBoolean(p);
         }
-
+#endif
         #endregion
 
         #region SqlDateTime
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
@@ -5808,7 +5851,7 @@ namespace FluorineFx.Util
         public static SqlDateTime ToSqlDateTime(Int64 p) { return ToDateTime(p); }
         public static SqlDateTime ToSqlDateTime(Double p) { return ToDateTime(p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlDateTime ToSqlDateTime(DateTime? p)   { return p.HasValue?            p.Value:  SqlDateTime.Null; }
@@ -5845,17 +5888,18 @@ namespace FluorineFx.Util
 
             return ToDateTime(p);
         }
-
+#endif
         #endregion
 
         #region SqlGuid
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
         public static SqlGuid ToSqlGuid(Guid p) { return p; }
         public static SqlGuid ToSqlGuid(String p) { return p == null ? SqlGuid.Null : SqlGuid.Parse(p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlGuid ToSqlGuid(Guid? p)       { return p.HasValue? p.Value : SqlGuid.Null; }
@@ -5864,7 +5908,7 @@ namespace FluorineFx.Util
         // SqlTypes.
         // 
         public static SqlGuid ToSqlGuid(SqlBinary p) { return p.ToSqlGuid(); }
-#if (NET_2_0)
+#if !(NET_1_1)
         public static SqlGuid ToSqlGuid(SqlBytes p)    { return p.ToSqlBinary().ToSqlGuid(); }
 #endif
         public static SqlGuid ToSqlGuid(SqlString p) { return p.ToSqlGuid(); }
@@ -5888,7 +5932,7 @@ namespace FluorineFx.Util
             // SqlTypes.
             //
             if (p is SqlBinary) return ToSqlGuid((SqlBinary)p);
-#if (NET_2_0)
+#if !(NET_1_1)
             if (p is SqlBytes)    return ToSqlGuid((SqlBytes)p);
 #endif
             if (p is SqlString) return ToSqlGuid((SqlString)p);
@@ -5900,17 +5944,18 @@ namespace FluorineFx.Util
 
             return ToGuid(p);
         }
-
+#endif
         #endregion
 
         #region SqlBinary
+#if! SILVERLIGHT
 
         // Scalar Types.
         // 
         public static SqlBinary ToSqlBinary(Byte[] p) { return p; }
         public static SqlBinary ToSqlBinary(Guid p) { return p == Guid.Empty ? SqlBinary.Null : new SqlGuid(p).ToSqlBinary(); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static SqlBinary ToSqlBinary(Guid? p)       { return p.HasValue? new SqlGuid(p.Value).ToSqlBinary(): SqlBinary.Null; }
@@ -5918,7 +5963,7 @@ namespace FluorineFx.Util
 #endif
         // SqlTypes.
         // 
-#if (NET_2_0)
+#if !(NET_1_1)
         public static SqlBinary ToSqlBinary(SqlBytes p)    { return p.ToSqlBinary(); }
 #endif
         public static SqlBinary ToSqlBinary(SqlGuid p) { return p.ToSqlBinary(); }
@@ -5936,18 +5981,19 @@ namespace FluorineFx.Util
 
             // SqlTypes.
             //
-#if (NET_2_0)
+#if !(NET_1_1)
             if (p is SqlBytes)    return ToSqlBinary((SqlBytes)p);
 #endif
             if (p is SqlGuid) return ToSqlBinary((SqlGuid)p);
 
             return ToByteArray(p);
         }
-
+#endif
         #endregion
 
-#if (NET_2_0)
+#if !(NET_1_1)
         #region SqlBytes
+#if! SILVERLIGHT
 
         // Scalar Types.
 		// 
@@ -5983,10 +6029,11 @@ namespace FluorineFx.Util
 
 			return new SqlBytes(ToByteArray(p));
 		}
-
+#endif
         #endregion
 
         #region SqlChars
+#if! SILVERLIGHT
 
 		// Scalar Types.
 		// 
@@ -6064,11 +6111,11 @@ namespace FluorineFx.Util
 
 		public static SqlChars ToSqlChars(Type p)        { return p == null? SqlChars.Null: new SqlChars(p.FullName.ToCharArray()); }
 		public static SqlChars ToSqlChars(object p)      { return new SqlChars(ToString(p).ToCharArray()); }
-
+#endif
         #endregion
 
         #region SqlXml
-
+#if! SILVERLIGHT
 		// Scalar Types.
 		// 
 		public static SqlXml ToSqlXml(String p)      { return p == null? SqlXml.Null: new SqlXml(new XmlTextReader(new StringReader(p))); }
@@ -6113,7 +6160,7 @@ namespace FluorineFx.Util
 
 			throw CreateInvalidCastException(p.GetType(), typeof(SqlXml));
 		}
-
+#endif
         #endregion
 #endif
 
@@ -6127,22 +6174,24 @@ namespace FluorineFx.Util
         // 
         public static Type ToType(String p) { return p == null ? null : Type.GetType(p); }
         public static Type ToType(Char[] p) { return p == null ? null : Type.GetType(new string(p)); }
+#if! SILVERLIGHT
         public static Type ToType(Guid p) { return p == Guid.Empty ? null : Type.GetTypeFromCLSID(p); }
+#endif
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
-		// 
+#if! SILVERLIGHT
 		public static Type ToType(Guid? p)       { return p.HasValue? Type.GetTypeFromCLSID(p.Value): null; }
-
+#endif
 #endif
         // SqlTypes.
-        // 
+#if! SILVERLIGHT
         public static Type ToType(SqlString p) { return p.IsNull ? null : Type.GetType(p.Value); }
-#if (NET_2_0)
+#if !(NET_1_1)
         public static Type ToType(SqlChars p)    { return p.IsNull       ? null: Type.GetType(new string(p.Value)); }
 #endif
         public static Type ToType(SqlGuid p) { return p.IsNull ? null : Type.GetTypeFromCLSID(p.Value); }
-
+#endif
         public static Type ToType(object p)
         {
             if (p == null || p is DBNull) return null;
@@ -6156,13 +6205,13 @@ namespace FluorineFx.Util
             if (p is Guid) return ToType((Guid)p);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (p is SqlString) return ToType((SqlString)p);
-#if (NET_2_0)
+#if !(NET_1_1)
             if (p is SqlChars)    return ToType((SqlChars)p);
 #endif
             if (p is SqlGuid) return ToType((SqlGuid)p);
-
+#endif
             throw CreateInvalidCastException(p.GetType(), typeof(Type));
         }
 
@@ -6175,20 +6224,20 @@ namespace FluorineFx.Util
         public static Stream ToStream(Guid p) { return p == Guid.Empty ? Stream.Null : new MemoryStream(p.ToByteArray()); }
         public static Stream ToStream(Byte[] p) { return p == null ? Stream.Null : new MemoryStream(p); }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static Stream ToStream(Guid? p)       { return p.HasValue? new MemoryStream(p.Value.ToByteArray()): Stream.Null; }
 
 #endif
         // SqlTypes.
-        // 
-#if (NET_2_0)
+#if! SILVERLIGHT
+#if !(NET_1_1)
         public static Stream ToStream(SqlBytes p)    { return p.IsNull? Stream.Null: p.Stream;                  }
 #endif
         public static Stream ToStream(SqlBinary p) { return p.IsNull ? Stream.Null : new MemoryStream(p.Value); }
         public static Stream ToStream(SqlGuid p) { return p.IsNull ? Stream.Null : new MemoryStream(p.Value.ToByteArray()); }
-
+#endif
         public static Stream ToStream(object p)
         {
             if (p == null || p is DBNull) return Stream.Null;
@@ -6201,13 +6250,13 @@ namespace FluorineFx.Util
             if (p is Byte[]) return ToStream((Byte[])p);
 
             // SqlTypes.
-            //
-#if (NET_2_0)
+#if! SILVERLIGHT
+#if !(NET_1_1)
             if (p is SqlBytes)    return ToStream((SqlBytes)p);
 #endif
             if (p is SqlBinary) return ToStream((SqlBinary)p);
             if (p is SqlGuid) return ToStream((SqlGuid)p);
-
+#endif
             throw CreateInvalidCastException(p.GetType(), typeof(Stream));
         }
 
@@ -6234,8 +6283,10 @@ namespace FluorineFx.Util
         public static Byte[] ToByteArray(Single p) { return BitConverter.GetBytes(p); }
         public static Byte[] ToByteArray(Double p) { return BitConverter.GetBytes(p); }
         public static Byte[] ToByteArray(Boolean p) { return BitConverter.GetBytes(p); }
-#if (NET_2_0)
+#if !(NET_1_1)
+#if! SILVERLIGHT
         public static Byte[] ToByteArray(DateTime p)    { return ToByteArray(p.ToBinary()); }
+#endif
 #else
         public static Byte[] ToByteArray(DateTime p) { return ToByteArray(p.ToOADate()); }
 #endif
@@ -6273,7 +6324,7 @@ namespace FluorineFx.Util
             return p.GetBuffer();
         }
 
-#if (NET_2_0)
+#if !(NET_1_1)
         // Nullable Types.
 		// 
 		public static Byte[] ToByteArray(Guid? p)       { return p.HasValue? p.Value.ToByteArray(): null; }
@@ -6293,13 +6344,15 @@ namespace FluorineFx.Util
 		public static Byte[] ToByteArray(Single? p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
 		public static Byte[] ToByteArray(Double? p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
 		public static Byte[] ToByteArray(Boolean? p)    { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
+#if! SILVERLIGHT
 		public static Byte[] ToByteArray(DateTime? p)   { return p.HasValue? ToByteArray(p.Value.ToBinary()): null; }
+#endif
 		public static Byte[] ToByteArray(TimeSpan? p)   { return p.HasValue? ToByteArray(p.Value.Ticks): null; }
 		public static Byte[] ToByteArray(Decimal? p)    { return p.HasValue? ToByteArray(p.Value): null; }
 
 #endif
         // SqlTypes.
-        // 
+#if! SILVERLIGHT
         public static Byte[] ToByteArray(SqlString p) { return p.IsNull ? null : ToByteArray(p.Value); }
 
         public static Byte[] ToByteArray(SqlByte p) { return p.IsNull ? null : ToByteArray(p.Value); }
@@ -6316,11 +6369,11 @@ namespace FluorineFx.Util
         public static Byte[] ToByteArray(SqlDateTime p) { return p.IsNull ? null : ToByteArray(p.Value); }
 
         public static Byte[] ToByteArray(SqlBinary p) { return p.IsNull ? null : p.Value; }
-#if (NET_2_0)
+#if !(NET_1_1)
         public static Byte[] ToByteArray(SqlBytes p)    { return p.IsNull? null: p.Value; }
 #endif
         public static Byte[] ToByteArray(SqlGuid p) { return p.IsNull ? null : p.ToByteArray(); }
-
+#endif
         public static Byte[] ToByteArray(object p)
         {
             if (p == null || p is DBNull) return null;
@@ -6354,7 +6407,7 @@ namespace FluorineFx.Util
             if (p is Guid) return ToByteArray((Guid)p);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (p is SqlString) return ToByteArray((SqlString)p);
 
             if (p is SqlByte) return ToByteArray((SqlByte)p);
@@ -6371,10 +6424,11 @@ namespace FluorineFx.Util
             if (p is SqlDateTime) return ToByteArray((SqlDateTime)p);
 
             if (p is SqlBinary) return ToByteArray((SqlBinary)p);
-#if (NET_2_0)
+#if !(NET_1_1)
             if (p is SqlBytes)    return ToByteArray((SqlBytes)p);
 #endif
             if (p is SqlGuid) return ToByteArray((SqlGuid)p);
+#endif
             if (p is ByteArray) return ToByteArray((ByteArray)p);
 
             throw CreateInvalidCastException(p.GetType(), typeof(Byte[]));
@@ -6389,10 +6443,11 @@ namespace FluorineFx.Util
         public static Char[] ToCharArray(String p) { return p == null ? null : p.ToCharArray(); }
 
         // SqlTypes.
-        // 
+#if! SILVERLIGHT
         public static Char[] ToCharArray(SqlString p) { return p.IsNull ? null : p.Value.ToCharArray(); }
-#if (NET_2_0)
+#if !(NET_1_1)
         public static Char[] ToCharArray(SqlChars p)    { return p.IsNull? null: p.Value; }
+#endif
 #endif
         public static Char[] ToCharArray(object p)
         {
@@ -6405,10 +6460,11 @@ namespace FluorineFx.Util
             if (p is String) return ToCharArray((String)p);
 
             // SqlTypes.
-            //
+#if! SILVERLIGHT
             if (p is SqlString) return ToCharArray((SqlString)p);
-#if (NET_2_0)
+#if !(NET_1_1)
             if (p is SqlChars)    return ToCharArray((SqlChars)p);
+#endif
 #endif
             return ToString(p).ToCharArray();
         }
@@ -6417,25 +6473,25 @@ namespace FluorineFx.Util
 
         #region XmlReader
 
+#if! SILVERLIGHT
         // Scalar Types.
         // 
         public static XmlReader ToXmlReader(String p) { return p == null ? null : new XmlTextReader(new StringReader(p)); }
 
         // SqlTypes.
-        // 
         public static XmlReader ToXmlReader(SqlString p) { return p.IsNull ? null : new XmlTextReader(new StringReader(p.Value)); }
-#if (NET_2_0)
+#if !(NET_1_1)
         public static XmlReader ToXmlReader(SqlXml p)      { return p.IsNull? null: p.CreateReader(); }
 		public static XmlReader ToXmlReader(SqlChars p)    { return p.IsNull? null: new XmlTextReader(new StringReader(p.ToSqlString().Value)); }
 #endif
         public static XmlReader ToXmlReader(SqlBinary p) { return p.IsNull ? null : new XmlTextReader(new MemoryStream(p.Value)); }
-
         // Other Types.
         // 
         public static XmlReader ToXmlReader(Stream p) { return p == null ? null : new XmlTextReader(p); }
         public static XmlReader ToXmlReader(TextReader p) { return p == null ? null : new XmlTextReader(p); }
+#if! SILVERLIGHT
         public static XmlReader ToXmlReader(XmlDocument p) { return p == null ? null : new XmlTextReader(new StringReader(p.InnerXml)); }
-
+#endif
         public static XmlReader ToXmlReader(Char[] p) { return p == null ? null : new XmlTextReader(new StringReader(new string(p))); }
         public static XmlReader ToXmlReader(Byte[] p) { return p == null ? null : new XmlTextReader(new MemoryStream(p)); }
 
@@ -6452,7 +6508,7 @@ namespace FluorineFx.Util
             // SqlTypes.
             //
             if (p is SqlString) return ToXmlReader((SqlString)p);
-#if (NET_2_0)
+#if !(NET_1_1)
             if (p is SqlXml)      return ToXmlReader((SqlXml)p);
 			if (p is SqlChars)    return ToXmlReader((SqlChars)p);
 #endif
@@ -6469,13 +6525,33 @@ namespace FluorineFx.Util
 
             throw CreateInvalidCastException(p.GetType(), typeof(XmlReader));
         }
+#else
+        public static XmlReader ToXmlReader(String p) { return p == null ? null : XmlReader.Create(new StringReader(p)); }
+        public static XmlReader ToXmlReader(Stream p) { return p == null ? null : XmlReader.Create(p); }
+        public static XmlReader ToXmlReader(TextReader p) { return p == null ? null : XmlReader.Create(p); }
 
+        public static XmlReader ToXmlReader(object p)
+        {
+            if (p == null || p is DBNull) return null;
+
+            if (p is XmlReader) return (XmlReader)p;
+
+            // Scalar Types.
+            //
+            if (p is String) return ToXmlReader((String)p);
+
+            if (p is Stream) return ToXmlReader((Stream)p);
+            if (p is TextReader) return ToXmlReader((TextReader)p);
+
+            throw CreateInvalidCastException(p.GetType(), typeof(XmlReader));
+        }
+#endif
         #endregion
 
         #region XmlDocument
+#if! SILVERLIGHT
 
         // Scalar Types.
-        // 
         public static XmlDocument ToXmlDocument(String p)
         {
             if (p == null) return null;
@@ -6488,7 +6564,7 @@ namespace FluorineFx.Util
         // SqlTypes.
         // 
         public static XmlDocument ToXmlDocument(SqlString p) { return p.IsNull ? null : ToXmlDocument(p.Value); }
-#if (NET_2_0)
+#if !(NET_1_1)
         public static XmlDocument ToXmlDocument(SqlXml p)      { return p.IsNull? null: ToXmlDocument(p.Value); }
 		public static XmlDocument ToXmlDocument(SqlChars p)    { return p.IsNull? null: ToXmlDocument(p.ToSqlString().Value); }
 #endif
@@ -6539,7 +6615,7 @@ namespace FluorineFx.Util
             // SqlTypes.
             //
             if (p is SqlString) return ToXmlDocument((SqlString)p);
-#if (NET_2_0)
+#if !(NET_1_1)
             if (p is SqlXml)      return ToXmlDocument((SqlXml)p);
 			if (p is SqlChars)    return ToXmlDocument((SqlChars)p);
 #endif
@@ -6556,7 +6632,7 @@ namespace FluorineFx.Util
 
             throw CreateInvalidCastException(p.GetType(), typeof(XmlDocument));
         }
-
+#endif
         #endregion
 
         #endregion

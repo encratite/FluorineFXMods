@@ -22,15 +22,22 @@ using System.Xml;
 using System.IO;
 using System.Text;
 using System.Collections;
-using System.Data;
 using System.ComponentModel;
 using System.Reflection;
-using log4net;
 using FluorineFx.Exceptions;
 using FluorineFx.AMF3;
 using FluorineFx.Configuration;
 using FluorineFx.IO.Writers;
 using FluorineFx.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+#if SILVERLIGHT
+using System.Xml.Linq;
+#else
+using System.Data;
+using log4net;
+#endif
 
 namespace FluorineFx.IO
 {
@@ -39,22 +46,34 @@ namespace FluorineFx.IO
 	/// </summary>
 	public class AMFWriter : BinaryWriter
 	{
+#if !SILVERLIGHT
 		private static readonly ILog log = LogManager.GetLogger(typeof(AMFWriter));
+#endif
 
 		bool _useLegacyCollection = true;
-
-		Hashtable	_amf0ObjectReferences;
+#if !(NET_1_1)
+        Dictionary<Object, int> _amf0ObjectReferences;
+        Dictionary<Object, int> _objectReferences;
+        Dictionary<Object, int> _stringReferences;
+        Dictionary<ClassDefinition, int> _classDefinitionReferences;
+        static Dictionary<string, ClassDefinition> classDefinitions;
+        static Dictionary<Type, IAMFWriter>[] AmfWriterTable;
+#else
+        Hashtable	_amf0ObjectReferences;
 		Hashtable	_objectReferences;
 		Hashtable	_stringReferences;
 		Hashtable	_classDefinitionReferences;
+        static Hashtable classDefinitions;
+        static Hashtable[] AmfWriterTable;
+#endif
 
-        private static SynchronizedHashtable classDefinitions;
-		
-		private static Hashtable[] AmfWriterTable;
-
-		static AMFWriter()
+        static AMFWriter()
 		{
+#if !(NET_1_1)
+            Dictionary<Type, IAMFWriter> amf0Writers = new Dictionary<Type, IAMFWriter>();
+#else
 			Hashtable amf0Writers = new Hashtable();
+#endif
 			AMF0NumberWriter amf0NumberWriter = new AMF0NumberWriter();
 			amf0Writers.Add(typeof(System.SByte), amf0NumberWriter);
 			amf0Writers.Add(typeof(System.Byte), amf0NumberWriter);
@@ -68,6 +87,7 @@ namespace FluorineFx.IO
 			amf0Writers.Add(typeof(System.Double), amf0NumberWriter);
 			amf0Writers.Add(typeof(System.Decimal), amf0NumberWriter);
 			amf0Writers.Add(typeof(System.DBNull), new AMF0NullWriter());
+#if !SILVERLIGHT
 			AMF0SqlTypesWriter amf0SqlTypesWriter = new AMF0SqlTypesWriter();
 			amf0Writers.Add(typeof(System.Data.SqlTypes.INullable), amf0SqlTypesWriter);
 			amf0Writers.Add(typeof(System.Data.SqlTypes.SqlByte), amf0SqlTypesWriter);
@@ -83,22 +103,28 @@ namespace FluorineFx.IO
 			amf0Writers.Add(typeof(System.Data.SqlTypes.SqlGuid), amf0SqlTypesWriter);
 			amf0Writers.Add(typeof(System.Data.SqlTypes.SqlBinary), amf0SqlTypesWriter);
 			amf0Writers.Add(typeof(System.Data.SqlTypes.SqlBoolean), amf0SqlTypesWriter);
-			amf0Writers.Add(typeof(Guid), new AMF0GuidWriter());
-			amf0Writers.Add(typeof(string), new AMF0StringWriter());
-			amf0Writers.Add(typeof(bool), new AMF0BooleanWriter());
-			amf0Writers.Add(typeof(Enum), new AMF0EnumWriter());
-			amf0Writers.Add(typeof(Char), new AMF0CharWriter());
+
             amf0Writers.Add(typeof(CacheableObject), new AMF0CacheableObjectWriter());
-            amf0Writers.Add(typeof(DateTime), new AMF0DateTimeWriter());
-			amf0Writers.Add(typeof(Array), new AMF0ArrayWriter());
 			amf0Writers.Add(typeof(XmlDocument), new AMF0XmlDocumentWriter());
-			amf0Writers.Add(typeof(ASObject), new AMF0ASObjectWriter());
 			amf0Writers.Add(typeof(DataTable), new AMF0DataTableWriter());
 			amf0Writers.Add(typeof(DataSet), new AMF0DataSetWriter());
             amf0Writers.Add(typeof(RawBinary), new RawBinaryWriter());
             amf0Writers.Add(typeof(System.Collections.Specialized.NameObjectCollectionBase), new AMF0NameObjectCollectionWriter());
+#endif
+            amf0Writers.Add(typeof(Guid), new AMF0GuidWriter());
+			amf0Writers.Add(typeof(string), new AMF0StringWriter());
+			amf0Writers.Add(typeof(bool), new AMF0BooleanWriter());
+			amf0Writers.Add(typeof(Enum), new AMF0EnumWriter());
+			amf0Writers.Add(typeof(Char), new AMF0CharWriter());
+            amf0Writers.Add(typeof(DateTime), new AMF0DateTimeWriter());
+			amf0Writers.Add(typeof(Array), new AMF0ArrayWriter());
+			amf0Writers.Add(typeof(ASObject), new AMF0ASObjectWriter());
 
+#if !(NET_1_1)
+            Dictionary<Type, IAMFWriter> amf3Writers = new Dictionary<Type, IAMFWriter>();
+#else
 			Hashtable amf3Writers = new Hashtable();
+#endif
 			AMF3IntWriter amf3IntWriter = new AMF3IntWriter();
 			AMF3DoubleWriter amf3DoubleWriter = new AMF3DoubleWriter();
 			amf3Writers.Add(typeof(System.SByte), amf3IntWriter);
@@ -113,7 +139,8 @@ namespace FluorineFx.IO
 			amf3Writers.Add(typeof(System.Double), amf3DoubleWriter);
 			amf3Writers.Add(typeof(System.Decimal), amf3DoubleWriter);
 			amf3Writers.Add(typeof(System.DBNull), new AMF3DBNullWriter());
-			AMF3SqlTypesWriter amf3SqlTypesWriter = new AMF3SqlTypesWriter();
+#if !SILVERLIGHT
+            AMF3SqlTypesWriter amf3SqlTypesWriter = new AMF3SqlTypesWriter();
 			amf3Writers.Add(typeof(System.Data.SqlTypes.INullable), amf3SqlTypesWriter);
 			amf3Writers.Add(typeof(System.Data.SqlTypes.SqlByte), amf3SqlTypesWriter);
 			amf3Writers.Add(typeof(System.Data.SqlTypes.SqlInt16), amf3SqlTypesWriter);
@@ -128,27 +155,33 @@ namespace FluorineFx.IO
 			amf3Writers.Add(typeof(System.Data.SqlTypes.SqlGuid), amf3SqlTypesWriter);
 			amf3Writers.Add(typeof(System.Data.SqlTypes.SqlBinary), amf3SqlTypesWriter);
 			amf3Writers.Add(typeof(System.Data.SqlTypes.SqlBoolean), amf3SqlTypesWriter);
-			amf3Writers.Add(typeof(Guid), new AMF3GuidWriter());
+
+            amf3Writers.Add(typeof(CacheableObject), new AMF3CacheableObjectWriter());
+			amf3Writers.Add(typeof(XmlDocument), new AMF3XmlDocumentWriter());
+			amf3Writers.Add(typeof(DataTable), new AMF3DataTableWriter());
+			amf3Writers.Add(typeof(DataSet), new AMF3DataSetWriter());
+            amf3Writers.Add(typeof(RawBinary), new RawBinaryWriter());            
+            amf3Writers.Add(typeof(System.Collections.Specialized.NameObjectCollectionBase), new AMF3NameObjectCollectionWriter());
+#endif
+            amf3Writers.Add(typeof(Guid), new AMF3GuidWriter());
 			amf3Writers.Add(typeof(string), new AMF3StringWriter());
 			amf3Writers.Add(typeof(bool), new AMF3BooleanWriter());
 			amf3Writers.Add(typeof(Enum), new AMF3EnumWriter());
 			amf3Writers.Add(typeof(Char), new AMF3CharWriter());
-            amf3Writers.Add(typeof(CacheableObject), new AMF3CacheableObjectWriter());
             amf3Writers.Add(typeof(DateTime), new AMF3DateTimeWriter());
 			amf3Writers.Add(typeof(Array), new AMF3ArrayWriter());
-			amf3Writers.Add(typeof(XmlDocument), new AMF3XmlDocumentWriter());
 			amf3Writers.Add(typeof(ASObject), new AMF3ASObjectWriter());
-			amf3Writers.Add(typeof(DataTable), new AMF3DataTableWriter());
-			amf3Writers.Add(typeof(DataSet), new AMF3DataSetWriter());
 			amf3Writers.Add(typeof(ByteArray), new AMF3ByteArrayWriter());
-            amf3Writers.Add(typeof(RawBinary), new RawBinaryWriter());            
 			//amf3Writers.Add(typeof(byte[]), new AMF3ByteArrayWriter());
-            amf3Writers.Add(typeof(System.Collections.Specialized.NameObjectCollectionBase), new AMF3NameObjectCollectionWriter());
 
+#if !(NET_1_1)
+            AmfWriterTable = new Dictionary<Type, IAMFWriter>[4] { amf0Writers, null, null, amf3Writers };
+            classDefinitions = new Dictionary<string, ClassDefinition>();
+#else
 			AmfWriterTable = new Hashtable[4]{amf0Writers, null, null, amf3Writers};
-
-            classDefinitions = new SynchronizedHashtable();
-		}
+            classDefinitions = new Hashtable();
+#endif
+        }
 
 		/// <summary>
 		/// Initializes a new instance of the AMFReader class based on the supplied stream and using UTF8Encoding.
@@ -165,19 +198,24 @@ namespace FluorineFx.IO
             _amf0ObjectReferences = writer._amf0ObjectReferences;
             _objectReferences = writer._objectReferences;
             _stringReferences = writer._stringReferences;
-            //_classDefinitions = writer._classDefinitions;
             _classDefinitionReferences = writer._classDefinitionReferences;
             _useLegacyCollection = writer._useLegacyCollection;
         }
 
 		public void Reset()
 		{
+#if !(NET_1_1)
+            _amf0ObjectReferences = new Dictionary<Object, int>(5);
+            _objectReferences = new Dictionary<Object, int>(5);
+            _stringReferences = new Dictionary<Object, int>(5);
+            _classDefinitionReferences = new Dictionary<ClassDefinition, int>();
+#else
 			_amf0ObjectReferences = new Hashtable(5);
 			_objectReferences = new Hashtable(5);
 			_stringReferences = new Hashtable(5);
-			//_classDefinitions = new Hashtable();
 			_classDefinitionReferences = new Hashtable();
-		}
+#endif
+        }
 
 		public bool UseLegacyCollection
 		{
@@ -281,22 +319,24 @@ namespace FluorineFx.IO
 					return;
 				}
 			}
-			if( _amf0ObjectReferences.Contains( data ) )
+			if( _amf0ObjectReferences.ContainsKey( data ) )
 			{
 				WriteReference( data );
 				return;
 			}
 
-			IAMFWriter amfWriter = AmfWriterTable[0][type] as IAMFWriter;
+            IAMFWriter amfWriter = null;
+            if( AmfWriterTable[0].ContainsKey(type) )
+                amfWriter = AmfWriterTable[0][type] as IAMFWriter;
 			//Second try with basetype (enums and arrays for example)
-			if( amfWriter == null )
-				amfWriter = AmfWriterTable[0][type.BaseType] as IAMFWriter;
+            if (amfWriter == null && AmfWriterTable[0].ContainsKey(type.BaseType))
+                amfWriter = AmfWriterTable[0][type.BaseType] as IAMFWriter;
 
 			if( amfWriter == null )
 			{
 				lock(AmfWriterTable)
 				{
-					if (!AmfWriterTable[0].Contains(type))
+                    if (!AmfWriterTable[0].ContainsKey(type))
 					{
 						amfWriter = new AMF0ObjectWriter();
 						AmfWriterTable[0].Add(type, amfWriter);
@@ -324,8 +364,6 @@ namespace FluorineFx.IO
 			else
 			{
                 string msg = __Res.GetString(__Res.TypeSerializer_NotFound, type.FullName);
-				if (log.IsErrorEnabled)
-					log.Error(msg);
 				throw new FluorineException(msg);
 			}
 		}
@@ -350,8 +388,10 @@ namespace FluorineFx.IO
 
 		public void WriteDouble(double value)
 		{
-			long tmp = BitConverter.DoubleToInt64Bits( value );
-			this.WriteLong(tmp);
+			//long tmp = BitConverter.DoubleToInt64Bits( value );
+			//this.WriteLong(tmp);
+            byte[] bytes = BitConverter.GetBytes(value);
+            WriteBigEndian(bytes);
 		}
 
 		public void WriteFloat(float value)
@@ -398,33 +438,35 @@ namespace FluorineFx.IO
 
 		public void WriteDateTime(DateTime date)
 		{
+#if !SILVERLIGHT
 			if( FluorineConfiguration.Instance.TimezoneCompensation == TimezoneCompensation.Auto )
-			{
 				date = date.Subtract( DateWrapper.ClientTimeZone );
-			}
-
+#endif
 
 			// Write date (milliseconds from 1970).
 			DateTime timeStart = new DateTime(1970, 1, 1);
 			TimeSpan span = date.Subtract(timeStart);
 			long milliSeconds = (long)span.TotalMilliseconds;
-			long value = BitConverter.DoubleToInt64Bits((double)milliSeconds);
-			this.WriteLong(value);
+			//long value = BitConverter.DoubleToInt64Bits((double)milliSeconds);
+			//this.WriteLong(value);
+            WriteDouble((double)milliSeconds);
 
+#if !SILVERLIGHT
 			span = TimeZone.CurrentTimeZone.GetUtcOffset(date);
-
 			//whatever we write back, is ignored
 			//this.WriteLong(span.TotalMinutes);
 			//this.WriteShort((int)span.TotalHours);
 			//this.WriteShort(65236);
 			if( FluorineConfiguration.Instance.TimezoneCompensation == TimezoneCompensation.None )
-			{
 				this.WriteShort(0);
-			}
 			else
 				this.WriteShort((int)(span.TotalMilliseconds/60000));
-		}
+#else
+            this.WriteShort(0);
+#endif
+        }
 
+#if !SILVERLIGHT
 		public void WriteXmlDocument(XmlDocument xmlDocument)
 		{
 			if(xmlDocument != null)
@@ -437,6 +479,20 @@ namespace FluorineFx.IO
 			else
 				this.WriteNull();
 		}
+#else
+        public void WriteXmlDocument(XDocument xDocument)
+        {
+            if (xDocument != null)
+            {
+                AddReference(xDocument);
+                this.BaseStream.WriteByte((byte)15);//xml code (0x0F)
+                string xml = xDocument.ToString();
+                this.WriteLongUTF(xml);
+            }
+            else
+                this.WriteNull();
+        }
+#endif
 
 		public void WriteArray(ObjectEncoding objectEcoding, Array array)
 		{
@@ -487,18 +543,25 @@ namespace FluorineFx.IO
 			string customClass = type.FullName;
 			customClass = FluorineConfiguration.Instance.GetCustomClass(customClass);
 
-			if( log.IsDebugEnabled )
+#if !SILVERLIGHT
+            if( log.IsDebugEnabled )
 				log.Debug(__Res.GetString(__Res.TypeMapping_Write, type.FullName, customClass));
-
+#endif
 			WriteUTF( customClass );
 
 			PropertyInfo[] propertyInfos = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-			ArrayList properties = new ArrayList(propertyInfos);
-			for(int i = properties.Count - 1; i >=0 ; i--)
+#if !(NET_1_1)
+            List<PropertyInfo> properties = new List<PropertyInfo>(propertyInfos);
+#else
+            ArrayList properties = new ArrayList(propertyInfos);
+#endif
+            for (int i = properties.Count - 1; i >=0 ; i--)
 			{
 				PropertyInfo propertyInfo = properties[i] as PropertyInfo;
-				if( propertyInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0 )
+#if !SILVERLIGHT
+                if( propertyInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0 )
 					properties.RemoveAt(i);
+#endif
 				if( propertyInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0 )
 					properties.RemoveAt(i);
 			}
@@ -510,12 +573,18 @@ namespace FluorineFx.IO
 			}
 
 			FieldInfo[] fieldInfos = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-			ArrayList fields = new ArrayList(fieldInfos);
+#if !(NET_1_1)
+            List<FieldInfo> fields = new List<FieldInfo>(fieldInfos);
+#else
+            ArrayList fields = new ArrayList(fieldInfos);
+#endif
 			for(int i = fields.Count - 1; i >=0 ; i--)
 			{
 				FieldInfo fieldInfo = fields[i] as FieldInfo;
-				if( fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0 )
+#if !SILVERLIGHT
+                if( fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0 )
 					fields.RemoveAt(i);
+#endif
 				if( fieldInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0 )
 					fields.RemoveAt(i);
 			}
@@ -552,8 +621,12 @@ namespace FluorineFx.IO
 					this.BaseStream.WriteByte(16);
 					this.WriteUTF(asObject.TypeName);
 				}
+#if !(NET_1_1)
+                foreach (KeyValuePair<string, object> entry in asObject)
+#else
 				foreach(DictionaryEntry entry in asObject)
-				{
+#endif
+                {
 					this.WriteUTF(entry.Key.ToString());
 					this.WriteData(objectEncoding, entry.Value);
 				}
@@ -588,16 +661,18 @@ namespace FluorineFx.IO
 				}
 			}
 
-			IAMFWriter amfWriter = AmfWriterTable[3][data.GetType()] as IAMFWriter;
+            IAMFWriter amfWriter = null;
+            if( AmfWriterTable[3].ContainsKey(data.GetType()) )
+                amfWriter = AmfWriterTable[3][data.GetType()] as IAMFWriter;
 			//Second try with basetype (Enums for example)
-			if( amfWriter == null )
+            if (amfWriter == null && AmfWriterTable[3].ContainsKey(data.GetType().BaseType) )
 				amfWriter = AmfWriterTable[3][data.GetType().BaseType] as IAMFWriter;
 
 			if( amfWriter == null )
 			{
 				lock(AmfWriterTable)
 				{
-                    if (!AmfWriterTable[3].Contains(data.GetType()))
+                    if (!AmfWriterTable[3].ContainsKey(data.GetType()))
                     {
                         amfWriter = new AMF3ObjectWriter();
                         AmfWriterTable[3].Add(data.GetType(), amfWriter);
@@ -614,8 +689,6 @@ namespace FluorineFx.IO
 			else
 			{
 				string msg = string.Format("Could not find serializer for type {0}", data.GetType().FullName);
-				if (log.IsErrorEnabled)
-					log.Error(msg);
 				throw new FluorineException(msg);
 			}
 			//WriteByte(AMF3TypeCode.Object);
@@ -635,13 +708,13 @@ namespace FluorineFx.IO
 
 		public void WriteAMF3Array(Array array)
 		{
-			if( _amf0ObjectReferences.Contains( array ))
+            if (_amf0ObjectReferences.ContainsKey(array))
 			{
 				WriteReference(array);
 				return;
 			}
 
-			if( !_objectReferences.Contains(array) )
+            if (!_objectReferences.ContainsKey(array))
 			{
 				_objectReferences.Add(array, _objectReferences.Count);
 				int handle = array.Length;
@@ -664,7 +737,7 @@ namespace FluorineFx.IO
 
 		public void WriteAMF3Array(IList value)
 		{
-			if( !_objectReferences.Contains(value) )
+            if (!_objectReferences.ContainsKey(value))
 			{
 				_objectReferences.Add(value, _objectReferences.Count);
 				int handle = value.Count;
@@ -687,7 +760,7 @@ namespace FluorineFx.IO
 
 		public void WriteAMF3AssociativeArray(IDictionary value)
 		{
-			if( !_objectReferences.Contains(value) )
+            if (!_objectReferences.ContainsKey(value))
 			{
 				_objectReferences.Add(value, _objectReferences.Count);
 				WriteAMF3IntegerData(1);
@@ -725,7 +798,7 @@ namespace FluorineFx.IO
 			}
 			else
 			{
-				if( !_stringReferences.Contains(value) )
+                if (!_stringReferences.ContainsKey(value))
 				{
 					_stringReferences.Add(value, _stringReferences.Count);
 					UTF8Encoding utf8Encoding = new UTF8Encoding();
@@ -756,7 +829,7 @@ namespace FluorineFx.IO
 
 		public void WriteAMF3DateTime(DateTime value)
 		{
-			if( !_objectReferences.Contains(value) )
+            if (!_objectReferences.ContainsKey(value))
 			{
 				_objectReferences.Add(value, _objectReferences.Count);
 				int handle = 1;
@@ -772,8 +845,9 @@ namespace FluorineFx.IO
 
 				TimeSpan span = value.Subtract(timeStart);
 				long milliSeconds = (long)span.TotalMilliseconds;
-				long date = BitConverter.DoubleToInt64Bits((double)milliSeconds);
-				this.WriteLong(date);
+				//long date = BitConverter.DoubleToInt64Bits((double)milliSeconds);
+				//this.WriteLong(date);
+                WriteDouble((double)milliSeconds);
 			}
 			else
 			{
@@ -830,24 +904,23 @@ namespace FluorineFx.IO
 		{
 			WriteByte(AMF3TypeCode.Number);
 			//long tmp = BitConverter.DoubleToInt64Bits( double.Parse(value.ToString()) );
-			long tmp = BitConverter.DoubleToInt64Bits( value );
-			this.WriteLong(tmp);
+            WriteDouble(value);
 		}
 
-		public void WriteAMF3XmlDocument(XmlDocument xmlDocument)
+#if !SILVERLIGHT
+        public void WriteAMF3XmlDocument(XmlDocument xmlDocument)
 		{
 			WriteByte(AMF3TypeCode.Xml);
             string value = string.Empty;
             if (xmlDocument.DocumentElement != null && xmlDocument.DocumentElement.OuterXml != null )
                 value = xmlDocument.DocumentElement.OuterXml;
-            //WriteAMF3UTF(value);
             if (value == string.Empty)
             {
                 WriteAMF3IntegerData(1);
             }
             else
             {
-                if (!_objectReferences.Contains(value))
+                if (!_objectReferences.ContainsKey(value))
                 {
                     _objectReferences.Add(value, _objectReferences.Count);
                     UTF8Encoding utf8Encoding = new UTF8Encoding();
@@ -868,15 +941,50 @@ namespace FluorineFx.IO
                 }
             }
 		}
+#else
+        public void WriteAMF3XmlDocument(XDocument xDocument)
+        {
+            WriteByte(AMF3TypeCode.Xml);
+            string value = string.Empty;
+            if (xDocument != null)
+                value = xDocument.ToString();
+            if (value == string.Empty)
+            {
+                WriteAMF3IntegerData(1);
+            }
+            else
+            {
+                if (!_objectReferences.ContainsKey(value))
+                {
+                    _objectReferences.Add(value, _objectReferences.Count);
+                    UTF8Encoding utf8Encoding = new UTF8Encoding();
+                    int byteCount = utf8Encoding.GetByteCount(value);
+                    int handle = byteCount;
+                    handle = handle << 1;
+                    handle = handle | 1;
+                    WriteAMF3IntegerData(handle);
+                    byte[] buffer = utf8Encoding.GetBytes(value);
+                    if (buffer.Length > 0)
+                        Write(buffer);
+                }
+                else
+                {
+                    int handle = (int)_objectReferences[value];
+                    handle = handle << 1;
+                    WriteAMF3IntegerData(handle);
+                }
+            }
+        }
+#endif
 
 		public void WriteAMF3Object(object value)
 		{
-			if( !_objectReferences.Contains(value) )
+            if (!_objectReferences.ContainsKey(value))
 			{
 				_objectReferences.Add(value, _objectReferences.Count);
 
 				ClassDefinition classDefinition = GetClassDefinition(value);
-                if (classDefinition != null && _classDefinitionReferences.Contains(classDefinition))
+                if (classDefinition != null && _classDefinitionReferences.ContainsKey(classDefinition))
                 {
                     //Existing class-def
                     int handle = (int)_classDefinitionReferences[classDefinition];//handle = classRef 0 1
@@ -948,25 +1056,28 @@ namespace FluorineFx.IO
 
 		private ClassDefinition GetClassDefinition(object obj)
 		{
-			if( obj is ASObject )
-			{
-				ASObject asObject = obj as ASObject;
-				if( asObject.IsTypedObject )
+            if (obj is ASObject)
+            {
+                ASObject asObject = obj as ASObject;
+                if (asObject.IsTypedObject && classDefinitions.ContainsKey(asObject.TypeName))
                     return classDefinitions[asObject.TypeName] as ClassDefinition;
-				else
-					return null;
-			}
-			else
-			{
-				return classDefinitions[obj.GetType().FullName] as ClassDefinition;
-			}
+                else
+                    return null;
+            }
+            else
+            {
+                if (classDefinitions.ContainsKey(obj.GetType().FullName))
+                    return classDefinitions[obj.GetType().FullName] as ClassDefinition;
+                else
+                    return null;
+            }
 		}
 
 		private ClassDefinition CreateClassDefinition(object obj)
 		{
 			ClassDefinition classDefinition = null;
             Type type = obj.GetType();
-            bool externalizable = type.GetInterface(typeof(FluorineFx.AMF3.IExternalizable).FullName) != null;
+            bool externalizable = type.GetInterface(typeof(FluorineFx.AMF3.IExternalizable).FullName, true) != null;
 			bool dynamic = false;
 			string customClassName = null;
 			if( obj is IDictionary )//ASObject, ObjectProxy
@@ -976,8 +1087,12 @@ namespace FluorineFx.IO
 					ASObject asObject = obj as ASObject;
                     ClassMember[] classMemberList = new ClassMember[asObject.Count];
 					int i = 0;
+#if !(NET_1_1)
+                    foreach (KeyValuePair<string, object> entry in asObject)
+#else
 					foreach(DictionaryEntry entry in asObject)
-					{
+#endif
+                    {
                         ClassMember classMember = new ClassMember(entry.Key as string, BindingFlags.Default, MemberTypes.Custom);
                         classMemberList[i] = classMember;
 						i++;
@@ -1003,50 +1118,83 @@ namespace FluorineFx.IO
 			}
 			else
 			{
+#if !(NET_1_1)
+                List<string> memberNames = new List<string>();
+                List<ClassMember> classMemberList = new List<ClassMember>();
+#else
                 ArrayList memberNames = new ArrayList();
                 ArrayList classMemberList = new ArrayList();
+#endif
                 PropertyInfo[] propertyInfos = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
                 for (int i = 0; i < propertyInfos.Length; i++)
                 {
                     PropertyInfo propertyInfo = propertyInfos[i] as PropertyInfo;
+                    string name = propertyInfo.Name;
                     if (propertyInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
                         continue;
                     if (propertyInfo.GetGetMethod() == null || propertyInfo.GetGetMethod().GetParameters().Length > 0)
                     {
                         //The gateway will not be able to access this property
                         string msg = __Res.GetString(__Res.Reflection_PropertyIndexFail, string.Format("{0}.{1}", type.FullName, propertyInfo.Name));
+#if !SILVERLIGHT
                         if (log.IsWarnEnabled)
                             log.Warn(msg);
+#endif
                         continue;
                     }
-                    if( memberNames.Contains(propertyInfo.Name) )
+#if WCF
+                    object[] customAttributes = propertyInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.DataMemberAttribute), false);
+                    if ((customAttributes != null) && (customAttributes.Length > 0))
+                    {
+                        System.Runtime.Serialization.DataMemberAttribute attribute = (System.Runtime.Serialization.DataMemberAttribute)customAttributes[0];
+                        if (attribute.Name != null && attribute.Name.Length != 0)
+                            name = attribute.Name;
+                    }
+#endif
+                    if (memberNames.Contains(name))
                         continue;
-                    string member = propertyInfo.Name;
+                    memberNames.Add(name);
                     BindingFlags bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
                     try
                     {
-                        PropertyInfo propertyInfoTmp = obj.GetType().GetProperty(member);
+                        PropertyInfo propertyInfoTmp = obj.GetType().GetProperty(name);
                     }
                     catch (AmbiguousMatchException)
                     {
                         bf = BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance;
                     }
-                    ClassMember classMember = new ClassMember(member, bf, propertyInfo.MemberType);
+                    ClassMember classMember = new ClassMember(name, bf, propertyInfo.MemberType);
                     classMemberList.Add(classMember);
                 }
                 FieldInfo[] fieldInfos = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
                 for (int i = 0; i < fieldInfos.Length; i++)
                 {
                     FieldInfo fieldInfo = fieldInfos[i] as FieldInfo;
+#if !SILVERLIGHT
                     if (fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0)
                         continue;
+#endif
                     if (fieldInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
                         continue;
-                    ClassMember classMember = new ClassMember(fieldInfo.Name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType);
+                    string name = fieldInfo.Name;
+#if WCF
+                    object[] customAttributes = fieldInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.DataMemberAttribute), false);
+                    if ((customAttributes != null) && (customAttributes.Length > 0))
+                    {
+                        System.Runtime.Serialization.DataMemberAttribute attribute = (System.Runtime.Serialization.DataMemberAttribute)customAttributes[0];
+                        if (attribute.Name != null && attribute.Name.Length != 0)
+                            name = attribute.Name;
+                    }
+#endif
+                    ClassMember classMember = new ClassMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType);
                     classMemberList.Add(classMember);
                 }
+#if !(NET_1_1)
+                ClassMember[] classMembers = classMemberList.ToArray();
+#else
                 ClassMember[] classMembers = classMemberList.ToArray(typeof(ClassMember)) as ClassMember[];
-				customClassName = type.FullName;
+#endif
+                customClassName = type.FullName;
 				customClassName = FluorineConfiguration.Instance.GetCustomClass(customClassName);
                 classDefinition = new ClassDefinition(customClassName, classMembers, externalizable, dynamic);
 				classDefinitions[type.FullName] = classDefinition;
@@ -1061,7 +1209,7 @@ namespace FluorineFx.IO
             if (instance is ASObject)
             {
                 ASObject aso = instance as ASObject;
-                if (aso.Contains(member.Name))
+                if (aso.ContainsKey(member.Name))
                     return aso[member.Name];
             }
             Type type = instance.GetType();
@@ -1076,8 +1224,6 @@ namespace FluorineFx.IO
                 return fieldInfo.GetValue(instance);
             }
             string msg = __Res.GetString(__Res.Reflection_MemberNotFound, string.Format("{0}.{1}", type.FullName, member.Name));
-            if (log.IsErrorEnabled)
-                log.Error(msg);
             throw new FluorineException(msg);
         }
 	}

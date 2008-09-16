@@ -21,15 +21,33 @@ using System;
 namespace FluorineFx.Messaging.Api.Service
 {
 	/// <summary>
-	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// Container for a Service Call.
 	/// </summary>
-	public interface IServiceCall
-	{
-		bool IsSuccess{get;}
-		string ServiceMethodName{get;}
-		string ServiceName{get;}
-		object[] Arguments{get;}
-		byte Status{get;set;}
-		Exception Exception{get;set;}
-	}
+    public interface IServiceCall
+    {
+        /// <summary>
+        /// Gets a value indicating if the call was successful or not.
+        /// </summary>
+        bool IsSuccess { get;}
+        /// <summary>
+        /// Gets service method name.
+        /// </summary>
+        string ServiceMethodName { get;}
+        /// <summary>
+        /// Gets service name.
+        /// </summary>
+        string ServiceName { get;}
+        /// <summary>
+        /// Gets array of service method arguments.
+        /// </summary>
+        object[] Arguments { get;}
+        /// <summary>
+        /// Gets or sets service call status.
+        /// </summary>
+        byte Status { get;set;}
+        /// <summary>
+        /// Get or sets service call exception.
+        /// </summary>
+        Exception Exception { get;set;}
+    }
 }

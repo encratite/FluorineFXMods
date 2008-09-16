@@ -19,6 +19,9 @@
 using System;
 using System.IO;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using log4net;
 using FluorineFx.Messaging.Api.Messaging;
 using FluorineFx.Messaging.Api.Stream;
@@ -35,7 +38,11 @@ namespace FluorineFx.Messaging.Api.Messaging
     {
         private static ILog log = LogManager.GetLogger(typeof(InMemoryPullPullPipe));
 
+#if !(NET_1_1)
+        public override bool Subscribe(IConsumer consumer, Dictionary<string, object> parameterMap)
+#else
         public override bool Subscribe(IConsumer consumer, Hashtable parameterMap)
+#endif
         {
             bool success = base.Subscribe(consumer, parameterMap);
             if (success)
@@ -43,7 +50,11 @@ namespace FluorineFx.Messaging.Api.Messaging
             return success;
         }
 
+#if !(NET_1_1)
+        public override bool Subscribe(IProvider provider, Dictionary<string, object> parameterMap)
+#else
         public override bool Subscribe(IProvider provider, Hashtable parameterMap)
+#endif
         {
 		    if (!(provider is IPullableProvider)) 
             {

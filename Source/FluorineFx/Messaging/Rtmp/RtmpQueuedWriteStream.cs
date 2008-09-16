@@ -19,11 +19,16 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+#if !SILVERLIGHT
 using log4net;
+#endif
 
 namespace FluorineFx.Messaging.Rtmp
 {
@@ -33,7 +38,11 @@ namespace FluorineFx.Messaging.Rtmp
     class RtmpQueuedWriteStream : System.IO.Stream
     {
         private System.IO.Stream _innerStream;
+#if !(NET_1_1)
+        private Queue<RtmpAsyncResult> _outgoingQueue = new Queue<RtmpAsyncResult>();
+#else
         private Queue _outgoingQueue = new Queue();
+#endif
         private volatile bool _isWriting;
 
 
@@ -171,7 +180,7 @@ namespace FluorineFx.Messaging.Rtmp
             base.Close();
         }
 
-#if NET_2_0
+#if !(NET_1_1)
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -247,9 +256,9 @@ namespace FluorineFx.Messaging.Rtmp
 			{
 				return _innerStream.CanWrite;
 			}
-		}
+        }
 
-#if NET_2_0
+#if !(NET_1_1)
         public override bool CanTimeout
         {
             get

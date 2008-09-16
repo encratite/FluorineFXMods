@@ -36,7 +36,7 @@ namespace FluorineFx.Messaging.Rtmp.Event
 		protected IServiceCall		_serviceCall = null;
 		protected ByteBuffer		_data = null;
 		int							_invokeId = 0;
-		Hashtable					_connectionParameters;
+		IDictionary					_connectionParameters;
 
         internal Notify()
             : base(EventType.SERVICE_CALL)
@@ -80,7 +80,7 @@ namespace FluorineFx.Messaging.Rtmp.Event
 			set{ _serviceCall = value; }
 		}
 
-		public Hashtable ConnectionParameters
+		public IDictionary ConnectionParameters
 		{
 			get{ return _connectionParameters; }
 			set{ _connectionParameters = value; }

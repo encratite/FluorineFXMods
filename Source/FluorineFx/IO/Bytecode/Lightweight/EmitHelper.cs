@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
-#if NET_2_0
+#if !(NET_1_1)
 using System.Diagnostics.SymbolStore;
 using System.Diagnostics.CodeAnalysis;
 

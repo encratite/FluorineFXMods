@@ -18,6 +18,9 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 
 namespace FluorineFx.Messaging.Api.Messaging
 {
@@ -88,6 +91,20 @@ namespace FluorineFx.Messaging.Api.Messaging
             get { return _type; }
             set { _type = value; }
         }
+#if !(NET_1_1)
+        /// <summary>
+        /// Params map.
+        /// </summary>
+        Dictionary<string, object> _parameterMap;
+        /// <summary>
+        /// Gets or sets event parameters.
+        /// </summary>
+        public Dictionary<string, object> ParameterMap
+        {
+            get { return _parameterMap; }
+            set { _parameterMap = value; }
+        }
+#else
         /// <summary>
         /// Params map.
         /// </summary>
@@ -100,6 +117,7 @@ namespace FluorineFx.Messaging.Api.Messaging
             get { return _parameterMap; }
             set { _parameterMap = value; }
         }
+#endif
 
         object _source;
         public object Source

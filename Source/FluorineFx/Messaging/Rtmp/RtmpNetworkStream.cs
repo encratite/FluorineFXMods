@@ -23,15 +23,10 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+#if !SILVERLIGHT
 using log4net;
-using FluorineFx.Messaging.Messages;
-using FluorineFx.Messaging.Api;
-using FluorineFx.Messaging.Api.Service;
-using FluorineFx.Messaging.Api.Event;
-using FluorineFx.Messaging.Rtmp.Event;
-using FluorineFx.Messaging.Endpoints;
+#endif
 using FluorineFx.Util;
-using FluorineFx.Context;
 
 
 namespace FluorineFx.Messaging.Rtmp

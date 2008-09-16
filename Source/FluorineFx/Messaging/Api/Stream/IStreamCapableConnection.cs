@@ -17,6 +17,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+using System.Collections;
 
 namespace FluorineFx.Messaging.Api.Stream
 {
@@ -72,5 +73,8 @@ namespace FluorineFx.Messaging.Api.Stream
         /// <param name="streamId">Stream id.</param>
         /// <returns>Number of pending video messages.</returns>
         long GetPendingVideoMessages(int streamId);
+
+        IClientStream GetStreamByChannelId(int channelId);
+        ICollection GetStreams();
     }
 }

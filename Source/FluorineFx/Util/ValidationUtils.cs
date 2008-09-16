@@ -89,7 +89,7 @@ namespace FluorineFx.Util
         public static void ArgumentIsPositive<T>(T value, string parameterName) where T : struct, IComparable<T>
         {
             if (value.CompareTo(default(T)) != 1)
-                throw new ArgumentOutOfRangeException(parameterName, value, "Positive number required.");
+                throw new ArgumentOutOfRangeException(parameterName, "Positive number required.");
         }
 
 #endif
@@ -103,31 +103,31 @@ namespace FluorineFx.Util
         public static void ArgumentNotNegative(int value, string parameterName)
         {
             if (value <= 0)
-                throw new ArgumentOutOfRangeException(parameterName, value, "Argument cannot be negative.");
+                throw new ArgumentOutOfRangeException(parameterName, "Argument cannot be negative.");
         }
 
         public static void ArgumentNotNegative(int value, string parameterName, string message)
         {
             if (value <= 0)
-                throw new ArgumentOutOfRangeException(parameterName, value, message);
+                throw new ArgumentOutOfRangeException(parameterName, message);
         }
 
         public static void ArgumentNotZero(int value, string parameterName)
         {
             if (value == 0)
-                throw new ArgumentOutOfRangeException(parameterName, value, "Argument cannot be zero.");
+                throw new ArgumentOutOfRangeException(parameterName, "Argument cannot be zero.");
         }
 
         public static void ArgumentNotZero(int value, string parameterName, string message)
         {
             if (value == 0)
-                throw new ArgumentOutOfRangeException(parameterName, value, message);
+                throw new ArgumentOutOfRangeException(parameterName, message);
         }
 
         public static void ArgumentIsPositive(int value, string parameterName, string message)
         {
             if (value > 0)
-                throw new ArgumentOutOfRangeException(parameterName, value, message);
+                throw new ArgumentOutOfRangeException(parameterName, message);
         }
 
         public static void ObjectNotDisposed(bool disposed, Type objectType)

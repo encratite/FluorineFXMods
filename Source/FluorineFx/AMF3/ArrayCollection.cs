@@ -21,15 +21,22 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
-
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx;
+using FluorineFx.Util;
 
 namespace FluorineFx.AMF3
 {
 	/// <summary>
 	/// Provides a type converter to convert ArrayCollection objects to and from various other representations.
 	/// </summary>
-	public class ArrayCollectionConverter : ArrayConverter
+#if !SILVERLIGHT
+    public class ArrayCollectionConverter : ArrayConverter
+#else
+    public class ArrayCollectionConverter : TypeConverter
+#endif
 	{
 		/// <summary>
 		/// Overloaded. Returns whether this converter can convert the object to the specified type.
@@ -37,7 +44,11 @@ namespace FluorineFx.AMF3
 		/// <param name="context">An ITypeDescriptorContext that provides a format context.</param>
 		/// <param name="destinationType">A Type that represents the type you want to convert to.</param>
 		/// <returns>true if this converter can perform the conversion; otherwise, false.</returns>
+#if !SILVERLIGHT
 		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+#else
+		public override bool CanConvertTo(Type destinationType)
+#endif
 		{
 			if (destinationType == null)
 				throw new ArgumentNullException("destinationType");
@@ -46,19 +57,24 @@ namespace FluorineFx.AMF3
 				return true;
 			if( destinationType.IsArray )
 				return true;
+#if !SILVERLIGHT
 			if( destinationType == typeof(ArrayList) )
 				return true;
+#endif
 			if( destinationType == typeof(IList) )
 				return true;
-			Type typeIList = destinationType.GetInterface("System.Collections.IList");
+			Type typeIList = destinationType.GetInterface("System.Collections.IList", false);
 			if(typeIList != null)
 				return true;
 			//generic interface
-			Type typeGenericICollection = destinationType.GetInterface("System.Collections.Generic.ICollection`1");
+			Type typeGenericICollection = destinationType.GetInterface("System.Collections.Generic.ICollection`1", false);
 			if (typeGenericICollection != null)
 				return true;
-
+#if !SILVERLIGHT
 			return base.CanConvertTo(context, destinationType);
+#else
+            return base.CanConvertTo(destinationType);
+#endif
 		}
 		/// <summary>
 		/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -68,8 +84,14 @@ namespace FluorineFx.AMF3
 		/// <param name="value">The Object to convert.</param>
 		/// <param name="destinationType">The Type to convert the value parameter to.</param>
 		/// <returns>An Object that represents the converted value.</returns>
-		public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+#if !SILVERLIGHT
+        public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+#else
+        public override object ConvertTo(object value, Type destinationType)
+#endif
 		{
+            ArrayCollection ac = value as ArrayCollection;
+            ValidationUtils.ArgumentNotNull(ac, "value");
 			if (destinationType == null)
 				throw new ArgumentNullException("destinationType");
 
@@ -77,18 +99,22 @@ namespace FluorineFx.AMF3
 				return value;
 			if( destinationType.IsArray )
 			{
-				return (value as ArrayCollection).ToArray();
+				return ac.ToArray();
 			}
-			if( destinationType == typeof(ArrayList) )
+#if !SILVERLIGHT
+            if( destinationType == typeof(ArrayList) )
 			{
-				return (value as ArrayCollection).List;
+                if (ac.List is ArrayList)
+                    return ac.List;
+                return ArrayList.Adapter(ac.List);
 			}
+#endif
 			if( destinationType == typeof(IList) )
 			{
-				return (value as ArrayCollection).List;
+				return ac.List;
 			}
 			//generic interface
-			Type typeGenericICollection = destinationType.GetInterface("System.Collections.Generic.ICollection`1");
+			Type typeGenericICollection = destinationType.GetInterface("System.Collections.Generic.ICollection`1", false);
 			if (typeGenericICollection != null)
 			{
 				object obj = TypeHelper.CreateInstance(destinationType);
@@ -107,34 +133,23 @@ namespace FluorineFx.AMF3
 						return obj;
 					}
 				}
-				/*
-				Type[] typeParameters = TypeHelper.GetGenericArguments(destinationType);
-				if(typeParameters != null && typeParameters.Length == 1)
-				{
-					MethodInfo miAddCollection = destinationType.GetMethod("Add");
-					if (miAddCollection != null)
-					{
-						for (int i = 0; i < (value as IList).Count; i++)
-						{
-							miAddCollection.Invoke(obj, new object[] { TypeHelper.ChangeType((value as IList)[i], typeParameters[0]) });
-						}
-						return obj;
-					}
-				}
-				*/
 			}
-			Type typeIList = destinationType.GetInterface("System.Collections.IList");
+			Type typeIList = destinationType.GetInterface("System.Collections.IList", false);
 			if(typeIList != null)
 			{
 				object obj = TypeHelper.CreateInstance(destinationType);
 				IList list = obj as IList;
-				for(int i = 0; i < (value as ArrayCollection).List.Count; i++)
+				for(int i = 0; i < ac.List.Count; i++)
 				{
-					list.Add( (value as ArrayCollection).List[i] );
+					list.Add( ac.List[i] );
 				}
 				return obj;
 			}
-			return base.ConvertTo (context, culture, value, destinationType);
+#if !SILVERLIGHT
+            return base.ConvertTo (context, culture, value, destinationType);
+#else
+            return base.ConvertTo(value, destinationType);
+#endif
 		}
 	}
 
@@ -152,7 +167,11 @@ namespace FluorineFx.AMF3
 		/// </summary>
 		public ArrayCollection()
 		{
-			_list = new ArrayList();
+#if (NET_1_1)
+            _list = new ArrayList();
+#else
+            _list = new List<object>();
+#endif
 		}
 		/// <summary>
         /// Creates an ArrayCollection wrapper for a specific IList.
@@ -184,17 +203,18 @@ namespace FluorineFx.AMF3
 		{
 			if( _list != null )
 			{
-				if( _list is ArrayList )
-				{
+#if !SILVERLIGHT
+                if( _list is ArrayList )
 					return ((ArrayList)_list).ToArray();
-				}
-				else
-				{
-					object[] objArray = new object[_list.Count];
-					for(int i = 0; i < _list.Count; i++ )
-						objArray[i] = _list[i];
-					return objArray;
-				}
+#endif
+#if !(NET_1_1)
+				if( _list is List<object> )
+                    return ((List<object>)_list).ToArray();
+#endif
+                object[] objArray = new object[_list.Count];
+				for(int i = 0; i < _list.Count; i++ )
+					objArray[i] = _list[i];
+				return objArray;
 			}
 			return null;
 		}
@@ -206,7 +226,7 @@ namespace FluorineFx.AMF3
         /// <param name="input">IDataInput interface.</param>
 		public void ReadExternal(IDataInput input)
 		{
-			_list = new ArrayList(input.ReadObject() as IList);
+			_list = input.ReadObject() as IList;
 		}
         /// <summary>
         /// Encode the ArrayCollection for a data stream.

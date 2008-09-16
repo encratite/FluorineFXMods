@@ -33,6 +33,7 @@ using FluorineFx.Context;
 using FluorineFx.Util;
 using FluorineFx.Exceptions;
 using FluorineFx.Messaging.Rtmpt;
+using FluorineFx.Silverlight;
 
 namespace FluorineFx.Messaging
 {
@@ -45,6 +46,7 @@ namespace FluorineFx.Messaging
 
         ServiceConfigSettings _serviceConfigSettings;
 		MessageBroker	_messageBroker;
+        PolicyServer _policyServer;
 
 		/// <summary>
 		/// Initializes a new instance of the MessageServer class.
@@ -136,6 +138,26 @@ namespace FluorineFx.Messaging
                 }
             }
             InitAuthenticationService();
+
+            try
+            {
+                if (FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings != null &&
+                    FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings.Enable)
+                {
+                    IResource resource = FluorineContext.Current.GetResource(FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings.PolicyFile);
+                    if (resource.Exists)
+                    {
+                        log.Info(__Res.GetString(__Res.Silverlight_StartPS, resource.File.FullName));
+                        _policyServer = new PolicyServer(resource.File.FullName);
+                    }
+                    else
+                        throw new FileNotFoundException("Policy file not found", FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings.PolicyFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(__Res.GetString(__Res.Silverlight_PSError), ex);
+            }
 		}
 
         private void InstallServiceBrowserDestinations(ServiceSettings serviceSettings, AdapterSettings adapterSettings)
@@ -190,6 +212,11 @@ namespace FluorineFx.Messaging
 					_messageBroker.Stop();
 					_messageBroker = null;
 				}
+                if (_policyServer != null)
+                {
+                    _policyServer.Close();
+                    _policyServer = null;
+                }
 			}
 		}
 

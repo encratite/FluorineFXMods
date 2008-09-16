@@ -18,6 +18,9 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using FluorineFx.Messaging.Api.Messaging;
 using FluorineFx.Messaging.Api.Stream;
 using FluorineFx.Messaging.Api;
@@ -78,7 +81,11 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             return _pipe.PullMessage(wait);
         }
 
+#if !(NET_1_1)
+        public bool Subscribe(IConsumer consumer, Dictionary<string, object> parameterMap)
+#else
         public bool Subscribe(IConsumer consumer, Hashtable parameterMap)
+#endif
         {
 		    lock(_pipe) 
             {
@@ -110,7 +117,11 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             _pipe.PushMessage(message);
         }
 
+#if !(NET_1_1)
+        public bool Subscribe(IProvider provider, Dictionary<string, object> parameterMap)
+#else
         public bool Subscribe(IProvider provider, Hashtable parameterMap)
+#endif
         {
             lock (_pipe)
             {

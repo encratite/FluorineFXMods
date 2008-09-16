@@ -18,6 +18,11 @@
 */
 using System;
 using System.Collections;
+#if SILVERLIGHT
+using System.Collections.Generic;
+#endif
+
+//TODO This class should have a generic version for !(NET_1_1)
 
 namespace FluorineFx.Util
 {
@@ -28,7 +33,11 @@ namespace FluorineFx.Util
     {
         private bool _forceGC = true;
         private int _growth = 10;
+#if SILVERLIGHT
+        private Queue<object> _queue;
+#else
         private Queue _queue;
+#endif
 
         static ObjectPool()
         {
@@ -42,7 +51,7 @@ namespace FluorineFx.Util
 
         protected override void Free()
         {
-            lock (_queue.SyncRoot)
+            lock ((_queue as ICollection).SyncRoot)
             {
                 while (_queue.Count > 0)
                 {
@@ -66,8 +75,12 @@ namespace FluorineFx.Util
         {
             if (!IsDisposed)
             {
+#if SILVERLIGHT
+                _queue = new Queue<object>(capacity);
+#else
                 _queue = new Queue(capacity);
-                lock (_queue.SyncRoot)
+#endif
+                lock ((_queue as ICollection).SyncRoot)
                 {
                     AddObjects(capacity);
                 }
@@ -114,7 +127,7 @@ namespace FluorineFx.Util
         {
             if (!IsDisposed)
             {
-                lock (_queue.SyncRoot)
+                lock ((_queue as ICollection).SyncRoot)
                 {
                     _queue.Enqueue(obj);
                 }
@@ -127,7 +140,7 @@ namespace FluorineFx.Util
                 throw new ObjectDisposedException("ObjectPool");
 
             object obj = null;
-            lock(_queue.SyncRoot)
+            lock ((_queue as ICollection).SyncRoot)
             {
                 if (_queue.Count == 0)
                     this.AddObjects(_growth);
@@ -146,7 +159,7 @@ namespace FluorineFx.Util
             {
                 if (IsDisposed)
                     throw new ObjectDisposedException("ObjectPool");
-                lock (_queue.SyncRoot)
+                lock ((_queue as ICollection).SyncRoot)
                 {
                     return _queue.Count;
                 }
@@ -169,7 +182,8 @@ namespace FluorineFx.Util
             {
                 if (IsDisposed)
                     throw new ObjectDisposedException("ObjectPool");
-                return _queue.SyncRoot;
+                //return _queue.SyncRoot;
+                return (_queue as ICollection).SyncRoot;
             }
         }
     }

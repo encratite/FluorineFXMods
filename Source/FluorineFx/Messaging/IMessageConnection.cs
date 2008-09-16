@@ -19,7 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-
+using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Messages;
 
 namespace FluorineFx.Messaging
@@ -29,11 +29,11 @@ namespace FluorineFx.Messaging
 	/// </summary>
 	interface IMessageConnection
 	{
-		void RegisterMessageClient(MessageClient client);
+		void RegisterMessageClient(IMessageClient client);
 		void RemoveMessageClient(string clientId);
 		void RemoveMessageClients();
 		bool IsClientRegistered(string clientId);
 		int ClientCount{ get; }
-		void Push(IMessage message, MessageClient messageClient);
+		void Push(IMessage message, IMessageClient messageClient);
 	}
 }

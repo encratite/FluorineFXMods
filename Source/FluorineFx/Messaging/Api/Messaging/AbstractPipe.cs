@@ -18,6 +18,9 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
 using log4net;
 using FluorineFx.Util;
 using FluorineFx.Collections;
@@ -83,7 +86,11 @@ namespace FluorineFx.Messaging.Api.Messaging
         /// <param name="consumer">Consumer</param>
         /// <param name="parameterMap">Parameters passed with connection, used in concrete pipe implementations.</param>
         /// <returns>true if consumer was added, false otherwise</returns>
+#if !(NET_1_1)
+        public virtual bool Subscribe(IConsumer consumer, Dictionary<string, object> parameterMap)
+#else
         public virtual bool Subscribe(IConsumer consumer, Hashtable parameterMap)
+#endif
         {
 		    // Pipe is possibly used by dozens of Threads at once (like many subscribers for one server stream) so make it synchronized
     	    lock(_consumers.SyncRoot) 
@@ -156,7 +163,11 @@ namespace FluorineFx.Messaging.Api.Messaging
         /// <param name="provider">Provider.</param>
         /// <param name="parameterMap">Parameters passed with connection, used in concrete pipe implementations.</param>
         /// <returns>true if provider was added, false otherwise.</returns>
+#if !(NET_1_1)
+        public virtual bool Subscribe(IProvider provider, Dictionary<string, object> parameterMap)
+#else
         public virtual bool Subscribe(IProvider provider, Hashtable parameterMap)
+#endif
         {
             // Pipe is possibly used by dozens of Threads at once (like many subscribers for one server stream) so make it synchronized
             lock (_providers.SyncRoot)
@@ -222,7 +233,11 @@ namespace FluorineFx.Messaging.Api.Messaging
         /// <param name="consumer">Consumer that has connected.</param>
         /// <param name="type">Event type.</param>
         /// <param name="parameterMap">Parameters passed with connection.</param>
+#if !(NET_1_1)
+        protected void FireConsumerConnectionEvent(IConsumer consumer, int type, Dictionary<string, object> parameterMap) 
+#else
         protected void FireConsumerConnectionEvent(IConsumer consumer, int type, Hashtable parameterMap) 
+#endif
         {
             // Create event object
             PipeConnectionEvent evt = new PipeConnectionEvent(this);
@@ -239,7 +254,11 @@ namespace FluorineFx.Messaging.Api.Messaging
         /// <param name="provider">Provider that has connected.</param>
         /// <param name="type">Event type.</param>
         /// <param name="parameterMap">Parameters passed with connection.</param>
+#if !(NET_1_1)
+        protected void FireProviderConnectionEvent(IProvider provider, int type, Dictionary<string, object> parameterMap)
+#else
         protected void FireProviderConnectionEvent(IProvider provider, int type, Hashtable parameterMap)
+#endif
         {
 		    PipeConnectionEvent evt = new PipeConnectionEvent(this);
 		    evt.Provider = provider;

@@ -37,6 +37,14 @@ namespace FluorineFx.Net
             _info["description"] = exception.Message;
         }
 
+        internal NetStatusEventArgs(string message)
+        {
+            _info = new ASObject();
+            _info["level"] = "error";
+            _info["code"] = "NetConnection.Call.BadVersion";
+            _info["description"] = message;
+        }
+
         internal NetStatusEventArgs(ASObject info)
         {
             _info = info;

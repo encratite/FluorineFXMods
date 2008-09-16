@@ -20,6 +20,7 @@
 using System;
 using System.IO;
 
+#if (NET_1_1)
 using ICSharpCode.SharpZipLib.GZip;
 
 namespace FluorineFx.HttpCompress
@@ -48,3 +49,5 @@ namespace FluorineFx.HttpCompress
 		}
 	}
 }
+
+#endif

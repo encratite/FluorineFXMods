@@ -57,7 +57,9 @@ namespace FluorineFx.Messaging.Rtmp
 
         public void Write(IRtmpEvent message)
 		{
-			IClientStream stream = _connection.GetStreamByChannelId(_channelId);
+            IClientStream stream = null;
+            if( _connection is IStreamCapableConnection )
+                stream = (_connection as IStreamCapableConnection).GetStreamByChannelId(_channelId);
 			if(_channelId > 3 && stream == null) 
 			{
 				//Stream doesn't exist any longer, discarding message

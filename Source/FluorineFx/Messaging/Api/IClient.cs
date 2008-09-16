@@ -56,8 +56,8 @@ namespace FluorineFx.Messaging.Api
         /// <returns></returns>
         IMessage[] GetPendingMessages(int waitIntervalMillis);
 
-        void RegisterMessageClient(MessageClient messageClient);
-        void UnregisterMessageClient(MessageClient messageClient);
+        void RegisterMessageClient(IMessageClient messageClient);
+        void UnregisterMessageClient(IMessageClient messageClient);
         void AddSessionDestroyedListener(ISessionListener listener);
         void RemoveSessionDestroyedListener(ISessionListener listener);
         /// <summary>
@@ -70,5 +70,8 @@ namespace FluorineFx.Messaging.Api
         /// <param name="clientLeaseTime">The amount of time in minutes before client times out.</param>
         void Renew(int clientLeaseTime);
         int ClientLeaseTime { get; }
+
+        void Register(IConnection connection);
+        void Unregister(IConnection connection);
 	}
 }

@@ -19,16 +19,15 @@
 using System;
 using System.Collections;
 using System.IO;
-
-// Import log4net classes.
+#if !SILVERLIGHT
 using log4net;
-using log4net.Config;
-
+#endif
 using FluorineFx.Exceptions;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
+using FluorineFx.Messaging.Rtmp.Service;
 using FluorineFx.Util;
 
 namespace FluorineFx.Messaging.Rtmp
@@ -38,15 +37,12 @@ namespace FluorineFx.Messaging.Rtmp
 	/// </summary>
 	sealed class RtmpProtocolEncoder
 	{
-		static private ILog _log;
+#if !SILVERLIGHT
+        static private ILog _log = LogManager.GetLogger(typeof(RtmpProtocolEncoder));
+#endif
 
-		static RtmpProtocolEncoder()
+        static RtmpProtocolEncoder()
 		{
-			try
-			{
-				_log = LogManager.GetLogger(typeof(RtmpProtocolEncoder));
-			}
-			catch{}
 		}
 
 		/// <summary>
@@ -114,8 +110,10 @@ namespace FluorineFx.Messaging.Rtmp
 			}			 
 			catch(Exception ex) 
 			{
-				if( _log != null )
+#if !SILVERLIGHT
+                if( _log != null )
 					_log.Fatal("Error encoding object. ", ex);
+#endif
 			}
 			return null;
 		}
@@ -286,8 +284,10 @@ namespace FluorineFx.Messaging.Rtmp
                 case Constants.TypeFlexStreamEnd:
                     return EncodeFlexStreamSend(context, message as FlexStreamSend);
                 default:
-					if( _log.IsErrorEnabled )
+#if !SILVERLIGHT
+                    if( _log.IsErrorEnabled )
 						_log.Error("Unknown object type: " + header.DataType);
+#endif
 					return null;
 			}
 		}
@@ -395,7 +395,7 @@ namespace FluorineFx.Messaging.Rtmp
 			RtmpWriter writer = new RtmpWriter(output);
 
 			IServiceCall serviceCall = invoke.ServiceCall;
-			bool isPending = serviceCall.Status == ServiceCall.STATUS_PENDING;
+			bool isPending = serviceCall.Status == Call.STATUS_PENDING;
 			if (!isPending) 
 			{
 				//log.debug("Call has been executed, send result");
@@ -415,7 +415,11 @@ namespace FluorineFx.Messaging.Rtmp
 			if(!isPending && (invoke is Invoke)) 
 			{
 				IPendingServiceCall pendingCall = (IPendingServiceCall)serviceCall;
-				//log.debug("Writing result: " + pendingCall.getResult());
+                if (!serviceCall.IsSuccess)
+                {
+                    StatusASO status = GenerateErrorResult(StatusASO.NC_CALL_FAILED, serviceCall.Exception);
+                    pendingCall.Result = status;
+                }
 				writer.WriteData(context.ObjectEncoding, pendingCall.Result);
 			}
 			else
@@ -567,8 +571,10 @@ namespace FluorineFx.Messaging.Rtmp
                         writer.WriteByte(type);
                         output.PutInt((int)output.Position, 0);
                         break;
-                    default:
-						_log.Error("Unknown event " + sharedObjectEvent.Type.ToString());
+					default:
+#if !SILVERLIGHT
+                        _log.Error("Unknown event " + sharedObjectEvent.Type.ToString());
+#endif
 						writer.WriteByte(type);
 						mark = (int)output.Position;
 						output.Skip(4); // we will be back
@@ -577,11 +583,25 @@ namespace FluorineFx.Messaging.Rtmp
                             writer.WriteUTF(sharedObjectEvent.Key);
                             writer.WriteData(context.ObjectEncoding, sharedObjectEvent.Value);
                         }
-                        len = (int)output.Position - mark - 4;
+						len = (int)output.Position - mark - 4;
 						output.PutInt(mark, len);
 						break;
 				}
 			}
 		}
+        /// <summary>
+        /// Generate error object to return for given exception.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="exception"></param>
+        /// <returns></returns>
+        static StatusASO GenerateErrorResult(string code, Exception exception)
+        {
+            string message = "";
+            if (exception != null && exception.Message != null)
+                message = exception.Message;
+            StatusASO status = new StatusASO(code, "error", message);
+            return status;
+        }
 	}
 }

@@ -42,7 +42,7 @@ namespace FluorineFx.Collections
         /// <summary>
         /// Creates a set containing all of the elements of the specified collection.
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="collection"></param>
         public CopyOnWriteArraySet(ICollection collection)
         {
             _array = new CopyOnWriteArray();

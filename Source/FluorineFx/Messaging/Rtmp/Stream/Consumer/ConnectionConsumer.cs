@@ -166,7 +166,9 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
             }
             else if ("pendingVideoCount".Equals(oobCtrlMsg.ServiceName))
             {
-                IClientStream stream = _connection.GetStreamByChannelId(_video.ChannelId);
+                IClientStream stream = null;
+                if (_connection is IStreamCapableConnection)
+                    stream = (_connection as IStreamCapableConnection).GetStreamByChannelId(_video.ChannelId);
                 if (stream != null)
                 {
                     oobCtrlMsg.Result = _connection.GetPendingVideoMessages(stream.StreamId);
@@ -179,7 +181,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
             else if ("writeDelta".Equals(oobCtrlMsg.ServiceName))
             {
                 long maxStream = 0;
-                IBWControllable bwControllable = _connection;
+                IBWControllable bwControllable = _connection as IBWControllable;
                 // Search FC containing valid BWC
                 while (bwControllable != null && bwControllable.BandwidthConfiguration == null)
                 {

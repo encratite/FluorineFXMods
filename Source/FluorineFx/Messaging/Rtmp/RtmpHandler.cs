@@ -37,6 +37,8 @@ using FluorineFx.IO;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Messaging.Rtmp.Stream;
+using FluorineFx.Messaging.Rtmp.Service;
+using FluorineFx.Scheduling;
 
 namespace FluorineFx.Messaging.Rtmp
 {
@@ -48,11 +50,43 @@ namespace FluorineFx.Messaging.Rtmp
         private static readonly ILog log = LogManager.GetLogger(typeof(RtmpHandler));
 
 
+        IEndpoint _endpoint;
+
         public RtmpHandler(IEndpoint endpoint)
-            : base(endpoint)
+            : base()
         {
+            _endpoint = endpoint;
         }
 
+        internal IEndpoint Endpoint
+        {
+            get { return _endpoint; }
+        }
+
+        public override void ConnectionOpened(RtmpConnection connection)
+        {
+            base.ConnectionOpened(connection);
+            if (connection.Context.Mode == RtmpMode.Server)
+            {
+                FluorineRtmpContext.Initialize(connection);
+                connection.StartWaitForHandshake();
+            }
+        }
+
+        public override void MessageSent(RtmpConnection connection, object message)
+        {
+            base.MessageSent(connection, message);
+            RtmpPacket sent = message as RtmpPacket;
+            int channelId = sent.Header.ChannelId;
+            IClientStream stream = null;
+            if( connection is IStreamCapableConnection )
+                stream = (connection as IStreamCapableConnection).GetStreamByChannelId(channelId);
+            // XXX we'd better use new event model for notification
+            if (stream != null && (stream is PlaylistSubscriberStream))
+            {
+                (stream as PlaylistSubscriberStream).Written(sent.Message);
+            }
+        }
 /*
 FlexInvoke flexInvoke = new FlexInvoke();
 flexInvoke.Cmd = "onstatus";
@@ -66,26 +100,30 @@ channel.Write(flexInvoke);
 
         protected override void OnChunkSize(RtmpConnection connection, RtmpChannel channel, RtmpHeader source, ChunkSize chunkSize) 
         {
-		    foreach(IClientStream stream in connection.GetStreams()) 
+            if (connection is IStreamCapableConnection)
             {
-			    if (stream is IClientBroadcastStream) 
+                IStreamCapableConnection streamCapableConnection = connection as IStreamCapableConnection;
                 {
-				    IClientBroadcastStream bs = stream as IClientBroadcastStream;
-				    IBroadcastScope scope = bs.Scope.GetBasicScope(Constants.BroadcastScopeType, bs.PublishedName) as IBroadcastScope;
-				    if (scope == null)
-					    continue;
-
-				    OOBControlMessage setChunkSize = new OOBControlMessage();
-				    setChunkSize.Target = "ClientBroadcastStream";
-				    setChunkSize.ServiceName = "chunkSize";
-				    if (setChunkSize.ServiceParameterMap == null)
-					    setChunkSize.ServiceParameterMap = new Hashtable();
-                    setChunkSize.ServiceParameterMap.Add("chunkSize", chunkSize.Size);
-				    scope.SendOOBControlMessage((IConsumer) null, setChunkSize);
-				    if (log.IsDebugEnabled) 
+                    foreach (IClientStream stream in streamCapableConnection.GetStreams())
                     {
-					    log.Debug("Sending chunksize " + chunkSize + " to " + bs.Provider);
-				    }
+                        if (stream is IClientBroadcastStream)
+                        {
+                            IClientBroadcastStream bs = stream as IClientBroadcastStream;
+                            IBroadcastScope scope = bs.Scope.GetBasicScope(Constants.BroadcastScopeType, bs.PublishedName) as IBroadcastScope;
+                            if (scope == null)
+                                continue;
+
+                            OOBControlMessage setChunkSize = new OOBControlMessage();
+                            setChunkSize.Target = "ClientBroadcastStream";
+                            setChunkSize.ServiceName = "chunkSize";
+                            setChunkSize.ServiceParameterMap.Add("chunkSize", chunkSize.Size);
+                            scope.SendOOBControlMessage((IConsumer)null, setChunkSize);
+                            if (log.IsDebugEnabled)
+                            {
+                                log.Debug("Sending chunksize " + chunkSize + " to " + bs.Provider);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -98,7 +136,9 @@ channel.Write(flexInvoke);
                     if (ping.Value2 != 0)
                     {
                         // The client wants to set the buffer time
-                        IClientStream stream = connection.GetStreamById(ping.Value2);
+                        IClientStream stream = null;
+                        if (connection is IStreamCapableConnection)
+                            stream = (connection as IStreamCapableConnection).GetStreamById(ping.Value2);
                         int buffer = ping.Value3;
                         if (stream != null)
                         {
@@ -109,7 +149,10 @@ channel.Write(flexInvoke);
                         else
                         {
                             // Remember buffer time to set until stream will be created
-                            connection.RememberStreamBufferDuration(ping.Value2, buffer);
+                            if (connection is RtmpServerConnection)
+                            {
+                                (connection as RtmpServerConnection).RememberStreamBufferDuration(ping.Value2, buffer);
+                            }
                             if (log.IsInfoEnabled)
                                 log.Info("Remembering client buffer on stream: " + buffer);
                         }
@@ -162,8 +205,10 @@ channel.Write(flexInvoke);
                         {
                             if (!connection.IsConnected)
                             {
-                                Hashtable parameters = invoke.ConnectionParameters;
-                                string host = GetHostname(parameters["tcUrl"] as string);
+                                IDictionary parameters = invoke.ConnectionParameters;
+                                string host = null;
+                                if( parameters.Contains("tcUrl") )
+                                    host = GetHostname(parameters["tcUrl"] as string);
                                 if (host != null && host.IndexOf(":") != -1)
                                 {
                                     // Remove default port from connection string
@@ -187,7 +232,7 @@ channel.Write(flexInvoke);
                                     IGlobalScope global = this.Endpoint.GetMessageBroker().GlobalScope;
                                     if (global == null)
                                     {
-                                        serviceCall.Status = ServiceCall.STATUS_SERVICE_NOT_FOUND;
+                                        serviceCall.Status = Call.STATUS_SERVICE_NOT_FOUND;
                                         if (serviceCall is IPendingServiceCall)
                                         {
                                             StatusASO status = StatusASO.GetStatusObject(StatusASO.NC_CONNECT_INVALID_APPLICATION, connection.ObjectEncoding);
@@ -210,7 +255,7 @@ channel.Write(flexInvoke);
                                             if (log.IsErrorEnabled)
                                                 log.Error(__Res.GetString(__Res.Scope_NotFound, path));
 
-                                            serviceCall.Status = ServiceCall.STATUS_SERVICE_NOT_FOUND;
+                                            serviceCall.Status = Call.STATUS_SERVICE_NOT_FOUND;
                                             if (serviceCall is IPendingServiceCall)
                                             {
                                                 StatusASO status = StatusASO.GetStatusObject(StatusASO.NC_CONNECT_REJECTED, connection.ObjectEncoding);
@@ -221,7 +266,7 @@ channel.Write(flexInvoke);
                                         }
                                         catch (ScopeShuttingDownException)
                                         {
-                                            serviceCall.Status = ServiceCall.STATUS_APP_SHUTTING_DOWN;
+                                            serviceCall.Status = Call.STATUS_APP_SHUTTING_DOWN;
                                             if (serviceCall is IPendingServiceCall)
                                             {
                                                 StatusASO status = StatusASO.GetStatusObject(StatusASO.NC_CONNECT_APPSHUTDOWN, connection.ObjectEncoding);
@@ -271,7 +316,7 @@ channel.Write(flexInvoke);
                                                 {
                                                     if (log.IsDebugEnabled)
                                                         log.Debug("Connected RtmpClient: " + connection.Client.Id);
-                                                    serviceCall.Status = ServiceCall.STATUS_SUCCESS_RESULT;
+                                                    serviceCall.Status = Call.STATUS_SUCCESS_RESULT;
                                                     if (serviceCall is IPendingServiceCall)
                                                     {
                                                         StatusASO statusASO = StatusASO.GetStatusObject(StatusASO.NC_CONNECT_SUCCESS, connection.ObjectEncoding);
@@ -286,7 +331,7 @@ channel.Write(flexInvoke);
                                                 {
                                                     if (log.IsDebugEnabled)
                                                         log.Debug("Connect failed");
-                                                    serviceCall.Status = ServiceCall.STATUS_ACCESS_DENIED;
+                                                    serviceCall.Status = Call.STATUS_ACCESS_DENIED;
                                                     if (serviceCall is IPendingServiceCall)
                                                         (serviceCall as IPendingServiceCall).Result = StatusASO.GetStatusObject(StatusASO.NC_CONNECT_REJECTED, connection.ObjectEncoding);
                                                     disconnectOnReturn = true;
@@ -296,7 +341,7 @@ channel.Write(flexInvoke);
                                             {
                                                 if (log.IsDebugEnabled)
                                                     log.Debug("Connect rejected");
-                                                serviceCall.Status = ServiceCall.STATUS_ACCESS_DENIED;
+                                                serviceCall.Status = Call.STATUS_ACCESS_DENIED;
                                                 if (serviceCall is IPendingServiceCall)
                                                 {
                                                     StatusASO statusASO = StatusASO.GetStatusObject(StatusASO.NC_CONNECT_REJECTED, connection.ObjectEncoding);
@@ -313,7 +358,7 @@ channel.Write(flexInvoke);
                                     if (log.IsErrorEnabled)
                                         log.Error("Error connecting", ex);
 
-                                    serviceCall.Status = ServiceCall.STATUS_GENERAL_EXCEPTION;
+                                    serviceCall.Status = Call.STATUS_GENERAL_EXCEPTION;
                                     if (serviceCall is IPendingServiceCall)
                                         (serviceCall as IPendingServiceCall).Result = StatusASO.GetStatusObject(StatusASO.NC_CONNECT_FAILED, connection.ObjectEncoding);
                                     disconnectOnReturn = true;
@@ -391,7 +436,7 @@ channel.Write(flexInvoke);
 			else if(invoke is Invoke) 
 			{
 				if((header.StreamId != 0)
-					&& (serviceCall.Status == ServiceCall.STATUS_SUCCESS_VOID || serviceCall.Status == ServiceCall.STATUS_SUCCESS_NULL)) 
+					&& (serviceCall.Status == Call.STATUS_SUCCESS_VOID || serviceCall.Status == Call.STATUS_SUCCESS_NULL)) 
 				{
 				    if (log.IsDebugEnabled)
 					    log.Debug("Method does not have return value, do not reply");
@@ -570,37 +615,5 @@ channel.Write(flexInvoke);
 		    }
             return context.ServiceInvoker.Invoke(serviceCall, service);
 	    }
-
-        public static void Push(RtmpConnection connection, IMessage message, MessageClient messageClient)
-		{
-			if( connection != null )
-			{
-				object response = message;
-				if( message is BinaryMessage )
-				{
-					BinaryMessage binaryMessage = message as BinaryMessage;
-					binaryMessage.Update(messageClient);
-					byte[] binaryContent = binaryMessage.body as byte[];
-					//byte[] destClientBinaryId = messageClient.GetBinaryId();
-					//Array.Copy(destClientBinaryId, 0, binaryContent, binaryMessage.PatternPosition, destClientBinaryId.Length);
-
-                    RawBinary result = new RawBinary(binaryContent);
-                    response = result;
-				}
-				else
-				{
-					//This should be a clone of the original message
-					message.SetHeader(MessageBase.DestinationClientIdHeader, messageClient.ClientId);
-					message.clientId = messageClient.ClientId;
-				}
-
-				RtmpChannel channel = connection.GetChannel(3);
-				FlexInvoke reply = new FlexInvoke();
-				reply.Cmd = "receive";
-				reply.InvokeId = connection.InvokeId;
-				reply.Response = response;
-				channel.Write(reply);
-			}
-		}
 	}
 }

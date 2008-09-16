@@ -47,7 +47,7 @@ namespace FluorineFx.Data
 			get{ return _item; }
 		}
 
-		public Identity(Hashtable map)
+        public Identity(IDictionary map)
 		{
 			foreach(DictionaryEntry entry in map)
 			{

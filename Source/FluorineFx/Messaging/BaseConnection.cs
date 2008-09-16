@@ -19,7 +19,13 @@
 using System;
 using System.Collections;
 using System.Net;
+#if !(NET_1_1)
+using System.Collections.Generic;
+using FluorineFx.Collections.Generic;
+#endif
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Collections;
 using FluorineFx.Messaging.Api;
 
@@ -31,7 +37,9 @@ namespace FluorineFx.Messaging
     [CLSCompliant(false)]
     public abstract class BaseConnection : AttributeStore, IConnection
     {
+#if !SILVERLIGHT
         private static ILog log = LogManager.GetLogger(typeof(BaseConnection));
+#endif
 
         object _syncLock = new object();
         protected string _connectionId;
@@ -55,7 +63,7 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Connection params passed from client with NetConnection.connect call.
         /// </summary>
-        protected Hashtable _parameters;
+        protected IDictionary _parameters;
         /// <summary>
         /// Client bound to connection.
         /// </summary>
@@ -63,11 +71,18 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Scope that connection belongs to.
         /// </summary>
-        private Scope _scope;
+        private IScope _scope;
+#if !(NET_1_1)
         /// <summary>
         /// Set of basic scopes.
         /// </summary>
-        protected CopyOnWriteArraySet _basicScopes;
+        protected CopyOnWriteArraySet<IBasicScope> _basicScopes = new CopyOnWriteArraySet<IBasicScope>();
+#else
+        /// <summary>
+        /// Set of basic scopes.
+        /// </summary>
+        protected CopyOnWriteArraySet _basicScopes = new CopyOnWriteArraySet();
+#endif
 
         //1 IsClosed
         //2 IsClosing
@@ -78,18 +93,13 @@ namespace FluorineFx.Messaging
         //64
         protected byte __fields;
 
-        FluorineFx.Messaging.Endpoints.IEndpoint _endpoint;
-
-
         /// <summary>
         /// Initializes a new instance of the BaseConnection class.
         /// </summary>
-        /// <param name="remoteAddress">Remote address.</param>
-        /// <param name="remotePort">Remote port.</param>
         /// <param name="path">Scope path on server.</param>
         /// <param name="parameters">Parameters passed from client.</param>
-        public BaseConnection(FluorineFx.Messaging.Endpoints.IEndpoint endpoint, string path, Hashtable parameters)
-            :this(endpoint, path, Guid.NewGuid().ToString("N").Remove(12, 1), parameters)
+        public BaseConnection(string path, IDictionary parameters)
+            :this(path, Guid.NewGuid().ToString("N").Remove(12, 1), parameters)
         {
             //V4 GUID should be safe to remove the 4 so we can use the id for rtmpt
         }
@@ -97,24 +107,25 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Initializes a new instance of the BaseConnection class.
         /// </summary>
-        /// <param name="remoteAddress">Remote address.</param>
-        /// <param name="remotePort">Remote port.</param>
         /// <param name="path">Scope path on server.</param>
         /// <param name="connectionId">Connection id.</param>
         /// <param name="parameters">Parameters passed from client.</param>
-        internal BaseConnection(FluorineFx.Messaging.Endpoints.IEndpoint endpoint, string path, string connectionId, Hashtable parameters)
+        internal BaseConnection(string path, string connectionId, IDictionary parameters)
         {
-            _endpoint = endpoint;
             //V4 GUID should be safe to remove the 4 so we can use the id for rtmpt
             _connectionId = connectionId;
             _objectEncoding = ObjectEncoding.AMF0;
             _path = path;
             _parameters = parameters;
-            _basicScopes = new CopyOnWriteArraySet();
             SetIsClosed(false);
         }
-
+        /// <summary>
+        /// Gets the network endpoint.
+        /// </summary>
         public abstract IPEndPoint RemoteEndPoint { get; }
+        /// <summary>
+        /// Gets the path for this connection. This is not updated if you switch scope.
+        /// </summary>
         public string Path { get { return _path; } }
 
         public bool IsClosed
@@ -156,17 +167,14 @@ namespace FluorineFx.Messaging
         /// <param name="client">Client bound to connection.</param>
         public void Initialize(IClient client)
         {
-            if (this.Client != null && this.Client is Client)
+            if (this.Client != null)
             {
                 // Unregister old client
-                (this.Client as Client).Unregister(this);
+                this.Client.Unregister(this);
             }
             _client = client;
-            if (this.Client is Client)
-            {
-                // Register new client
-                (_client as Client).Register(this);
-            }
+            // Register new client
+            _client.Register(this);
         }
 
         /// <summary>
@@ -186,8 +194,8 @@ namespace FluorineFx.Messaging
         /// <returns>true on success, false otherwise.</returns>
         public virtual bool Connect(IScope scope, object[] parameters)
         {
-            Scope oldScope = _scope;
-            _scope = scope as Scope;
+            IScope oldScope = _scope;
+            _scope = scope;
             if (_scope.Connect(this, parameters))
             {
                 if (oldScope != null)
@@ -219,7 +227,9 @@ namespace FluorineFx.Messaging
                 if (IsClosed)
                     return;
                 SetIsClosed(true);
+#if !SILVERLIGHT
                 log.Debug("Close, disconnect from scope, and children");
+#endif
                 if (_basicScopes != null)
                 {
                     try
@@ -232,7 +242,9 @@ namespace FluorineFx.Messaging
                     }
                     catch (Exception ex)
                     {
+#if !SILVERLIGHT
                         log.Error(__Res.GetString(__Res.Scope_UnregisterError), ex);
+#endif
                     }
                 }
                 if (_scope != null)
@@ -243,12 +255,14 @@ namespace FluorineFx.Messaging
                     }
                     catch (Exception ex)
                     {
+#if !SILVERLIGHT
                         log.Error(__Res.GetString(__Res.Scope_DisconnectError, _scope), ex);
+#endif
                     }
                 }
-                if (_client != null && _client is Client)
+                if (_client != null)
                 {
-                    (_client as Client).Unregister(this);
+                    _client.Unregister(this);
                     _client = null;
                 }
                 _scope = null;
@@ -259,14 +273,12 @@ namespace FluorineFx.Messaging
         {
         }
 
-        public FluorineFx.Messaging.Endpoints.IEndpoint Endpoint { get { return _endpoint; } }
-
         public virtual int ClientLeaseTime { get { return 0; } }
 
         /// <summary>
         /// Gets connection parameters.
         /// </summary>
-        public Hashtable Parameters { get { return _parameters; } }
+        public IDictionary Parameters { get { return _parameters; } }
 
         public IClient Client
         {

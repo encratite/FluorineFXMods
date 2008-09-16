@@ -162,7 +162,12 @@ namespace FluorineFx.Messaging.Services.Messaging
 			}
 		}
 
-		public IList GetSubscribers(IMessage message)
+        public IList GetSubscribers(IMessage message)
+        {
+            return GetSubscribers(message, true);
+        }
+
+        public IList GetSubscribers(IMessage message, bool evalSelector)
 		{
 			lock(_objLock)
 			{
@@ -175,7 +180,7 @@ namespace FluorineFx.Messaging.Services.Messaging
 				else
 				{
 					Subtopic subtopic = null;
-                    if (message.headers.Contains(AsyncMessage.SubtopicHeader))
+                    if (message.headers.ContainsKey(AsyncMessage.SubtopicHeader))
                     {
                         subtopic = new Subtopic(message.headers[AsyncMessage.SubtopicHeader] as string);
                         MessagingAdapter messagingAdapter = _messageDestination.ServiceAdapter as MessagingAdapter;
@@ -192,7 +197,7 @@ namespace FluorineFx.Messaging.Services.Messaging
 						bool include = true;
 						if( subtopic != null && messageClient.Subtopic != null )
 							include = include && subtopic.Matches(messageClient.Subtopic);
-						if( messageClient.Selector != null )
+                        if (messageClient.Selector != null && evalSelector)
 							include = include && messageClient.Selector.Evaluate(null, message.headers);
 
 						if(include)

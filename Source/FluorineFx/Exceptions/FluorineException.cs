@@ -25,8 +25,12 @@ namespace FluorineFx.Exceptions
 	/// <summary>
 	/// The exception that is the base class for Fluorine exceptions.
 	/// </summary>
+#if SILVERLIGHT
+    public class FluorineException : Exception
+#else
 	[Serializable]
 	public class FluorineException : ApplicationException
+#endif
 	{
 		/// <summary>
 		/// Initializes a new instance of the FluorineException class.
@@ -50,6 +54,7 @@ namespace FluorineFx.Exceptions
 		public FluorineException(string message, Exception inner) : base(message, inner)																 
 		{																 
 		}
+#if !SILVERLIGHT
 		/// <summary>
 		/// Initializes a new instance of the FluorineException class with serialized data.
 		/// </summary>
@@ -58,5 +63,6 @@ namespace FluorineFx.Exceptions
 		public FluorineException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }

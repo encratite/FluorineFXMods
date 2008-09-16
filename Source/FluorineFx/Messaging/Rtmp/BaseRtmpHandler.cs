@@ -17,18 +17,19 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Context;
 using FluorineFx.Util;
-using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Stream;
 using FluorineFx.Messaging.Api.Event;
 using FluorineFx.Messaging.Api.Service;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.SO;
-using FluorineFx.Messaging.Rtmp.Stream;
-using FluorineFx.Scheduling;
+using FluorineFx.Messaging.Messages;
+using FluorineFx.IO;
 
 namespace FluorineFx.Messaging.Rtmp
 {
@@ -91,22 +92,15 @@ namespace FluorineFx.Messaging.Rtmp
         /// </summary>
         public const string ACTION_RECEIVE_AUDIO = "receiveAudio";
 
+#if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(BaseRtmpHandler));
-
-        IEndpoint _endpoint;
+#endif
 
         /// <summary>
-        /// Initializes a new instance of the ClientRejectedExBaseRtmpHandlerception class.
+        /// Initializes a new instance of the BaseRtmpHandler class.
         /// </summary>
-        /// <param name="endpoint">Endpoint object.</param>
-        public BaseRtmpHandler(IEndpoint endpoint)
+        public BaseRtmpHandler()
         {
-            _endpoint = endpoint;
-        }
-
-        internal IEndpoint Endpoint
-        {
-            get { return _endpoint; }
         }
 
         protected static string GetHostname(string url)
@@ -126,18 +120,12 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="connection">Connection object.</param>
         public virtual void ConnectionOpened(RtmpConnection connection)
         {
-            if (connection.Context.Mode == RtmpMode.Server)
-            {
-                FluorineRtmpContext.Initialize(connection);
-                ISchedulingService schedulingService = _endpoint.GetMessageBroker().GlobalScope.GetService(typeof(ISchedulingService)) as ISchedulingService;
-                connection.StartWaitForHandshake(schedulingService);
-            }
         }
         /// <summary>
         /// Message recieved.
         /// </summary>
         /// <param name="connection">Connection object.</param>
-        /// <param name="message">Message object.</param>
+        /// <param name="obj">Message object.</param>
         public void MessageReceived(RtmpConnection connection, object obj)
         {
             IRtmpEvent message = null;
@@ -147,16 +135,21 @@ namespace FluorineFx.Messaging.Rtmp
                 message = packet.Message;
                 RtmpHeader header = packet.Header;
                 RtmpChannel channel = connection.GetChannel(header.ChannelId);
-                IClientStream stream = connection.GetStreamById(header.StreamId);
+                IClientStream stream = null;
+                if( connection is IStreamCapableConnection )
+                    stream = (connection as IStreamCapableConnection).GetStreamById(header.StreamId);
 
                 // Support stream ids
+#if !SILVERLIGHT
                 FluorineContext.Current.Connection.SetAttribute(FluorineContext.FluorineStreamIdKey, header.StreamId);
-
+#endif
                 // Increase number of received messages
                 connection.MessageReceived();
 
+#if !SILVERLIGHT
                 if (log != null && log.IsDebugEnabled)
                     log.Debug("RtmpConnection message received, type = " + header.DataType);
+#endif
 
                 if (message != null)
                     message.Source = connection;
@@ -167,7 +160,7 @@ namespace FluorineFx.Messaging.Rtmp
                         OnInvoke(connection, channel, header, message as Invoke);
                         if (message.Header.StreamId != 0
                             && (message as Invoke).ServiceCall.ServiceName == null
-                            && (message as Invoke).ServiceCall.ServiceMethodName == RtmpHandler.ACTION_PUBLISH)
+                            && (message as Invoke).ServiceCall.ServiceMethodName == BaseRtmpHandler.ACTION_PUBLISH)
                         {
                             if (stream != null) //Dispatch if stream was created
                                 (stream as IEventDispatcher).DispatchEvent(message);
@@ -177,7 +170,7 @@ namespace FluorineFx.Messaging.Rtmp
                         OnFlexInvoke(connection, channel, header, message as FlexInvoke);
                         if (message.Header.StreamId != 0
                             && (message as Invoke).ServiceCall.ServiceName == null
-                            && (message as Invoke).ServiceCall.ServiceMethodName == RtmpHandler.ACTION_PUBLISH)
+                            && (message as Invoke).ServiceCall.ServiceMethodName == BaseRtmpHandler.ACTION_PUBLISH)
                         {
                             if (stream != null) //Dispatch if stream was created
                                 (stream as IEventDispatcher).DispatchEvent(message);
@@ -224,14 +217,18 @@ namespace FluorineFx.Messaging.Rtmp
                         OnClientBW(connection, channel, header, message as ClientBW);
                         break;
                     default:
+#if !SILVERLIGHT
                         if (log != null && log.IsDebugEnabled)
                             log.Debug("RtmpService event not handled: " + header.DataType);
+#endif
                         break;
                 }
             }
             catch (Exception ex)
             {
+#if !SILVERLIGHT
                 log.Error("Runtime error", ex);
+#endif
             }
         }
         /// <summary>
@@ -239,21 +236,13 @@ namespace FluorineFx.Messaging.Rtmp
         /// </summary>
         /// <param name="connection">Connection object.</param>
         /// <param name="message">Message object.</param>
-        public void MessageSent(RtmpConnection connection, object message)
+        public virtual void MessageSent(RtmpConnection connection, object message)
         {
     		if (message is ByteBuffer)
 			    return;
 
 		    // Increase number of sent messages
 		    connection.MessageSent(message as RtmpPacket);
-		    RtmpPacket sent = message as RtmpPacket;
-		    int channelId = sent.Header.ChannelId;
-		    IClientStream stream = connection.GetStreamByChannelId(channelId);
-		    // XXX we'd better use new event model for notification
-		    if (stream != null && (stream is PlaylistSubscriberStream)) 
-            {
-                (stream as PlaylistSubscriberStream).Written(sent.Message);
-		    }
         }
         /// <summary>
         /// Connection closed.
@@ -261,7 +250,9 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="connection">Connection object.</param>
         public virtual void ConnectionClosed(RtmpConnection connection)
         {
+#if !SILVERLIGHT
             FluorineRtmpContext.Initialize(connection);
+#endif
             connection.Close();
         }
 
@@ -346,6 +337,7 @@ namespace FluorineFx.Messaging.Rtmp
             IPendingServiceCall pendingCall = connection.GetPendingCall(invoke.InvokeId);
             if (pendingCall != null)
             {
+                pendingCall.Status = call.Status;
                 // The client sent a response to a previously made call.
                 object[] args = call.Arguments;
                 if ((args != null) && (args.Length > 0))
@@ -364,10 +356,44 @@ namespace FluorineFx.Messaging.Rtmp
                         }
                         catch (Exception ex)
                         {
+#if !SILVERLIGHT
                             log.Error("Error while executing callback " + callback, ex);
+#endif
                         }
                     }
                 }
+            }
+        }
+
+        public static void Push(RtmpConnection connection, IMessage message, IMessageClient messageClient)
+        {
+            if (connection != null)
+            {
+                object response = message;
+                if (message is BinaryMessage)
+                {
+                    BinaryMessage binaryMessage = message as BinaryMessage;
+                    binaryMessage.Update(messageClient);
+                    byte[] binaryContent = binaryMessage.body as byte[];
+                    //byte[] destClientBinaryId = messageClient.GetBinaryId();
+                    //Array.Copy(destClientBinaryId, 0, binaryContent, binaryMessage.PatternPosition, destClientBinaryId.Length);
+
+                    RawBinary result = new RawBinary(binaryContent);
+                    response = result;
+                }
+                else
+                {
+                    //This should be a clone of the original message
+                    message.SetHeader(MessageBase.DestinationClientIdHeader, messageClient.ClientId);
+                    message.clientId = messageClient.ClientId;
+                }
+
+                RtmpChannel channel = connection.GetChannel(3);
+                FlexInvoke reply = new FlexInvoke();
+                reply.Cmd = "receive";
+                reply.InvokeId = connection.InvokeId;
+                reply.Response = response;
+                channel.Write(reply);
             }
         }
     }
