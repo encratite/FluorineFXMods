@@ -2908,6 +2908,35 @@ namespace FluorineFx.Util
 
             throw CreateInvalidCastException(value.GetType(), typeof(Char));
         }
+        /// <summary>
+        /// Checks whether the value of the specified Object can be converted to a Unicode character.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>Returns true if the specified Object can be converted to a Unicode character.</returns>
+        public static bool CanConvertToChar(object value)
+        {
+            if (value == null || value is DBNull) return true;
+
+            if (value is Char) return true;
+            // Scalar Types.
+            if (value is String) return (value == null || (value as String).Length == 1);
+            if (value is Boolean) return true;
+
+            if (value is IConvertible)
+            {
+                try
+                {
+                    ((IConvertible)value).ToChar(null);
+                    return true;
+                }
+                catch (InvalidCastException)
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
 
         #endregion
 
@@ -4387,6 +4416,33 @@ namespace FluorineFx.Util
 			
 			throw CreateInvalidCastException(p.GetType(), typeof(Char?));
 		}
+
+        public static bool CanConvertToNullableChar(object p)
+        {
+            if (p == null || p is DBNull) return true;
+
+            // Scalar Types.
+            //
+            if (p is Char) return true;
+            if (p is String) return (p == null || (p as String).Length == 1);
+
+            if (p is Boolean) return true;
+
+            if (p is IConvertible)
+            {
+                try
+                {
+                    ((IConvertible)p).ToChar(null);
+                    return true;
+                }
+                catch (InvalidCastException)
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
 
         #endregion
 

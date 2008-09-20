@@ -674,7 +674,7 @@ namespace FluorineFx
                 {
                     return true;
                 }
-                return false;
+                //return false;
             }
             else
             {
@@ -692,37 +692,58 @@ namespace FluorineFx
                     }
                     return false;
                 }
-                return true;
+                //return true;
             }
+
+            try
+            {
+#if !(NET_1_1)
+                if (isNullable)
+                {
+                    switch (Type.GetTypeCode(TypeHelper.GetUnderlyingType(targetType)))
+                    {
+                        case TypeCode.Char: return CanConvertToNullableChar(obj);
+                    }
+                }
+#endif
+                switch (Type.GetTypeCode(targetType))
+                {
+                    case TypeCode.Char: return CanConvertToChar(obj);
+                }
+            }
+            catch (InvalidCastException)
+            {
+            }
+            return false;
         }
 
-        static public object ChangeType(object value, Type conversionType)
+        static public object ChangeType(object value, Type targetType)
         {
-            return ConvertChangeType(value, conversionType, ReflectionUtils.IsNullable(conversionType));
+            return ConvertChangeType(value, targetType, ReflectionUtils.IsNullable(targetType));
         }
 
-        private static object ConvertChangeType(object value, Type conversionType, bool isNullable)
+        private static object ConvertChangeType(object value, Type targetType, bool isNullable)
         {
-            if (conversionType.IsArray)
+            if (targetType.IsArray)
             {
                 if (null == value)
                     return null;
 
                 Type srcType = value.GetType();
 
-                if (srcType == conversionType)
+                if (srcType == targetType)
                     return value;
 
                 if (srcType.IsArray)
                 {
                     Type srcElementType = srcType.GetElementType();
-                    Type dstElementType = conversionType.GetElementType();
+                    Type dstElementType = targetType.GetElementType();
 
                     if (srcElementType.IsArray != dstElementType.IsArray
                         || (srcElementType.IsArray &&
                             srcElementType.GetArrayRank() != dstElementType.GetArrayRank()))
                     {
-                        throw new InvalidCastException(string.Format("Can not convert array of type '{0}' to array of '{1}'.", srcType.FullName, conversionType.FullName));
+                        throw new InvalidCastException(string.Format("Can not convert array of type '{0}' to array of '{1}'.", srcType.FullName, targetType.FullName));
                     }
 
                     Array srcArray = (Array)value;
@@ -778,11 +799,11 @@ namespace FluorineFx
                     return dstArray;
                 }
             }
-            else if (conversionType.IsEnum)
+            else if (targetType.IsEnum)
             {
                 try
                 {
-                    return Enum.Parse(conversionType, value.ToString(), true);
+                    return Enum.Parse(targetType, value.ToString(), true);
                 }
                 catch (ArgumentException ex)
                 {
@@ -793,7 +814,7 @@ namespace FluorineFx
 #if !(NET_1_1)
             if (isNullable)
             {
-                switch (Type.GetTypeCode(TypeHelper.GetUnderlyingType(conversionType)))
+                switch (Type.GetTypeCode(TypeHelper.GetUnderlyingType(targetType)))
                 {
                     case TypeCode.Boolean:  return ConvertToNullableBoolean (value);
                     case TypeCode.Byte:     return ConvertToNullableByte    (value);
@@ -810,11 +831,11 @@ namespace FluorineFx
                     case TypeCode.UInt32:   return ConvertToNullableUInt32  (value);
                     case TypeCode.UInt64:   return ConvertToNullableUInt64  (value);
                 }
-                if (typeof(Guid) == conversionType) return ConvertToNullableGuid(value);
+                if (typeof(Guid) == targetType) return ConvertToNullableGuid(value);
             }
 #endif
 
-            switch (Type.GetTypeCode(conversionType))
+            switch (Type.GetTypeCode(targetType))
             {
                 case TypeCode.Boolean: return ConvertToBoolean(value);
                 case TypeCode.Byte: return ConvertToByte(value);
@@ -833,57 +854,57 @@ namespace FluorineFx
                 case TypeCode.UInt64: return ConvertToUInt64(value);
             }
 
-            if (typeof(Guid) == conversionType) return ConvertToGuid(value);
+            if (typeof(Guid) == targetType) return ConvertToGuid(value);
 #if !SILVERLIGHT
-            if (typeof(System.Xml.XmlDocument) == conversionType) return ConvertToXmlDocument(value);
+            if (typeof(System.Xml.XmlDocument) == targetType) return ConvertToXmlDocument(value);
 #endif
-            if (typeof(byte[]) == conversionType) return ConvertToByteArray(value);
-            if (typeof(char[]) == conversionType) return ConvertToCharArray(value);
+            if (typeof(byte[]) == targetType) return ConvertToByteArray(value);
+            if (typeof(char[]) == targetType) return ConvertToCharArray(value);
 
 #if !SILVERLIGHT
-            if (typeof(SqlInt32) == conversionType) return ConvertToSqlInt32(value);
-            if (typeof(SqlString) == conversionType) return ConvertToSqlString(value);
-            if (typeof(SqlDecimal) == conversionType) return ConvertToSqlDecimal(value);
-            if (typeof(SqlDateTime) == conversionType) return ConvertToSqlDateTime(value);
-            if (typeof(SqlBoolean) == conversionType) return ConvertToSqlBoolean(value);
-            if (typeof(SqlMoney) == conversionType) return ConvertToSqlMoney(value);
-            if (typeof(SqlGuid) == conversionType) return ConvertToSqlGuid(value);
-            if (typeof(SqlDouble) == conversionType) return ConvertToSqlDouble(value);
-            if (typeof(SqlByte) == conversionType) return ConvertToSqlByte(value);
-            if (typeof(SqlInt16) == conversionType) return ConvertToSqlInt16(value);
-            if (typeof(SqlInt64) == conversionType) return ConvertToSqlInt64(value);
-            if (typeof(SqlSingle) == conversionType) return ConvertToSqlSingle(value);
-            if (typeof(SqlBinary) == conversionType) return ConvertToSqlBinary(value);
+            if (typeof(SqlInt32) == targetType) return ConvertToSqlInt32(value);
+            if (typeof(SqlString) == targetType) return ConvertToSqlString(value);
+            if (typeof(SqlDecimal) == targetType) return ConvertToSqlDecimal(value);
+            if (typeof(SqlDateTime) == targetType) return ConvertToSqlDateTime(value);
+            if (typeof(SqlBoolean) == targetType) return ConvertToSqlBoolean(value);
+            if (typeof(SqlMoney) == targetType) return ConvertToSqlMoney(value);
+            if (typeof(SqlGuid) == targetType) return ConvertToSqlGuid(value);
+            if (typeof(SqlDouble) == targetType) return ConvertToSqlDouble(value);
+            if (typeof(SqlByte) == targetType) return ConvertToSqlByte(value);
+            if (typeof(SqlInt16) == targetType) return ConvertToSqlInt16(value);
+            if (typeof(SqlInt64) == targetType) return ConvertToSqlInt64(value);
+            if (typeof(SqlSingle) == targetType) return ConvertToSqlSingle(value);
+            if (typeof(SqlBinary) == targetType) return ConvertToSqlBinary(value);
 #endif
             if (value == null)
                 return null;
             //Check whether the target Type can be assigned from the value's Type
-            if (conversionType.IsAssignableFrom(value.GetType()))
+            if (targetType.IsAssignableFrom(value.GetType()))
                 return value;//Skip further adapting
 
             //Try to convert using a type converter
-            TypeConverter typeConverter = ReflectionUtils.GetTypeConverter(conversionType);// TypeDescriptor.GetConverter(conversionType);
+            TypeConverter typeConverter = ReflectionUtils.GetTypeConverter(targetType);// TypeDescriptor.GetConverter(targetType);
             if (typeConverter != null && typeConverter.CanConvertFrom(value.GetType()))
                 return typeConverter.ConvertFrom(value);
             //Custom type converters handled here (for example ByteArray)
             typeConverter = ReflectionUtils.GetTypeConverter(value);// TypeDescriptor.GetConverter(value);
-            if (typeConverter != null && typeConverter.CanConvertTo(conversionType))
-                return typeConverter.ConvertTo(value, conversionType);
+            if (typeConverter != null && typeConverter.CanConvertTo(targetType))
+                return typeConverter.ConvertTo(value, targetType);
 
             //Collections
 #if !(NET_1_1)
-            if (ReflectionUtils.ImplementsInterface(conversionType, "System.Collections.Generic.ICollection`1") && value is IList)
+            if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.Generic.ICollection`1") && value is IList)
             {
-                object obj = CreateInstance(conversionType);
+                object obj = CreateInstance(targetType);
                 if (obj != null)
                 {
                     //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
-                    Type[] typeParameters = ReflectionUtils.GetGenericArguments(conversionType);
+                    Type[] typeParameters = ReflectionUtils.GetGenericArguments(targetType);
                     if (typeParameters != null && typeParameters.Length == 1)
                     {
                         //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
-                        Type typeGenericICollection = conversionType.GetInterface("System.Collections.Generic.ICollection`1", true);
-                        MethodInfo miAddCollection = conversionType.GetMethod("Add");
+                        Type typeGenericICollection = targetType.GetInterface("System.Collections.Generic.ICollection`1", true);
+                        MethodInfo miAddCollection = targetType.GetMethod("Add");
                         IList source = value as IList;
                         for (int i = 0; i < (value as IList).Count; i++)
                             miAddCollection.Invoke(obj, new object[] { ChangeType(source[i], typeParameters[0]) });
@@ -892,16 +913,16 @@ namespace FluorineFx
                     {
 #if !SILVERLIGHT
                         if (log.IsErrorEnabled)
-                            log.Error(string.Format("{0} type arguments of the generic type {1} expecting 1.", typeParameters.Length, conversionType.FullName));
+                            log.Error(string.Format("{0} type arguments of the generic type {1} expecting 1.", typeParameters.Length, targetType.FullName));
 #endif
                     }
                     return obj;
                 }
             }
 #endif
-            if (ReflectionUtils.ImplementsInterface(conversionType, "System.Collections.IList") && value is IList)
+            if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.IList") && value is IList)
             {
-                object obj = CreateInstance(conversionType);
+                object obj = CreateInstance(targetType);
                 if (obj != null)
                 {
                     IList source = value as IList;
@@ -912,18 +933,18 @@ namespace FluorineFx
                 }
             }
 #if !(NET_1_1)
-            if (ReflectionUtils.ImplementsInterface(conversionType, "System.Collections.Generic.IDictionary`2") && value is IDictionary)
+            if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.Generic.IDictionary`2") && value is IDictionary)
             {
-                object obj = CreateInstance(conversionType);
+                object obj = CreateInstance(targetType);
                 if (obj != null)
                 {
                     IDictionary source = value as IDictionary;
-                    Type[] typeParameters = ReflectionUtils.GetGenericArguments(conversionType);
+                    Type[] typeParameters = ReflectionUtils.GetGenericArguments(targetType);
                     if (typeParameters != null && typeParameters.Length == 2)
                     {
                         //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
-                        Type typeGenericIDictionary = conversionType.GetInterface("System.Collections.Generic.IDictionary`2", true);
-                        MethodInfo miAddCollection = conversionType.GetMethod("Add");
+                        Type typeGenericIDictionary = targetType.GetInterface("System.Collections.Generic.IDictionary`2", true);
+                        MethodInfo miAddCollection = targetType.GetMethod("Add");
                         IDictionary dictionary = value as IDictionary;
                         foreach (DictionaryEntry entry in dictionary)
                         {
@@ -937,7 +958,7 @@ namespace FluorineFx
                     {
 #if !SILVERLIGHT
                         if (log.IsErrorEnabled)
-                            log.Error(string.Format("{0} type arguments of the generic type {1} expecting 1.", typeParameters.Length, conversionType.FullName));
+                            log.Error(string.Format("{0} type arguments of the generic type {1} expecting 1.", typeParameters.Length, targetType.FullName));
 #endif
                     }
                     return obj;
@@ -945,9 +966,9 @@ namespace FluorineFx
             }
 
 #endif
-            if (ReflectionUtils.ImplementsInterface(conversionType, "System.Collections.IDictionary") && value is IDictionary)
+            if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.IDictionary") && value is IDictionary)
             {
-                object obj = CreateInstance(conversionType);
+                object obj = CreateInstance(targetType);
                 if (obj != null)
                 {
                     IDictionary source = value as IDictionary;
@@ -958,7 +979,7 @@ namespace FluorineFx
                 }
             }
 
-            return System.Convert.ChangeType(value, conversionType, null);
+            return System.Convert.ChangeType(value, targetType, null);
         }
 
 #if !(NET_1_1)
@@ -1037,6 +1058,13 @@ namespace FluorineFx
             if (value == null) return null;
 
             return FluorineFx.Util.Convert.ToNullableChar(value);
+        }
+
+        public static bool CanConvertToNullableChar(object value)
+        {
+            if (value is Char) return true;
+            if (value == null) return true;
+            return FluorineFx.Util.Convert.CanConvertToNullableChar(value);
         }
 
         public static Double? ConvertToNullableDouble(object value)
@@ -1173,6 +1201,14 @@ namespace FluorineFx
                 value is Char ? (Char)value :
                 value == null ? _defaultCharNullValue :
                     FluorineFx.Util.Convert.ToChar(value);
+        }
+
+        public static bool CanConvertToChar(object value)
+        {
+            return
+                value is Char ? true :
+                value == null ? true :
+                    FluorineFx.Util.Convert.CanConvertToChar(value);
         }
 
         static Single _defaultSingleNullValue;
