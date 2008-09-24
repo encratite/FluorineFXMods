@@ -29,8 +29,12 @@ using FluorineFx.AMF3;
 using FluorineFx.Configuration;
 using FluorineFx.IO.Writers;
 using FluorineFx.Collections;
+using FluorineFx.Util;
 #if !(NET_1_1)
 using System.Collections.Generic;
+#endif
+#if !(NET_1_1) && !(NET_2_0)
+using System.Xml.Linq;
 #endif
 #if SILVERLIGHT
 using System.Xml.Linq;
@@ -111,6 +115,10 @@ namespace FluorineFx.IO
             amf0Writers.Add(typeof(RawBinary), new RawBinaryWriter());
             amf0Writers.Add(typeof(System.Collections.Specialized.NameObjectCollectionBase), new AMF0NameObjectCollectionWriter());
 #endif
+#if !(NET_1_1) && !(NET_2_0)
+            amf0Writers.Add(typeof(XDocument), new AMF0XDocumentWriter());
+            amf0Writers.Add(typeof(XElement), new AMF0XElementWriter());
+#endif
             amf0Writers.Add(typeof(Guid), new AMF0GuidWriter());
 			amf0Writers.Add(typeof(string), new AMF0StringWriter());
 			amf0Writers.Add(typeof(bool), new AMF0BooleanWriter());
@@ -162,6 +170,10 @@ namespace FluorineFx.IO
 			amf3Writers.Add(typeof(DataSet), new AMF3DataSetWriter());
             amf3Writers.Add(typeof(RawBinary), new RawBinaryWriter());            
             amf3Writers.Add(typeof(System.Collections.Specialized.NameObjectCollectionBase), new AMF3NameObjectCollectionWriter());
+#endif
+#if !(NET_1_1) && !(NET_2_0)
+            amf3Writers.Add(typeof(XDocument), new AMF3XDocumentWriter());
+            amf3Writers.Add(typeof(XElement), new AMF3XElementWriter());
 #endif
             amf3Writers.Add(typeof(Guid), new AMF3GuidWriter());
 			amf3Writers.Add(typeof(string), new AMF3StringWriter());
@@ -479,8 +491,9 @@ namespace FluorineFx.IO
 			else
 				this.WriteNull();
 		}
-#else
-        public void WriteXmlDocument(XDocument xDocument)
+#endif
+#if !(NET_1_1) && !(NET_2_0)
+        public void WriteXDocument(XDocument xDocument)
         {
             if (xDocument != null)
             {
@@ -492,6 +505,20 @@ namespace FluorineFx.IO
             else
                 this.WriteNull();
         }
+
+        public void WriteXElement(XElement xElement)
+        {
+            if (xElement != null)
+            {
+                AddReference(xElement);
+                this.BaseStream.WriteByte((byte)15);//xml code (0x0F)
+                string xml = xElement.ToString();
+                this.WriteLongUTF(xml);
+            }
+            else
+                this.WriteNull();
+        }
+
 #endif
 
 		public void WriteArray(ObjectEncoding objectEcoding, Array array)
@@ -941,13 +968,48 @@ namespace FluorineFx.IO
                 }
             }
 		}
-#else
-        public void WriteAMF3XmlDocument(XDocument xDocument)
+#endif
+#if !(NET_1_1) && !(NET_2_0)
+        public void WriteAMF3XDocument(XDocument xDocument)
         {
             WriteByte(AMF3TypeCode.Xml);
             string value = string.Empty;
             if (xDocument != null)
                 value = xDocument.ToString();
+            if (value == string.Empty)
+            {
+                WriteAMF3IntegerData(1);
+            }
+            else
+            {
+                if (!_objectReferences.ContainsKey(value))
+                {
+                    _objectReferences.Add(value, _objectReferences.Count);
+                    UTF8Encoding utf8Encoding = new UTF8Encoding();
+                    int byteCount = utf8Encoding.GetByteCount(value);
+                    int handle = byteCount;
+                    handle = handle << 1;
+                    handle = handle | 1;
+                    WriteAMF3IntegerData(handle);
+                    byte[] buffer = utf8Encoding.GetBytes(value);
+                    if (buffer.Length > 0)
+                        Write(buffer);
+                }
+                else
+                {
+                    int handle = (int)_objectReferences[value];
+                    handle = handle << 1;
+                    WriteAMF3IntegerData(handle);
+                }
+            }
+        }
+
+        public void WriteAMF3XElement(XElement xElement)
+        {
+            WriteByte(AMF3TypeCode.Xml);
+            string value = string.Empty;
+            if (xElement != null)
+                value = xElement.ToString();
             if (value == string.Empty)
             {
                 WriteAMF3IntegerData(1);
@@ -1073,6 +1135,14 @@ namespace FluorineFx.IO
             }
 		}
 
+#if WCF
+        static bool IsDataContract(Type type)
+        {
+            object[] attributes = type.GetCustomAttributes(typeof(System.Runtime.Serialization.DataContractAttribute), false);
+            return attributes.Length == 1;
+        }
+#endif
+
 		private ClassDefinition CreateClassDefinition(object obj)
 		{
 			ClassDefinition classDefinition = null;
@@ -1110,7 +1180,7 @@ namespace FluorineFx.IO
 			}			
 			else if( obj is IExternalizable )
 			{
-				customClassName = obj.GetType().FullName;
+				customClassName = type.FullName;
 				customClassName = FluorineConfiguration.Instance.GetCustomClass(customClassName);
 
 				classDefinition = new ClassDefinition(customClassName, ClassDefinition.EmptyClassMembers, true, false);
@@ -1118,6 +1188,85 @@ namespace FluorineFx.IO
 			}
 			else
 			{
+#if WCF
+                //Verify [DataContract] or [Serializable] on type
+                bool serializable = IsDataContract(type) || type.IsSerializable;
+                if (!serializable && type.Assembly != typeof(AMFWriter).Assembly)
+                    throw new FluorineException(string.Format("Type {0} was not marked as a data contract.", type.FullName));
+                List<string> memberNames = new List<string>();
+                List<ClassMember> classMemberList = new List<ClassMember>();
+                PropertyInfo[] propertyInfos = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                for (int i = 0; i < propertyInfos.Length; i++)
+                {
+                    PropertyInfo propertyInfo = propertyInfos[i] as PropertyInfo;
+                    string name = propertyInfo.Name;
+                    if (propertyInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
+                        continue;
+                    if (propertyInfo.GetGetMethod() == null || propertyInfo.GetGetMethod().GetParameters().Length > 0)
+                    {
+                        //The gateway will not be able to access this property
+                        string msg = __Res.GetString(__Res.Reflection_PropertyIndexFail, string.Format("{0}.{1}", type.FullName, propertyInfo.Name));
+                        if (log.IsWarnEnabled)
+                            log.Warn(msg);
+                        continue;
+                    }
+                    object[] customAttributes = propertyInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.DataMemberAttribute), false);
+                    if ((customAttributes != null) && (customAttributes.Length > 0))
+                    {
+                        System.Runtime.Serialization.DataMemberAttribute attribute = (System.Runtime.Serialization.DataMemberAttribute)customAttributes[0];
+                        if (attribute.Name != null && attribute.Name.Length != 0)
+                            name = attribute.Name;
+                    }
+                    else
+                    {
+                        if (!type.IsSerializable && type.Assembly != typeof(AMFWriter).Assembly)
+                            continue;
+                    }
+                    if (memberNames.Contains(name))
+                        continue;
+                    memberNames.Add(name);
+                    BindingFlags bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
+                    try
+                    {
+                        PropertyInfo propertyInfoTmp = obj.GetType().GetProperty(name);
+                    }
+                    catch (AmbiguousMatchException)
+                    {
+                        bf = BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance;
+                    }
+                    ClassMember classMember = new ClassMember(name, bf, propertyInfo.MemberType);
+                    classMemberList.Add(classMember);
+                }
+                FieldInfo[] fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+                for (int i = 0; i < fieldInfos.Length; i++)
+                {
+                    FieldInfo fieldInfo = fieldInfos[i] as FieldInfo;
+                    if (fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0)
+                        continue;
+                    if (fieldInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
+                        continue;
+                    string name = fieldInfo.Name;
+                    object[] customAttributes = fieldInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.DataMemberAttribute), false);
+                    if ((customAttributes != null) && (customAttributes.Length > 0))
+                    {
+                        System.Runtime.Serialization.DataMemberAttribute attribute = (System.Runtime.Serialization.DataMemberAttribute)customAttributes[0];
+                        if (attribute.Name != null && attribute.Name.Length != 0)
+                            name = attribute.Name;
+                    }
+                    else
+                    {
+                        if (!type.IsSerializable && type.Assembly != typeof(AMFWriter).Assembly)
+                            continue;
+                    }
+                    ClassMember classMember = new ClassMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType);
+                    classMemberList.Add(classMember);
+                }
+                ClassMember[] classMembers = classMemberList.ToArray();
+                customClassName = type.FullName;
+                customClassName = FluorineConfiguration.Instance.GetCustomClass(customClassName);
+                classDefinition = new ClassDefinition(customClassName, classMembers, externalizable, dynamic);
+                classDefinitions[type.FullName] = classDefinition;
+#else
 #if !(NET_1_1)
                 List<string> memberNames = new List<string>();
                 List<ClassMember> classMemberList = new List<ClassMember>();
@@ -1142,15 +1291,6 @@ namespace FluorineFx.IO
 #endif
                         continue;
                     }
-#if WCF
-                    object[] customAttributes = propertyInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.DataMemberAttribute), false);
-                    if ((customAttributes != null) && (customAttributes.Length > 0))
-                    {
-                        System.Runtime.Serialization.DataMemberAttribute attribute = (System.Runtime.Serialization.DataMemberAttribute)customAttributes[0];
-                        if (attribute.Name != null && attribute.Name.Length != 0)
-                            name = attribute.Name;
-                    }
-#endif
                     if (memberNames.Contains(name))
                         continue;
                     memberNames.Add(name);
@@ -1177,15 +1317,6 @@ namespace FluorineFx.IO
                     if (fieldInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
                         continue;
                     string name = fieldInfo.Name;
-#if WCF
-                    object[] customAttributes = fieldInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.DataMemberAttribute), false);
-                    if ((customAttributes != null) && (customAttributes.Length > 0))
-                    {
-                        System.Runtime.Serialization.DataMemberAttribute attribute = (System.Runtime.Serialization.DataMemberAttribute)customAttributes[0];
-                        if (attribute.Name != null && attribute.Name.Length != 0)
-                            name = attribute.Name;
-                    }
-#endif
                     ClassMember classMember = new ClassMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType);
                     classMemberList.Add(classMember);
                 }
@@ -1198,6 +1329,7 @@ namespace FluorineFx.IO
 				customClassName = FluorineConfiguration.Instance.GetCustomClass(customClassName);
                 classDefinition = new ClassDefinition(customClassName, classMembers, externalizable, dynamic);
 				classDefinitions[type.FullName] = classDefinition;
+#endif
 			}
 			return classDefinition;
 		}

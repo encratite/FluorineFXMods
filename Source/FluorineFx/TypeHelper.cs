@@ -35,6 +35,9 @@ using System.Data.SqlTypes;
 using System.Web;
 using log4net;
 #endif
+#if !NET_1_1 && !NET_2_0
+using System.Xml.Linq;
+#endif
 using FluorineFx.Configuration;
 using FluorineFx.Util;
 
@@ -72,6 +75,10 @@ namespace FluorineFx
             _defaultXmlReaderNullValue = (XmlReader)GetNullValue(typeof(XmlReader));
 #if !SILVERLIGHT
             _defaultXmlDocumentNullValue = (XmlDocument)GetNullValue(typeof(XmlDocument));
+#endif
+#if !NET_1_1 && !NET_2_0
+            _defaultXDocumentNullValue = (XDocument)GetNullValue(typeof(XDocument));
+            _defaultXElementNullValue = (XElement)GetNullValue(typeof(XElement));
 #endif
             _Init();
         }
@@ -714,6 +721,12 @@ namespace FluorineFx
             catch (InvalidCastException)
             {
             }
+
+#if !SILVERLIGHT && !NET_1_1 && !NET_2_0
+            if (typeof(System.Xml.Linq.XDocument) == targetType && obj is XmlDocument) return true;
+            if (typeof(System.Xml.Linq.XElement) == targetType && obj is XmlDocument) return true;
+#endif
+
             return false;
         }
 
@@ -857,6 +870,10 @@ namespace FluorineFx
             if (typeof(Guid) == targetType) return ConvertToGuid(value);
 #if !SILVERLIGHT
             if (typeof(System.Xml.XmlDocument) == targetType) return ConvertToXmlDocument(value);
+#endif
+#if !SILVERLIGHT && !NET_1_1 && !NET_2_0
+            if (typeof(System.Xml.Linq.XDocument) == targetType) return ConvertToXDocument(value);
+            if (typeof(System.Xml.Linq.XElement) == targetType) return ConvertToXElement(value);
 #endif
             if (typeof(byte[]) == targetType) return ConvertToByteArray(value);
             if (typeof(char[]) == targetType) return ConvertToCharArray(value);
@@ -1294,6 +1311,26 @@ namespace FluorineFx
                 value == null ? _defaultXmlDocumentNullValue :
                     FluorineFx.Util.Convert.ToXmlDocument(value);
         }
+#endif
+#if !NET_1_1 && !NET_2_0
+        static XDocument _defaultXDocumentNullValue;
+        public static XDocument ConvertToXDocument(object value)
+        {
+            return
+                value is XDocument ? (XDocument)value :
+                value == null ? _defaultXDocumentNullValue :
+                    FluorineFx.Util.Convert.ToXDocument(value);
+        }
+
+        static XElement _defaultXElementNullValue;
+        public static XElement ConvertToXElement(object value)
+        {
+            return
+                value is XElement ? (XElement)value :
+                value == null ? _defaultXElementNullValue :
+                    FluorineFx.Util.Convert.ToXElement(value);
+        }
+
 #endif
         public static byte[] ConvertToByteArray(object value)
         {

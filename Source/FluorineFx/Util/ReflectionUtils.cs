@@ -612,7 +612,7 @@ namespace FluorineFx.Util
 			return attributeProvider.GetCustomAttributes(type, inherit) as Attribute[];
 		}
 
-		public static string GetNameAndAssessmblyName(Type t)
+		public static string GetNameAndAssemblyName(Type t)
 		{
 			ValidationUtils.ArgumentNotNull(t, "t");
 

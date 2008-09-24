@@ -1,4 +1,4 @@
-/*
+﻿/*
 	FluorineFx open source library 
 	Copyright (C) 2007 Zoltan Csibi, zoltan@TheSilentGroup.com, FluorineFx.com 
 	
@@ -18,25 +18,27 @@
 */
 using System;
 using System.Xml;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace FluorineFx.IO.Writers
 {
-	/// <summary>
-	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
-	/// </summary>
-	class AMF3XmlDocumentWriter : IAMFWriter
-	{
-		public AMF3XmlDocumentWriter()
-		{
-		}
-		#region IAMFWriter Members
+    /// <summary>
+    /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// </summary>
+    class AMF3XElementWriter : IAMFWriter
+    {
+        public AMF3XElementWriter()
+        {
+        }
+        #region IAMFWriter Members
 
-		public bool IsPrimitive{ get{return false;} }
+        public bool IsPrimitive { get { return false; } }
 
         public void WriteData(AMFWriter writer, object data)
-		{
-			writer.WriteAMF3XmlDocument(data as XmlDocument);
-		}
-		#endregion
-	}
+        {
+            writer.WriteAMF3XElement(data as XElement);
+        }
+        #endregion
+    }
 }

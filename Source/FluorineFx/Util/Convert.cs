@@ -22,6 +22,9 @@ using System.Xml;
 #if !SILVERLIGHT
 using System.Data.SqlTypes;
 #endif
+#if !NET_1_1 && !NET_2_0
+using System.Xml.Linq;
+#endif
 using FluorineFx.AMF3;
 
 namespace FluorineFx.Util
@@ -6646,6 +6649,27 @@ namespace FluorineFx.Util
             return doc;
         }
 
+#if !NET_1_1 && !NET_2_0
+        public static XmlDocument ToXmlDocument(System.Xml.Linq.XDocument p)
+        {
+            if (p == null) return null;
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(p.ToString());
+            return doc;
+        }
+
+        public static XmlDocument ToXmlDocument(System.Xml.Linq.XElement p)
+        {
+            if (p == null) return null;
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(p.ToString());
+            return doc;
+        }
+#endif
+
+
         public static XmlDocument ToXmlDocument(Char[] p) { return p == null ? null : ToXmlDocument(new string(p)); }
         public static XmlDocument ToXmlDocument(Byte[] p) { return p == null ? null : ToXmlDocument(new MemoryStream(p)); }
 
@@ -6685,12 +6709,94 @@ namespace FluorineFx.Util
 
             if (p is Char[]) return ToXmlDocument((Char[])p);
             if (p is Byte[]) return ToXmlDocument((Byte[])p);
-
+#if !NET_1_1 && !NET_2_0
+            if (p is System.Xml.Linq.XDocument) return ToXmlDocument((System.Xml.Linq.XDocument)p);
+            if (p is System.Xml.Linq.XElement) return ToXmlDocument((System.Xml.Linq.XElement)p);
+#endif
             throw CreateInvalidCastException(p.GetType(), typeof(XmlDocument));
         }
 #endif
         #endregion
 
+#if !NET_1_1 && !NET_2_0
+        #region XDocument
+
+        // Scalar Types.
+        public static XDocument ToXDocument(String p)
+        {
+            if (p == null) return null;
+
+            XDocument doc = XDocument.Parse(p);
+            return doc;
+        }
+
+#if! SILVERLIGHT
+        public static XDocument ToXDocument(XmlDocument p)
+        {
+            if (p == null) return null;
+
+            XDocument doc = XDocument.Parse(p.OuterXml);
+            return doc;
+        }
+#endif
+
+        public static XDocument ToXDocument(object p)
+        {
+            if (p == null || p is DBNull) return null;
+
+            if (p is XDocument) return (XDocument)p;
+
+            // Scalar Types.
+            //
+            if (p is String) return ToXDocument((String)p);
+#if! SILVERLIGHT
+            if (p is XmlDocument) return ToXDocument((XmlDocument)p);
+#endif
+            throw CreateInvalidCastException(p.GetType(), typeof(XDocument));
+        }
+
+        #endregion XDocument
+
+        #region XElement
+
+        // Scalar Types.
+        public static XElement ToXElement(String p)
+        {
+            if (p == null) return null;
+
+            XElement element = XElement.Parse(p);
+            return element;
+        }
+
+#if! SILVERLIGHT
+        public static XElement ToXElement(XmlDocument p)
+        {
+            if (p == null) return null;
+
+            XElement element = XElement.Parse(p.OuterXml);
+            return element;
+        }
+#endif
+
+        public static XElement ToXElement(object p)
+        {
+            if (p == null || p is DBNull) return null;
+
+            if (p is XElement) return (XElement)p;
+
+            // Scalar Types.
+            //
+            if (p is String) return ToXElement((String)p);
+#if! SILVERLIGHT
+            if (p is XmlDocument) return ToXElement((XmlDocument)p);
+#endif
+            throw CreateInvalidCastException(p.GetType(), typeof(XElement));
+        }
+
+
+        #endregion XElement
+
+#endif
         #endregion
 
         private static InvalidCastException CreateInvalidCastException(Type originalType, Type conversionType)
