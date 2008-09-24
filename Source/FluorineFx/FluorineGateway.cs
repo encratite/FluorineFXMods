@@ -64,12 +64,14 @@ namespace FluorineFx
 	{
 		internal const string FluorineHttpCompressKey = "__@fluorinehttpcompress";
         internal const string FluorineMessageServerKey = "__@fluorinemessageserver";
-        internal const string FluorineServiceBrowserRendererKey = "__@servicebrowserrenderer";
 
 		static int _unhandledExceptionCount = 0;
 		static string _sourceName = null;
 		static object _objLock = new object();
 		static bool _initialized = false;
+
+        static MessageServer messageServer;
+        static IServiceBrowserRenderer serviceBrowserRenderer;
 
 		/// <summary>
 		/// Initializes a new instance of the FluorineGateway class.
@@ -78,15 +80,6 @@ namespace FluorineFx
 		{
 		}
 
-		private MessageServer GetMessageServer()
-		{
-			return HttpContext.Current.Application[FluorineMessageServerKey] as MessageServer;
-		}
-
-		private IServiceBrowserRenderer GetServiceBrowserRenderer()
-		{
-			return HttpContext.Current.Application[FluorineServiceBrowserRendererKey] as IServiceBrowserRenderer;
-		}
 
         private static string GetPageName(string requestPath)
         {
@@ -179,11 +172,11 @@ namespace FluorineFx
 
             FluorineWebContext.Initialize();
 
-            if (GetServiceBrowserRenderer() == null)
+            if (serviceBrowserRenderer == null)
             {
                 lock (_objLock)
                 {
-                    if (GetServiceBrowserRenderer() == null)
+                    if (serviceBrowserRenderer == null)
                     {
                         try
                         {
@@ -197,10 +190,9 @@ namespace FluorineFx
                             Type type = ObjectFactory.Locate("FluorineFx.ServiceBrowser.ServiceBrowserRenderer");
                             if (type != null)
                             {
-                                IServiceBrowserRenderer serviceBrowserRenderer = Activator.CreateInstance(type) as IServiceBrowserRenderer;
+                                serviceBrowserRenderer = Activator.CreateInstance(type) as IServiceBrowserRenderer;
                                 if (serviceBrowserRenderer != null)
                                 {
-                                    HttpContext.Current.Application[FluorineServiceBrowserRendererKey] = serviceBrowserRenderer;
                                     try
                                     {
                                         ILog log = LogManager.GetLogger(typeof(FluorineGateway));
@@ -221,12 +213,12 @@ namespace FluorineFx
                         }
                     }
                 }
-            } 
-            if (GetMessageServer() == null)
+            }
+            if (messageServer == null)
             {
                 lock (_objLock)
                 {
-                    if (GetMessageServer() == null)
+                    if (messageServer == null)
                     {
                         try
                         {
@@ -240,12 +232,12 @@ namespace FluorineFx
                         }
                         catch { }
 
-                        MessageServer messageServer = new MessageServer();
+                        messageServer = new MessageServer();
                         try
                         {
                             string configPath = Path.Combine(HttpRuntime.AppDomainAppPath, "WEB-INF");
                             configPath = Path.Combine(configPath, "flex");
-                            messageServer.Init(configPath, GetServiceBrowserRenderer() != null);
+                            messageServer.Init(configPath, serviceBrowserRenderer != null);
                             messageServer.Start();
 
                             try
@@ -254,7 +246,6 @@ namespace FluorineFx
                                 log.Info(__Res.GetString(__Res.MessageServer_Started));
                             }
                             catch { }
-
                             HttpContext.Current.Application[FluorineMessageServerKey] = messageServer;
                         }
                         catch (Exception ex)
@@ -280,6 +271,23 @@ namespace FluorineFx
 
 		#endregion
 
+        void CurrentDomain_DomainUnload(object sender, EventArgs e)
+        {
+            try
+            {
+                lock (_objLock)
+                {
+                    if (messageServer != null)
+                        messageServer.Stop();
+                    messageServer = null;
+                }
+                ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+                log.Info("Stopped FluorineFx Gateway");
+            }
+            catch (Exception)
+            { }
+        }
+
 		/// <summary>
 		/// Occurs as the first event in the HTTP pipeline chain of execution when ASP.NET responds to a request.
 		/// </summary>
@@ -290,7 +298,6 @@ namespace FluorineFx
 			HttpApplication httpApplication = (HttpApplication)sender;
 			HttpRequest httpRequest = httpApplication.Request;
 
-			IServiceBrowserRenderer serviceBrowserRenderer = GetServiceBrowserRenderer();
 			if( serviceBrowserRenderer != null )
 			{
 				if( serviceBrowserRenderer.CanRender(httpRequest) )
@@ -444,7 +451,6 @@ namespace FluorineFx
 				{
                     FluorineWebContext.Initialize();
 
-					MessageServer messageServer = GetMessageServer();
 					if (messageServer != null)
 						messageServer.Service();
 					else
@@ -500,7 +506,6 @@ namespace FluorineFx
                     }
 
 
-                    MessageServer messageServer = GetMessageServer();
                     if (messageServer != null)
                         messageServer.ServiceRtmpt();
                     else
@@ -814,6 +819,11 @@ namespace FluorineFx
 					AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(OnUnhandledException);
 				}
 			}
+
+            AppDomain.CurrentDomain.DomainUnload += new EventHandler(CurrentDomain_DomainUnload);
+            ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+            log.Info("Adding handler for the DomainUnload event");
+            //If we do not have permission to handle DomainUnload but in this case the socket server will not start either
 		}
 
 		void OnUnhandledException(object o, UnhandledExceptionEventArgs e) 
