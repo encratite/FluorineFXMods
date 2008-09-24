@@ -294,8 +294,11 @@
     <Compile Include="..\FluorineFx\IO\Writers\AMF0\AMF0StringWriter.cs">
       <Link>IO\Writers\AMF0\AMF0StringWriter.cs</Link>
     </Compile>
-    <Compile Include="..\FluorineFx\IO\Writers\AMF0\AMF0XmlDocumentWriter.cs">
-      <Link>IO\Writers\AMF0\AMF0XmlDocumentWriter.cs</Link>
+    <Compile Include="..\FluorineFx\IO\Writers\AMF0\AMF0XDocumentWriter.cs">
+      <Link>IO\Writers\AMF0\AMF0XDocumentWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\IO\Writers\AMF0\AMF0XElementWriter.cs">
+      <Link>IO\Writers\AMF0\AMF0XElementWriter.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\IO\Writers\AMF3\AMF3ArrayWriter.cs">
       <Link>IO\Writers\AMF3\AMF3ArrayWriter.cs</Link>
@@ -336,8 +339,11 @@
     <Compile Include="..\FluorineFx\IO\Writers\AMF3\AMF3StringWriter.cs">
       <Link>IO\Writers\AMF3\AMF3StringWriter.cs</Link>
     </Compile>
-    <Compile Include="..\FluorineFx\IO\Writers\AMF3\AMF3XmlDocumentWriter.cs">
-      <Link>IO\Writers\AMF3\AMF3XmlDocumentWriter.cs</Link>
+    <Compile Include="..\FluorineFx\IO\Writers\AMF3\AMF3XDocumentWriter.cs">
+      <Link>IO\Writers\AMF3\AMF3XDocumentWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\IO\Writers\AMF3\AMF3XElementWriter.cs">
+      <Link>IO\Writers\AMF3\AMF3XElementWriter.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\IO\Writers\IAMFWriter.cs">
       <Link>IO\Writers\IAMFWriter.cs</Link>
