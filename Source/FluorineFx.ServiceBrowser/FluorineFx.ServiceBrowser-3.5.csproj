@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3EE02BF6-86F1-462A-A004-68EE85821360}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FluorineFx.ServiceBrowser</RootNamespace>
+    <AssemblyName>FluorineFx.ServiceBrowser</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Bin\net\3.5\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;STRONG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\net\3.5\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;STRONG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="CodeGeneratorService.cs" />
+    <Compile Include="Management\ActionScriptType.cs" />
+    <Compile Include="Management\DataAssembler.cs" />
+    <Compile Include="Management\Data\ColumnCollection.cs" />
+    <Compile Include="Management\Data\TableCollection.cs" />
+    <Compile Include="Management\FieldDescriptor.cs" />
+    <Compile Include="Management\AttributeCollection.cs" />
+    <Compile Include="Management\AttributeDescriptor.cs" />
+    <Compile Include="Diagnostic\DiagnosticService.cs" />
+    <Compile Include="FluorineServiceBrowser.cs" />
+    <Compile Include="ManagementService.cs" />
+    <Compile Include="Management\Application.cs" />
+    <Compile Include="Management\AssemblyDescriptor.cs" />
+    <Compile Include="Management\Data\Column.cs" />
+    <Compile Include="Management\Data\Database\Access\AccessDriver.cs" />
+    <Compile Include="Management\Data\Database\DomainBuilder.cs" />
+    <Compile Include="Management\Data\Database\DomainBuilderFactory.cs" />
+    <Compile Include="Management\Data\Database\Driver.cs" />
+    <Compile Include="Management\Data\Database\DriverFactory.cs" />
+    <Compile Include="Management\Data\Database\MSSql\MSSqlDriver.cs" />
+    <Compile Include="Management\Data\Database\MySql\MySqlDomainBuilder.cs" />
+    <Compile Include="Management\Data\Database\MySql\MySqlDriver.cs" />
+    <Compile Include="Management\Data\Database\OleDb\OleDbDomainBuilder.cs" />
+    <Compile Include="Management\Data\DataDomain.cs" />
+    <Compile Include="Management\Data\SqlType.cs" />
+    <Compile Include="Management\Data\Table.cs" />
+    <Compile Include="Management\DomainUrl.cs" />
+    <Compile Include="Management\MethodDescriptor.cs" />
+    <Compile Include="Management\NamedObject.cs" />
+    <Compile Include="Management\Namespace.cs" />
+    <Compile Include="Management\NamespaceCollection.cs" />
+    <Compile Include="Management\ParameterDescriptor.cs" />
+    <Compile Include="Management\ParameterTypeDescriptor.cs" />
+    <Compile Include="Management\Project.cs" />
+    <Compile Include="Management\PropertyDescriptor.cs" />
+    <Compile Include="Management\TypeDescriptor.cs" />
+    <Compile Include="Management\TypeMapper.cs" />
+    <Compile Include="Management\UrlParameter.cs" />
+    <Compile Include="Management\Util.cs" />
+    <Compile Include="Management\Web\RemotingService.cs" />
+    <Compile Include="Management\Web\RemotingServiceMethod.cs" />
+    <Compile Include="Management\Web\RemotingServiceParameter.cs" />
+    <Compile Include="Management\Web\TransferObject.cs" />
+    <Compile Include="Parser\Directive.cs" />
+    <Compile Include="Parser\ILocation.cs" />
+    <Compile Include="Parser\ParseException.cs" />
+    <Compile Include="Parser\StrUtils.cs" />
+    <Compile Include="Parser\TagAttributes.cs" />
+    <Compile Include="Parser\TagType.cs" />
+    <Compile Include="Parser\TemplateParser.cs" />
+    <Compile Include="Parser\TemplateTokenizer.cs" />
+    <Compile Include="ServiceBrowserException.cs" />
+    <Compile Include="ServiceBrowserRenderer.cs" />
+    <Compile Include="SqlService.cs" />
+    <Compile Include="Sql\Expression.cs" />
+    <Compile Include="Sql\IExpression.cs" />
+    <Compile Include="Sql\IJoinTableSelect.cs" />
+    <Compile Include="Sql\ILikeExpression.cs" />
+    <Compile Include="Sql\INullExpression.cs" />
+    <Compile Include="Sql\IOrderBySortSpec.cs" />
+    <Compile Include="Sql\IQueryExpression.cs" />
+    <Compile Include="Sql\ISelectExpression.cs" />
+    <Compile Include="Sql\ISelectStatement.cs" />
+    <Compile Include="Sql\ISetCombinationExpression.cs" />
+    <Compile Include="Sql\ISqlScript.cs" />
+    <Compile Include="Sql\ISqlStatement.cs" />
+    <Compile Include="Sql\ITableExpression.cs" />
+    <Compile Include="Sql\ITerminalExpression.cs" />
+    <Compile Include="Sql\ITwoPartExpression.cs" />
+    <Compile Include="Sql\JoinTableSelect.cs" />
+    <Compile Include="Sql\LikeExpression.cs" />
+    <Compile Include="Sql\NullExpression.cs" />
+    <Compile Include="Sql\OrderBySortSpec.cs" />
+    <Compile Include="Sql\QueryExpression.cs" />
+    <Compile Include="Sql\QueryExpressionCollection.cs" />
+    <Compile Include="Sql\SelectColumn.cs" />
+    <Compile Include="Sql\SelectColumnCollection.cs" />
+    <Compile Include="Sql\SelectExpression.cs" />
+    <Compile Include="Sql\SelectStatement.cs" />
+    <Compile Include="Sql\SetCombinationExpression.cs" />
+    <Compile Include="Sql\SortSpecCollection.cs" />
+    <Compile Include="Sql\SQLLexer.cs" />
+    <Compile Include="Sql\SQLLexTokenTypes.cs" />
+    <Compile Include="Sql\SQLParser.cs" />
+    <Compile Include="Sql\SqlParserService.cs" />
+    <Compile Include="Sql\SqlScript.cs" />
+    <Compile Include="Sql\SqlStatement.cs" />
+    <Compile Include="Sql\SqlStatementCollection.cs" />
+    <Compile Include="Sql\SQLTokenTypes.cs" />
+    <Compile Include="Sql\SqlTable.cs" />
+    <Compile Include="Sql\SqlTableCollection.cs" />
+    <Compile Include="Sql\TableExpression.cs" />
+    <Compile Include="Sql\TerminalExpression.cs" />
+    <Compile Include="Sql\TwoPartExpression.cs" />
+    <Compile Include="Template\AbstractTemplateGeneratorHost.cs" />
+    <Compile Include="Template\Constants.cs" />
+    <Compile Include="Template\FSTemplateGeneratorHost.cs" />
+    <Compile Include="Template\ITemplateEngine.cs" />
+    <Compile Include="Template\ITemplateGeneratorHost.cs" />
+    <Compile Include="Template\Template.cs" />
+    <Compile Include="Template\TemplateBrowser.cs" />
+    <Compile Include="Template\TemplateContext.cs" />
+    <Compile Include="Template\TemplateEngine.cs" />
+    <Compile Include="Template\TemplateEngineProxy.cs" />
+    <Compile Include="Template\TemplateEngineSettings.cs" />
+    <Compile Include="Template\WebTemplateGeneratorHost.cs" />
+    <Compile Include="WebResource.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\FluorineFxBrowser.swf" />
+    <EmbeddedResource Include="Resource\iframe.js" />
+    <EmbeddedResource Include="Resource\swfobject.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="antlr.runtime, Version=2.7.7.1, Culture=neutral, PublicKeyToken=1875756ba09931ab">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\antlr\antlr.runtime\bin\antlr.runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\sharpziplib\net\2.0\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\log4net\net\2.0\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=1.0.10.1, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\mysql\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="templates\flash_remoting _as2\code.as.subtemplate" />
+    <None Include="templates\flash_remoting _as2\code.template" />
+    <None Include="templates\flash_remoting _as2\preview.template" />
+    <None Include="templates\flash_remoting _as2\runme.jsfl.template" />
+    <None Include="templates\flash_remoting _as2\test.fla" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="templates\cairngorm_flex2\Assembler.cs.subtemplate" />
+    <None Include="templates\cairngorm_flex2\Assembler.template" />
+    <None Include="templates\cairngorm_flex2\DAO.cs.subtemplate" />
+    <None Include="templates\cairngorm_flex2\DAO.template" />
+    <None Include="templates\cairngorm_flex2\preview.template" />
+    <None Include="templates\cairngorm_flex2\Web.config.template" />
+    <None Include="templates\flash_remoting _as2\template.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="templates\cairngorm_flex2\flex\app.mxml.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\app.template" />
+    <None Include="templates\cairngorm_flex2\flex\build.bat.template" />
+    <None Include="templates\cairngorm_flex2\flex\Cairngorm.swc" />
+    <None Include="templates\cairngorm_flex2\flex\CairngormEnterprise.swc" />
+    <None Include="templates\cairngorm_flex2\flex\system.actionScriptProperties.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\system.flexProperties.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\system.project.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_business\business.template" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_business\Delegate.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_business\LoginDelegate.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_business\Services.mxml.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_commands\Command.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_commands\commands.template" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_commands\LoginCommand.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_control\control.template" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_control\Controller.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_control\Event.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_control\LoginEvent.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_control\LogoutEvent.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_model\model.template" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_model\ModelLocator.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_vo\VO.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_vo\vo.template" />
+    <None Include="templates\cairngorm_flex2\flex\_settings\org.eclipse.core.resources.prefs" />
+    <None Include="templates\cairngorm_flex2\template.xml" />
+    <None Include="templates\cairngorm_flex2\WEB-INF\flex\data-management-config.xml.template" />
+    <None Include="templates\cairngorm_flex2\WEB-INF\flex\messaging-config.xml.template" />
+    <None Include="templates\cairngorm_flex2\WEB-INF\flex\remoting-config.xml.template" />
+    <None Include="templates\cairngorm_flex2\WEB-INF\flex\services-config.xml.template" />
+    <None Include="templates\CairngormFlex2Remoting\Assembler.cs.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\Assembler.template" />
+    <None Include="templates\CairngormFlex2Remoting\DAO.cs.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\DAO.template" />
+    <None Include="templates\CairngormFlex2Remoting\flex\app.mxml.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\app.template" />
+    <None Include="templates\CairngormFlex2Remoting\flex\build.bat.template" />
+    <None Include="templates\CairngormFlex2Remoting\flex\Cairngorm.swc" />
+    <None Include="templates\CairngormFlex2Remoting\flex\CairngormEnterprise.swc" />
+    <None Include="templates\CairngormFlex2Remoting\flex\system.actionScriptProperties.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\system.flexProperties.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\system.project.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_business\business.template" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_business\Delegate.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_business\LoginDelegate.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_business\Services.mxml.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_commands\Command.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_commands\commands.template" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_commands\LoginCommand.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_control\control.template" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_control\Controller.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_control\Event.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_control\LoginEvent.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_control\LogoutEvent.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_model\model.template" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_model\ModelLocator.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_vo\VO.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_vo\vo.template" />
+    <None Include="templates\CairngormFlex2Remoting\flex\_settings\org.eclipse.core.resources.prefs" />
+    <None Include="templates\CairngormFlex2Remoting\preview.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="templates\CairngormFlex2Remoting\flex\_application\_vo\DataVO.as.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\VO.cs.subtemplate" />
+    <None Include="templates\CairngormFlex2Remoting\VO.template" />
+    <None Include="templates\CairngormFlex2Remoting\template.xml" />
+    <None Include="templates\CairngormFlex2Remoting\WEB-INF\flex\data-management-config.xml.template" />
+    <None Include="templates\CairngormFlex2Remoting\WEB-INF\flex\messaging-config.xml.template" />
+    <None Include="templates\CairngormFlex2Remoting\WEB-INF\flex\remoting-config.xml.template" />
+    <None Include="templates\CairngormFlex2Remoting\WEB-INF\flex\services-config.xml.template" />
+    <None Include="templates\CairngormFlex2Remoting\Web.config.template" />
+    <None Include="templates\cairngorm_flex2\flex\_application\_vo\DataVO.as.subtemplate" />
+    <None Include="templates\cairngorm_flex2\VO.cs.subtemplate" />
+    <None Include="templates\cairngorm_flex2\VO.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FluorineFx\FluorineFx-3.5.csproj">
+      <Project>{A9B8375B-579D-4F8A-B00C-F2828DB58F3A}</Project>
+      <Name>FluorineFx-3.5</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

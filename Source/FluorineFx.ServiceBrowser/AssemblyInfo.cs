@@ -28,6 +28,8 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("FluorineFx ServiceBrowser for .NET Framework 1.1")]
 #elif (NET_2_0)
 [assembly: AssemblyTitle("FluorineFx ServiceBrowser for .NET Framework 2.0")]
+#elif (NET_3_5)
+[assembly: AssemblyTitle("FluorineFx ServiceBrowser for .NET Framework 3.5")]
 #else
 [assembly: AssemblyTitle("FluorineFx ServiceBrowser")]
 #endif
