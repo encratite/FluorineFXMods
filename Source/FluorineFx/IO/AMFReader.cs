@@ -394,23 +394,25 @@ namespace FluorineFx.IO
 			DateTime start = new DateTime(1970, 1, 1);
 
 			DateTime date = start.AddMilliseconds(milliseconds);
-			int tmp = ReadUInt16();
+#if !(NET_1_1)
+            date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
+#endif
+            int tmp = ReadUInt16();
 			//Note for the latter than values greater than 720 (12 hours) are 
 			//represented as 2^16 - the value.
 			//Thus GMT+1 is 60 while GMT-5 is 65236
 			if(tmp > 720)
-			{
 				tmp = (65536 - tmp);
-			}
 			int tz = tmp / 60;
-			
 			switch(FluorineConfiguration.Instance.TimezoneCompensation)
 			{
 				case TimezoneCompensation.None:
 					break;
 				case TimezoneCompensation.Auto:
 					date = date.AddHours(tz);
-					
+#if !(NET_1_1)
+                    date = DateTime.SpecifyKind(date, DateTimeKind.Unspecified);
+#endif								
 					//if(TimeZone.CurrentTimeZone.IsDaylightSavingTime(date))
 					//	date = date.AddMilliseconds(-3600000);
 					
@@ -532,6 +534,10 @@ namespace FluorineFx.IO
 				DateTime start = new DateTime(1970, 1, 1, 0, 0, 0);
 
 				DateTime date = start.AddMilliseconds(milliseconds);
+#if !(NET_1_1)
+                date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
+#endif
+                /*
 				switch(FluorineConfiguration.Instance.TimezoneCompensation)
 				{
 					case TimezoneCompensation.None:
@@ -540,6 +546,7 @@ namespace FluorineFx.IO
 						date = date.ToLocalTime();
 						break;
 				}
+                */
                 AddAMF3ObjectReference(date);
 				return date;
 			}
@@ -752,60 +759,57 @@ namespace FluorineFx.IO
 			return classDefinition;
 		}
 
-		internal object ReadAMF3Object(ClassDefinition classDefinition)
-		{
-			object instance = null;
-			if( classDefinition.IsDynamic )
-				instance = new ASObject();
-			else
-			{
-				instance = ObjectFactory.CreateInstance(classDefinition.ClassName);
-                if (instance == null)
-                {
+        internal object ReadAMF3Object(ClassDefinition classDefinition)
+        {
+            object instance = null;
+            if (classDefinition.ClassName != null && classDefinition.ClassName != string.Empty)
+                instance = ObjectFactory.CreateInstance(classDefinition.ClassName);
+            else
+                instance = new ASObject();
+            if (instance == null)
+            {
 #if !SILVERLIGHT
-                    if (log.IsWarnEnabled)
-                        log.Warn(__Res.GetString(__Res.TypeLoad_ASO, classDefinition.ClassName));
+                if (log.IsWarnEnabled)
+                    log.Warn(__Res.GetString(__Res.TypeLoad_ASO, classDefinition.ClassName));
 #endif
-                    instance = new ASObject(classDefinition.ClassName);
-                }
-			}
+                instance = new ASObject(classDefinition.ClassName);
+            }
             AddAMF3ObjectReference(instance);
-			if (classDefinition.IsExternalizable)
-			{
-				if (instance is IExternalizable)
-				{
-					IExternalizable externalizable = instance as IExternalizable;
-					DataInput dataInput = new DataInput(this);
-					externalizable.ReadExternal(dataInput);
-				}
-				else
-				{
-					string msg = __Res.GetString(__Res.Externalizable_CastFail, instance.GetType().FullName);
-					throw new FluorineException(msg);
-				}
-			}
-			else
-			{
-				for (int i = 0; i < classDefinition.MemberCount; i++)
-				{
-					string key = classDefinition.Members[i].Name;
-					object value = ReadAMF3Data();
-					SetMember(instance, key, value);
-				}
-				if (classDefinition.IsDynamic && instance is ASObject)
-				{
-					ASObject asObject = instance as ASObject;
-					string key = ReadAMF3String();
+            if (classDefinition.IsExternalizable)
+            {
+                if (instance is IExternalizable)
+                {
+                    IExternalizable externalizable = instance as IExternalizable;
+                    DataInput dataInput = new DataInput(this);
+                    externalizable.ReadExternal(dataInput);
+                }
+                else
+                {
+                    string msg = __Res.GetString(__Res.Externalizable_CastFail, instance.GetType().FullName);
+                    throw new FluorineException(msg);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < classDefinition.MemberCount; i++)
+                {
+                    string key = classDefinition.Members[i].Name;
+                    object value = ReadAMF3Data();
+                    SetMember(instance, key, value);
+                }
+                if (classDefinition.IsDynamic)
+                {
+                    string key = ReadAMF3String();
                     while (key != null && key != string.Empty)
-					{
-						object value = ReadAMF3Data();
-						asObject.Add(key, value);
-						key = ReadAMF3String();
-					}
-				}
-			}
+                    {
+                        object value = ReadAMF3Data();
+                        SetMember(instance, key, value);
+                        key = ReadAMF3String();
+                    }
+                }
+            }
             return instance;
-		}
+        }
 
         public object ReadAMF3Object()
         {

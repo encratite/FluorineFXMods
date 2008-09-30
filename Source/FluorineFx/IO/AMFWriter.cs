@@ -448,23 +448,28 @@ namespace FluorineFx.IO
 			}
 		}
 
-		public void WriteDateTime(DateTime date)
+        public void WriteDateTime(DateTime value)
 		{
+/*
 #if !SILVERLIGHT
 			if( FluorineConfiguration.Instance.TimezoneCompensation == TimezoneCompensation.Auto )
 				date = date.Subtract( DateWrapper.ClientTimeZone );
 #endif
-
-			// Write date (milliseconds from 1970).
+*/
+#if !(NET_1_1)
+            value = value.ToUniversalTime();
+#else
+			if( FluorineConfiguration.Instance.TimezoneCompensation == TimezoneCompensation.Auto )
+				value = value.Subtract( DateWrapper.ClientTimeZone );
+#endif
+            // Write date (milliseconds from 1970).
 			DateTime timeStart = new DateTime(1970, 1, 1);
-			TimeSpan span = date.Subtract(timeStart);
+            TimeSpan span = value.Subtract(timeStart);
 			long milliSeconds = (long)span.TotalMilliseconds;
-			//long value = BitConverter.DoubleToInt64Bits((double)milliSeconds);
-			//this.WriteLong(value);
             WriteDouble((double)milliSeconds);
 
 #if !SILVERLIGHT
-			span = TimeZone.CurrentTimeZone.GetUtcOffset(date);
+            span = TimeZone.CurrentTimeZone.GetUtcOffset(value);
 			//whatever we write back, is ignored
 			//this.WriteLong(span.TotalMinutes);
 			//this.WriteShort((int)span.TotalHours);
@@ -864,13 +869,16 @@ namespace FluorineFx.IO
 
 				// Write date (milliseconds from 1970).
 				DateTime timeStart = new DateTime(1970, 1, 1, 0, 0, 0);
-
-				if( FluorineConfiguration.Instance.TimezoneCompensation == TimezoneCompensation.Auto )
+#if !(NET_1_1)
+                value = value.ToUniversalTime();
+#endif
+                /*
+                if (FluorineConfiguration.Instance.TimezoneCompensation == TimezoneCompensation.Auto)
 				{
 					value = value.ToUniversalTime();
 				}
-
-				TimeSpan span = value.Subtract(timeStart);
+                */
+                TimeSpan span = value.Subtract(timeStart);
 				long milliSeconds = (long)span.TotalMilliseconds;
 				//long date = BitConverter.DoubleToInt64Bits((double)milliSeconds);
 				//this.WriteLong(date);

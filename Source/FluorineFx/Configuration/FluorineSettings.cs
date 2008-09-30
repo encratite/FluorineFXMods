@@ -1939,9 +1939,9 @@ namespace FluorineFx.Configuration
 #endif
     {
 #if !(NET_1_1)
-        Dictionary<string, MimeTypeEntry> _excludedTypes = new Dictionary<string, MimeTypeEntry>();
+        Dictionary<string, MimeTypeEntry> _excludedTypes = new Dictionary<string, MimeTypeEntry>(StringComparer.OrdinalIgnoreCase);
 #else
-		Hashtable _excludedTypes = new Hashtable();
+		Hashtable _excludedTypes = new Hashtable(null, CaseInsensitiveComparer.Default);
 #endif
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -2071,9 +2071,9 @@ namespace FluorineFx.Configuration
 #endif
     {
 #if !(NET_1_1)
-        Dictionary<string, PathEntry> _excludedPaths = new Dictionary<string, PathEntry>();
+        Dictionary<string, PathEntry> _excludedPaths = new Dictionary<string, PathEntry>(StringComparer.OrdinalIgnoreCase);
 #else
-        Hashtable _excludedPaths = new Hashtable();
+        Hashtable _excludedPaths = new Hashtable(null, CaseInsensitiveComparer.Default);
 #endif
 
         /// <summary>
