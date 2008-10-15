@@ -699,7 +699,8 @@ namespace FluorineFx
                     }
                     return false;
                 }
-                //return true;
+                else
+                    return true;
             }
 
             try
