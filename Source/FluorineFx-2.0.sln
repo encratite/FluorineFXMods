@@ -13,11 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx.ServiceBrowser-2
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx.NMS-2.0", "FluorineFx.NMS\FluorineFx.NMS-2.0.csproj", "{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -47,6 +49,16 @@ Global
 		{3EE02BF6-86F1-462A-A004-68EE85821360}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{3EE02BF6-86F1-462A-A004-68EE85821360}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3EE02BF6-86F1-462A-A004-68EE85821360}.Release|Win32.ActiveCfg = Release|Any CPU
+		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
