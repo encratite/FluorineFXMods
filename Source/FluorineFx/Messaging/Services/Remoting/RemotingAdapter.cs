@@ -124,7 +124,7 @@ namespace FluorineFx.Remoting
 							RoleAttribute roleAttribute = roleAttributes[0] as RoleAttribute;
 							string[] roles = roleAttribute.Roles.Split(',');
 
-							bool authorized = this.Service.DoAuthorization(roles);
+							bool authorized = this.Destination.Service.DoAuthorization(roles);
 							if( !authorized )
 								throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AccessNotAllowed));
 						}

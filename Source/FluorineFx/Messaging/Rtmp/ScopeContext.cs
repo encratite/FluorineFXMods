@@ -103,7 +103,8 @@ namespace FluorineFx.Messaging.Rtmp
         /// <returns>An appropriate <see cref="FluorineFx.Context.IResource"/> handle.</returns>
         public IResource GetResource(string location)
         {
-            return FluorineContext.Current.GetResource(location);
+            //return FluorineContext.Current.GetResource(location);
+            return new FileSystemResource(location);
         }
 
 		#endregion

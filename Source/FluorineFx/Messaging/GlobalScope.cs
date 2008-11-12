@@ -24,7 +24,7 @@ using FluorineFx.Messaging.Endpoints;
 namespace FluorineFx.Messaging
 {
 	/// <summary>
-	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// The global scope that acts as root for all applications in a host.
 	/// </summary>
 	class GlobalScope : Scope, IGlobalScope
 	{

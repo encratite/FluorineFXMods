@@ -68,7 +68,7 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
         IServiceInvoker ServiceInvoker { get; }
         /// <summary>
-        /// Return an <see cref="FluorineFx.Context.IResource"/> handle for the
+        /// Returns an <see cref="FluorineFx.Context.IResource"/> handle for the
         /// </summary>
         /// <param name="location">The resource location.</param>
         /// <returns>An appropriate <see cref="FluorineFx.Context.IResource"/> handle.</returns>

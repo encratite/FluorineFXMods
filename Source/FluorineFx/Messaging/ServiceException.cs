@@ -24,6 +24,9 @@ using FluorineFx.Exceptions;
 
 namespace FluorineFx.Messaging
 {
+    /// <summary>
+    /// The ServiceException class is used to report exceptions within the messaging system.
+    /// </summary>
     public class ServiceException : MessageException
     {
 		/// <summary>

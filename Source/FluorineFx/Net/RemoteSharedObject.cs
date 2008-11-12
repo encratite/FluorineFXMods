@@ -376,6 +376,8 @@ namespace FluorineFx.Net
                 switch (sharedObjectEvent.Type)
                 {
                     case FluorineFx.Messaging.Rtmp.SO.SharedObjectEventType.CLIENT_INITIAL_DATA:
+                        if (message.Version > 0)
+                            _version = message.Version;
                         _attributes.Clear();
                         _initialSyncReceived = true;
                         RaiseOnConnect();

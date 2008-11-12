@@ -37,15 +37,15 @@ namespace FluorineFx.Messaging.Api.Stream
         /// </summary>
 		IScope Scope{ get; }
         /// <summary>
-        /// Starts stream.
+        /// Starts the stream.
         /// </summary>
 		void Start();
         /// <summary>
-        /// Stops stream.
+        /// Stops the stream.
         /// </summary>
         void Stop();
         /// <summary>
-        /// Closes stream.
+        /// Closes the stream.
         /// </summary>
 		void Close();
         /// <summary>

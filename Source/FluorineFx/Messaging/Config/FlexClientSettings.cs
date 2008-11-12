@@ -24,12 +24,15 @@ using System.Collections;
 namespace FluorineFx.Messaging.Config
 {
     /// <summary>
-    /// 
+    /// The flex-client element of the services configuration file.
     /// </summary>
     public sealed class FlexClientSettings
     {
         int _timeoutMinutes = 0;//20;
 
+        /// <summary>
+        /// Gets or sets the number of minutes before an idle FlexClient is timed out.
+        /// </summary>
         public int TimeoutMinutes
         {
             get { return _timeoutMinutes; }

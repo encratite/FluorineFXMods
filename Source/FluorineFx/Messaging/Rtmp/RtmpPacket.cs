@@ -45,19 +45,25 @@ namespace FluorineFx.Messaging.Rtmp
 			_header = header;
 			_message = message;
 		}
-
+        /// <summary>
+        /// Gets or sets the RTMP header.
+        /// </summary>
 		public RtmpHeader Header
 		{ 
 			get{ return _header; }
 			set{ _header = value; } 
 		}
-
+        /// <summary>
+        /// Gets or sets the RTMP event.
+        /// </summary>
 		public IRtmpEvent Message
 		{ 
 			get{ return _message; }
 			set{ _message = value; } 
 		}
-
+        /// <summary>
+        /// Gets or sets packet data.
+        /// </summary>
 		public ByteBuffer Data
 		{ 
 			get{ return _data; }

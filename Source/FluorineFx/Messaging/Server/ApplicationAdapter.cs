@@ -34,32 +34,40 @@ using FluorineFx.Exceptions;
 namespace FluorineFx.Messaging.Adapter
 {
 	/// <summary>
+    /// <para>
 	/// ApplicationAdapter class serves as a base class for your applications.
 	/// It provides methods to work with SharedObjects and streams, as well as
 	/// connections and scheduling services.
-	/// 
+    /// </para>
+    /// <para>
 	/// ApplicationAdapter is an application level IScope. To handle streaming
 	/// processes in your application you should implement 
 	/// IStreamAwareScopeHandler interface and implement handling methods.
-	/// 
+    /// </para>
+    /// <para>
 	/// Application adapter provides you with useful event handlers that can be used to intercept streams,
 	/// authorize users, etc. Also, all methods added in subclasses can be called from client side with NetConnection.call
 	/// method.
-	/// 
-	/// <code>
-	/// public IList GetLiveStreams() 
-	/// {
-	///		// Implementation goes here, obtain scope and all it's streams
-	///	}
-	///	</code>
-	///	This methods added to ApplicationAdapter sublass can be called from client side with the following code:
-	///	<code>
-	///	var nc:NetConnection = new NetConnection();
-	///	nc.connect(...);
-	///	nc.call("GetLiveStreams", resultHandlerObj);
-	///	</code>
-	///	If you want to build a server-side framework this is a place to start and wrap it around ApplicationAdapter subclass.
-	/// </summary>
+    /// </para>
+    ///	If you want to build a server-side framework this is a place to start and wrap it around ApplicationAdapter subclass.
+    /// </summary>
+    /// <example>
+    /// <para>Calling a method added to an ApplicationAdapter subclass</para>
+    /// <code lang="Actionscript">
+    /// var nc:NetConnection = new NetConnection();
+    /// nc.connect(...);
+    /// nc.call("serverHelloMsg", resultObject, "my message");
+    /// </code>
+    /// <code lang="CS">
+    /// public class HelloWorldApplication : ApplicationAdapter
+    /// {
+    ///     public string serverHelloMsg(string helloStr)
+    ///     {
+    ///         return "Hello, " + helloStr + "!";
+    ///     }
+    /// }
+    /// </code>
+    /// </example>
     public class ApplicationAdapter : StatefulScopeWrappingAdapter, ISharedObjectService, ISharedObjectSecurityService, IStreamSecurityService
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(ApplicationAdapter));
@@ -265,7 +273,7 @@ namespace FluorineFx.Messaging.Adapter
         /// <summary>
         /// Handler method. Called every time new client connects (that is, new IConnection object is created after call from a SWF movie) to the application.
         /// 
-        /// You override this method to pass additional data from client to server application using <code>NetConnection.connect</code> method.
+        /// You override this method to pass additional data from client to server application using <c>NetConnection.connect</c> method.
         /// </summary>
         /// <param name="connection">Connection object.</param>
         /// <param name="parameters">List of paramaters passed to room scope.</param>
@@ -415,9 +423,9 @@ namespace FluorineFx.Messaging.Adapter
         /// <summary>
         /// Creates a new shared object for given scope. Server-side shared objects
         /// (also known as Remote SO) are special kind of objects synchronized between clients.
-        /// 
-        /// To get an instance of RSO at client-side, use <code>SharedObject.getRemote()</code>.
-        /// 
+        /// <para>
+        /// To get an instance of RSO at client-side, use <c>SharedObject.getRemote()</c>.
+        /// </para>
         /// SharedObjects can be persistent and transient. Persistent RSO are stateful, i.e. store their data between sessions.
         /// If you need to store some data on server while clients go back and forth use persistent SO, otherwise perfer usage of transient for
         /// extra performance.
@@ -466,6 +474,7 @@ namespace FluorineFx.Messaging.Adapter
 			return service.HasSharedObject(scope, name);
 		}
         /// <summary>
+        /// <para>
         /// Deletes persistent shared objects specified by name and clears all
         /// properties from active shared objects (persistent and nonpersistent). The
         /// name parameter specifies the name of a shared object, which can include a
@@ -476,13 +485,24 @@ namespace FluorineFx.Messaging.Adapter
         /// the specified path and clears all the shared objects. Specifying a slash
         /// (/) clears all the shared objects associated with an application
         /// instance.
-        /// 
-        /// The following values are possible for the soPath parameter: <br />
-        /// clears all local and persistent shared objects associated with the instance. <br />
-        /// /foo/bar clears the shared object /foo/bar; if bar is a directory name, no shared objects are deleted. <br />
-        /// /foo/bar/* clears all shared objects stored under the instance directory
-        /// /foo/bar. The bar directory is also deleted if no persistent shared objects are in use within this namespace. <br />
-        /// /foo/bar/XX?? clears all shared objects that begin with XX, followed by any two characters. 
+        /// </para>
+        /// The following values are possible for the soPath parameter:
+        /// <list type="table">
+        /// <listheader>
+        /// <term>soPath parameter</term>
+        /// <description>action</description>
+        /// </listheader>
+        /// <item><term></term>
+        /// <description>clears all local and persistent shared objects associated with the instance</description></item>
+        /// <item><term>/foo/bar</term>
+        /// <description>clears the shared object /foo/bar; if bar is a directory name, no shared objects are deleted</description></item>
+        /// <item><term>/foo/bar/*</term>
+        /// <description>clears all shared objects stored under the instance directory</description></item>
+        /// <item><term>/foo/bar.</term>
+        /// <description>the bar directory is also deleted if no persistent shared objects are in use within this namespace</description></item>
+        /// <item><term>/foo/bar/XX??</term>
+        /// <description>clears all shared objects that begin with XX, followed by any two characters</description></item>
+        /// </list>
         /// If a directory name matches this specification, all the shared objects within this directory are cleared.
         /// 
         /// If you call the ClearSharedObjects() method and the specified path
@@ -597,9 +617,9 @@ namespace FluorineFx.Messaging.Adapter
         #endregion
 
         /// <summary>
-        /// Returns list of stream names broadcasted in <pre>scope</pre>. Broadcast stream name is somewhat different
-        /// from server stream name. Server stream name is just an ID assigned by Red5 to every created stream. Broadcast stream name
-        /// is the name that is being used to subscribe to the stream at client side, that is, in <code>NetStream.play</code> call.
+        /// Returns list of stream names broadcasted in scope. Broadcast stream name is somewhat different
+        /// from server stream name. Server stream name is just an ID assigned to every created stream. Broadcast stream name
+        /// is the name that is being used to subscribe to the stream at client side, that is, in <c>NetStream.play</c> call.
         /// </summary>
         /// <param name="scope">Scope to retrieve broadcasted stream names.</param>
         /// <returns>List of broadcasted stream names.</returns>

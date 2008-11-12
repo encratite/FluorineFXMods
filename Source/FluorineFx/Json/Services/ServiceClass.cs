@@ -41,27 +41,42 @@ namespace FluorineFx.Json.Services
             Debug.Assert(method != null);
             return !method.IsAbstract && Attribute.IsDefined(method, typeof(JsonRpcMethodAttribute));
         }
-
+        /// <summary>
+        /// Gets the service class name.
+        /// </summary>
         public string Name
         {
             get { return _serviceName; }
         }
-
+        /// <summary>
+        /// Gets the service class description.
+        /// </summary>
         public string Description
         {
             get { return _description; }
         }
-
+        /// <summary>
+        /// Gets the collection of methods.
+        /// </summary>
+        /// <returns></returns>
         public ICollection GetMethods()
         {
             return _methods.Values;
         }
-
+        /// <summary>
+        /// Find a method by name.
+        /// </summary>
+        /// <param name="name">Method name.</param>
+        /// <returns>The Method instance if found, null otherwise.</returns>
         public Method FindMethodByName(string name)
         {
             return _methods[name] as Method;
         }
-
+        /// <summary>
+        /// Return a method by name.
+        /// </summary>
+        /// <param name="name">Method name.</param>
+        /// <returns>The Method instance if found, throws MissingMethodException excpetion otherwise.</returns>
         public Method GetMethodByName(string name)
         {
             Method method = FindMethodByName(name);

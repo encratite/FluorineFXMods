@@ -25,6 +25,10 @@ namespace FluorineFx.Messaging.Api.Event
 	/// </summary>
 	public interface IEventDispatcher
 	{
+        /// <summary>
+        /// Dispatches an event.
+        /// </summary>
+        /// <param name="evt">Event to dispatch.</param>
 		void DispatchEvent(IEvent evt);
 	}
 }

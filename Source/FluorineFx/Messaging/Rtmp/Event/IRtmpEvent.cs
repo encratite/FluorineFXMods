@@ -26,9 +26,17 @@ namespace FluorineFx.Messaging.Rtmp.Event
 	/// </summary>
 	public interface IRtmpEvent : IEvent
 	{
+        /// <summary>
+        /// Gets the data type.
+        /// </summary>
 		byte DataType{ get; }
+        /// <summary>
+        /// Gets or sets the RTMP packet header.
+        /// </summary>
 		RtmpHeader Header{ get; set; }
+        /// <summary>
+        /// Gets or sets the event timestamp.
+        /// </summary>
 		int Timestamp{ get; set; }
-		//IEventListener Source{ get; set; }
 	}
 }

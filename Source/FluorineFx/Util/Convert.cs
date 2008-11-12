@@ -44,205 +44,205 @@ namespace FluorineFx.Util
         /// Converts the value of the specified 8-bit signed integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">An 8-bit signed integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the 8-bit signed integer value.</returns>
         [CLSCompliant(false)]
         public static String ToString(SByte value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified 16-bit signed integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A 16-bit signed integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the 16-bit signed integer value.</returns>
         public static String ToString(Int16 value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified 32-bit signed integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A 32-bit signed integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the 32-bit signed integer value.</returns>
         public static String ToString(Int32 value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified 64-bit signed integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A 64-bit signed integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the 64-bit signed integer value.</returns>
         public static String ToString(Int64 value) { return value.ToString(); }
         /// <summary>
-        /// Converts the value of the specified 8-bit unsigned integer  to its equivalent String representation.
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A 8-bit unsigned integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the 8-bit unsigned integer value.</returns>
         public static String ToString(Byte value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified 16-bit unsigned integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A 16-bit unsigned integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the 16-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static String ToString(UInt16 value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified 32-bit unsigned integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A 32-bit unsigned integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the 32-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static String ToString(UInt32 value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified 64-bit unsigned integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A 64-bit unsigned integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the 64-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static String ToString(UInt64 value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified single-precision floating point number to its equivalent String representation.
         /// </summary>
         /// <param name="value">A single-precision floating point number.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the single-precision floating point number.</returns>
         public static String ToString(Single value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified double-precision floating point number to its equivalent String representation.
         /// </summary>
         /// <param name="value">A double-precision floating point number.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the double-precision floating point number.</returns>
         public static String ToString(Double value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified Boolean to its equivalent String representation.
         /// </summary>
         /// <param name="value">A Boolean value.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the Boolean.</returns>
         public static String ToString(Boolean value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified Decimal number to its equivalent String representation.
         /// </summary>
         /// <param name="value">A Decimal number.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the Decimal number.</returns>
         public static String ToString(Decimal value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified Unicode character to its equivalent String representation.
         /// </summary>
         /// <param name="value">A Unicode character.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the Unicode character.</returns>
         public static String ToString(Char value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified TimeSpan to its equivalent String representation.
         /// </summary>
         /// <param name="value">A TimeSpan.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the TimeSpan.</returns>
         public static String ToString(TimeSpan value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified DateTime to its equivalent String representation.
         /// </summary>
         /// <param name="value">A DateTime.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the DateTime.</returns>
         public static String ToString(DateTime value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified Guid to its equivalent String representation.
         /// </summary>
         /// <param name="value">A Guid.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the Guid.</returns>
         public static String ToString(Guid value) { return value.ToString(); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
+
         /// <summary>
         /// Converts the value of the specified nullable 8-bit signed integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable 8-bit signed integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable 8-bit signed integer value.</returns>
         [CLSCompliant(false)]
         public static String ToString(SByte? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable 16-bit signed integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable 16-bit signed integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable 16-bit signed integer value.</returns>
         public static String ToString(Int16? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable 32-bit signed integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable 32-bit signed integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable 32-bit signed integer value.</returns>
         public static String ToString(Int32? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable 64-bit signed integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable 64-bit signed integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable 64-bit signed integer value.</returns>
         public static String ToString(Int64? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable 8-bit unsigned integer  to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable 8-bit unsigned integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable 8-bit unsigned integer value.</returns>
         public static String ToString(Byte? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable 16-bit unsigned integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable 16-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static String ToString(UInt16? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable 32-bit unsigned integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable 32-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static String ToString(UInt32? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable 64-bit unsigned integer.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable 64-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static String ToString(UInt64? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable single-precision floating point number to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable single-precision floating point number.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable single-precision floating point number.</returns>
         public static String ToString(Single? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable double-precision floating point number to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable double-precision floating point number.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable double-precision floating point number.</returns>
         public static String ToString(Double? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable Boolean to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable Boolean value.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable Boolean value.</returns>
         public static String ToString(Boolean? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable Decimal number to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable Decimal number.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable Decimal number.</returns>
         public static String ToString(Decimal? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable Unicode character to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable Unicode character.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable Unicode character.</returns>
         public static String ToString(Char? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable TimeSpan to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable TimeSpan.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable TimeSpan.</returns>
         public static String ToString(TimeSpan? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable DateTime to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable DateTime.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable DateTime.</returns>
         public static String ToString(DateTime? value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified nullable Guid to its equivalent String representation.
         /// </summary>
         /// <param name="value">A nullable Guid.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the nullable Guid.</returns>
         public static String ToString(Guid? value) { return value.ToString(); }
 
 #endif
@@ -252,80 +252,80 @@ namespace FluorineFx.Util
         /// Converts the value of the specified SqlString to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlString.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlString.</returns>        
         public static String ToString(SqlString value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified SqlByte to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlByte.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlByte.</returns>        
         public static String ToString(SqlByte value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified SqlInt16 to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlInt16.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of SqlInt16.</returns>        
         public static String ToString(SqlInt16 value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified SqlInt32 to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlInt32.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlInt32.</returns>        
         public static String ToString(SqlInt32 value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified SqlInt64 to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlInt64.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlInt64.</returns>        
         public static String ToString(SqlInt64 value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified SqlSingle to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlSingle.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlSingle.</returns>        
         public static String ToString(SqlSingle value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified SqlDouble to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlDouble.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlDouble.</returns>        
         public static String ToString(SqlDouble value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified SqlDecimal to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlDecimal.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlDecimal.</returns>        
         public static String ToString(SqlDecimal value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified SqlMoney to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlMoney.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlMoney.</returns>        
         public static String ToString(SqlMoney value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified SqlBoolean to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlBoolean.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlBoolean.</returns>        
         public static String ToString(SqlBoolean value) { return value.ToString(); }
         /// <summary>
         /// Converts the value of the specified SqlGuid to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlGuid.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlGuid.</returns>        
         public static String ToString(SqlGuid value) { return value.ToString(); }
 #if !(NET_1_1)
         /// <summary>
         /// Converts the value of the specified SqlChars to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlChars.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlChars.</returns>        
         public static String ToString(SqlChars value) { return value.IsNull ? null : value.ToSqlString().Value; }
         /// <summary>
         /// Converts the value of the specified SqlXml to its equivalent String representation.
         /// </summary>
         /// <param name="value">An SqlXml.</param>
-        /// <returns>The String equivalent of the value of value.</returns>        
+        /// <returns>The String equivalent of the SqlXml.</returns>        
         public static String ToString(SqlXml value) { return value.IsNull ? null : value.Value; }
 #endif
 #endif
@@ -333,21 +333,21 @@ namespace FluorineFx.Util
         /// Converts the value of the specified Type to its equivalent String representation.
         /// </summary>
         /// <param name="value">A Type.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the Type.</returns>
         public static String ToString(Type value) { return value == null ? null : value.FullName; }
 #if! SILVERLIGHT
         /// <summary>
         /// Converts the value of the specified XmlDocument to its equivalent String representation.
         /// </summary>
         /// <param name="value">An XmlDocument.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the XmlDocument.</returns>
         public static String ToString(XmlDocument value) { return value == null ? null : value.InnerXml; }
 #endif
         /// <summary>
         /// Converts the value of the specified Object to its equivalent String representation.
         /// </summary>
         /// <param name="value">An Object.</param>
-        /// <returns>The String equivalent of the value of value.</returns>
+        /// <returns>The String equivalent of the Object.</returns>
         public static String ToString(object value)
         {
             if (value == null || value is DBNull) return String.Empty;
@@ -757,7 +757,7 @@ namespace FluorineFx.Util
         /// <summary>
         /// Converts the value of the specified Unicode character to its equivalent 16-bit signed integer.
         /// </summary>
-        /// <param name="value">An Unicode character.</param>
+        /// <param name="value">A Unicode character.</param>
         /// <returns>The equivalent 16-bit signed integer value.</returns>
         public static Int16 ToInt16(Char value) { return checked((Int16)value); }
 
@@ -1023,7 +1023,7 @@ namespace FluorineFx.Util
         /// <summary>
         /// Converts the value of the specified Unicode character to its equivalent 32-bit signed integer.
         /// </summary>
-        /// <param name="value">An Unicode character.</param>
+        /// <param name="value">A Unicode character.</param>
         /// <returns>The equivalent 32-bit signed integer value.</returns>
         public static Int32 ToInt32(Char value) { return checked((Int32)value); }
 
@@ -1283,7 +1283,7 @@ namespace FluorineFx.Util
         /// <summary>
         /// Converts the value of the specified Unicode character to its equivalent 64-bit signed integer.
         /// </summary>
-        /// <param name="value">An Unicode character.</param>
+        /// <param name="value">A Unicode character.</param>
         /// <returns>The equivalent 64-bit signed integer value.</returns>
         public static Int64 ToInt64(Char value) { return checked((Int64)value); }
         /// <summary>
@@ -1588,7 +1588,7 @@ namespace FluorineFx.Util
         /// <summary>
         /// Converts the value of the specified Unicode character to its equivalent 8-bit unsigned integer.
         /// </summary>
-        /// <param name="value">An Unicode character.</param>
+        /// <param name="value">A Unicode character.</param>
         /// <returns>The equivalent 8-bit unsigned integer value.</returns>
         public static Byte ToByte(Char value) { return checked((Byte)value); }
 
@@ -2204,16 +2204,16 @@ namespace FluorineFx.Util
         [CLSCompliant(false)]
         public static UInt32 ToUInt32(Byte? value) { return value.HasValue ? checked((UInt32)value.Value) : 0; }
         /// <summary>
-        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent 32-bit unsigned integer.
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent 32-bit unsigned integer.
         /// </summary>
-        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
         /// <returns>The equivalent 32-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static UInt32 ToUInt32(UInt16? value) { return value.HasValue ? checked((UInt32)value.Value) : 0; }
         /// <summary>
-        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent 32-bit unsigned integer.
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent 32-bit unsigned integer.
         /// </summary>
-        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
         /// <returns>The equivalent 32-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
         public static UInt32 ToUInt32(UInt64? value) { return value.HasValue ? checked((UInt32)value.Value) : 0; }
@@ -2652,7 +2652,7 @@ namespace FluorineFx.Util
         /// Converts the first character of the specified String to a Unicode character.
         /// </summary>
         /// <param name="value">A String.</param>
-        /// <returns>The equivalent 32-bit unsigned integer value.</returns>
+        /// <returns>The equivalent Unicode character.</returns>
         public static Char ToChar(String value) 
         {
 #if !(NET_1_1)
@@ -2946,91 +2946,265 @@ namespace FluorineFx.Util
         #region Single
 
         // Scalar Types.
-        // 
-        public static Single ToSingle(String p) { return p == null ? 0.0f : Single.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(String value) { return value == null ? 0.0f : Single.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
         [CLSCompliant(false)]
-        public static Single ToSingle(SByte p) { return checked((Single)p); }
-        public static Single ToSingle(Int16 p) { return checked((Single)p); }
-        public static Single ToSingle(Int32 p) { return checked((Single)p); }
-        public static Single ToSingle(Int64 p) { return checked((Single)p); }
-
-        public static Single ToSingle(Byte p) { return checked((Single)p); }
+        public static Single ToSingle(SByte value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Int16 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Int32 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Int64 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Byte value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
         [CLSCompliant(false)]
-        public static Single ToSingle(UInt16 p) { return checked((Single)p); }
+        public static Single ToSingle(UInt16 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
         [CLSCompliant(false)]
-        public static Single ToSingle(UInt32 p) { return checked((Single)p); }
+        public static Single ToSingle(UInt32 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
         [CLSCompliant(false)]
-        public static Single ToSingle(UInt64 p) { return checked((Single)p); }
-
-        public static Single ToSingle(Double p) { return checked((Single)p); }
-
-        public static Single ToSingle(Decimal p) { return checked((Single)p); }
-        public static Single ToSingle(Boolean p) { return p ? 1.0f : 0.0f; }
-        public static Single ToSingle(Char p) { return checked((Single)p); }
+        public static Single ToSingle(UInt64 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Double value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Decimal value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Boolean value) { return value ? 1.0f : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Char value) { return checked((Single)value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static Single ToSingle(Single? p)     { return p.HasValue?                 p.Value:  0.0f; }
 
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Single? value) { return value.HasValue ? value.Value : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
 		[CLSCompliant(false)]
-		public static Single ToSingle(SByte? p)      { return p.HasValue? checked((Single)p.Value): 0.0f; }
-		public static Single ToSingle(Int16? p)      { return p.HasValue? checked((Single)p.Value): 0.0f; }
-		public static Single ToSingle(Int32? p)      { return p.HasValue? checked((Single)p.Value): 0.0f; }
-		public static Single ToSingle(Int64? p)      { return p.HasValue? checked((Single)p.Value): 0.0f; }
-
-		public static Single ToSingle(Byte? p)       { return p.HasValue? checked((Single)p.Value): 0.0f; }
-		[CLSCompliant(false)]
-		public static Single ToSingle(UInt16? p)     { return p.HasValue? checked((Single)p.Value): 0.0f; }
-		[CLSCompliant(false)]
-		public static Single ToSingle(UInt32? p)     { return p.HasValue? checked((Single)p.Value): 0.0f; }
-		[CLSCompliant(false)]
-		public static Single ToSingle(UInt64? p)     { return p.HasValue? checked((Single)p.Value): 0.0f; }
-
-		public static Single ToSingle(Double? p)     { return p.HasValue? checked((Single)p.Value): 0.0f; }
-
-		public static Single ToSingle(Decimal? p)    { return p.HasValue? checked((Single)p.Value): 0.0f; }
-		public static Single ToSingle(Char? p)       { return p.HasValue? checked((Single)p.Value): 0.0f; }
-		public static Single ToSingle(Boolean? p)    { return (p.HasValue && p.Value)?        1.0f: 0.0f; }
+        public static Single ToSingle(SByte? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Int16? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Int32? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Int64? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Byte? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single ToSingle(UInt16? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single ToSingle(UInt32? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single ToSingle(UInt64? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Double? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Decimal? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Char? value) { return value.HasValue ? checked((Single)value.Value) : 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(Boolean? value) { return (value.HasValue && value.Value) ? 1.0f : 0.0f; }
 
 #endif
         // SqlTypes.
 #if! SILVERLIGHT
-        public static Single ToSingle(SqlSingle p) { return p.IsNull ? 0.0f : p.Value; }
-        public static Single ToSingle(SqlString p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
-
-        public static Single ToSingle(SqlByte p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
-        public static Single ToSingle(SqlInt16 p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
-        public static Single ToSingle(SqlInt32 p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
-        public static Single ToSingle(SqlInt64 p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
-
-        public static Single ToSingle(SqlDouble p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
-        public static Single ToSingle(SqlDecimal p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
-        public static Single ToSingle(SqlMoney p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
-
-        public static Single ToSingle(SqlBoolean p) { return p.IsNull ? 0.0f : ToSingle(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(SqlSingle value) { return value.IsNull ? 0.0f : value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(SqlString value) { return value.IsNull ? 0.0f : ToSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(SqlByte value) { return value.IsNull ? 0.0f : ToSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(SqlInt16 value) { return value.IsNull ? 0.0f : ToSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(SqlInt32 value) { return value.IsNull ? 0.0f : ToSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(SqlInt64 value) { return value.IsNull ? 0.0f : ToSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(SqlDouble value) { return value.IsNull ? 0.0f : ToSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(SqlDecimal value) { return value.IsNull ? 0.0f : ToSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(SqlMoney value) { return value.IsNull ? 0.0f : ToSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(SqlBoolean value) { return value.IsNull ? 0.0f : ToSingle(value.Value); }
 #endif
-        public static Single ToSingle(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
+        public static Single ToSingle(object value)
         {
-            if (p == null || p is DBNull) return 0.0f;
+            if (value == null || value is DBNull) return 0.0f;
 
-            if (p is Single) return (Single)p;
+            if (value is Single) return (Single)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToSingle((String)p);
+            if (value is String) return ToSingle((String)value);
 
-            if (p is Boolean) return ToSingle((Boolean)p);
-            if (p is Char) return ToSingle((Char)p);
+            if (value is Boolean) return ToSingle((Boolean)value);
+            if (value is Char) return ToSingle((Char)value);
 
             // SqlTypes.
 #if! SILVERLIGHT
-            if (p is SqlSingle) return ToSingle((SqlSingle)p);
+            if (value is SqlSingle) return ToSingle((SqlSingle)value);
 #endif
-            if (p is IConvertible) return ((IConvertible)p).ToSingle(null);
+            if (value is IConvertible) return ((IConvertible)value).ToSingle(null);
 
-            throw CreateInvalidCastException(p.GetType(), typeof(Single));
+            throw CreateInvalidCastException(value.GetType(), typeof(Single));
         }
 
         #endregion
@@ -3038,99 +3212,278 @@ namespace FluorineFx.Util
         #region Double
 
         // Scalar Types.
-        // 
-        public static Double ToDouble(String p) { return p == null ? 0.0 : Double.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(String value) { return value == null ? 0.0 : Double.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
         [CLSCompliant(false)]
-        public static Double ToDouble(SByte p) { return checked((Double)p); }
-        public static Double ToDouble(Int16 p) { return checked((Double)p); }
-        public static Double ToDouble(Int32 p) { return checked((Double)p); }
-        public static Double ToDouble(Int64 p) { return checked((Double)p); }
-
-        public static Double ToDouble(Byte p) { return checked((Double)p); }
+        public static Double ToDouble(SByte value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Int16 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Int32 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Int64 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Byte value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
         [CLSCompliant(false)]
-        public static Double ToDouble(UInt16 p) { return checked((Double)p); }
+        public static Double ToDouble(UInt16 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
         [CLSCompliant(false)]
-        public static Double ToDouble(UInt32 p) { return checked((Double)p); }
+        public static Double ToDouble(UInt32 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
         [CLSCompliant(false)]
-        public static Double ToDouble(UInt64 p) { return checked((Double)p); }
-
-        public static Double ToDouble(Single p) { return checked((Double)p); }
-
-        public static Double ToDouble(Decimal p) { return checked((Double)p); }
-        public static Double ToDouble(Boolean p) { return p ? 1.0 : 0.0; }
-        public static Double ToDouble(Char p) { return checked((Double)p); }
-        public static Double ToDouble(DateTime p) { return (p - DateTime.MinValue).TotalDays; }
-        public static Double ToDouble(TimeSpan p) { return p.TotalDays; }
+        public static Double ToDouble(UInt64 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Single value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Decimal value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Boolean value) { return value ? 1.0 : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Char value) { return checked((Double)value); }
+        public static Double ToDouble(DateTime value) { return (value - DateTime.MinValue).TotalDays; }
+        public static Double ToDouble(TimeSpan value) { return value.TotalDays; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static Double ToDouble(Double? p)     { return p.HasValue?                 p.Value:  0.0; }
 
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Double? value) { return value.HasValue ? value.Value : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
 		[CLSCompliant(false)]
-		public static Double ToDouble(SByte? p)      { return p.HasValue? checked((Double)p.Value):  0.0; }
-		public static Double ToDouble(Int16? p)      { return p.HasValue? checked((Double)p.Value):  0.0; }
-		public static Double ToDouble(Int32? p)      { return p.HasValue? checked((Double)p.Value):  0.0; }
-		public static Double ToDouble(Int64? p)      { return p.HasValue? checked((Double)p.Value):  0.0; }
-
-		public static Double ToDouble(Byte? p)       { return p.HasValue? checked((Double)p.Value):  0.0; }
-		[CLSCompliant(false)]
-		public static Double ToDouble(UInt16? p)     { return p.HasValue? checked((Double)p.Value):  0.0; }
-		[CLSCompliant(false)]
-		public static Double ToDouble(UInt32? p)     { return p.HasValue? checked((Double)p.Value):  0.0; }
-		[CLSCompliant(false)]
-		public static Double ToDouble(UInt64? p)     { return p.HasValue? checked((Double)p.Value):  0.0; }
-
-		public static Double ToDouble(Single? p)     { return p.HasValue? checked((Double)p.Value):  0.0; }
-
-		public static Double ToDouble(Decimal? p)    { return p.HasValue? checked((Double)p.Value):  0.0; }
-		public static Double ToDouble(Char? p)       { return p.HasValue? checked((Double)p.Value):  0.0; }
-		public static Double ToDouble(Boolean? p)    { return (p.HasValue && p.Value)?         1.0: 0.0; }
-		public static Double ToDouble(DateTime? p)   { return p.HasValue? (p.Value - DateTime.MinValue).TotalDays: 0.0; }
-		public static Double ToDouble(TimeSpan? p)   { return p.HasValue? p.Value.TotalDays: 0.0; }
+        public static Double ToDouble(SByte? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Int16? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Int32? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Int64? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Byte? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Double ToDouble(UInt16? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Double ToDouble(UInt32? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Double ToDouble(UInt64? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Single? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Decimal? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Char? value) { return value.HasValue ? checked((Double)value.Value) : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(Boolean? value) { return (value.HasValue && value.Value) ? 1.0 : 0.0; }
+        public static Double ToDouble(DateTime? value) { return value.HasValue ? (value.Value - DateTime.MinValue).TotalDays : 0.0; }
+        public static Double ToDouble(TimeSpan? value) { return value.HasValue ? value.Value.TotalDays : 0.0; }
 
 #endif
         // SqlTypes.
 #if! SILVERLIGHT
-        public static Double ToDouble(SqlDouble p) { return p.IsNull ? 0.0 : p.Value; }
-        public static Double ToDouble(SqlString p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
-
-        public static Double ToDouble(SqlByte p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
-        public static Double ToDouble(SqlInt16 p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
-        public static Double ToDouble(SqlInt32 p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
-        public static Double ToDouble(SqlInt64 p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
-
-        public static Double ToDouble(SqlSingle p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
-        public static Double ToDouble(SqlDecimal p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
-        public static Double ToDouble(SqlMoney p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
-
-        public static Double ToDouble(SqlBoolean p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
-        public static Double ToDouble(SqlDateTime p) { return p.IsNull ? 0.0 : ToDouble(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlDouble value) { return value.IsNull ? 0.0 : value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlString value) { return value.IsNull ? 0.0 : ToDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlByte value) { return value.IsNull ? 0.0 : ToDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlInt16 value) { return value.IsNull ? 0.0 : ToDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlInt32 value) { return value.IsNull ? 0.0 : ToDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlInt64 value) { return value.IsNull ? 0.0 : ToDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlSingle value) { return value.IsNull ? 0.0 : ToDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlDecimal value) { return value.IsNull ? 0.0 : ToDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlMoney value) { return value.IsNull ? 0.0 : ToDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlBoolean value) { return value.IsNull ? 0.0 : ToDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(SqlDateTime value) { return value.IsNull ? 0.0 : ToDouble(value.Value); }
 #endif
-        public static Double ToDouble(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        public static Double ToDouble(object value)
         {
-            if (p == null || p is DBNull) return 0.0;
+            if (value == null || value is DBNull) return 0.0;
 
-            if (p is Double) return (Double)p;
+            if (value is Double) return (Double)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToDouble((String)p);
+            if (value is String) return ToDouble((String)value);
 
-            if (p is Boolean) return ToDouble((Boolean)p);
-            if (p is Char) return ToDouble((Char)p);
-            if (p is DateTime) return ToDouble((DateTime)p);
-            if (p is TimeSpan) return ToDouble((TimeSpan)p);
+            if (value is Boolean) return ToDouble((Boolean)value);
+            if (value is Char) return ToDouble((Char)value);
+            if (value is DateTime) return ToDouble((DateTime)value);
+            if (value is TimeSpan) return ToDouble((TimeSpan)value);
 
             // SqlTypes.
 #if! SILVERLIGHT
-            if (p is SqlDouble) return ToDouble((SqlDouble)p);
-            if (p is SqlDateTime) return ToDouble((SqlDateTime)p);
+            if (value is SqlDouble) return ToDouble((SqlDouble)value);
+            if (value is SqlDateTime) return ToDouble((SqlDateTime)value);
 #endif
-            if (p is IConvertible) return ((IConvertible)p).ToDouble(null);
+            if (value is IConvertible) return ((IConvertible)value).ToDouble(null);
 
-            throw CreateInvalidCastException(p.GetType(), typeof(Double));
+            throw CreateInvalidCastException(value.GetType(), typeof(Double));
         }
 
         #endregion
@@ -3138,31 +3491,91 @@ namespace FluorineFx.Util
         #region Boolean
 
         // Scalar Types.
-        // 
-        public static Boolean ToBoolean(String p) { return p == null ? false : Boolean.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(String value) { return value == null ? false : Boolean.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
         [CLSCompliant(false)]
-        public static Boolean ToBoolean(SByte p) { return p != 0; }
-        public static Boolean ToBoolean(Int16 p) { return p != 0; }
-        public static Boolean ToBoolean(Int32 p) { return p != 0; }
-        public static Boolean ToBoolean(Int64 p) { return p != 0; }
-
-        public static Boolean ToBoolean(Byte p) { return p != 0; }
+        public static Boolean ToBoolean(SByte value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Int16 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Int32 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Int64 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Byte value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
         [CLSCompliant(false)]
-        public static Boolean ToBoolean(UInt16 p) { return p != 0; }
+        public static Boolean ToBoolean(UInt16 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
         [CLSCompliant(false)]
-        public static Boolean ToBoolean(UInt32 p) { return p != 0; }
+        public static Boolean ToBoolean(UInt32 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
         [CLSCompliant(false)]
-        public static Boolean ToBoolean(UInt64 p) { return p != 0; }
-
-        public static Boolean ToBoolean(Single p) { return p != 0; }
-        public static Boolean ToBoolean(Double p) { return p != 0; }
-
-        public static Boolean ToBoolean(Decimal p) { return p != 0; }
-
-        public static Boolean ToBoolean(Char p)
+        public static Boolean ToBoolean(UInt64 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Single value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Double value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Decimal value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Char value)
         {
-            switch (p)
+            switch (value)
             {
                 case (Char)0: return false; // Allow int <=> Char <=> Boolean
                 case '0': return false;
@@ -3186,66 +3599,179 @@ namespace FluorineFx.Util
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static Boolean ToBoolean(Boolean? p)    { return p.HasValue? p.Value:      false; }
 
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Boolean? value) { return value.HasValue ? value.Value : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
 		[CLSCompliant(false)]
-		public static Boolean ToBoolean(SByte? p)      { return p.HasValue? p.Value != 0: false; }
-		public static Boolean ToBoolean(Int16? p)      { return p.HasValue? p.Value != 0: false; }
-		public static Boolean ToBoolean(Int32? p)      { return p.HasValue? p.Value != 0: false; }
-		public static Boolean ToBoolean(Int64? p)      { return p.HasValue? p.Value != 0: false; }
-
-		public static Boolean ToBoolean(Byte? p)       { return p.HasValue? p.Value != 0: false; }
-		[CLSCompliant(false)]
-		public static Boolean ToBoolean(UInt16? p)     { return p.HasValue? p.Value != 0: false; }
-		[CLSCompliant(false)]
-		public static Boolean ToBoolean(UInt32? p)     { return p.HasValue? p.Value != 0: false; }
-		[CLSCompliant(false)]
-		public static Boolean ToBoolean(UInt64? p)     { return p.HasValue? p.Value != 0: false; }
-
-		public static Boolean ToBoolean(Single? p)     { return p.HasValue? p.Value != 0: false; }
-		public static Boolean ToBoolean(Double? p)     { return p.HasValue? p.Value != 0: false; }
-
-		public static Boolean ToBoolean(Decimal? p)    { return p.HasValue? p.Value != 0: false; }
-
-		public static Boolean ToBoolean(Char? p)       { return p.HasValue? ToBoolean(p.Value): false; }
+        public static Boolean ToBoolean(SByte? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Int16? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Int32? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Int64? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Byte? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        [CLSCompliant(false)]
+        public static Boolean ToBoolean(UInt16? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        [CLSCompliant(false)]
+        public static Boolean ToBoolean(UInt32? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        [CLSCompliant(false)]
+        public static Boolean ToBoolean(UInt64? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Single? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Double? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Decimal? value) { return value.HasValue ? value.Value != 0 : false; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(Char? value) { return value.HasValue ? ToBoolean(value.Value) : false; }
 
 #endif
         // SqlTypes.
 #if! SILVERLIGHT
-        public static Boolean ToBoolean(SqlBoolean p) { return p.IsNull ? false : p.Value; }
-        public static Boolean ToBoolean(SqlString p) { return p.IsNull ? false : ToBoolean(p.Value); }
-
-        public static Boolean ToBoolean(SqlByte p) { return p.IsNull ? false : ToBoolean(p.Value); }
-        public static Boolean ToBoolean(SqlInt16 p) { return p.IsNull ? false : ToBoolean(p.Value); }
-        public static Boolean ToBoolean(SqlInt32 p) { return p.IsNull ? false : ToBoolean(p.Value); }
-        public static Boolean ToBoolean(SqlInt64 p) { return p.IsNull ? false : ToBoolean(p.Value); }
-
-        public static Boolean ToBoolean(SqlSingle p) { return p.IsNull ? false : ToBoolean(p.Value); }
-        public static Boolean ToBoolean(SqlDouble p) { return p.IsNull ? false : ToBoolean(p.Value); }
-        public static Boolean ToBoolean(SqlDecimal p) { return p.IsNull ? false : ToBoolean(p.Value); }
-        public static Boolean ToBoolean(SqlMoney p) { return p.IsNull ? false : ToBoolean(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(SqlBoolean value) { return value.IsNull ? false : value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(SqlString value) { return value.IsNull ? false : ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(SqlByte value) { return value.IsNull ? false : ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(SqlInt16 value) { return value.IsNull ? false : ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(SqlInt32 value) { return value.IsNull ? false : ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent Boolean valuer.</returns>
+        public static Boolean ToBoolean(SqlInt64 value) { return value.IsNull ? false : ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(SqlSingle value) { return value.IsNull ? false : ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(SqlDouble value) { return value.IsNull ? false : ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(SqlDecimal value) { return value.IsNull ? false : ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(SqlMoney value) { return value.IsNull ? false : ToBoolean(value.Value); }
 #endif
 
-        public static Boolean ToBoolean(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent Boolean value.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent Boolean value.</returns>
+        public static Boolean ToBoolean(object value)
         {
-            if (p == null || p is DBNull) return false;
+            if (value == null || value is DBNull) return false;
 
-            if (p is Boolean) return (Boolean)p;
+            if (value is Boolean) return (Boolean)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToBoolean((String)p);
+            if (value is String) return ToBoolean((String)value);
 
-            if (p is Char) return ToBoolean((Char)p);
+            if (value is Char) return ToBoolean((Char)value);
 
             // SqlTypes.
 #if! SILVERLIGHT
-            if (p is SqlBoolean) return ToBoolean((SqlBoolean)p);
+            if (value is SqlBoolean) return ToBoolean((SqlBoolean)value);
 #endif
-            if (p is IConvertible) return ((IConvertible)p).ToBoolean(null);
+            if (value is IConvertible) return ((IConvertible)value).ToBoolean(null);
 
-            throw CreateInvalidCastException(p.GetType(), typeof(Boolean));
+            throw CreateInvalidCastException(value.GetType(), typeof(Boolean));
         }
 
         #endregion
@@ -3253,92 +3779,266 @@ namespace FluorineFx.Util
         #region Decimal
 
         // Scalar Types.
-        // 
-        public static Decimal ToDecimal(String p) { return p == null ? 0.0m : Decimal.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(String value) { return value == null ? 0.0m : Decimal.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
         [CLSCompliant(false)]
-        public static Decimal ToDecimal(SByte p) { return checked((Decimal)p); }
-        public static Decimal ToDecimal(Int16 p) { return checked((Decimal)p); }
-        public static Decimal ToDecimal(Int32 p) { return checked((Decimal)p); }
-        public static Decimal ToDecimal(Int64 p) { return checked((Decimal)p); }
-
-        public static Decimal ToDecimal(Byte p) { return checked((Decimal)p); }
+        public static Decimal ToDecimal(SByte value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Int16 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Int32 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Int64 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Byte value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
         [CLSCompliant(false)]
-        public static Decimal ToDecimal(UInt16 p) { return checked((Decimal)p); }
+        public static Decimal ToDecimal(UInt16 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
         [CLSCompliant(false)]
-        public static Decimal ToDecimal(UInt32 p) { return checked((Decimal)p); }
+        public static Decimal ToDecimal(UInt32 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
         [CLSCompliant(false)]
-        public static Decimal ToDecimal(UInt64 p) { return checked((Decimal)p); }
-
-        public static Decimal ToDecimal(Single p) { return checked((Decimal)p); }
-        public static Decimal ToDecimal(Double p) { return checked((Decimal)p); }
-
-        public static Decimal ToDecimal(Boolean p) { return p ? 1.0m : 0.0m; }
-        public static Decimal ToDecimal(Char p) { return checked((Decimal)p); }
+        public static Decimal ToDecimal(UInt64 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Single value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Double value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Boolean value) { return value ? 1.0m : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Char value) { return checked((Decimal)value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static Decimal ToDecimal(Decimal? p)    { return p.HasValue?                  p.Value:  0.0m; }
 
-		[CLSCompliant(false)]
-		public static Decimal ToDecimal(SByte? p)      { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-		public static Decimal ToDecimal(Int16? p)      { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-		public static Decimal ToDecimal(Int32? p)      { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-		public static Decimal ToDecimal(Int64? p)      { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-
-		public static Decimal ToDecimal(Byte? p)       { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-		[CLSCompliant(false)]
-		public static Decimal ToDecimal(UInt16? p)     { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-		[CLSCompliant(false)]
-		public static Decimal ToDecimal(UInt32? p)     { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-		[CLSCompliant(false)]
-		public static Decimal ToDecimal(UInt64? p)     { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-
-		public static Decimal ToDecimal(Single? p)     { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-		public static Decimal ToDecimal(Double? p)     { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-
-		public static Decimal ToDecimal(Char? p)       { return p.HasValue? checked((Decimal)p.Value): 0.0m; }
-		public static Decimal ToDecimal(Boolean? p)    { return (p.HasValue && p.Value)?         1.0m: 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Decimal? value) { return value.HasValue ? value.Value : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal ToDecimal(SByte? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Int16? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Int32? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Int64? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Byte? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal ToDecimal(UInt16? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal ToDecimal(UInt32? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal ToDecimal(UInt64? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Single? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Double? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Char? value) { return value.HasValue ? checked((Decimal)value.Value) : 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(Boolean? value) { return (value.HasValue && value.Value) ? 1.0m : 0.0m; }
 
 #endif
         // SqlTypes.
 #if! SILVERLIGHT
-        public static Decimal ToDecimal(SqlDecimal p) { return p.IsNull ? 0.0m : p.Value; }
-        public static Decimal ToDecimal(SqlMoney p) { return p.IsNull ? 0.0m : p.Value; }
-        public static Decimal ToDecimal(SqlString p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
-
-        public static Decimal ToDecimal(SqlByte p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
-        public static Decimal ToDecimal(SqlInt16 p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
-        public static Decimal ToDecimal(SqlInt32 p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
-        public static Decimal ToDecimal(SqlInt64 p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
-
-        public static Decimal ToDecimal(SqlSingle p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
-        public static Decimal ToDecimal(SqlDouble p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
-
-        public static Decimal ToDecimal(SqlBoolean p) { return p.IsNull ? 0.0m : ToDecimal(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(SqlDecimal value) { return value.IsNull ? 0.0m : value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(SqlMoney value) { return value.IsNull ? 0.0m : value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(SqlString value) { return value.IsNull ? 0.0m : ToDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(SqlByte value) { return value.IsNull ? 0.0m : ToDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(SqlInt16 value) { return value.IsNull ? 0.0m : ToDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(SqlInt32 value) { return value.IsNull ? 0.0m : ToDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(SqlInt64 value) { return value.IsNull ? 0.0m : ToDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(SqlSingle value) { return value.IsNull ? 0.0m : ToDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(SqlDouble value) { return value.IsNull ? 0.0m : ToDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(SqlBoolean value) { return value.IsNull ? 0.0m : ToDecimal(value.Value); }
 #endif
-        public static Decimal ToDecimal(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent Decimal number.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent Decimal number.</returns>
+        public static Decimal ToDecimal(object value)
         {
-            if (p == null || p is DBNull) return 0.0m;
+            if (value == null || value is DBNull) return 0.0m;
 
-            if (p is Decimal) return (Decimal)p;
+            if (value is Decimal) return (Decimal)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToDecimal((String)p);
+            if (value is String) return ToDecimal((String)value);
 
-            if (p is Boolean) return ToDecimal((Boolean)p);
-            if (p is Char) return ToDecimal((Char)p);
+            if (value is Boolean) return ToDecimal((Boolean)value);
+            if (value is Char) return ToDecimal((Char)value);
 
             // SqlTypes.
 #if! SILVERLIGHT
-            if (p is SqlDecimal) return ToDecimal((SqlDecimal)p);
-            if (p is SqlMoney) return ToDecimal((SqlMoney)p);
+            if (value is SqlDecimal) return ToDecimal((SqlDecimal)value);
+            if (value is SqlMoney) return ToDecimal((SqlMoney)value);
 #endif
-            if (p is IConvertible) return ((IConvertible)p).ToDecimal(null);
+            if (value is IConvertible) return ((IConvertible)value).ToDecimal(null);
 
-            throw CreateInvalidCastException(p.GetType(), typeof(Decimal));
+            throw CreateInvalidCastException(value.GetType(), typeof(Decimal));
         }
 
         #endregion
@@ -3346,51 +4046,116 @@ namespace FluorineFx.Util
         #region DateTime
 
         // Scalar Types.
-        // 
-        public static DateTime ToDateTime(String p) { return p == null ? DateTime.MinValue : DateTime.Parse(p); }
-        public static DateTime ToDateTime(TimeSpan p) { return DateTime.MinValue + p; }
-        public static DateTime ToDateTime(Int64 p) { return DateTime.MinValue + TimeSpan.FromTicks(p); }
-        public static DateTime ToDateTime(Double p) { return DateTime.MinValue + TimeSpan.FromDays(p); }
+
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(String value) { return value == null ? DateTime.MinValue : DateTime.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">A TimeSpan.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(TimeSpan value) { return DateTime.MinValue + value; }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(Int64 value) { return DateTime.MinValue + TimeSpan.FromTicks(value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(Double value) { return DateTime.MinValue + TimeSpan.FromDays(value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static DateTime ToDateTime(DateTime? p)   { return p.HasValue?                                               p.Value:  DateTime.MinValue; }
-		public static DateTime ToDateTime(TimeSpan? p)   { return p.HasValue? DateTime.MinValue +                           p.Value:  DateTime.MinValue; }
-		public static DateTime ToDateTime(Int64? p)      { return p.HasValue? DateTime.MinValue +        TimeSpan.FromTicks(p.Value): DateTime.MinValue; }
-		public static DateTime ToDateTime(Double? p)     { return p.HasValue? DateTime.MinValue + TimeSpan.FromDays(p.Value): DateTime.MinValue; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">A nullable DateTime.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(DateTime? value) { return value.HasValue ? value.Value : DateTime.MinValue; }
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(TimeSpan? value) { return value.HasValue ? DateTime.MinValue + value.Value : DateTime.MinValue; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer number to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(Int64? value) { return value.HasValue ? DateTime.MinValue + TimeSpan.FromTicks(value.Value) : DateTime.MinValue; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(Double? value) { return value.HasValue ? DateTime.MinValue + TimeSpan.FromDays(value.Value) : DateTime.MinValue; }
 
 #endif
         // SqlTypes.
 #if! SILVERLIGHT
-        public static DateTime ToDateTime(SqlDateTime p) { return p.IsNull ? DateTime.MinValue : p.Value; }
-        public static DateTime ToDateTime(SqlString p) { return p.IsNull ? DateTime.MinValue : ToDateTime(p.Value); }
-        public static DateTime ToDateTime(SqlInt64 p) { return p.IsNull ? DateTime.MinValue : DateTime.MinValue + TimeSpan.FromTicks(p.Value); }
-        public static DateTime ToDateTime(SqlDouble p) { return p.IsNull ? DateTime.MinValue : DateTime.MinValue + TimeSpan.FromDays(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(SqlDateTime value) { return value.IsNull ? DateTime.MinValue : value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(SqlString value) { return value.IsNull ? DateTime.MinValue : ToDateTime(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(SqlInt64 value) { return value.IsNull ? DateTime.MinValue : DateTime.MinValue + TimeSpan.FromTicks(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(SqlDouble value) { return value.IsNull ? DateTime.MinValue : DateTime.MinValue + TimeSpan.FromDays(value.Value); }
 #endif
-        public static DateTime ToDateTime(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent DateTime.</returns>
+        public static DateTime ToDateTime(object value)
         {
-            if (p == null || p is DBNull) return DateTime.MinValue;
+            if (value == null || value is DBNull) return DateTime.MinValue;
 
-            if (p is DateTime) return (DateTime)p;
+            if (value is DateTime) return (DateTime)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToDateTime((String)p);
-            if (p is TimeSpan) return ToDateTime((TimeSpan)p);
-            if (p is Int64) return ToDateTime((Int64)p);
-            if (p is Double) return ToDateTime((Double)p);
+            if (value is String) return ToDateTime((String)value);
+            if (value is TimeSpan) return ToDateTime((TimeSpan)value);
+            if (value is Int64) return ToDateTime((Int64)value);
+            if (value is Double) return ToDateTime((Double)value);
 
             // SqlTypes.
 #if! SILVERLIGHT
-            if (p is SqlDateTime) return ToDateTime((SqlDateTime)p);
-            if (p is SqlString) return ToDateTime((SqlString)p);
-            if (p is SqlInt64) return ToDateTime((SqlInt64)p);
-            if (p is SqlDouble) return ToDateTime((SqlDouble)p);
+            if (value is SqlDateTime) return ToDateTime((SqlDateTime)value);
+            if (value is SqlString) return ToDateTime((SqlString)value);
+            if (value is SqlInt64) return ToDateTime((SqlInt64)value);
+            if (value is SqlDouble) return ToDateTime((SqlDouble)value);
 #endif
-            if (p is IConvertible) return ((IConvertible)p).ToDateTime(null);
+            if (value is IConvertible) return ((IConvertible)value).ToDateTime(null);
 
-            throw CreateInvalidCastException(p.GetType(), typeof(DateTime));
+            throw CreateInvalidCastException(value.GetType(), typeof(DateTime));
         }
 
         #endregion
@@ -3398,49 +4163,114 @@ namespace FluorineFx.Util
         #region TimeSpan
 
         // Scalar Types.
-        // 
-        public static TimeSpan ToTimeSpan(String p) { return p == null ? TimeSpan.MinValue : TimeSpan.Parse(p); }
-        public static TimeSpan ToTimeSpan(DateTime p) { return p - DateTime.MinValue; }
-        public static TimeSpan ToTimeSpan(Int64 p) { return TimeSpan.FromTicks(p); }
-        public static TimeSpan ToTimeSpan(Double p) { return TimeSpan.FromDays(p); }
+
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(String value) { return value == null ? TimeSpan.MinValue : TimeSpan.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">A DateTime.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(DateTime value) { return value - DateTime.MinValue; }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(Int64 value) { return TimeSpan.FromTicks(value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(Double value) { return TimeSpan.FromDays(value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static TimeSpan ToTimeSpan(TimeSpan? p)   { return p.HasValue? p.Value:                            TimeSpan.MinValue; }
-		public static TimeSpan ToTimeSpan(DateTime? p)   { return p.HasValue? p.Value - DateTime.MinValue:        TimeSpan.MinValue; }
-		public static TimeSpan ToTimeSpan(Int64? p)      { return p.HasValue? TimeSpan.FromTicks(p.Value):        TimeSpan.MinValue; }
-		public static TimeSpan ToTimeSpan(Double? p)     { return p.HasValue? TimeSpan.FromDays(p.Value): TimeSpan.MinValue; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(TimeSpan? value) { return value.HasValue ? value.Value : TimeSpan.MinValue; }
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">A nullable DateTime.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(DateTime? value) { return value.HasValue ? value.Value - DateTime.MinValue : TimeSpan.MinValue; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer number to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(Int64? value) { return value.HasValue ? TimeSpan.FromTicks(value.Value) : TimeSpan.MinValue; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(Double? value) { return value.HasValue ? TimeSpan.FromDays(value.Value) : TimeSpan.MinValue; }
 
 #endif
         // SqlTypes.
 #if! SILVERLIGHT
-        public static TimeSpan ToTimeSpan(SqlString p) { return p.IsNull ? TimeSpan.MinValue : TimeSpan.Parse(p.Value); }
-        public static TimeSpan ToTimeSpan(SqlDateTime p) { return p.IsNull ? TimeSpan.MinValue : p.Value - DateTime.MinValue; }
-        public static TimeSpan ToTimeSpan(SqlInt64 p) { return p.IsNull ? TimeSpan.MinValue : TimeSpan.FromTicks(p.Value); }
-        public static TimeSpan ToTimeSpan(SqlDouble p) { return p.IsNull ? TimeSpan.MinValue : TimeSpan.FromDays(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(SqlString value) { return value.IsNull ? TimeSpan.MinValue : TimeSpan.Parse(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(SqlDateTime value) { return value.IsNull ? TimeSpan.MinValue : value.Value - DateTime.MinValue; }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(SqlInt64 value) { return value.IsNull ? TimeSpan.MinValue : TimeSpan.FromTicks(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(SqlDouble value) { return value.IsNull ? TimeSpan.MinValue : TimeSpan.FromDays(value.Value); }
 #endif
-        public static TimeSpan ToTimeSpan(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent TimeSpan.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent TimeSpan.</returns>
+        public static TimeSpan ToTimeSpan(object value)
         {
-            if (p == null || p is DBNull) return TimeSpan.MinValue;
+            if (value == null || value is DBNull) return TimeSpan.MinValue;
 
-            if (p is TimeSpan) return (TimeSpan)p;
+            if (value is TimeSpan) return (TimeSpan)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToTimeSpan((String)p);
-            if (p is DateTime) return ToTimeSpan((DateTime)p);
-            if (p is Int64) return ToTimeSpan((Int64)p);
-            if (p is Double) return ToTimeSpan((Double)p);
+            if (value is String) return ToTimeSpan((String)value);
+            if (value is DateTime) return ToTimeSpan((DateTime)value);
+            if (value is Int64) return ToTimeSpan((Int64)value);
+            if (value is Double) return ToTimeSpan((Double)value);
 
             // SqlTypes.
 #if! SILVERLIGHT
-            if (p is SqlString) return ToTimeSpan((SqlString)p);
-            if (p is SqlDateTime) return ToTimeSpan((SqlDateTime)p);
-            if (p is SqlInt64) return ToTimeSpan((SqlInt64)p);
-            if (p is SqlDouble) return ToTimeSpan((SqlDouble)p);
+            if (value is SqlString) return ToTimeSpan((SqlString)value);
+            if (value is SqlDateTime) return ToTimeSpan((SqlDateTime)value);
+            if (value is SqlInt64) return ToTimeSpan((SqlInt64)value);
+            if (value is SqlDouble) return ToTimeSpan((SqlDouble)value);
 #endif
-            throw CreateInvalidCastException(p.GetType(), typeof(TimeSpan));
+            throw CreateInvalidCastException(value.GetType(), typeof(TimeSpan));
         }
 
         #endregion
@@ -3448,48 +4278,87 @@ namespace FluorineFx.Util
         #region Guid
 
         // Scalar Types.
-        // 
-        public static Guid ToGuid(String p) { return p == null ? Guid.Empty : new Guid(p); }
+
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent Guid.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent Guid.</returns>
+        public static Guid ToGuid(String value) { return value == null ? Guid.Empty : new Guid(value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static Guid ToGuid(Guid? p)       { return p.HasValue? p.Value : Guid.Empty; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable Guid to its equivalent Guid.
+        /// </summary>
+        /// <param name="value">A nullable Guid.</param>
+        /// <returns>The equivalent Guid.</returns>
+        public static Guid ToGuid(Guid? value) { return value.HasValue ? value.Value : Guid.Empty; }
 
 #endif
         // SqlTypes.
 #if! SILVERLIGHT
-        public static Guid ToGuid(SqlGuid p) { return p.IsNull ? Guid.Empty : p.Value; }
-        public static Guid ToGuid(SqlString p) { return p.IsNull ? Guid.Empty : new Guid(p.Value); }
-        public static Guid ToGuid(SqlBinary p) { return p.IsNull ? Guid.Empty : p.ToSqlGuid().Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlGuid to its equivalent Guid.
+        /// </summary>
+        /// <param name="value">An SqlGuid.</param>
+        /// <returns>The equivalent Guid.</returns>
+        public static Guid ToGuid(SqlGuid value) { return value.IsNull ? Guid.Empty : value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent Guid.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent Guid.</returns>
+        public static Guid ToGuid(SqlString value) { return value.IsNull ? Guid.Empty : new Guid(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent Guid.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The equivalent Guid.</returns>
+        public static Guid ToGuid(SqlBinary value) { return value.IsNull ? Guid.Empty : value.ToSqlGuid().Value; }
 #endif
         // Other Types.
-        // 
-        public static Guid ToGuid(Byte[] p) { return p == null ? Guid.Empty : new Guid(p); }
-        public static Guid ToGuid(Type p) { return p == null ? Guid.Empty : p.GUID; }
 
-        public static Guid ToGuid(object p)
+        /// <summary>
+        /// Converts the value of the specified memory buffer to its equivalent Guid.
+        /// </summary>
+        /// <param name="value">A memory buffer.</param>
+        /// <returns>The equivalent Guid.</returns>
+        public static Guid ToGuid(Byte[] value) { return value == null ? Guid.Empty : new Guid(value); }
+        /// <summary>
+        /// Converts the value of the specified Type to its equivalent Guid.
+        /// </summary>
+        /// <param name="value">A Type.</param>
+        /// <returns>The equivalent Guid.</returns>
+        public static Guid ToGuid(Type value) { return value == null ? Guid.Empty : value.GUID; }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent Guid.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent Guid.</returns>
+        public static Guid ToGuid(object value)
         {
-            if (p == null || p is DBNull) return Guid.Empty;
+            if (value == null || value is DBNull) return Guid.Empty;
 
-            if (p is Guid) return (Guid)p;
+            if (value is Guid) return (Guid)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToGuid((String)p);
+            if (value is String) return ToGuid((String)value);
 
             // SqlTypes.
 #if! SILVERLIGHT
-            if (p is SqlGuid) return ToGuid((SqlGuid)p);
-            if (p is SqlString) return ToGuid((SqlString)p);
-            if (p is SqlBinary) return ToGuid((SqlBinary)p);
+            if (value is SqlGuid) return ToGuid((SqlGuid)value);
+            if (value is SqlString) return ToGuid((SqlString)value);
+            if (value is SqlBinary) return ToGuid((SqlBinary)value);
 #endif
             // Other Types.
             //
-            if (p is Byte[]) return ToGuid((Byte[])p);
-            if (p is Type) return ToGuid((Type)p);
+            if (value is Byte[]) return ToGuid((Byte[])value);
+            if (value is Type) return ToGuid((Type)value);
 
-            throw CreateInvalidCastException(p.GetType(), typeof(Guid));
+            throw CreateInvalidCastException(value.GetType(), typeof(Guid));
         }
 
         #endregion
@@ -3502,114 +4371,288 @@ namespace FluorineFx.Util
         #region SByte?
 
         // Scalar Types.
-		// 
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SByte p)       { return p; }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(String p)      { return p == null? null: (SByte?)SByte.Parse(p); }
 
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Int16 p)       { return      checked((SByte?)p); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Int32 p)       { return      checked((SByte?)p); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Int64 p)       { return      checked((SByte?)p); }
-
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Byte p)        { return      checked((SByte?)p); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(UInt16 p)      { return      checked((SByte?)p); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(UInt32 p)      { return      checked((SByte?)p); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(UInt64 p)      { return      checked((SByte?)p); }
-
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Single p)      { return      checked((SByte?)p); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Double p)      { return      checked((SByte?)p); }
-
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Decimal p)     { return      checked((SByte?)p); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Char p)        { return      checked((SByte?)p); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Boolean p)     { return       (SByte?)(p? 1: 0); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SByte value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(String value) { return value == null ? null : (SByte?)SByte.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Int16 value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Int32 value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Int64 value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Byte value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(UInt16 value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(UInt32 value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(UInt64 value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Single value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Double value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Decimal value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Char value) { return checked((SByte?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Boolean value) { return (SByte?)(value ? 1 : 0); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Int16? p)      { return p.HasValue? checked((SByte?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Int32? p)      { return p.HasValue? checked((SByte?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Int64? p)      { return p.HasValue? checked((SByte?)p.Value): null; }
 
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Int16? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Int32? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Int64? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Byte? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(UInt16? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(UInt32? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(UInt64? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Single? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Double? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
 		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Byte? p)       { return p.HasValue? checked((SByte?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(UInt16? p)     { return p.HasValue? checked((SByte?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(UInt32? p)     { return p.HasValue? checked((SByte?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(UInt64? p)     { return p.HasValue? checked((SByte?)p.Value): null; }
-
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Single? p)     { return p.HasValue? checked((SByte?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Double? p)     { return p.HasValue? checked((SByte?)p.Value): null; }
-
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Decimal? p)    { return p.HasValue? checked((SByte?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Char? p)       { return p.HasValue? checked((SByte?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(Boolean? p)    { return p.HasValue? (SByte?)(p.Value? 1: 0):  null; }
+        public static SByte? ToNullableSByte(Decimal? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Char? value) { return value.HasValue ? checked((SByte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(Boolean? value) { return value.HasValue ? (SByte?)(value.Value ? 1 : 0) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SqlString p)   { return p.IsNull? null: ToNullableSByte(p.Value); }
-
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SqlByte p)     { return p.IsNull? null: ToNullableSByte(p.Value); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SqlInt16 p)    { return p.IsNull? null: ToNullableSByte(p.Value); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SqlInt32 p)    { return p.IsNull? null: ToNullableSByte(p.Value); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SqlInt64 p)    { return p.IsNull? null: ToNullableSByte(p.Value); }
-
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SqlSingle p)   { return p.IsNull? null: ToNullableSByte(p.Value); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SqlDouble p)   { return p.IsNull? null: ToNullableSByte(p.Value); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SqlDecimal p)  { return p.IsNull? null: ToNullableSByte(p.Value); }
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SqlMoney p)    { return p.IsNull? null: ToNullableSByte(p.Value); }
-
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(SqlBoolean p)  { return p.IsNull? null: ToNullableSByte(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SqlString value) { return value.IsNull ? null : ToNullableSByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SqlByte value) { return value.IsNull ? null : ToNullableSByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SqlInt16 value) { return value.IsNull ? null : ToNullableSByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SqlInt32 value) { return value.IsNull ? null : ToNullableSByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SqlInt64 value) { return value.IsNull ? null : ToNullableSByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SqlSingle value) { return value.IsNull ? null : ToNullableSByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SqlDouble value) { return value.IsNull ? null : ToNullableSByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SqlDecimal value) { return value.IsNull ? null : ToNullableSByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SqlMoney value) { return value.IsNull ? null : ToNullableSByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(SqlBoolean value) { return value.IsNull ? null : ToNullableSByte(value.Value); }
 #endif
-		[CLSCompliant(false)]
-		public static SByte? ToNullableSByte(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static SByte? ToNullableSByte(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
-			//
-			if (p is SByte)       return ToNullableSByte((SByte)p);
-			if (p is String)      return ToNullableSByte((String)p);
+            if (value is SByte) return ToNullableSByte((SByte)value);
+            if (value is String) return ToNullableSByte((String)value);
 
-			if (p is Char)        return ToNullableSByte((Char)p);
-			if (p is Boolean)     return ToNullableSByte((Boolean)p);
+            if (value is Char) return ToNullableSByte((Char)value);
+            if (value is Boolean) return ToNullableSByte((Boolean)value);
 
-			if (p is IConvertible) return ((IConvertible)p).ToSByte(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(SByte?));
+            if (value is IConvertible) return ((IConvertible)value).ToSByte(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(SByte?));
 		}
 
         #endregion
@@ -3617,89 +4660,264 @@ namespace FluorineFx.Util
         #region Int16?
 
 		// Scalar Types.
-		// 
-		public static Int16? ToNullableInt16(Int16 p)       { return p; }
-		public static Int16? ToNullableInt16(String p)      { return p == null? null: (Int16?)Int16.Parse(p); }
 
-		[CLSCompliant(false)]
-		public static Int16? ToNullableInt16(SByte p)       { return      checked((Int16?)p); }
-		public static Int16? ToNullableInt16(Int32 p)       { return      checked((Int16?)p); }
-		public static Int16? ToNullableInt16(Int64 p)       { return      checked((Int16?)p); }
-
-		public static Int16? ToNullableInt16(Byte p)        { return      checked((Int16?)p); }
-		[CLSCompliant(false)]
-		public static Int16? ToNullableInt16(UInt16 p)      { return      checked((Int16?)p); }
-		[CLSCompliant(false)]
-		public static Int16? ToNullableInt16(UInt32 p)      { return      checked((Int16?)p); }
-		[CLSCompliant(false)]
-		public static Int16? ToNullableInt16(UInt64 p)      { return      checked((Int16?)p); }
-
-		public static Int16? ToNullableInt16(Single p)      { return      checked((Int16?)p); }
-		public static Int16? ToNullableInt16(Double p)      { return      checked((Int16?)p); }
-
-		public static Int16? ToNullableInt16(Decimal p)     { return      checked((Int16?)p); }
-		public static Int16? ToNullableInt16(Char p)        { return      checked((Int16?)p); }
-		public static Int16? ToNullableInt16(Boolean p)     { return       (Int16?)(p? 1: 0); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Int16 value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(String value) { return value == null ? null : (Int16?)Int16.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int16? ToNullableInt16(SByte value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Int32 value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Int64 value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Byte value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int16? ToNullableInt16(UInt16 value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int16? ToNullableInt16(UInt32 value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int16? ToNullableInt16(UInt64 value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Single value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Double value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Decimal value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Char value) { return checked((Int16?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Boolean value) { return (Int16?)(value ? 1 : 0); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static Int16? ToNullableInt16(SByte? p)      { return p.HasValue? checked((Int16?)p.Value): null; }
-		public static Int16? ToNullableInt16(Int32? p)      { return p.HasValue? checked((Int16?)p.Value): null; }
-		public static Int16? ToNullableInt16(Int64? p)      { return p.HasValue? checked((Int16?)p.Value): null; }
 
-		public static Int16? ToNullableInt16(Byte? p)       { return p.HasValue? checked((Int16?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Int16? ToNullableInt16(UInt16? p)     { return p.HasValue? checked((Int16?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Int16? ToNullableInt16(UInt32? p)     { return p.HasValue? checked((Int16?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Int16? ToNullableInt16(UInt64? p)     { return p.HasValue? checked((Int16?)p.Value): null; }
-
-		public static Int16? ToNullableInt16(Single? p)     { return p.HasValue? checked((Int16?)p.Value): null; }
-		public static Int16? ToNullableInt16(Double? p)     { return p.HasValue? checked((Int16?)p.Value): null; }
-
-		public static Int16? ToNullableInt16(Decimal? p)    { return p.HasValue? checked((Int16?)p.Value): null; }
-		public static Int16? ToNullableInt16(Char? p)       { return p.HasValue? checked((Int16?)p.Value): null; }
-		public static Int16? ToNullableInt16(Boolean? p)    { return p.HasValue? (Int16?)(p.Value? 1: 0):  null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int16? ToNullableInt16(SByte? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Int32? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Int64? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Byte? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int16? ToNullableInt16(UInt16? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int16? ToNullableInt16(UInt32? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int16? ToNullableInt16(UInt64? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Single? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Double? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Decimal? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Char? value) { return value.HasValue ? checked((Int16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(Boolean? value) { return value.HasValue ? (Int16?)(value.Value ? 1 : 0) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static Int16? ToNullableInt16(SqlInt16 p)    { return p.IsNull? null:         (Int16?)p.Value;  }
-		public static Int16? ToNullableInt16(SqlString p)   { return p.IsNull? null: ToNullableInt16(p.Value); }
-
-		public static Int16? ToNullableInt16(SqlByte p)     { return p.IsNull? null: ToNullableInt16(p.Value); }
-		public static Int16? ToNullableInt16(SqlInt32 p)    { return p.IsNull? null: ToNullableInt16(p.Value); }
-		public static Int16? ToNullableInt16(SqlInt64 p)    { return p.IsNull? null: ToNullableInt16(p.Value); }
-
-		public static Int16? ToNullableInt16(SqlSingle p)   { return p.IsNull? null: ToNullableInt16(p.Value); }
-		public static Int16? ToNullableInt16(SqlDouble p)   { return p.IsNull? null: ToNullableInt16(p.Value); }
-		public static Int16? ToNullableInt16(SqlDecimal p)  { return p.IsNull? null: ToNullableInt16(p.Value); }
-		public static Int16? ToNullableInt16(SqlMoney p)    { return p.IsNull? null: ToNullableInt16(p.Value); }
-
-		public static Int16? ToNullableInt16(SqlBoolean p)  { return p.IsNull? null: ToNullableInt16(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(SqlInt16 value) { return value.IsNull ? null : (Int16?)value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(SqlString value) { return value.IsNull ? null : ToNullableInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(SqlByte value) { return value.IsNull ? null : ToNullableInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(SqlInt32 value) { return value.IsNull ? null : ToNullableInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(SqlInt64 value) { return value.IsNull ? null : ToNullableInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(SqlSingle value) { return value.IsNull ? null : ToNullableInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(SqlDouble value) { return value.IsNull ? null : ToNullableInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(SqlDecimal value) { return value.IsNull ? null : ToNullableInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(SqlMoney value) { return value.IsNull ? null : ToNullableInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(SqlBoolean value) { return value.IsNull ? null : ToNullableInt16(value.Value); }
 #endif
-		public static Int16? ToNullableInt16(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer value.</returns>
+        public static Int16? ToNullableInt16(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is Int16)       return ToNullableInt16((Int16)p);
-			if (p is String)      return ToNullableInt16((String)p);
+            if (value is Int16) return ToNullableInt16((Int16)value);
+            if (value is String) return ToNullableInt16((String)value);
 
-			if (p is Char)        return ToNullableInt16((Char)p);
-			if (p is Boolean)     return ToNullableInt16((Boolean)p);
+            if (value is Char) return ToNullableInt16((Char)value);
+            if (value is Boolean) return ToNullableInt16((Boolean)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlInt16)    return ToNullableInt16((SqlInt16)p);
+            if (value is SqlInt16) return ToNullableInt16((SqlInt16)value);
 #endif
-			if (p is IConvertible) return ((IConvertible)p).ToInt16(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(Int16?));
+            if (value is IConvertible) return ((IConvertible)value).ToInt16(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(Int16?));
 		}
 
         #endregion
@@ -3707,89 +4925,263 @@ namespace FluorineFx.Util
         #region Int32?
 
 		// Scalar Types.
-		// 
-		public static Int32? ToNullableInt32(Int32 p)       { return p; }
-		public static Int32? ToNullableInt32(String p)      { return p == null? null: (Int32?)Int32.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Int32 value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(String value) { return value == null ? null : (Int32?)Int32.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
 		[CLSCompliant(false)]
-		public static Int32? ToNullableInt32(SByte p)       { return checked((Int32?)p); }
-		public static Int32? ToNullableInt32(Int16 p)       { return checked((Int32?)p); }
-		public static Int32? ToNullableInt32(Int64 p)       { return checked((Int32?)p); }
-
-		public static Int32? ToNullableInt32(Byte p)        { return checked((Int32?)p); }
-		[CLSCompliant(false)]
-		public static Int32? ToNullableInt32(UInt16 p)      { return checked((Int32?)p); }
-		[CLSCompliant(false)]
-		public static Int32? ToNullableInt32(UInt32 p)      { return checked((Int32?)p); }
-		[CLSCompliant(false)]
-		public static Int32? ToNullableInt32(UInt64 p)      { return checked((Int32?)p); }
-
-		public static Int32? ToNullableInt32(Single p)      { return checked((Int32?)p); }
-		public static Int32? ToNullableInt32(Double p)      { return checked((Int32?)p); }
-
-		public static Int32? ToNullableInt32(Decimal p)     { return checked((Int32?)p); }
-		public static Int32? ToNullableInt32(Char p)        { return checked((Int32?)p); }
-		public static Int32? ToNullableInt32(Boolean p)     { return p? 1: 0; }
+        public static Int32? ToNullableInt32(SByte value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Int16 value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Int64 value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Byte value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int32? ToNullableInt32(UInt16 value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int32? ToNullableInt32(UInt32 value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int32? ToNullableInt32(UInt64 value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Single value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Double value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Decimal value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Char value) { return checked((Int32?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Boolean value) { return value ? 1 : 0; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static Int32? ToNullableInt32(SByte? p)      { return p.HasValue? checked((Int32?)p.Value): null; }
-		public static Int32? ToNullableInt32(Int16? p)      { return p.HasValue? checked((Int32?)p.Value): null; }
-		public static Int32? ToNullableInt32(Int64? p)      { return p.HasValue? checked((Int32?)p.Value): null; }
-
-		public static Int32? ToNullableInt32(Byte? p)       { return p.HasValue? checked((Int32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Int32? ToNullableInt32(UInt16? p)     { return p.HasValue? checked((Int32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Int32? ToNullableInt32(UInt32? p)     { return p.HasValue? checked((Int32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Int32? ToNullableInt32(UInt64? p)     { return p.HasValue? checked((Int32?)p.Value): null; }
-
-		public static Int32? ToNullableInt32(Single? p)     { return p.HasValue? checked((Int32?)p.Value): null; }
-		public static Int32? ToNullableInt32(Double? p)     { return p.HasValue? checked((Int32?)p.Value): null; }
-
-		public static Int32? ToNullableInt32(Decimal? p)    { return p.HasValue? checked((Int32?)p.Value): null; }
-		public static Int32? ToNullableInt32(Char? p)       { return p.HasValue? checked((Int32?)p.Value): null; }
-		public static Int32? ToNullableInt32(Boolean? p)    { return p.HasValue? (Int32?)(p.Value? 1: 0):  null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int32? ToNullableInt32(SByte? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Int16? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Int64? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Byte? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int32? ToNullableInt32(UInt16? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int32? ToNullableInt32(UInt32? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int32? ToNullableInt32(UInt64? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Single? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Double? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Decimal? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Char? value) { return value.HasValue ? checked((Int32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(Boolean? value) { return value.HasValue ? (Int32?)(value.Value ? 1 : 0) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static Int32? ToNullableInt32(SqlInt32 p)    { return p.IsNull? null:         (Int32?)p.Value;  }
-		public static Int32? ToNullableInt32(SqlString p)   { return p.IsNull? null: ToNullableInt32(p.Value); }
-
-		public static Int32? ToNullableInt32(SqlByte p)     { return p.IsNull? null: ToNullableInt32(p.Value); }
-		public static Int32? ToNullableInt32(SqlInt16 p)    { return p.IsNull? null: ToNullableInt32(p.Value); }
-		public static Int32? ToNullableInt32(SqlInt64 p)    { return p.IsNull? null: ToNullableInt32(p.Value); }
-
-		public static Int32? ToNullableInt32(SqlSingle p)   { return p.IsNull? null: ToNullableInt32(p.Value); }
-		public static Int32? ToNullableInt32(SqlDouble p)   { return p.IsNull? null: ToNullableInt32(p.Value); }
-		public static Int32? ToNullableInt32(SqlDecimal p)  { return p.IsNull? null: ToNullableInt32(p.Value); }
-		public static Int32? ToNullableInt32(SqlMoney p)    { return p.IsNull? null: ToNullableInt32(p.Value); }
-
-		public static Int32? ToNullableInt32(SqlBoolean p)  { return p.IsNull? null: ToNullableInt32(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(SqlInt32 value) { return value.IsNull ? null : (Int32?)value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(SqlString value) { return value.IsNull ? null : ToNullableInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(SqlByte value) { return value.IsNull ? null : ToNullableInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(SqlInt16 value) { return value.IsNull ? null : ToNullableInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(SqlInt64 value) { return value.IsNull ? null : ToNullableInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(SqlSingle value) { return value.IsNull ? null : ToNullableInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(SqlDouble value) { return value.IsNull ? null : ToNullableInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(SqlDecimal value) { return value.IsNull ? null : ToNullableInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(SqlMoney value) { return value.IsNull ? null : ToNullableInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(SqlBoolean value) { return value.IsNull ? null : ToNullableInt32(value.Value); }
 #endif
-		public static Int32? ToNullableInt32(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer value.</returns>
+        public static Int32? ToNullableInt32(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is Int32)       return ToNullableInt32((Int32)p);
-			if (p is String)      return ToNullableInt32((String)p);
+            if (value is Int32) return ToNullableInt32((Int32)value);
+            if (value is String) return ToNullableInt32((String)value);
 
-			if (p is Char)        return ToNullableInt32((Char)p);
-			if (p is Boolean)     return ToNullableInt32((Boolean)p);
+            if (value is Char) return ToNullableInt32((Char)value);
+            if (value is Boolean) return ToNullableInt32((Boolean)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlInt32)    return ToNullableInt32((SqlInt32)p);
+            if (value is SqlInt32) return ToNullableInt32((SqlInt32)value);
 #endif
-			if (p is IConvertible) return ((IConvertible)p).ToInt32(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(Int32?));
+            if (value is IConvertible) return ((IConvertible)value).ToInt32(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(Int32?));
 		}
 
         #endregion
@@ -3797,97 +5189,297 @@ namespace FluorineFx.Util
         #region Int64?
 
 		// Scalar Types.
-		// 
-		public static Int64? ToNullableInt64(Int64 p)       { return p; }
-		public static Int64? ToNullableInt64(String p)      { return p == null? null: (Int64?)Int64.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Int64 value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(String value) { return value == null ? null : (Int64?)Int64.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
 		[CLSCompliant(false)]
-		public static Int64? ToNullableInt64(SByte p)       { return checked((Int64?)p); }
-		public static Int64? ToNullableInt64(Int16 p)       { return checked((Int64?)p); }
-		public static Int64? ToNullableInt64(Int32 p)       { return checked((Int64?)p); }
-
-		public static Int64? ToNullableInt64(Byte p)        { return checked((Int64?)p); }
-		[CLSCompliant(false)]
-		public static Int64? ToNullableInt64(UInt16 p)      { return checked((Int64?)p); }
-		[CLSCompliant(false)]
-		public static Int64? ToNullableInt64(UInt32 p)      { return checked((Int64?)p); }
-		[CLSCompliant(false)]
-		public static Int64? ToNullableInt64(UInt64 p)      { return checked((Int64?)p); }
-
-		public static Int64? ToNullableInt64(Single p)      { return checked((Int64?)p); }
-		public static Int64? ToNullableInt64(Double p)      { return checked((Int64?)p); }
-
-		public static Int64? ToNullableInt64(Decimal p)     { return checked((Int64?)p); }
-		public static Int64? ToNullableInt64(Char p)        { return checked((Int64?)p); }
-		public static Int64? ToNullableInt64(Boolean p)     { return p? 1: 0; }
-		public static Int64? ToNullableInt64(DateTime p)    { return (p - DateTime.MinValue).Ticks; }
-		public static Int64? ToNullableInt64(TimeSpan p)    { return p.Ticks; }
+        public static Int64? ToNullableInt64(SByte value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Int16 value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Int32 value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Byte value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int64? ToNullableInt64(UInt16 value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int64? ToNullableInt64(UInt32 value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int64? ToNullableInt64(UInt64 value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Single value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Double value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Decimal value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Char value) { return checked((Int64?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Boolean value) { return value ? 1 : 0; }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A DateTime.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(DateTime value) { return (value - DateTime.MinValue).Ticks; }
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A TimeSpan.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(TimeSpan value) { return value.Ticks; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static Int64? ToNullableInt64(SByte? p)      { return p.HasValue? checked((Int64?)p.Value): null; }
-		public static Int64? ToNullableInt64(Int16? p)      { return p.HasValue? checked((Int64?)p.Value): null; }
-		public static Int64? ToNullableInt64(Int32? p)      { return p.HasValue? checked((Int64?)p.Value): null; }
 
-		public static Int64? ToNullableInt64(Byte? p)       { return p.HasValue? checked((Int64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Int64? ToNullableInt64(UInt16? p)     { return p.HasValue? checked((Int64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Int64? ToNullableInt64(UInt32? p)     { return p.HasValue? checked((Int64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Int64? ToNullableInt64(UInt64? p)     { return p.HasValue? checked((Int64?)p.Value): null; }
-
-		public static Int64? ToNullableInt64(Single? p)     { return p.HasValue? checked((Int64?)p.Value): null; }
-		public static Int64? ToNullableInt64(Double? p)     { return p.HasValue? checked((Int64?)p.Value): null; }
-
-		public static Int64? ToNullableInt64(Decimal? p)    { return p.HasValue? checked((Int64?)p.Value): null; }
-		public static Int64? ToNullableInt64(Char? p)       { return p.HasValue? checked((Int64?)p.Value): null; }
-		public static Int64? ToNullableInt64(Boolean? p)    { return p.HasValue? (Int64?)(p.Value? 1: 0):  null; }
-		public static Int64? ToNullableInt64(DateTime? p)   { return p.HasValue? (Int64?)(p.Value - DateTime.MinValue).Ticks: null; }
-		public static Int64? ToNullableInt64(TimeSpan? p)   { return p.HasValue? (Int64?)p.Value.Ticks: null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int64? ToNullableInt64(SByte? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Int16? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Int32? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Byte? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int64? ToNullableInt64(UInt16? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int64? ToNullableInt64(UInt32? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Int64? ToNullableInt64(UInt64? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Single? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Double? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Decimal? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Char? value) { return value.HasValue ? checked((Int64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(Boolean? value) { return value.HasValue ? (Int64?)(value.Value ? 1 : 0) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable DateTime.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(DateTime? value) { return value.HasValue ? (Int64?)(value.Value - DateTime.MinValue).Ticks : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(TimeSpan? value) { return value.HasValue ? (Int64?)value.Value.Ticks : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static Int64? ToNullableInt64(SqlInt64 p)    { return p.IsNull? null:         (Int64?)p.Value;  }
-		public static Int64? ToNullableInt64(SqlString p)   { return p.IsNull? null: ToNullableInt64(p.Value); }
-
-		public static Int64? ToNullableInt64(SqlByte p)     { return p.IsNull? null: ToNullableInt64(p.Value); }
-		public static Int64? ToNullableInt64(SqlInt16 p)    { return p.IsNull? null: ToNullableInt64(p.Value); }
-		public static Int64? ToNullableInt64(SqlInt32 p)    { return p.IsNull? null: ToNullableInt64(p.Value); }
-
-		public static Int64? ToNullableInt64(SqlSingle p)   { return p.IsNull? null: ToNullableInt64(p.Value); }
-		public static Int64? ToNullableInt64(SqlDouble p)   { return p.IsNull? null: ToNullableInt64(p.Value); }
-		public static Int64? ToNullableInt64(SqlDecimal p)  { return p.IsNull? null: ToNullableInt64(p.Value); }
-		public static Int64? ToNullableInt64(SqlMoney p)    { return p.IsNull? null: ToNullableInt64(p.Value); }
-
-		public static Int64? ToNullableInt64(SqlBoolean p)  { return p.IsNull? null: ToNullableInt64(p.Value); }
-		public static Int64? ToNullableInt64(SqlDateTime p) { return p.IsNull? null: ToNullableInt64(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlInt64 value) { return value.IsNull ? null : (Int64?)value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlString value) { return value.IsNull ? null : ToNullableInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlByte value) { return value.IsNull ? null : ToNullableInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlInt16 value) { return value.IsNull ? null : ToNullableInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlInt32 value) { return value.IsNull ? null : ToNullableInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlSingle value) { return value.IsNull ? null : ToNullableInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlDouble value) { return value.IsNull ? null : ToNullableInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlDecimal value) { return value.IsNull ? null : ToNullableInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlMoney value) { return value.IsNull ? null : ToNullableInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlBoolean value) { return value.IsNull ? null : ToNullableInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(SqlDateTime value) { return value.IsNull ? null : ToNullableInt64(value.Value); }
 #endif
-		public static Int64? ToNullableInt64(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer value.</returns>
+        public static Int64? ToNullableInt64(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is Int64)       return ToNullableInt64((Int64)p);
-			if (p is String)      return ToNullableInt64((String)p);
+            if (value is Int64) return ToNullableInt64((Int64)value);
+            if (value is String) return ToNullableInt64((String)value);
 
-			if (p is Char)        return ToNullableInt64((Char)p);
-			if (p is Boolean)     return ToNullableInt64((Boolean)p);
-			if (p is DateTime)    return ToNullableInt64((DateTime)p);
-			if (p is TimeSpan)    return ToNullableInt64((TimeSpan)p);
+            if (value is Char) return ToNullableInt64((Char)value);
+            if (value is Boolean) return ToNullableInt64((Boolean)value);
+            if (value is DateTime) return ToNullableInt64((DateTime)value);
+            if (value is TimeSpan) return ToNullableInt64((TimeSpan)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlInt64)    return ToNullableInt64((SqlInt64)p);
-			if (p is SqlDateTime) return ToNullableInt64((SqlDateTime)p);
+            if (value is SqlInt64) return ToNullableInt64((SqlInt64)value);
+            if (value is SqlDateTime) return ToNullableInt64((SqlDateTime)value);
 #endif
-			if (p is IConvertible) return ((IConvertible)p).ToInt64(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(Int64?));
+            if (value is IConvertible) return ((IConvertible)value).ToInt64(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(Int64?));
 		}
 
         #endregion
@@ -3895,89 +5487,264 @@ namespace FluorineFx.Util
         #region Byte?
 
 		// Scalar Types.
-		// 
-		public static Byte? ToNullableByte(Byte p)        { return p; }
-		public static Byte? ToNullableByte(String p)      { return p == null? null: (Byte?)Byte.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Byte value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(String value) { return value == null ? null : (Byte?)Byte.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
 		[CLSCompliant(false)]
-		public static Byte? ToNullableByte(SByte p)       { return      checked((Byte?)p); }
-		public static Byte? ToNullableByte(Int16 p)       { return      checked((Byte?)p); }
-		public static Byte? ToNullableByte(Int32 p)       { return      checked((Byte?)p); }
-		public static Byte? ToNullableByte(Int64 p)       { return      checked((Byte?)p); }
-
-		[CLSCompliant(false)]
-		public static Byte? ToNullableByte(UInt16 p)      { return      checked((Byte?)p); }
-		[CLSCompliant(false)]
-		public static Byte? ToNullableByte(UInt32 p)      { return      checked((Byte?)p); }
-		[CLSCompliant(false)]
-		public static Byte? ToNullableByte(UInt64 p)      { return      checked((Byte?)p); }
-
-		public static Byte? ToNullableByte(Single p)      { return      checked((Byte?)p); }
-		public static Byte? ToNullableByte(Double p)      { return      checked((Byte?)p); }
-
-		public static Byte? ToNullableByte(Decimal p)     { return      checked((Byte?)p); }
-		public static Byte? ToNullableByte(Char p)        { return      checked((Byte?)p); }
-		public static Byte? ToNullableByte(Boolean p)     { return       (Byte?)(p? 1: 0); }
+        public static Byte? ToNullableByte(SByte value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Int16 value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Int32 value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Int64 value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static Byte? ToNullableByte(UInt16 value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static Byte? ToNullableByte(UInt32 value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static Byte? ToNullableByte(UInt64 value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Single value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Double value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Decimal value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Char value) { return checked((Byte?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Boolean value) { return (Byte?)(value ? 1 : 0); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static Byte? ToNullableByte(SByte? p)      { return p.HasValue? checked((Byte?)p.Value): null; }
-		public static Byte? ToNullableByte(Int16? p)      { return p.HasValue? checked((Byte?)p.Value): null; }
-		public static Byte? ToNullableByte(Int32? p)      { return p.HasValue? checked((Byte?)p.Value): null; }
-		public static Byte? ToNullableByte(Int64? p)      { return p.HasValue? checked((Byte?)p.Value): null; }
 
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static Byte? ToNullableByte(SByte? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Int16? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Int32? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Int64? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
 		[CLSCompliant(false)]
-		public static Byte? ToNullableByte(UInt16? p)     { return p.HasValue? checked((Byte?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Byte? ToNullableByte(UInt32? p)     { return p.HasValue? checked((Byte?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Byte? ToNullableByte(UInt64? p)     { return p.HasValue? checked((Byte?)p.Value): null; }
-
-		public static Byte? ToNullableByte(Single? p)     { return p.HasValue? checked((Byte?)p.Value): null; }
-		public static Byte? ToNullableByte(Double? p)     { return p.HasValue? checked((Byte?)p.Value): null; }
-
-		public static Byte? ToNullableByte(Decimal? p)    { return p.HasValue? checked((Byte?)p.Value): null; }
-		public static Byte? ToNullableByte(Char? p)       { return p.HasValue? checked((Byte?)p.Value): null; }
-		public static Byte? ToNullableByte(Boolean? p)    { return p.HasValue? (Byte?)(p.Value? 1: 0):  null; }
+        public static Byte? ToNullableByte(UInt16? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static Byte? ToNullableByte(UInt32? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static Byte? ToNullableByte(UInt64? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Single? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Double? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Decimal? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Char? value) { return value.HasValue ? checked((Byte?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(Boolean? value) { return value.HasValue ? (Byte?)(value.Value ? 1 : 0) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static Byte? ToNullableByte(SqlByte p)     { return p.IsNull? null:         (Byte?)p.Value;  }
-		public static Byte? ToNullableByte(SqlString p)   { return p.IsNull? null: ToNullableByte(p.Value); }
-
-		public static Byte? ToNullableByte(SqlInt16 p)    { return p.IsNull? null: ToNullableByte(p.Value); }
-		public static Byte? ToNullableByte(SqlInt32 p)    { return p.IsNull? null: ToNullableByte(p.Value); }
-		public static Byte? ToNullableByte(SqlInt64 p)    { return p.IsNull? null: ToNullableByte(p.Value); }
-
-		public static Byte? ToNullableByte(SqlSingle p)   { return p.IsNull? null: ToNullableByte(p.Value); }
-		public static Byte? ToNullableByte(SqlDouble p)   { return p.IsNull? null: ToNullableByte(p.Value); }
-		public static Byte? ToNullableByte(SqlDecimal p)  { return p.IsNull? null: ToNullableByte(p.Value); }
-		public static Byte? ToNullableByte(SqlMoney p)    { return p.IsNull? null: ToNullableByte(p.Value); }
-
-		public static Byte? ToNullableByte(SqlBoolean p)  { return p.IsNull? null: ToNullableByte(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(SqlByte value) { return value.IsNull ? null : (Byte?)value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(SqlString value) { return value.IsNull ? null : ToNullableByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(SqlInt16 value) { return value.IsNull ? null : ToNullableByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(SqlInt32 value) { return value.IsNull ? null : ToNullableByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(SqlInt64 value) { return value.IsNull ? null : ToNullableByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(SqlSingle value) { return value.IsNull ? null : ToNullableByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(SqlDouble value) { return value.IsNull ? null : ToNullableByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(SqlDecimal value) { return value.IsNull ? null : ToNullableByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(SqlMoney value) { return value.IsNull ? null : ToNullableByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(SqlBoolean value) { return value.IsNull ? null : ToNullableByte(value.Value); }
 #endif
-		public static Byte? ToNullableByte(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer value.</returns>
+        public static Byte? ToNullableByte(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is Byte)        return ToNullableByte((Byte)p);
-			if (p is String)      return ToNullableByte((String)p);
+            if (value is Byte) return ToNullableByte((Byte)value);
+            if (value is String) return ToNullableByte((String)value);
 
-			if (p is Char)        return ToNullableByte((Char)p);
-			if (p is Boolean)     return ToNullableByte((Boolean)p);
+            if (value is Char) return ToNullableByte((Char)value);
+            if (value is Boolean) return ToNullableByte((Boolean)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlByte)     return ToNullableByte((SqlByte)p);
+            if (value is SqlByte) return ToNullableByte((SqlByte)value);
 #endif
-			if (p is IConvertible) return ((IConvertible)p).ToByte(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(Byte?));
+            if (value is IConvertible) return ((IConvertible)value).ToByte(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(Byte?));
 		}
 
         #endregion
@@ -3985,114 +5752,288 @@ namespace FluorineFx.Util
         #region UInt16?
 
 		// Scalar Types.
-		// 
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(UInt16 p)      { return p; }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(String p)      { return p == null? null: (UInt16?)UInt16.Parse(p); }
-
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SByte p)       { return      checked((UInt16?)p); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Int16 p)       { return      checked((UInt16?)p); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Int32 p)       { return      checked((UInt16?)p); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Int64 p)       { return      checked((UInt16?)p); }
-
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Byte p)        { return      checked((UInt16?)p); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(UInt32 p)      { return      checked((UInt16?)p); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(UInt64 p)      { return      checked((UInt16?)p); }
-
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Single p)      { return      checked((UInt16?)p); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Double p)      { return      checked((UInt16?)p); }
-
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Decimal p)     { return      checked((UInt16?)p); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Char p)        { return      checked((UInt16?)p); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Boolean p)     { return       (UInt16?)(p? 1: 0); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(UInt16 value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(String value) { return value == null ? null : (UInt16?)UInt16.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SByte value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Int16 value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Int32 value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Int64 value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Byte value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(UInt32 value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(UInt64 value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Single value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Double value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Decimal value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Char value) { return checked((UInt16?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Boolean value) { return (UInt16?)(value ? 1 : 0); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SByte? p)      { return p.HasValue? checked((UInt16?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Int16? p)      { return p.HasValue? checked((UInt16?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Int32? p)      { return p.HasValue? checked((UInt16?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Int64? p)      { return p.HasValue? checked((UInt16?)p.Value): null; }
 
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SByte? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Int16? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Int32? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Int64? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Byte? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(UInt32? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(UInt64? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
 		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Byte? p)       { return p.HasValue? checked((UInt16?)p.Value): null; }
+        public static UInt16? ToNullableUInt16(Single? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Double? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
 		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(UInt32? p)     { return p.HasValue? checked((UInt16?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(UInt64? p)     { return p.HasValue? checked((UInt16?)p.Value): null; }
-
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Single? p)     { return p.HasValue? checked((UInt16?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Double? p)     { return p.HasValue? checked((UInt16?)p.Value): null; }
-
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Decimal? p)    { return p.HasValue? checked((UInt16?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Char? p)       { return p.HasValue? checked((UInt16?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(Boolean? p)    { return p.HasValue? (UInt16?)(p.Value? 1: 0):  null; }
+        public static UInt16? ToNullableUInt16(Decimal? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Char? value) { return value.HasValue ? checked((UInt16?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(Boolean? value) { return value.HasValue ? (UInt16?)(value.Value ? 1 : 0) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SqlString value) { return value.IsNull ? null : ToNullableUInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SqlByte value) { return value.IsNull ? null : ToNullableUInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SqlInt16 value) { return value.IsNull ? null : ToNullableUInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SqlInt32 value) { return value.IsNull ? null : ToNullableUInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SqlInt64 value) { return value.IsNull ? null : ToNullableUInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
 		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SqlString p)   { return p.IsNull? null: ToNullableUInt16(p.Value); }
-
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SqlByte p)     { return p.IsNull? null: ToNullableUInt16(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SqlInt16 p)    { return p.IsNull? null: ToNullableUInt16(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SqlInt32 p)    { return p.IsNull? null: ToNullableUInt16(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SqlInt64 p)    { return p.IsNull? null: ToNullableUInt16(p.Value); }
-
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SqlSingle p)   { return p.IsNull? null: ToNullableUInt16(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SqlDouble p)   { return p.IsNull? null: ToNullableUInt16(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SqlDecimal p)  { return p.IsNull? null: ToNullableUInt16(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SqlMoney p)    { return p.IsNull? null: ToNullableUInt16(p.Value); }
-
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(SqlBoolean p)  { return p.IsNull? null: ToNullableUInt16(p.Value); }
+        public static UInt16? ToNullableUInt16(SqlSingle value) { return value.IsNull ? null : ToNullableUInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SqlDouble value) { return value.IsNull ? null : ToNullableUInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SqlDecimal value) { return value.IsNull ? null : ToNullableUInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SqlMoney value) { return value.IsNull ? null : ToNullableUInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(SqlBoolean value) { return value.IsNull ? null : ToNullableUInt16(value.Value); }
 #endif
-		[CLSCompliant(false)]
-		public static UInt16? ToNullableUInt16(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt16? ToNullableUInt16(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is UInt16)      return ToNullableUInt16((UInt16)p);
-			if (p is String)      return ToNullableUInt16((String)p);
+            if (value is UInt16) return ToNullableUInt16((UInt16)value);
+            if (value is String) return ToNullableUInt16((String)value);
 
-			if (p is Char)        return ToNullableUInt16((Char)p);
-			if (p is Boolean)     return ToNullableUInt16((Boolean)p);
+            if (value is Char) return ToNullableUInt16((Char)value);
+            if (value is Boolean) return ToNullableUInt16((Boolean)value);
 
-			if (p is IConvertible) return ((IConvertible)p).ToUInt16(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(UInt16?));
+            if (value is IConvertible) return ((IConvertible)value).ToUInt16(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(UInt16?));
 		}
 
         #endregion
@@ -4100,114 +6041,287 @@ namespace FluorineFx.Util
         #region UInt32?
 
 		// Scalar Types.
-		// 
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(UInt32 p)      { return p; }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(String p)      { return p == null? null: (UInt32?)UInt32.Parse(p); }
-
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SByte p)       { return      checked((UInt32?)p); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Int16 p)       { return      checked((UInt32?)p); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Int32 p)       { return      checked((UInt32?)p); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Int64 p)       { return      checked((UInt32?)p); }
-
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Byte p)        { return      checked((UInt32?)p); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(UInt16 p)      { return      checked((UInt32?)p); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(UInt64 p)      { return      checked((UInt32?)p); }
-
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Single p)      { return      checked((UInt32?)p); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Double p)      { return      checked((UInt32?)p); }
-
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Decimal p)     { return      checked((UInt32?)p); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Char p)        { return      checked((UInt32?)p); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Boolean p)     { return       (UInt32?)(p? 1: 0); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(UInt32 value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(String value) { return value == null ? null : (UInt32?)UInt32.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SByte value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Int16 value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Int32 value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Int64 value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Byte value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(UInt16 value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(UInt64 value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Single value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Double value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Decimal value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Char value) { return checked((UInt32?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Boolean value) { return (UInt32?)(value ? 1 : 0); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SByte? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Int16? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Int32? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Int64? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
 		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SByte? p)      { return p.HasValue? checked((UInt32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Int16? p)      { return p.HasValue? checked((UInt32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Int32? p)      { return p.HasValue? checked((UInt32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Int64? p)      { return p.HasValue? checked((UInt32?)p.Value): null; }
-
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Byte? p)       { return p.HasValue? checked((UInt32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(UInt16? p)     { return p.HasValue? checked((UInt32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(UInt64? p)     { return p.HasValue? checked((UInt32?)p.Value): null; }
-
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Single? p)     { return p.HasValue? checked((UInt32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Double? p)     { return p.HasValue? checked((UInt32?)p.Value): null; }
-
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Decimal? p)    { return p.HasValue? checked((UInt32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Char? p)       { return p.HasValue? checked((UInt32?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(Boolean? p)    { return p.HasValue? (UInt32?)(p.Value? 1: 0):  null; }
+        public static UInt32? ToNullableUInt32(Byte? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(UInt16? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(UInt64? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Single? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Double? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Decimal? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Char? value) { return value.HasValue ? checked((UInt32?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(Boolean? value) { return value.HasValue ? (UInt32?)(value.Value ? 1 : 0) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SqlString p)   { return p.IsNull? null: ToNullableUInt32(p.Value); }
-
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SqlByte p)     { return p.IsNull? null: ToNullableUInt32(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SqlInt16 p)    { return p.IsNull? null: ToNullableUInt32(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SqlInt32 p)    { return p.IsNull? null: ToNullableUInt32(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SqlInt64 p)    { return p.IsNull? null: ToNullableUInt32(p.Value); }
-
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SqlSingle p)   { return p.IsNull? null: ToNullableUInt32(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SqlDouble p)   { return p.IsNull? null: ToNullableUInt32(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SqlDecimal p)  { return p.IsNull? null: ToNullableUInt32(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SqlMoney p)    { return p.IsNull? null: ToNullableUInt32(p.Value); }
-
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(SqlBoolean p)  { return p.IsNull? null: ToNullableUInt32(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SqlString value) { return value.IsNull ? null : ToNullableUInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SqlByte value) { return value.IsNull ? null : ToNullableUInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SqlInt16 value) { return value.IsNull ? null : ToNullableUInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SqlInt32 value) { return value.IsNull ? null : ToNullableUInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SqlInt64 value) { return value.IsNull ? null : ToNullableUInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SqlSingle value) { return value.IsNull ? null : ToNullableUInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SqlDouble value) { return value.IsNull ? null : ToNullableUInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SqlDecimal value) { return value.IsNull ? null : ToNullableUInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent 32-bit nullable unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SqlMoney value) { return value.IsNull ? null : ToNullableUInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(SqlBoolean value) { return value.IsNull ? null : ToNullableUInt32(value.Value); }
 #endif
-		[CLSCompliant(false)]
-		public static UInt32? ToNullableUInt32(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt32? ToNullableUInt32(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is UInt32)      return ToNullableUInt32((UInt32)p);
-			if (p is String)      return ToNullableUInt32((String)p);
+            if (value is UInt32) return ToNullableUInt32((UInt32)value);
+            if (value is String) return ToNullableUInt32((String)value);
 
-			if (p is Char)        return ToNullableUInt32((Char)p);
-			if (p is Boolean)     return ToNullableUInt32((Boolean)p);
+            if (value is Char) return ToNullableUInt32((Char)value);
+            if (value is Boolean) return ToNullableUInt32((Boolean)value);
 
-			if (p is IConvertible) return ((IConvertible)p).ToUInt32(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(UInt32?));
+            if (value is IConvertible) return ((IConvertible)value).ToUInt32(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(UInt32?));
 		}
 
         #endregion
@@ -4215,114 +6329,288 @@ namespace FluorineFx.Util
         #region UInt64?
 
 		// Scalar Types.
-		// 
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(UInt64 value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(String value) { return value == null ? null : (UInt64?)UInt64.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SByte value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Int16 value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Int32 value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Int64 value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Byte value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(UInt16 value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(UInt32 value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Single value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Double value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
 		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(UInt64 p)      { return p; }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(String p)      { return p == null? null: (UInt64?)UInt64.Parse(p); }
-
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SByte p)       { return checked((UInt64?)p); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Int16 p)       { return checked((UInt64?)p); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Int32 p)       { return checked((UInt64?)p); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Int64 p)       { return checked((UInt64?)p); }
-
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Byte p)        { return checked((UInt64?)p); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(UInt16 p)      { return checked((UInt64?)p); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(UInt32 p)      { return checked((UInt64?)p); }
-
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Single p)      { return checked((UInt64?)p); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Double p)      { return checked((UInt64?)p); }
-
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Decimal p)     { return checked((UInt64?)p); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Char p)        { return checked((UInt64?)p); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Boolean p)     { return (UInt64?)(p? 1: 0); }
+        public static UInt64? ToNullableUInt64(Decimal value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Char value) { return checked((UInt64?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Boolean value) { return (UInt64?)(value ? 1 : 0); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SByte? p)      { return p.HasValue? checked((UInt64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Int16? p)      { return p.HasValue? checked((UInt64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Int32? p)      { return p.HasValue? checked((UInt64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Int64? p)      { return p.HasValue? checked((UInt64?)p.Value): null; }
 
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Byte? p)       { return p.HasValue? checked((UInt64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(UInt16? p)     { return p.HasValue? checked((UInt64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(UInt32? p)     { return p.HasValue? checked((UInt64?)p.Value): null; }
-
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Single? p)     { return p.HasValue? checked((UInt64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Double? p)     { return p.HasValue? checked((UInt64?)p.Value): null; }
-
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Decimal? p)    { return p.HasValue? checked((UInt64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Char? p)       { return p.HasValue? checked((UInt64?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(Boolean? p)    { return p.HasValue? (UInt64?)(p.Value? 1: 0):  null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SByte? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Int16? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Int32? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Int64? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Byte? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(UInt16? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(UInt32? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Single? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Double? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Decimal? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Char? value) { return value.HasValue ? checked((UInt64?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(Boolean? value) { return value.HasValue ? (UInt64?)(value.Value ? 1 : 0) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SqlString value) { return value.IsNull ? null : ToNullableUInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SqlByte value) { return value.IsNull ? null : ToNullableUInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SqlInt16 value) { return value.IsNull ? null : ToNullableUInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SqlInt32 value) { return value.IsNull ? null : ToNullableUInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SqlInt64 value) { return value.IsNull ? null : ToNullableUInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SqlSingle value) { return value.IsNull ? null : ToNullableUInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SqlDouble value) { return value.IsNull ? null : ToNullableUInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SqlDecimal value) { return value.IsNull ? null : ToNullableUInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(SqlMoney value) { return value.IsNull ? null : ToNullableUInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
 		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SqlString p)   { return p.IsNull? null: ToNullableUInt64(p.Value); }
-
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SqlByte p)     { return p.IsNull? null: ToNullableUInt64(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SqlInt16 p)    { return p.IsNull? null: ToNullableUInt64(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SqlInt32 p)    { return p.IsNull? null: ToNullableUInt64(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SqlInt64 p)    { return p.IsNull? null: ToNullableUInt64(p.Value); }
-
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SqlSingle p)   { return p.IsNull? null: ToNullableUInt64(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SqlDouble p)   { return p.IsNull? null: ToNullableUInt64(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SqlDecimal p)  { return p.IsNull? null: ToNullableUInt64(p.Value); }
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SqlMoney p)    { return p.IsNull? null: ToNullableUInt64(p.Value); }
-
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(SqlBoolean p)  { return p.IsNull? null: ToNullableUInt64(p.Value); }
+        public static UInt64? ToNullableUInt64(SqlBoolean value) { return value.IsNull ? null : ToNullableUInt64(value.Value); }
 #endif
-		[CLSCompliant(false)]
-		public static UInt64? ToNullableUInt64(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static UInt64? ToNullableUInt64(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is UInt64)      return ToNullableUInt64((UInt64)p);
-			if (p is String)      return ToNullableUInt64((String)p);
+            if (value is UInt64) return ToNullableUInt64((UInt64)value);
+            if (value is String) return ToNullableUInt64((String)value);
 
-			if (p is Char)        return ToNullableUInt64((Char)p);
-			if (p is Boolean)     return ToNullableUInt64((Boolean)p);
+            if (value is Char) return ToNullableUInt64((Char)value);
+            if (value is Boolean) return ToNullableUInt64((Boolean)value);
 
-			if (p is IConvertible) return ((IConvertible)p).ToUInt64(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(UInt64?));
+            if (value is IConvertible) return ((IConvertible)value).ToUInt64(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(UInt64?));
 		}
 
         #endregion
@@ -4330,112 +6618,290 @@ namespace FluorineFx.Util
         #region Char?
 
 		// Scalar Types.
-		// 
-		public static Char? ToNullableChar(Char p)        { return p; }
-		public static Char? ToNullableChar(String p)      
+        /// <summary>
+        /// Converts a Unicode character to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent nullable Unicode character.</returns>
+        public static Char? ToNullableChar(Char value) { return value; }
+        /// <summary>
+        /// Converts the first character of the specified String to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable Unicode character.</returns>
+        public static Char? ToNullableChar(String value)      
         { 
 #if !(NET_1_1)
             Char result;
-            if (Char.TryParse(p, out result))
+            if (Char.TryParse(value, out result))
                 return result;
             return (Char)0;
 #else
-            return p == null? null: (Char?)Char.Parse(p); 
+            return value == null? null: (Char?)Char.Parse(value); 
 #endif
         }
-
-		[CLSCompliant(false)]
-		public static Char? ToNullableChar(SByte p)       { return checked((Char?)p); }
-		public static Char? ToNullableChar(Int16 p)       { return checked((Char?)p); }
-		public static Char? ToNullableChar(Int32 p)       { return checked((Char?)p); }
-		public static Char? ToNullableChar(Int64 p)       { return checked((Char?)p); }
-
-		public static Char? ToNullableChar(Byte p)        { return checked((Char?)p); }
-		[CLSCompliant(false)]
-		public static Char? ToNullableChar(UInt16 p)      { return checked((Char?)p); }
-		[CLSCompliant(false)]
-		public static Char? ToNullableChar(UInt32 p)      { return checked((Char?)p); }
-		[CLSCompliant(false)]
-		public static Char? ToNullableChar(UInt64 p)      { return checked((Char?)p); }
-
-		public static Char? ToNullableChar(Single p)      { return checked((Char?)p); }
-		public static Char? ToNullableChar(Double p)      { return checked((Char?)p); }
-
-		public static Char? ToNullableChar(Decimal p)     { return checked((Char?)p); }
-		public static Char? ToNullableChar(Boolean p)     { return (Char?)(p? 1: 0); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        [CLSCompliant(false)]
+        public static Char? ToNullableChar(SByte value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Int16 value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Int32 value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Int64 value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Byte value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Unicode character.</returns>
+        [CLSCompliant(false)]
+        public static Char? ToNullableChar(UInt16 value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        [CLSCompliant(false)]
+        public static Char? ToNullableChar(UInt32 value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        [CLSCompliant(false)]
+        public static Char? ToNullableChar(UInt64 value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Single value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Double value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Decimal value) { return checked((Char?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Boolean value) { return (Char?)(value ? 1 : 0); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static Char? ToNullableChar(SByte? p)      { return p.HasValue? checked((Char?)p.Value) : null; }
-		public static Char? ToNullableChar(Int16? p)      { return p.HasValue? checked((Char?)p.Value) : null; }
-		public static Char? ToNullableChar(Int32? p)      { return p.HasValue? checked((Char?)p.Value) : null; }
-		public static Char? ToNullableChar(Int64? p)      { return p.HasValue? checked((Char?)p.Value) : null; }
 
-		public static Char? ToNullableChar(Byte? p)       { return p.HasValue? checked((Char?)p.Value) : null; }
-		[CLSCompliant(false)]
-		public static Char? ToNullableChar(UInt16? p)     { return p.HasValue? checked((Char?)p.Value) : null; }
-		[CLSCompliant(false)]
-		public static Char? ToNullableChar(UInt32? p)     { return p.HasValue? checked((Char?)p.Value) : null; }
-		[CLSCompliant(false)]
-		public static Char? ToNullableChar(UInt64? p)     { return p.HasValue? checked((Char?)p.Value) : null; }
-
-		public static Char? ToNullableChar(Single? p)     { return p.HasValue? checked((Char?)p.Value) : null; }
-		public static Char? ToNullableChar(Double? p)     { return p.HasValue? checked((Char?)p.Value) : null; }
-
-		public static Char? ToNullableChar(Decimal? p)    { return p.HasValue? checked((Char?)p.Value) : null; }
-		public static Char? ToNullableChar(Boolean? p)    { return p.HasValue? (Char?)(p.Value? 1: 0)  : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable Unicode character.</returns>
+        [CLSCompliant(false)]
+        public static Char? ToNullableChar(SByte? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Int16? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Int32? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Int64? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Byte? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        [CLSCompliant(false)]
+        public static Char? ToNullableChar(UInt16? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        [CLSCompliant(false)]
+        public static Char? ToNullableChar(UInt32? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        [CLSCompliant(false)]
+        public static Char? ToNullableChar(UInt64? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Single? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Double? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Decimal? value) { return value.HasValue ? checked((Char?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(Boolean? value) { return value.HasValue ? (Char?)(value.Value ? 1 : 0) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static Char? ToNullableChar(SqlString p)   { return p.IsNull? null: ToNullableChar(p.Value); }
-
-		public static Char? ToNullableChar(SqlByte p)     { return p.IsNull? null: ToNullableChar(p.Value); }
-		public static Char? ToNullableChar(SqlInt16 p)    { return p.IsNull? null: ToNullableChar(p.Value); }
-		public static Char? ToNullableChar(SqlInt32 p)    { return p.IsNull? null: ToNullableChar(p.Value); }
-		public static Char? ToNullableChar(SqlInt64 p)    { return p.IsNull? null: ToNullableChar(p.Value); }
-
-		public static Char? ToNullableChar(SqlSingle p)   { return p.IsNull? null: ToNullableChar(p.Value); }
-		public static Char? ToNullableChar(SqlDouble p)   { return p.IsNull? null: ToNullableChar(p.Value); }
-		public static Char? ToNullableChar(SqlDecimal p)  { return p.IsNull? null: ToNullableChar(p.Value); }
-		public static Char? ToNullableChar(SqlMoney p)    { return p.IsNull? null: ToNullableChar(p.Value); }
-
-		public static Char? ToNullableChar(SqlBoolean p)  { return p.IsNull? null: ToNullableChar(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(SqlString value) { return value.IsNull ? null : ToNullableChar(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(SqlByte value) { return value.IsNull ? null : ToNullableChar(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(SqlInt16 value) { return value.IsNull ? null : ToNullableChar(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(SqlInt32 value) { return value.IsNull ? null : ToNullableChar(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(SqlInt64 value) { return value.IsNull ? null : ToNullableChar(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(SqlSingle value) { return value.IsNull ? null : ToNullableChar(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(SqlDouble value) { return value.IsNull ? null : ToNullableChar(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(SqlDecimal value) { return value.IsNull ? null : ToNullableChar(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(SqlMoney value) { return value.IsNull ? null : ToNullableChar(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(SqlBoolean value) { return value.IsNull ? null : ToNullableChar(value.Value); }
 #endif
-		public static Char? ToNullableChar(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable Unicode character value.</returns>
+        public static Char? ToNullableChar(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is Char)        return ToNullableChar((Char)p);
-			if (p is String)      return ToNullableChar((String)p);
+            if (value is Char) return ToNullableChar((Char)value);
+            if (value is String) return ToNullableChar((String)value);
 
-			if (p is Boolean)     return ToNullableChar((Boolean)p);
+            if (value is Boolean) return ToNullableChar((Boolean)value);
 
-			if (p is IConvertible) return ((IConvertible)p).ToChar(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(Char?));
+            if (value is IConvertible) return ((IConvertible)value).ToChar(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(Char?));
 		}
-
-        public static bool CanConvertToNullableChar(object p)
+        /// <summary>
+        /// Checks whether the value of the specified Object can be converted to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>Returns true if the specified Object can be converted to a nullable Unicode character.</returns>
+        public static bool CanConvertToNullableChar(object value)
         {
-            if (p == null || p is DBNull) return true;
+            if (value == null || value is DBNull) return true;
 
             // Scalar Types.
             //
-            if (p is Char) return true;
-            if (p is String) return (p == null || (p as String).Length == 1);
+            if (value is Char) return true;
+            if (value is String) return (value == null || (value as String).Length == 1);
 
-            if (p is Boolean) return true;
+            if (value is Boolean) return true;
 
-            if (p is IConvertible)
+            if (value is IConvertible)
             {
                 try
                 {
-                    ((IConvertible)p).ToChar(null);
+                    ((IConvertible)value).ToChar(null);
                     return true;
                 }
                 catch (InvalidCastException)
@@ -4452,89 +6918,263 @@ namespace FluorineFx.Util
         #region Single?
 
 		// Scalar Types.
-		// 
-		public static Single? ToNullableSingle(Single p)      { return p; }
-		public static Single? ToNullableSingle(String p)      { return p == null? null: (Single?)Single.Parse(p); }
 
-		[CLSCompliant(false)]
-		public static Single? ToNullableSingle(SByte p)       { return checked((Single?)p); }
-		public static Single? ToNullableSingle(Int16 p)       { return checked((Single?)p); }
-		public static Single? ToNullableSingle(Int32 p)       { return checked((Single?)p); }
-		public static Single? ToNullableSingle(Int64 p)       { return checked((Single?)p); }
-
-		public static Single? ToNullableSingle(Byte p)        { return checked((Single?)p); }
-		[CLSCompliant(false)]
-		public static Single? ToNullableSingle(UInt16 p)      { return checked((Single?)p); }
-		[CLSCompliant(false)]
-		public static Single? ToNullableSingle(UInt32 p)      { return checked((Single?)p); }
-		[CLSCompliant(false)]
-		public static Single? ToNullableSingle(UInt64 p)      { return checked((Single?)p); }
-
-		public static Single? ToNullableSingle(Double p)      { return checked((Single?)p); }
-
-		public static Single? ToNullableSingle(Decimal p)     { return checked((Single?)p); }
-		public static Single? ToNullableSingle(Char p)        { return checked((Single?)p); }
-		public static Single? ToNullableSingle(Boolean p)     { return p? 1.0f: 0.0f; }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Single value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(String value) { return value == null ? null : (Single?)Single.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single? ToNullableSingle(SByte value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Int16 value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Int32 value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Int64 value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Byte value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single? ToNullableSingle(UInt16 value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single? ToNullableSingle(UInt32 value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single? ToNullableSingle(UInt64 value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Double value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Decimal value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Char value) { return checked((Single?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Boolean value) { return value ? 1.0f : 0.0f; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static Single? ToNullableSingle(SByte? p)      { return p.HasValue? checked((Single?)p.Value): null; }
-		public static Single? ToNullableSingle(Int16? p)      { return p.HasValue? checked((Single?)p.Value): null; }
-		public static Single? ToNullableSingle(Int32? p)      { return p.HasValue? checked((Single?)p.Value): null; }
-		public static Single? ToNullableSingle(Int64? p)      { return p.HasValue? checked((Single?)p.Value): null; }
-
-		public static Single? ToNullableSingle(Byte? p)       { return p.HasValue? checked((Single?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Single? ToNullableSingle(UInt16? p)     { return p.HasValue? checked((Single?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Single? ToNullableSingle(UInt32? p)     { return p.HasValue? checked((Single?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Single? ToNullableSingle(UInt64? p)     { return p.HasValue? checked((Single?)p.Value): null; }
-
-		public static Single? ToNullableSingle(Double? p)     { return p.HasValue? checked((Single?)p.Value): null; }
-
-		public static Single? ToNullableSingle(Decimal? p)    { return p.HasValue? checked((Single?)p.Value): null; }
-		public static Single? ToNullableSingle(Char? p)       { return p.HasValue? checked((Single?)p.Value): null; }
-		public static Single? ToNullableSingle(Boolean? p)    { return p.HasValue? (Single?)(p.Value? 1.0f: 0.0f):  null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single? ToNullableSingle(SByte? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Int16? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Int32? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Int64? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Byte? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single? ToNullableSingle(UInt16? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single? ToNullableSingle(UInt32? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Single? ToNullableSingle(UInt64? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Double? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Decimal? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Char? value) { return value.HasValue ? checked((Single?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(Boolean? value) { return value.HasValue ? (Single?)(value.Value ? 1.0f : 0.0f) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static Single? ToNullableSingle(SqlSingle p)   { return p.IsNull? null:         (Single?)p.Value;  }
-		public static Single? ToNullableSingle(SqlString p)   { return p.IsNull? null: ToNullableSingle(p.Value); }
-
-		public static Single? ToNullableSingle(SqlByte p)     { return p.IsNull? null: ToNullableSingle(p.Value); }
-		public static Single? ToNullableSingle(SqlInt16 p)    { return p.IsNull? null: ToNullableSingle(p.Value); }
-		public static Single? ToNullableSingle(SqlInt32 p)    { return p.IsNull? null: ToNullableSingle(p.Value); }
-		public static Single? ToNullableSingle(SqlInt64 p)    { return p.IsNull? null: ToNullableSingle(p.Value); }
-
-		public static Single? ToNullableSingle(SqlDouble p)   { return p.IsNull? null: ToNullableSingle(p.Value); }
-		public static Single? ToNullableSingle(SqlDecimal p)  { return p.IsNull? null: ToNullableSingle(p.Value); }
-		public static Single? ToNullableSingle(SqlMoney p)    { return p.IsNull? null: ToNullableSingle(p.Value); }
-
-		public static Single? ToNullableSingle(SqlBoolean p)  { return p.IsNull? null: ToNullableSingle(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(SqlSingle value) { return value.IsNull ? null : (Single?)value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(SqlString value) { return value.IsNull ? null : ToNullableSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(SqlByte value) { return value.IsNull ? null : ToNullableSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(SqlInt16 value) { return value.IsNull ? null : ToNullableSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(SqlInt32 value) { return value.IsNull ? null : ToNullableSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(SqlInt64 value) { return value.IsNull ? null : ToNullableSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(SqlDouble value) { return value.IsNull ? null : ToNullableSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(SqlDecimal value) { return value.IsNull ? null : ToNullableSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(SqlMoney value) { return value.IsNull ? null : ToNullableSingle(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(SqlBoolean value) { return value.IsNull ? null : ToNullableSingle(value.Value); }
 #endif
-		public static Single? ToNullableSingle(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
+        public static Single? ToNullableSingle(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is Single)      return ToNullableSingle((Single)p);
-			if (p is String)      return ToNullableSingle((String)p);
+            if (value is Single) return ToNullableSingle((Single)value);
+            if (value is String) return ToNullableSingle((String)value);
 
-			if (p is Char)        return ToNullableSingle((Char)p);
-			if (p is Boolean)     return ToNullableSingle((Boolean)p);
+            if (value is Char) return ToNullableSingle((Char)value);
+            if (value is Boolean) return ToNullableSingle((Boolean)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlSingle)   return ToNullableSingle((SqlSingle)p);
+            if (value is SqlSingle) return ToNullableSingle((SqlSingle)value);
 #endif
-			if (p is IConvertible) return ((IConvertible)p).ToSingle(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(Single?));
+            if (value is IConvertible) return ((IConvertible)value).ToSingle(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(Single?));
 		}
 
         #endregion
@@ -4542,97 +7182,277 @@ namespace FluorineFx.Util
         #region Double?
 
 		// Scalar Types.
-		// 
-		public static Double? ToNullableDouble(Double p)      { return p; }
-		public static Double? ToNullableDouble(String p)      { return p == null? null: (Double?)Double.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Double value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(String value) { return value == null ? null : (Double?)Double.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
 		[CLSCompliant(false)]
-		public static Double? ToNullableDouble(SByte p)       { return checked((Double?)p); }
-		public static Double? ToNullableDouble(Int16 p)       { return checked((Double?)p); }
-		public static Double? ToNullableDouble(Int32 p)       { return checked((Double?)p); }
-		public static Double? ToNullableDouble(Int64 p)       { return checked((Double?)p); }
-
-		public static Double? ToNullableDouble(Byte p)        { return checked((Double?)p); }
-		[CLSCompliant(false)]
-		public static Double? ToNullableDouble(UInt16 p)      { return checked((Double?)p); }
-		[CLSCompliant(false)]
-		public static Double? ToNullableDouble(UInt32 p)      { return checked((Double?)p); }
-		[CLSCompliant(false)]
-		public static Double? ToNullableDouble(UInt64 p)      { return checked((Double?)p); }
-
-		public static Double? ToNullableDouble(Single p)      { return checked((Double?)p); }
-
-		public static Double? ToNullableDouble(Decimal p)     { return checked((Double?)p); }
-		public static Double? ToNullableDouble(Char p)        { return checked((Double?)p); }
-		public static Double? ToNullableDouble(Boolean p)     { return p? 1.0: 0.0; }
-		public static Double? ToNullableDouble(DateTime p)    { return (p - DateTime.MinValue).TotalDays; }
-		public static Double? ToNullableDouble(TimeSpan p)    { return p.TotalDays; }
+        public static Double? ToNullableDouble(SByte value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Int16 value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Int32 value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Int64 value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Byte value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Double? ToNullableDouble(UInt16 value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Double? ToNullableDouble(UInt32 value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Double? ToNullableDouble(UInt64 value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Single value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Decimal value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Char value) { return checked((Double?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Boolean value) { return value ? 1.0 : 0.0; }
+        public static Double? ToNullableDouble(DateTime value) { return (value - DateTime.MinValue).TotalDays; }
+        public static Double? ToNullableDouble(TimeSpan value) { return value.TotalDays; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static Double? ToNullableDouble(SByte? p)      { return p.HasValue? checked((Double?)p.Value): null; }
-		public static Double? ToNullableDouble(Int16? p)      { return p.HasValue? checked((Double?)p.Value): null; }
-		public static Double? ToNullableDouble(Int32? p)      { return p.HasValue? checked((Double?)p.Value): null; }
-		public static Double? ToNullableDouble(Int64? p)      { return p.HasValue? checked((Double?)p.Value): null; }
 
-		public static Double? ToNullableDouble(Byte? p)       { return p.HasValue? checked((Double?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Double? ToNullableDouble(UInt16? p)     { return p.HasValue? checked((Double?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Double? ToNullableDouble(UInt32? p)     { return p.HasValue? checked((Double?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Double? ToNullableDouble(UInt64? p)     { return p.HasValue? checked((Double?)p.Value): null; }
-
-		public static Double? ToNullableDouble(Single? p)     { return p.HasValue? checked((Double?)p.Value): null; }
-
-		public static Double? ToNullableDouble(Decimal? p)    { return p.HasValue? checked((Double?)p.Value): null; }
-		public static Double? ToNullableDouble(Char? p)       { return p.HasValue? checked((Double?)p.Value): null; }
-		public static Double? ToNullableDouble(Boolean? p)    { return p.HasValue? (Double?)(p.Value? 1.0: 0.0):  null; }
-		public static Double? ToNullableDouble(DateTime? p)   { return p.HasValue? (Double?)(p.Value - DateTime.MinValue).TotalDays: null; }
-		public static Double? ToNullableDouble(TimeSpan? p)   { return p.HasValue? (Double?)p.Value.TotalDays: null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Double? ToNullableDouble(SByte? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Int16? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Int32? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Int64? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Byte? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Double? ToNullableDouble(UInt16? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Double? ToNullableDouble(UInt32? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        [CLSCompliant(false)]
+        public static Double? ToNullableDouble(UInt64? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Single? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Decimal? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Char? value) { return value.HasValue ? checked((Double?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(Boolean? value) { return value.HasValue ? (Double?)(value.Value ? 1.0 : 0.0) : null; }
+        public static Double? ToNullableDouble(DateTime? value) { return value.HasValue ? (Double?)(value.Value - DateTime.MinValue).TotalDays : null; }
+        public static Double? ToNullableDouble(TimeSpan? value) { return value.HasValue ? (Double?)value.Value.TotalDays : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static Double? ToNullableDouble(SqlDouble p)   { return p.IsNull? null:         (Double?)p.Value;  }
-		public static Double? ToNullableDouble(SqlString p)   { return p.IsNull? null: ToNullableDouble(p.Value); }
-
-		public static Double? ToNullableDouble(SqlByte p)     { return p.IsNull? null: ToNullableDouble(p.Value); }
-		public static Double? ToNullableDouble(SqlInt16 p)    { return p.IsNull? null: ToNullableDouble(p.Value); }
-		public static Double? ToNullableDouble(SqlInt32 p)    { return p.IsNull? null: ToNullableDouble(p.Value); }
-		public static Double? ToNullableDouble(SqlInt64 p)    { return p.IsNull? null: ToNullableDouble(p.Value); }
-
-		public static Double? ToNullableDouble(SqlSingle p)   { return p.IsNull? null: ToNullableDouble(p.Value); }
-		public static Double? ToNullableDouble(SqlDecimal p)  { return p.IsNull? null: ToNullableDouble(p.Value); }
-		public static Double? ToNullableDouble(SqlMoney p)    { return p.IsNull? null: ToNullableDouble(p.Value); }
-
-		public static Double? ToNullableDouble(SqlBoolean p)  { return p.IsNull? null: ToNullableDouble(p.Value); }
-		public static Double? ToNullableDouble(SqlDateTime p) { return p.IsNull? null: (Double?)(p.Value - DateTime.MinValue).TotalDays; }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlDouble value) { return value.IsNull ? null : (Double?)value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlString value) { return value.IsNull ? null : ToNullableDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlByte value) { return value.IsNull ? null : ToNullableDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlInt16 value) { return value.IsNull ? null : ToNullableDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlInt32 value) { return value.IsNull ? null : ToNullableDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlInt64 value) { return value.IsNull ? null : ToNullableDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlSingle value) { return value.IsNull ? null : ToNullableDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlDecimal value) { return value.IsNull ? null : ToNullableDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlMoney value) { return value.IsNull ? null : ToNullableDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlBoolean value) { return value.IsNull ? null : ToNullableDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(SqlDateTime value) { return value.IsNull ? null : (Double?)(value.Value - DateTime.MinValue).TotalDays; }
 #endif
-		public static Double? ToNullableDouble(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        public static Double? ToNullableDouble(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is Double)      return ToNullableDouble((Double)p);
-			if (p is String)      return ToNullableDouble((String)p);
+            if (value is Double) return ToNullableDouble((Double)value);
+            if (value is String) return ToNullableDouble((String)value);
 
-			if (p is Char)        return ToNullableDouble((Char)p);
-			if (p is Boolean)     return ToNullableDouble((Boolean)p);
-			if (p is DateTime)    return ToNullableDouble((DateTime)p);
-			if (p is TimeSpan)    return ToNullableDouble((TimeSpan)p);
+            if (value is Char) return ToNullableDouble((Char)value);
+            if (value is Boolean) return ToNullableDouble((Boolean)value);
+            if (value is DateTime) return ToNullableDouble((DateTime)value);
+            if (value is TimeSpan) return ToNullableDouble((TimeSpan)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlDouble)   return ToNullableDouble((SqlDouble)p);
-			if (p is SqlDateTime) return ToNullableDouble((SqlDateTime)p);
+            if (value is SqlDouble) return ToNullableDouble((SqlDouble)value);
+            if (value is SqlDateTime) return ToNullableDouble((SqlDateTime)value);
 #endif
-			if (p is IConvertible) return ((IConvertible)p).ToDouble(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(Double?));
+            if (value is IConvertible) return ((IConvertible)value).ToDouble(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(Double?));
 		}
 
         #endregion
@@ -4640,88 +7460,264 @@ namespace FluorineFx.Util
         #region Boolean?
 
 		// Scalar Types.
-		// 
-		public static Boolean? ToNullableBoolean(Boolean p)     { return p; }
-		public static Boolean? ToNullableBoolean(String p)      { return p == null? null: (Boolean?)Boolean.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified Boolean value to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A Boolean value.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Boolean value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(String value) { return value == null ? null : (Boolean?)Boolean.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
 		[CLSCompliant(false)]
-		public static Boolean? ToNullableBoolean(SByte p)       { return ToBoolean(p); }
-		public static Boolean? ToNullableBoolean(Int16 p)       { return ToBoolean(p); }
-		public static Boolean? ToNullableBoolean(Int32 p)       { return ToBoolean(p); }
-		public static Boolean? ToNullableBoolean(Int64 p)       { return ToBoolean(p); }
-
-		public static Boolean? ToNullableBoolean(Byte p)        { return ToBoolean(p); }
-		[CLSCompliant(false)]
-		public static Boolean? ToNullableBoolean(UInt16 p)      { return ToBoolean(p); }
-		[CLSCompliant(false)]
-		public static Boolean? ToNullableBoolean(UInt32 p)      { return ToBoolean(p); }
-		[CLSCompliant(false)]
-		public static Boolean? ToNullableBoolean(UInt64 p)      { return ToBoolean(p); }
-
-		public static Boolean? ToNullableBoolean(Single p)      { return ToBoolean(p); }
-		public static Boolean? ToNullableBoolean(Double p)      { return ToBoolean(p); }
-
-		public static Boolean? ToNullableBoolean(Decimal p)     { return ToBoolean(p); }
-		public static Boolean? ToNullableBoolean(Char p)        { return ToBoolean(p); }
+        public static Boolean? ToNullableBoolean(SByte value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Int16 value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Int32 value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Int64 value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Byte value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        [CLSCompliant(false)]
+        public static Boolean? ToNullableBoolean(UInt16 value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        [CLSCompliant(false)]
+        public static Boolean? ToNullableBoolean(UInt32 value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        [CLSCompliant(false)]
+        public static Boolean? ToNullableBoolean(UInt64 value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Single value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Double value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Decimal value) { return ToBoolean(value); }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Char value) { return ToBoolean(value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static Boolean? ToNullableBoolean(SByte? p)      { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
-		public static Boolean? ToNullableBoolean(Int16? p)      { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
-		public static Boolean? ToNullableBoolean(Int32? p)      { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
-		public static Boolean? ToNullableBoolean(Int64? p)      { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
 
-		public static Boolean? ToNullableBoolean(Byte? p)       { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
-		[CLSCompliant(false)]
-		public static Boolean? ToNullableBoolean(UInt16? p)     { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
-		[CLSCompliant(false)]
-		public static Boolean? ToNullableBoolean(UInt32? p)     { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
-		[CLSCompliant(false)]
-		public static Boolean? ToNullableBoolean(UInt64? p)     { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
-
-		public static Boolean? ToNullableBoolean(Single? p)     { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
-		public static Boolean? ToNullableBoolean(Double? p)     { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
-
-		public static Boolean? ToNullableBoolean(Decimal? p)    { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
-		public static Boolean? ToNullableBoolean(Char? p)       { return p.HasValue? (Boolean?)ToBoolean(p.Value): null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        [CLSCompliant(false)]
+        public static Boolean? ToNullableBoolean(SByte? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Int16? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Int32? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Int64? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Byte? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        [CLSCompliant(false)]
+        public static Boolean? ToNullableBoolean(UInt16? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        [CLSCompliant(false)]
+        public static Boolean? ToNullableBoolean(UInt32? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        [CLSCompliant(false)]
+        public static Boolean? ToNullableBoolean(UInt64? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Single? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Double? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Decimal? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(Char? value) { return value.HasValue ? (Boolean?)ToBoolean(value.Value) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static Boolean? ToNullableBoolean(SqlBoolean p)  { return p.IsNull? null: (Boolean?)          p.Value;  }
-		public static Boolean? ToNullableBoolean(SqlString p)   { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
-
-		public static Boolean? ToNullableBoolean(SqlByte p)     { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
-		public static Boolean? ToNullableBoolean(SqlInt16 p)    { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
-		public static Boolean? ToNullableBoolean(SqlInt32 p)    { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
-		public static Boolean? ToNullableBoolean(SqlInt64 p)    { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
-
-		public static Boolean? ToNullableBoolean(SqlSingle p)   { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
-		public static Boolean? ToNullableBoolean(SqlDouble p)   { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
-		public static Boolean? ToNullableBoolean(SqlDecimal p)  { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
-		public static Boolean? ToNullableBoolean(SqlMoney p)    { return p.IsNull? null: (Boolean?)ToBoolean(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(SqlBoolean value) { return value.IsNull ? null : (Boolean?)value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(SqlString value) { return value.IsNull ? null : (Boolean?)ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(SqlByte value) { return value.IsNull ? null : (Boolean?)ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(SqlInt16 value) { return value.IsNull ? null : (Boolean?)ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(SqlInt32 value) { return value.IsNull ? null : (Boolean?)ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable Boolean valuer.</returns>
+        public static Boolean? ToNullableBoolean(SqlInt64 value) { return value.IsNull ? null : (Boolean?)ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(SqlSingle value) { return value.IsNull ? null : (Boolean?)ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(SqlDouble value) { return value.IsNull ? null : (Boolean?)ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(SqlDecimal value) { return value.IsNull ? null : (Boolean?)ToBoolean(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(SqlMoney value) { return value.IsNull ? null : (Boolean?)ToBoolean(value.Value); }
 #endif
 
-		public static Boolean? ToNullableBoolean(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
+        public static Boolean? ToNullableBoolean(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is Boolean)     return ToNullableBoolean((Boolean)p);
-			if (p is String)      return ToNullableBoolean((String)p);
+            if (value is Boolean) return ToNullableBoolean((Boolean)value);
+            if (value is String) return ToNullableBoolean((String)value);
 
-			if (p is Char)        return ToNullableBoolean((Char)p);
+            if (value is Char) return ToNullableBoolean((Char)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlBoolean)  return ToNullableBoolean((SqlBoolean)p);
+            if (value is SqlBoolean) return ToNullableBoolean((SqlBoolean)value);
 #endif
-			if (p is IConvertible) return ((IConvertible)p).ToBoolean(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(Boolean?));
+            if (value is IConvertible) return ((IConvertible)value).ToBoolean(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(Boolean?));
 		}
 
         #endregion
@@ -4729,91 +7725,266 @@ namespace FluorineFx.Util
         #region Decimal?
 
 		// Scalar Types.
-		// 
-		public static Decimal? ToNullableDecimal(Decimal p)     { return p; }
-		public static Decimal? ToNullableDecimal(String p)      { return p == null? null: (Decimal?)Decimal.Parse(p); }
 
-		[CLSCompliant(false)]
-		public static Decimal? ToNullableDecimal(SByte p)       { return checked((Decimal?)p); }
-		public static Decimal? ToNullableDecimal(Int16 p)       { return checked((Decimal?)p); }
-		public static Decimal? ToNullableDecimal(Int32 p)       { return checked((Decimal?)p); }
-		public static Decimal? ToNullableDecimal(Int64 p)       { return checked((Decimal?)p); }
-
-		public static Decimal? ToNullableDecimal(Byte p)        { return checked((Decimal?)p); }
-		[CLSCompliant(false)]
-		public static Decimal? ToNullableDecimal(UInt16 p)      { return checked((Decimal?)p); }
-		[CLSCompliant(false)]
-		public static Decimal? ToNullableDecimal(UInt32 p)      { return checked((Decimal?)p); }
-		[CLSCompliant(false)]
-		public static Decimal? ToNullableDecimal(UInt64 p)      { return checked((Decimal?)p); }
-
-		public static Decimal? ToNullableDecimal(Single p)      { return checked((Decimal?)p); }
-		public static Decimal? ToNullableDecimal(Double p)      { return checked((Decimal?)p); }
-
-		public static Decimal? ToNullableDecimal(Char p)        { return checked((Decimal?)p); }
-		public static Decimal? ToNullableDecimal(Boolean p)     { return p? 1.0m: 0.0m; }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Decimal value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(String value) { return value == null ? null : (Decimal?)Decimal.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal? ToNullableDecimal(SByte value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Int16 value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Int32 value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Int64 value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Byte value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal? ToNullableDecimal(UInt16 value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal? ToNullableDecimal(UInt32 value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal? ToNullableDecimal(UInt64 value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Single value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Double value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Char value) { return checked((Decimal?)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Boolean value) { return value ? 1.0m : 0.0m; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static Decimal? ToNullableDecimal(SByte? p)      { return p.HasValue? checked((Decimal?)p.Value): null; }
-		public static Decimal? ToNullableDecimal(Int16? p)      { return p.HasValue? checked((Decimal?)p.Value): null; }
-		public static Decimal? ToNullableDecimal(Int32? p)      { return p.HasValue? checked((Decimal?)p.Value): null; }
-		public static Decimal? ToNullableDecimal(Int64? p)      { return p.HasValue? checked((Decimal?)p.Value): null; }
 
-		public static Decimal? ToNullableDecimal(Byte? p)       { return p.HasValue? checked((Decimal?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Decimal? ToNullableDecimal(UInt16? p)     { return p.HasValue? checked((Decimal?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Decimal? ToNullableDecimal(UInt32? p)     { return p.HasValue? checked((Decimal?)p.Value): null; }
-		[CLSCompliant(false)]
-		public static Decimal? ToNullableDecimal(UInt64? p)     { return p.HasValue? checked((Decimal?)p.Value): null; }
-
-		public static Decimal? ToNullableDecimal(Single? p)     { return p.HasValue? checked((Decimal?)p.Value): null; }
-		public static Decimal? ToNullableDecimal(Double? p)     { return p.HasValue? checked((Decimal?)p.Value): null; }
-
-		public static Decimal? ToNullableDecimal(Char? p)       { return p.HasValue? checked((Decimal?)p.Value): null; }
-		public static Decimal? ToNullableDecimal(Boolean? p)    { return p.HasValue? (Decimal?)(p.Value? 1.0m: 0.0m):  null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal? ToNullableDecimal(SByte? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Int16? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Int32? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Int64? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Byte? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal? ToNullableDecimal(UInt16? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal? ToNullableDecimal(UInt32? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        [CLSCompliant(false)]
+        public static Decimal? ToNullableDecimal(UInt64? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Single? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Double? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Char? value) { return value.HasValue ? checked((Decimal?)value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(Boolean? value) { return value.HasValue ? (Decimal?)(value.Value ? 1.0m : 0.0m) : null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static Decimal? ToNullableDecimal(SqlDecimal p)  { return p.IsNull? null:         (Decimal?)p.Value;  }
-		public static Decimal? ToNullableDecimal(SqlMoney p)    { return p.IsNull? null:         (Decimal?)p.Value;  }
-		public static Decimal? ToNullableDecimal(SqlString p)   { return p.IsNull? null: ToNullableDecimal(p.Value); }
-
-		public static Decimal? ToNullableDecimal(SqlByte p)     { return p.IsNull? null: ToNullableDecimal(p.Value); }
-		public static Decimal? ToNullableDecimal(SqlInt16 p)    { return p.IsNull? null: ToNullableDecimal(p.Value); }
-		public static Decimal? ToNullableDecimal(SqlInt32 p)    { return p.IsNull? null: ToNullableDecimal(p.Value); }
-		public static Decimal? ToNullableDecimal(SqlInt64 p)    { return p.IsNull? null: ToNullableDecimal(p.Value); }
-
-		public static Decimal? ToNullableDecimal(SqlSingle p)   { return p.IsNull? null: ToNullableDecimal(p.Value); }
-		public static Decimal? ToNullableDecimal(SqlDouble p)   { return p.IsNull? null: ToNullableDecimal(p.Value); }
-
-		public static Decimal? ToNullableDecimal(SqlBoolean p)  { return p.IsNull? null: ToNullableDecimal(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(SqlDecimal value) { return value.IsNull ? null : (Decimal?)value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(SqlMoney value) { return value.IsNull ? null : (Decimal?)value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(SqlString value) { return value.IsNull ? null : ToNullableDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(SqlByte value) { return value.IsNull ? null : ToNullableDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(SqlInt16 value) { return value.IsNull ? null : ToNullableDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(SqlInt32 value) { return value.IsNull ? null : ToNullableDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(SqlInt64 value) { return value.IsNull ? null : ToNullableDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(SqlSingle value) { return value.IsNull ? null : ToNullableDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(SqlDouble value) { return value.IsNull ? null : ToNullableDecimal(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(SqlBoolean value) { return value.IsNull ? null : ToNullableDecimal(value.Value); }
 #endif
-		public static Decimal? ToNullableDecimal(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable Decimal number.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable Decimal number.</returns>
+        public static Decimal? ToNullableDecimal(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-            if (p is double && Double.IsNaN((double)p)) return null;
-            if (p is Decimal) return ToNullableDecimal((Decimal)p);
-			if (p is String)      return ToNullableDecimal((String)p);
+            if (value is double && Double.IsNaN((double)value)) return null;
+            if (value is Decimal) return ToNullableDecimal((Decimal)value);
+            if (value is String) return ToNullableDecimal((String)value);
 
-			if (p is Char)        return ToNullableDecimal((Char)p);
-			if (p is Boolean)     return ToNullableDecimal((Boolean)p);
+            if (value is Char) return ToNullableDecimal((Char)value);
+            if (value is Boolean) return ToNullableDecimal((Boolean)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlDecimal)  return ToNullableDecimal((SqlDecimal)p);
-			if (p is SqlMoney)    return ToNullableDecimal((SqlMoney)p);
+            if (value is SqlDecimal) return ToNullableDecimal((SqlDecimal)value);
+            if (value is SqlMoney) return ToNullableDecimal((SqlMoney)value);
 #endif
-			if (p is IConvertible) return ((IConvertible)p).ToDecimal(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(Decimal?));
+            if (value is IConvertible) return ((IConvertible)value).ToDecimal(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(Decimal?));
 		}
 
         #endregion
@@ -4821,52 +7992,116 @@ namespace FluorineFx.Util
         #region DateTime?
 
 		// Scalar Types.
-		// 
-		public static DateTime? ToNullableDateTime(DateTime p)    { return p; }
-		public static DateTime? ToNullableDateTime(String p)      { return p == null? null: (DateTime?)DateTime.Parse(p); }
 
-		public static DateTime? ToNullableDateTime(TimeSpan p)    { return DateTime.MinValue + p; }
-		public static DateTime? ToNullableDateTime(Int64 p)       { return DateTime.MinValue + TimeSpan.FromTicks(p); }
-		public static DateTime? ToNullableDateTime(Double p)      { return DateTime.MinValue + TimeSpan.FromDays(p); }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">A DateTime.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(DateTime value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(String value) { return value == null ? null : (DateTime?)DateTime.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">A TimeSpan.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(TimeSpan value) { return DateTime.MinValue + value; }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(Int64 value) { return DateTime.MinValue + TimeSpan.FromTicks(value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(Double value) { return DateTime.MinValue + TimeSpan.FromDays(value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static DateTime? ToNullableDateTime(TimeSpan? p)   { return p.HasValue? DateTime.MinValue +                           p.Value:  (DateTime?)null; }
-		public static DateTime? ToNullableDateTime(Int64? p)      { return p.HasValue? DateTime.MinValue +        TimeSpan.FromTicks(p.Value): (DateTime?)null; }
-		public static DateTime? ToNullableDateTime(Double? p)     { return p.HasValue? DateTime.MinValue + TimeSpan.FromDays(p.Value): (DateTime?)null; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(TimeSpan? value) { return value.HasValue ? DateTime.MinValue + value.Value : (DateTime?)null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer number to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(Int64? value) { return value.HasValue ? DateTime.MinValue + TimeSpan.FromTicks(value.Value) : (DateTime?)null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(Double? value) { return value.HasValue ? DateTime.MinValue + TimeSpan.FromDays(value.Value) : (DateTime?)null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static DateTime? ToNullableDateTime(SqlDateTime p) { return p.IsNull? (DateTime?)null:                                               p.Value;  }
-		public static DateTime? ToNullableDateTime(SqlString p)   { return p.IsNull? (DateTime?)null:                                    ToDateTime(p.Value); }
-		public static DateTime? ToNullableDateTime(SqlInt64 p)    { return p.IsNull? (DateTime?)null: DateTime.MinValue +        TimeSpan.FromTicks(p.Value); }
-		public static DateTime? ToNullableDateTime(SqlDouble p)   { return p.IsNull? (DateTime?)null: DateTime.MinValue + TimeSpan.FromDays(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(SqlDateTime value) { return value.IsNull ? (DateTime?)null : value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(SqlString value) { return value.IsNull ? (DateTime?)null : ToDateTime(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(SqlInt64 value) { return value.IsNull ? (DateTime?)null : DateTime.MinValue + TimeSpan.FromTicks(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(SqlDouble value) { return value.IsNull ? (DateTime?)null : DateTime.MinValue + TimeSpan.FromDays(value.Value); }
 #endif
-		public static DateTime? ToNullableDateTime(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
+        public static DateTime? ToNullableDateTime(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is DateTime)    return ToNullableDateTime((DateTime)p);
-			if (p is String)      return ToNullableDateTime((String)p);
+            if (value is DateTime) return ToNullableDateTime((DateTime)value);
+            if (value is String) return ToNullableDateTime((String)value);
 
-			if (p is TimeSpan)    return ToNullableDateTime((TimeSpan)p);
-			if (p is Int64)       return ToNullableDateTime((Int64)p);
-			if (p is Double)      return ToNullableDateTime((Double)p);
+            if (value is TimeSpan) return ToNullableDateTime((TimeSpan)value);
+            if (value is Int64) return ToNullableDateTime((Int64)value);
+            if (value is Double) return ToNullableDateTime((Double)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlDateTime) return ToNullableDateTime((SqlDateTime)p);
-			if (p is SqlString)   return ToNullableDateTime((SqlString)p);
-			if (p is SqlInt64)    return ToNullableDateTime((SqlInt64)p);
-			if (p is SqlDouble)   return ToNullableDateTime((SqlDouble)p);
+            if (value is SqlDateTime) return ToNullableDateTime((SqlDateTime)value);
+            if (value is SqlString) return ToNullableDateTime((SqlString)value);
+            if (value is SqlInt64) return ToNullableDateTime((SqlInt64)value);
+            if (value is SqlDouble) return ToNullableDateTime((SqlDouble)value);
 #endif
-			if (p is IConvertible) return ((IConvertible)p).ToDateTime(null);
-			
-			throw CreateInvalidCastException(p.GetType(), typeof(DateTime?));
+            if (value is IConvertible) return ((IConvertible)value).ToDateTime(null);
+
+            throw CreateInvalidCastException(value.GetType(), typeof(DateTime?));
 		}
 
         #endregion
@@ -4874,48 +8109,113 @@ namespace FluorineFx.Util
         #region TimeSpan?
 
 		// Scalar Types.
-		// 
-		public static TimeSpan? ToNullableTimeSpan(TimeSpan p)    { return p; }
-		public static TimeSpan? ToNullableTimeSpan(String p)      { return p == null? null: (TimeSpan?)TimeSpan.Parse(p); }
-		public static TimeSpan? ToNullableTimeSpan(DateTime p)    { return p - DateTime.MinValue; }
-		public static TimeSpan? ToNullableTimeSpan(Int64 p)       { return TimeSpan.FromTicks(p); }
-		public static TimeSpan? ToNullableTimeSpan(Double p)      { return TimeSpan.FromDays(p); }
+
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">A TimeSpan.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(TimeSpan value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(String value) { return value == null ? null : (TimeSpan?)TimeSpan.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">A DateTime.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(DateTime value) { return value - DateTime.MinValue; }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(Int64 value) { return TimeSpan.FromTicks(value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(Double value) { return TimeSpan.FromDays(value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static TimeSpan? ToNullableTimeSpan(DateTime? p)   { return p.HasValue? p.Value - DateTime.MinValue: (TimeSpan?)null; }
-		public static TimeSpan? ToNullableTimeSpan(Int64? p)      { return p.HasValue? TimeSpan.FromTicks(p.Value): (TimeSpan?)null; }
-		public static TimeSpan? ToNullableTimeSpan(Double? p)     { return p.HasValue? TimeSpan.FromDays(p.Value): (TimeSpan?)null; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">A nullable DateTime.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(DateTime? value) { return value.HasValue ? value.Value - DateTime.MinValue : (TimeSpan?)null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer number to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(Int64? value) { return value.HasValue ? TimeSpan.FromTicks(value.Value) : (TimeSpan?)null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(Double? value) { return value.HasValue ? TimeSpan.FromDays(value.Value) : (TimeSpan?)null; }
 
 #endif
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static TimeSpan? ToNullableTimeSpan(SqlString p)   { return p.IsNull? (TimeSpan?)null: TimeSpan.Parse(p.Value);     }
-		public static TimeSpan? ToNullableTimeSpan(SqlDateTime p) { return p.IsNull? (TimeSpan?)null: p.Value - DateTime.MinValue; }
-		public static TimeSpan? ToNullableTimeSpan(SqlInt64 p)    { return p.IsNull? (TimeSpan?)null: TimeSpan.FromTicks(p.Value); }
-		public static TimeSpan? ToNullableTimeSpan(SqlDouble p)   { return p.IsNull? (TimeSpan?)null: TimeSpan.FromDays(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(SqlString value) { return value.IsNull ? (TimeSpan?)null : TimeSpan.Parse(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(SqlDateTime value) { return value.IsNull ? (TimeSpan?)null : value.Value - DateTime.MinValue; }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(SqlInt64 value) { return value.IsNull ? (TimeSpan?)null : TimeSpan.FromTicks(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(SqlDouble value) { return value.IsNull ? (TimeSpan?)null : TimeSpan.FromDays(value.Value); }
 #endif
-		public static TimeSpan? ToNullableTimeSpan(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable TimeSpan.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable TimeSpan.</returns>
+        public static TimeSpan? ToNullableTimeSpan(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is TimeSpan)    return ToNullableTimeSpan((TimeSpan)p);
-			if (p is String)      return ToNullableTimeSpan((String)p);
-			if (p is DateTime)    return ToNullableTimeSpan((DateTime)p);
-			if (p is Int64)       return ToNullableTimeSpan((Int64)p);
-			if (p is Double)      return ToNullableTimeSpan((Double)p);
+            if (value is TimeSpan) return ToNullableTimeSpan((TimeSpan)value);
+            if (value is String) return ToNullableTimeSpan((String)value);
+            if (value is DateTime) return ToNullableTimeSpan((DateTime)value);
+            if (value is Int64) return ToNullableTimeSpan((Int64)value);
+            if (value is Double) return ToNullableTimeSpan((Double)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlString)   return ToNullableTimeSpan((SqlString)p);
-			if (p is SqlDateTime) return ToNullableTimeSpan((SqlDateTime)p);
-			if (p is SqlInt64)    return ToNullableTimeSpan((SqlInt64)p);
-			if (p is SqlDouble)   return ToNullableTimeSpan((SqlDouble)p);
+            if (value is SqlString) return ToNullableTimeSpan((SqlString)value);
+            if (value is SqlDateTime) return ToNullableTimeSpan((SqlDateTime)value);
+            if (value is SqlInt64) return ToNullableTimeSpan((SqlInt64)value);
+            if (value is SqlDouble) return ToNullableTimeSpan((SqlDouble)value);
 #endif
-			throw CreateInvalidCastException(p.GetType(), typeof(TimeSpan?));
+            throw CreateInvalidCastException(value.GetType(), typeof(TimeSpan?));
 		}
 
         #endregion
@@ -4923,42 +8223,81 @@ namespace FluorineFx.Util
         #region Guid?
 
 		// Scalar Types.
-		// 
-		public static Guid? ToNullableGuid(Guid p)        { return p; }
-		public static Guid? ToNullableGuid(String p)      { return p == null? null: (Guid?)new Guid(p); }
+
+        /// <summary>
+        /// Converts the value of the specified Guid to its equivalent nullable Guid.
+        /// </summary>
+        /// <param name="value">A Guid.</param>
+        /// <returns>The equivalent nullable Guid.</returns>
+        public static Guid? ToNullableGuid(Guid value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent nullable Guid.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent nullable Guid.</returns>
+        public static Guid? ToNullableGuid(String value) { return value == null ? null : (Guid?)new Guid(value); }
 
 		// SqlTypes.
 #if! SILVERLIGHT
-		public static Guid? ToNullableGuid(SqlGuid p)     { return p.IsNull? null: (Guid?)p.Value;             }
-		public static Guid? ToNullableGuid(SqlString p)   { return p.IsNull? null: (Guid?)new Guid(p.Value);   }
-		public static Guid? ToNullableGuid(SqlBinary p)   { return p.IsNull? null: (Guid?)p.ToSqlGuid().Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlGuid to its equivalent nullable Guid.
+        /// </summary>
+        /// <param name="value">An SqlGuid.</param>
+        /// <returns>The equivalent nullable Guid.</returns>
+        public static Guid? ToNullableGuid(SqlGuid value) { return value.IsNull ? null : (Guid?)value.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent nullable Guid.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent nullable Guid.</returns>
+        public static Guid? ToNullableGuid(SqlString value) { return value.IsNull ? null : (Guid?)new Guid(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent nullable Guid.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The equivalent nullable Guid.</returns>
+        public static Guid? ToNullableGuid(SqlBinary value) { return value.IsNull ? null : (Guid?)value.ToSqlGuid().Value; }
 #endif
 		// Other Types.
-		// 
-		public static Guid? ToNullableGuid(Type p)        { return p == null? null: (Guid?)p.GUID; }
-		public static Guid? ToNullableGuid(Byte[] p)      { return p == null? null: (Guid?)new Guid(p); }
 
-		public static Guid? ToNullableGuid(object p)
+        /// <summary>
+        /// Converts the value of the specified Type to its equivalent nullable Guid.
+        /// </summary>
+        /// <param name="value">A Type.</param>
+        /// <returns>The equivalent nullable Guid.</returns>
+        public static Guid? ToNullableGuid(Type value) { return value == null ? null : (Guid?)value.GUID; }
+        /// <summary>
+        /// Converts the value of the specified memory buffer to its equivalent nullable Guid.
+        /// </summary>
+        /// <param name="value">A memory buffer.</param>
+        /// <returns>The equivalent nullable Guid.</returns>
+        public static Guid? ToNullableGuid(Byte[] value) { return value == null ? null : (Guid?)new Guid(value); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable Guid.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable Guid.</returns>
+        public static Guid? ToNullableGuid(object value)
 		{
-			if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
 			// Scalar Types.
 			//
-			if (p is Guid)        return ToNullableGuid((Guid)p);
-			if (p is String)      return ToNullableGuid((String)p);
+            if (value is Guid) return ToNullableGuid((Guid)value);
+            if (value is String) return ToNullableGuid((String)value);
 
 			// SqlTypes.
 #if! SILVERLIGHT
-			if (p is SqlGuid)     return ToNullableGuid((SqlGuid)p);
-			if (p is SqlString)   return ToNullableGuid((SqlString)p);
-			if (p is SqlBinary)   return ToNullableGuid((SqlBinary)p);
+            if (value is SqlGuid) return ToNullableGuid((SqlGuid)value);
+            if (value is SqlString) return ToNullableGuid((SqlString)value);
+            if (value is SqlBinary) return ToNullableGuid((SqlBinary)value);
 #endif
 			// Other Types.
 			//
-			if (p is Type)        return ToNullableGuid((Type)p);
-			if (p is Byte[])      return ToNullableGuid((Byte[])p);
+            if (value is Type) return ToNullableGuid((Type)value);
+            if (value is Byte[]) return ToNullableGuid((Byte[])value);
 
-			throw CreateInvalidCastException(p.GetType(), typeof(Guid?));
+            throw CreateInvalidCastException(value.GetType(), typeof(Guid?));
 		}
 
         #endregion
@@ -4971,116 +8310,360 @@ namespace FluorineFx.Util
         #region SqlString
 #if! SILVERLIGHT
         // Scalar Types.
-        public static SqlString ToSqlString(String p) { return p == null ? SqlString.Null : p; }
-
+        
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The SqlString equivalent of the value.</returns>
+        public static SqlString ToSqlString(String value) { return value == null ? SqlString.Null : value; }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The SqlString equivalent of the 8-bit signed integer value.</returns>
         [CLSCompliant(false)]
-        public static SqlString ToSqlString(SByte p) { return p.ToString(); }
-        public static SqlString ToSqlString(Int16 p) { return p.ToString(); }
-        public static SqlString ToSqlString(Int32 p) { return p.ToString(); }
-        public static SqlString ToSqlString(Int64 p) { return p.ToString(); }
-
-        public static SqlString ToSqlString(Byte p) { return p.ToString(); }
+        public static SqlString ToSqlString(SByte value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The SqlString equivalent of the 16-bit signed integer value.</returns>
+        public static SqlString ToSqlString(Int16 value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The SqlString equivalent of the 32-bit signed integer value.</returns>
+        public static SqlString ToSqlString(Int32 value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The SqlString equivalent of the 64-bit signed integer value.</returns>
+        public static SqlString ToSqlString(Int64 value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A 8-bit unsigned integer.</param>
+        /// <returns>The SqlString equivalent of the 8-bit unsigned integer value.</returns>
+        public static SqlString ToSqlString(Byte value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The SqlString equivalent of the 16-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
-        public static SqlString ToSqlString(UInt16 p) { return p.ToString(); }
+        public static SqlString ToSqlString(UInt16 value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The SqlString equivalent of the 32-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
-        public static SqlString ToSqlString(UInt32 p) { return p.ToString(); }
+        public static SqlString ToSqlString(UInt32 value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The SqlString equivalent of the 64-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
-        public static SqlString ToSqlString(UInt64 p) { return p.ToString(); }
-
-        public static SqlString ToSqlString(Single p) { return p.ToString(); }
-        public static SqlString ToSqlString(Double p) { return p.ToString(); }
-
-        public static SqlString ToSqlString(Boolean p) { return p.ToString(); }
-        public static SqlString ToSqlString(Decimal p) { return p.ToString(); }
-        public static SqlString ToSqlString(Char p) { return p.ToString(); }
-        public static SqlString ToSqlString(TimeSpan p) { return p.ToString(); }
-        public static SqlString ToSqlString(DateTime p) { return p.ToString(); }
-        public static SqlString ToSqlString(Guid p) { return p.ToString(); }
-        public static SqlString ToSqlString(Char[] p) { return new String(p); }
+        public static SqlString ToSqlString(UInt64 value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The SqlString equivalent of the single-precision floating point number.</returns>
+        public static SqlString ToSqlString(Single value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The SqlString equivalent of the double-precision floating point number.</returns>
+        public static SqlString ToSqlString(Double value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A Boolean value.</param>
+        /// <returns>The SqlString equivalent of the Boolean.</returns>
+        public static SqlString ToSqlString(Boolean value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The SqlString equivalent of the Decimal number.</returns>
+        public static SqlString ToSqlString(Decimal value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The SqlString equivalent of the Unicode character.</returns>
+        public static SqlString ToSqlString(Char value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A TimeSpan.</param>
+        /// <returns>The SqlString equivalent of the TimeSpan.</returns>
+        public static SqlString ToSqlString(TimeSpan value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A DateTime.</param>
+        /// <returns>The SqlString equivalent of the DateTime.</returns>
+        public static SqlString ToSqlString(DateTime value) { return value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified Guid to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A Guid.</param>
+        /// <returns>The SqlString equivalent of the Guid.</returns>
+        public static SqlString ToSqlString(Guid value) { return value.ToString(); }        
+        /// <summary>
+        /// Converts the specified character array to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A character array.</param>
+        /// <returns>The SqlString equivalent of character array.</returns>
+        public static SqlString ToSqlString(Char[] value) { return new String(value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static SqlString ToSqlString(SByte? p)      { return p.HasValue? p.ToString(): SqlString.Null; }
-		public static SqlString ToSqlString(Int16? p)      { return p.HasValue? p.ToString(): SqlString.Null; }
-		public static SqlString ToSqlString(Int32? p)      { return p.HasValue? p.ToString(): SqlString.Null; }
-		public static SqlString ToSqlString(Int64? p)      { return p.HasValue? p.ToString(): SqlString.Null; }
 
-		public static SqlString ToSqlString(Byte? p)       { return p.HasValue? p.ToString(): SqlString.Null; }
-		[CLSCompliant(false)]
-		public static SqlString ToSqlString(UInt16? p)     { return p.HasValue? p.ToString(): SqlString.Null; }
-		[CLSCompliant(false)]
-		public static SqlString ToSqlString(UInt32? p)     { return p.HasValue? p.ToString(): SqlString.Null; }
-		[CLSCompliant(false)]
-		public static SqlString ToSqlString(UInt64? p)     { return p.HasValue? p.ToString(): SqlString.Null; }
-
-		public static SqlString ToSqlString(Single? p)     { return p.HasValue? p.ToString(): SqlString.Null; }
-		public static SqlString ToSqlString(Double? p)     { return p.HasValue? p.ToString(): SqlString.Null; }
-
-		public static SqlString ToSqlString(Boolean? p)    { return p.HasValue? p.ToString(): SqlString.Null; }
-		public static SqlString ToSqlString(Decimal? p)    { return p.HasValue? p.ToString(): SqlString.Null; }
-		public static SqlString ToSqlString(Char? p)       { return p.HasValue? p.ToString(): SqlString.Null; }
-		public static SqlString ToSqlString(TimeSpan? p)   { return p.HasValue? p.ToString(): SqlString.Null; }
-		public static SqlString ToSqlString(DateTime? p)   { return p.HasValue? p.ToString(): SqlString.Null; }
-		public static SqlString ToSqlString(Guid? p)       { return p.HasValue? p.ToString(): SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The SqlString equivalent of the value of value.</returns>
+        [CLSCompliant(false)]
+        public static SqlString ToSqlString(SByte? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The SqlString equivalent of nullable 16-bit signed integer value.</returns>
+        public static SqlString ToSqlString(Int16? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The SqlString equivalent of the nullable 32-bit signed integer value.</returns>
+        public static SqlString ToSqlString(Int32? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The SqlString equivalent of the nullable 64-bit signed integer value.</returns>
+        public static SqlString ToSqlString(Int64? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer  to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The SqlString equivalent of the nullable 8-bit unsigned integer value.</returns>
+        public static SqlString ToSqlString(Byte? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The SqlString equivalent of the nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static SqlString ToSqlString(UInt16? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The SqlString equivalent of the nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static SqlString ToSqlString(UInt32? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The SqlString equivalent of the nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static SqlString ToSqlString(UInt64? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The SqlString equivalent of the nullable single-precision floating point number.</returns>
+        public static SqlString ToSqlString(Single? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The SqlString equivalent of the nullable double-precision floating point number.</returns>
+        public static SqlString ToSqlString(Double? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean value.</param>
+        /// <returns>The SqlString equivalent of the nullable Boolean value.</returns>
+        public static SqlString ToSqlString(Boolean? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The SqlString equivalent of the nullable Decimal number.</returns>
+        public static SqlString ToSqlString(Decimal? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The SqlString equivalent of the nullable Unicode character.</returns>
+        public static SqlString ToSqlString(Char? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan.</param>
+        /// <returns>The SqlString equivalent of the nullable TimeSpan.</returns>
+        public static SqlString ToSqlString(TimeSpan? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable DateTime.</param>
+        /// <returns>The SqlString equivalent of the nullable DateTime.</returns>
+        public static SqlString ToSqlString(DateTime? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Guid to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">A nullable Guid.</param>
+        /// <returns>The SqlString equivalent of the nullable Guid.</returns>
+        public static SqlString ToSqlString(Guid? value) { return value.HasValue ? value.ToString() : SqlString.Null; }
 
 #endif
         // SqlTypes.
-        // 
 
-        public static SqlString ToSqlString(SqlByte p) { return p.ToSqlString(); }
-        public static SqlString ToSqlString(SqlInt16 p) { return p.ToSqlString(); }
-        public static SqlString ToSqlString(SqlInt32 p) { return p.ToSqlString(); }
-        public static SqlString ToSqlString(SqlInt64 p) { return p.ToSqlString(); }
-
-        public static SqlString ToSqlString(SqlSingle p) { return p.ToSqlString(); }
-        public static SqlString ToSqlString(SqlDouble p) { return p.ToSqlString(); }
-        public static SqlString ToSqlString(SqlDecimal p) { return p.ToSqlString(); }
-        public static SqlString ToSqlString(SqlMoney p) { return p.ToSqlString(); }
-
-        public static SqlString ToSqlString(SqlBoolean p) { return p.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The SqlString equivalent of the SqlByte.</returns>        
+        public static SqlString ToSqlString(SqlByte value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The SqlString equivalent of SqlInt16.</returns>        
+        public static SqlString ToSqlString(SqlInt16 value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The SqlString equivalent of the SqlInt32.</returns>        
+        public static SqlString ToSqlString(SqlInt32 value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The SqlString equivalent of the SqlInt64.</returns>        
+        public static SqlString ToSqlString(SqlInt64 value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The SqlString equivalent of the SqlSingle.</returns>        
+        public static SqlString ToSqlString(SqlSingle value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The SqlString equivalent of the SqlDouble.</returns>        
+        public static SqlString ToSqlString(SqlDouble value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The SqlString equivalent of the SqlDecimal.</returns>        
+        public static SqlString ToSqlString(SqlDecimal value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The SqlString equivalent of the SqlMoney.</returns>        
+        public static SqlString ToSqlString(SqlMoney value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The SqlString equivalent of the SqlBoolean.</returns>        
+        public static SqlString ToSqlString(SqlBoolean value) { return value.ToSqlString(); }
 #if !(NET_1_1)
-        public static SqlString ToSqlString(SqlChars p)    { return p.ToSqlString(); }
-		public static SqlString ToSqlString(SqlXml p)      { return p.IsNull? SqlString.Null: p.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlChars to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlChars.</param>
+        /// <returns>The SqlString equivalent of the SqlChars.</returns>        
+        public static SqlString ToSqlString(SqlChars value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlXml to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlXml.</param>
+        /// <returns>The SqlString equivalent of the SqlXml.</returns>        
+        public static SqlString ToSqlString(SqlXml value) { return value.IsNull ? SqlString.Null : value.Value; }
 #endif
-        public static SqlString ToSqlString(SqlGuid p) { return p.ToSqlString(); }
-        public static SqlString ToSqlString(SqlDateTime p) { return p.ToSqlString(); }
-        public static SqlString ToSqlString(SqlBinary p) { return p.IsNull ? SqlString.Null : p.ToString(); }
-
-        public static SqlString ToSqlString(Type p) { return p == null ? SqlString.Null : p.FullName; }
-        public static SqlString ToSqlString(XmlDocument p) { return p == null ? SqlString.Null : p.InnerXml; }
-
-        public static SqlString ToSqlString(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlGuid to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlGuid.</param>
+        /// <returns>The SqlString equivalent of the SqlGuid.</returns>        
+        public static SqlString ToSqlString(SqlGuid value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The SqlString equivalent of the SqlDateTime.</returns>        
+        public static SqlString ToSqlString(SqlDateTime value) { return value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The SqlString equivalent of the SqlBinary.</returns>        
+        public static SqlString ToSqlString(SqlBinary value) { return value.IsNull ? SqlString.Null : value.ToString(); }
+        /// <summary>
+        /// Converts the value of the specified Type to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An Type.</param>
+        /// <returns>The SqlString equivalent of the Type.</returns>        
+        public static SqlString ToSqlString(Type value) { return value == null ? SqlString.Null : value.FullName; }
+        /// <summary>
+        /// Converts the value of the specified XmlDocument to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An XmlDocument.</param>
+        /// <returns>The SqlString equivalent of the XmlDocument.</returns>        
+        public static SqlString ToSqlString(XmlDocument value) { return value == null ? SqlString.Null : value.InnerXml; }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlString representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The SqlString equivalent of the Object.</returns>
+        public static SqlString ToSqlString(object value)
         {
-            if (p == null || p is DBNull) return SqlString.Null;
+            if (value == null || value is DBNull) return SqlString.Null;
 
-            if (p is SqlString) return (SqlString)p;
+            if (value is SqlString) return (SqlString)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToSqlString((String)p);
+            if (value is String) return ToSqlString((String)value);
 
-            if (p is Char) return ToSqlString((Char)p);
-            if (p is TimeSpan) return ToSqlString((TimeSpan)p);
-            if (p is DateTime) return ToSqlString((DateTime)p);
-            if (p is Guid) return ToSqlString((Guid)p);
-            if (p is Char[]) return ToSqlString((Char[])p);
+            if (value is Char) return ToSqlString((Char)value);
+            if (value is TimeSpan) return ToSqlString((TimeSpan)value);
+            if (value is DateTime) return ToSqlString((DateTime)value);
+            if (value is Guid) return ToSqlString((Guid)value);
+            if (value is Char[]) return ToSqlString((Char[])value);
 
             // SqlTypes.
             //
 #if !(NET_1_1)
-            if (p is SqlChars)    return ToSqlString((SqlChars)p);
-			if (p is SqlXml)      return ToSqlString((SqlXml)p);
+            if (value is SqlChars) return ToSqlString((SqlChars)value);
+            if (value is SqlXml) return ToSqlString((SqlXml)value);
 #endif
-            if (p is SqlGuid) return ToSqlString((SqlGuid)p);
-            if (p is SqlDateTime) return ToSqlString((SqlDateTime)p);
-            if (p is SqlBinary) return ToSqlString((SqlBinary)p);
+            if (value is SqlGuid) return ToSqlString((SqlGuid)value);
+            if (value is SqlDateTime) return ToSqlString((SqlDateTime)value);
+            if (value is SqlBinary) return ToSqlString((SqlBinary)value);
 
-            if (p is Type) return ToSqlString((Type)p);
-            if (p is XmlDocument) return ToSqlString((XmlDocument)p);
+            if (value is Type) return ToSqlString((Type)value);
+            if (value is XmlDocument) return ToSqlString((XmlDocument)value);
 
-            return ToString(p);
+            return ToString(value);
         }
 #endif
         #endregion
@@ -5089,90 +8672,269 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlByte ToSqlByte(Byte p) { return p; }
-        public static SqlByte ToSqlByte(String p) { return p == null ? SqlByte.Null : SqlByte.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Byte value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(String value) { return value == null ? SqlByte.Null : SqlByte.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
         [CLSCompliant(false)]
-        public static SqlByte ToSqlByte(SByte p) { return checked((Byte)p); }
-        public static SqlByte ToSqlByte(Int16 p) { return checked((Byte)p); }
-        public static SqlByte ToSqlByte(Int32 p) { return checked((Byte)p); }
-        public static SqlByte ToSqlByte(Int64 p) { return checked((Byte)p); }
-
+        public static SqlByte ToSqlByte(SByte value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Int16 value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Int32 value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Int64 value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
         [CLSCompliant(false)]
-        public static SqlByte ToSqlByte(UInt16 p) { return checked((Byte)p); }
+        public static SqlByte ToSqlByte(UInt16 value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
         [CLSCompliant(false)]
-        public static SqlByte ToSqlByte(UInt32 p) { return checked((Byte)p); }
+        public static SqlByte ToSqlByte(UInt32 value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
         [CLSCompliant(false)]
-        public static SqlByte ToSqlByte(UInt64 p) { return checked((Byte)p); }
-
-        public static SqlByte ToSqlByte(Single p) { return checked((Byte)p); }
-        public static SqlByte ToSqlByte(Double p) { return checked((Byte)p); }
-
-        public static SqlByte ToSqlByte(Decimal p) { return checked((Byte)p); }
-        public static SqlByte ToSqlByte(Char p) { return checked((Byte)p); }
-        public static SqlByte ToSqlByte(Boolean p) { return (Byte)(p ? 1 : 0); }
+        public static SqlByte ToSqlByte(UInt64 value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent SqlByte representation.</returns>
+        public static SqlByte ToSqlByte(Single value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Double value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Decimal value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Char value) { return checked((Byte)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Boolean value) { return (Byte)(value ? 1 : 0); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlByte ToSqlByte(Byte? p)       { return p.HasValue?        p.Value:  SqlByte.Null; }
-		[CLSCompliant(false)]
-		public static SqlByte ToSqlByte(SByte? p)      { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
-		public static SqlByte ToSqlByte(Int16? p)      { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
-		public static SqlByte ToSqlByte(Int32? p)      { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
-		public static SqlByte ToSqlByte(Int64? p)      { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
 
-		[CLSCompliant(false)]
-		public static SqlByte ToSqlByte(UInt16? p)     { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
-		[CLSCompliant(false)]
-		public static SqlByte ToSqlByte(UInt32? p)     { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
-		[CLSCompliant(false)]
-		public static SqlByte ToSqlByte(UInt64? p)     { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
-
-		public static SqlByte ToSqlByte(Single? p)     { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
-		public static SqlByte ToSqlByte(Double? p)     { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
-
-		public static SqlByte ToSqlByte(Boolean? p)    { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
-		public static SqlByte ToSqlByte(Decimal? p)    { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
-		public static SqlByte ToSqlByte(Char? p)       { return p.HasValue? ToByte(p.Value): SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Byte? value) { return value.HasValue ? value.Value : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        [CLSCompliant(false)]
+        public static SqlByte ToSqlByte(SByte? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Int16? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Int32? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Int64? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        [CLSCompliant(false)]
+        public static SqlByte ToSqlByte(UInt16? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        [CLSCompliant(false)]
+        public static SqlByte ToSqlByte(UInt32? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        [CLSCompliant(false)]
+        public static SqlByte ToSqlByte(UInt64? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Single? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Double? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Boolean? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Decimal? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(Char? value) { return value.HasValue ? ToByte(value.Value) : SqlByte.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlByte ToSqlByte(SqlString p) { return p.ToSqlByte(); }
 
-        public static SqlByte ToSqlByte(SqlInt16 p) { return p.ToSqlByte(); }
-        public static SqlByte ToSqlByte(SqlInt32 p) { return p.ToSqlByte(); }
-        public static SqlByte ToSqlByte(SqlInt64 p) { return p.ToSqlByte(); }
-
-        public static SqlByte ToSqlByte(SqlSingle p) { return p.ToSqlByte(); }
-        public static SqlByte ToSqlByte(SqlDouble p) { return p.ToSqlByte(); }
-        public static SqlByte ToSqlByte(SqlDecimal p) { return p.ToSqlByte(); }
-        public static SqlByte ToSqlByte(SqlMoney p) { return p.ToSqlByte(); }
-
-        public static SqlByte ToSqlByte(SqlBoolean p) { return p.ToSqlByte(); }
-        public static SqlByte ToSqlByte(SqlDateTime p) { return p.IsNull ? SqlByte.Null : ToByte(p.Value); }
-
-        public static SqlByte ToSqlByte(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(SqlString value) { return value.ToSqlByte(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(SqlInt16 value) { return value.ToSqlByte(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(SqlInt32 value) { return value.ToSqlByte(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(SqlInt64 value) { return value.ToSqlByte(); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(SqlSingle value) { return value.ToSqlByte(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(SqlDouble value) { return value.ToSqlByte(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(SqlDecimal value) { return value.ToSqlByte(); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(SqlMoney value) { return value.ToSqlByte(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(SqlBoolean value) { return value.ToSqlByte(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(SqlDateTime value) { return value.IsNull ? SqlByte.Null : ToByte(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlByte representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlByte.</returns>
+        public static SqlByte ToSqlByte(object value)
         {
-            if (p == null || p is DBNull) return SqlByte.Null;
+            if (value == null || value is DBNull) return SqlByte.Null;
 
-            if (p is SqlByte) return (SqlByte)p;
+            if (value is SqlByte) return (SqlByte)value;
 
             // Scalar Types.
             //
-            if (p is Byte) return ToSqlByte((Byte)p);
-            if (p is String) return ToSqlByte((String)p);
+            if (value is Byte) return ToSqlByte((Byte)value);
+            if (value is String) return ToSqlByte((String)value);
 
-            if (p is Char) return ToSqlByte((Char)p);
-            if (p is Boolean) return ToSqlByte((Boolean)p);
+            if (value is Char) return ToSqlByte((Char)value);
+            if (value is Boolean) return ToSqlByte((Boolean)value);
 
             // SqlTypes.
             //
-            if (p is SqlDateTime) return ToSqlByte((SqlDateTime)p);
+            if (value is SqlDateTime) return ToSqlByte((SqlDateTime)value);
 
-            return ToByte(p);
+            return ToByte(value);
         }
 #endif
         #endregion
@@ -5181,90 +8943,269 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlInt16 ToSqlInt16(Int16 p) { return p; }
-        public static SqlInt16 ToSqlInt16(String p) { return p == null ? SqlInt16.Null : SqlInt16.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Int16 value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(String value) { return value == null ? SqlInt16.Null : SqlInt16.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
         [CLSCompliant(false)]
-        public static SqlInt16 ToSqlInt16(SByte p) { return checked((Int16)p); }
-        public static SqlInt16 ToSqlInt16(Int32 p) { return checked((Int16)p); }
-        public static SqlInt16 ToSqlInt16(Int64 p) { return checked((Int16)p); }
-
-        public static SqlInt16 ToSqlInt16(Byte p) { return checked((Int16)p); }
+        public static SqlInt16 ToSqlInt16(SByte value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Int32 value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Int64 value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Byte value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
         [CLSCompliant(false)]
-        public static SqlInt16 ToSqlInt16(UInt16 p) { return checked((Int16)p); }
+        public static SqlInt16 ToSqlInt16(UInt16 value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
         [CLSCompliant(false)]
-        public static SqlInt16 ToSqlInt16(UInt32 p) { return checked((Int16)p); }
+        public static SqlInt16 ToSqlInt16(UInt32 value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
         [CLSCompliant(false)]
-        public static SqlInt16 ToSqlInt16(UInt64 p) { return checked((Int16)p); }
-
-        public static SqlInt16 ToSqlInt16(Single p) { return checked((Int16)p); }
-        public static SqlInt16 ToSqlInt16(Double p) { return checked((Int16)p); }
-
-        public static SqlInt16 ToSqlInt16(Decimal p) { return checked((Int16)p); }
-        public static SqlInt16 ToSqlInt16(Char p) { return checked((Int16)p); }
-        public static SqlInt16 ToSqlInt16(Boolean p) { return (Int16)(p ? 1 : 0); }
+        public static SqlInt16 ToSqlInt16(UInt64 value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Single value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Double value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Decimal value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Char value) { return checked((Int16)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Boolean value) { return (Int16)(value ? 1 : 0); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlInt16 ToSqlInt16(Int16? p)      { return p.HasValue?         p.Value:  SqlInt16.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt16 ToSqlInt16(SByte? p)      { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
-		public static SqlInt16 ToSqlInt16(Int32? p)      { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
-		public static SqlInt16 ToSqlInt16(Int64? p)      { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
 
-		public static SqlInt16 ToSqlInt16(Byte? p)       { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt16 ToSqlInt16(UInt16? p)     { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt16 ToSqlInt16(UInt32? p)     { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt16 ToSqlInt16(UInt64? p)     { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
-
-		public static SqlInt16 ToSqlInt16(Single? p)     { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
-		public static SqlInt16 ToSqlInt16(Double? p)     { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
-
-		public static SqlInt16 ToSqlInt16(Boolean? p)    { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
-		public static SqlInt16 ToSqlInt16(Decimal? p)    { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
-		public static SqlInt16 ToSqlInt16(Char? p)       { return p.HasValue? ToInt16(p.Value): SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Int16? value) { return value.HasValue ? value.Value : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt16 ToSqlInt16(SByte? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Int32? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Int64? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Byte? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt16 ToSqlInt16(UInt16? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt16 ToSqlInt16(UInt32? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt16 ToSqlInt16(UInt64? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Single? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Double? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Boolean? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Decimal? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(Char? value) { return value.HasValue ? ToInt16(value.Value) : SqlInt16.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlInt16 ToSqlInt16(SqlString p) { return p.ToSqlInt16(); }
 
-        public static SqlInt16 ToSqlInt16(SqlByte p) { return p.ToSqlInt16(); }
-        public static SqlInt16 ToSqlInt16(SqlInt32 p) { return p.ToSqlInt16(); }
-        public static SqlInt16 ToSqlInt16(SqlInt64 p) { return p.ToSqlInt16(); }
-
-        public static SqlInt16 ToSqlInt16(SqlSingle p) { return p.ToSqlInt16(); }
-        public static SqlInt16 ToSqlInt16(SqlDouble p) { return p.ToSqlInt16(); }
-        public static SqlInt16 ToSqlInt16(SqlDecimal p) { return p.ToSqlInt16(); }
-        public static SqlInt16 ToSqlInt16(SqlMoney p) { return p.ToSqlInt16(); }
-
-        public static SqlInt16 ToSqlInt16(SqlBoolean p) { return p.ToSqlInt16(); }
-        public static SqlInt16 ToSqlInt16(SqlDateTime p) { return p.IsNull ? SqlInt16.Null : ToInt16(p.Value); }
-
-        public static SqlInt16 ToSqlInt16(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(SqlString value) { return value.ToSqlInt16(); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(SqlByte value) { return value.ToSqlInt16(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(SqlInt32 value) { return value.ToSqlInt16(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(SqlInt64 value) { return value.ToSqlInt16(); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(SqlSingle value) { return value.ToSqlInt16(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(SqlDouble value) { return value.ToSqlInt16(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(SqlDecimal value) { return value.ToSqlInt16(); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(SqlMoney value) { return value.ToSqlInt16(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(SqlBoolean value) { return value.ToSqlInt16(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(SqlDateTime value) { return value.IsNull ? SqlInt16.Null : ToInt16(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlInt16 representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
+        public static SqlInt16 ToSqlInt16(object value)
         {
-            if (p == null || p is DBNull) return SqlInt16.Null;
+            if (value == null || value is DBNull) return SqlInt16.Null;
 
-            if (p is SqlInt16) return (SqlInt16)p;
+            if (value is SqlInt16) return (SqlInt16)value;
 
             // Scalar Types.
             //
-            if (p is Int16) return ToSqlInt16((Int16)p);
-            if (p is String) return ToSqlInt16((String)p);
+            if (value is Int16) return ToSqlInt16((Int16)value);
+            if (value is String) return ToSqlInt16((String)value);
 
-            if (p is Char) return ToSqlInt16((Char)p);
-            if (p is Boolean) return ToSqlInt16((Boolean)p);
+            if (value is Char) return ToSqlInt16((Char)value);
+            if (value is Boolean) return ToSqlInt16((Boolean)value);
 
             // SqlTypes.
             //
-            if (p is SqlDateTime) return ToSqlInt16((SqlDateTime)p);
+            if (value is SqlDateTime) return ToSqlInt16((SqlDateTime)value);
 
-            return ToInt16(p);
+            return ToInt16(value);
         }
 #endif
         #endregion
@@ -5273,90 +9214,269 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlInt32 ToSqlInt32(Int32 p) { return p; }
-        public static SqlInt32 ToSqlInt32(String p) { return p == null ? SqlInt32.Null : SqlInt32.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Int32 value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(String value) { return value == null ? SqlInt32.Null : SqlInt32.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
         [CLSCompliant(false)]
-        public static SqlInt32 ToSqlInt32(SByte p) { return checked((Int32)p); }
-        public static SqlInt32 ToSqlInt32(Int16 p) { return checked((Int32)p); }
-        public static SqlInt32 ToSqlInt32(Int64 p) { return checked((Int32)p); }
-
-        public static SqlInt32 ToSqlInt32(Byte p) { return checked((Int32)p); }
+        public static SqlInt32 ToSqlInt32(SByte value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Int16 value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Int64 value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Byte value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
         [CLSCompliant(false)]
-        public static SqlInt32 ToSqlInt32(UInt16 p) { return checked((Int32)p); }
+        public static SqlInt32 ToSqlInt32(UInt16 value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
         [CLSCompliant(false)]
-        public static SqlInt32 ToSqlInt32(UInt32 p) { return checked((Int32)p); }
+        public static SqlInt32 ToSqlInt32(UInt32 value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
         [CLSCompliant(false)]
-        public static SqlInt32 ToSqlInt32(UInt64 p) { return checked((Int32)p); }
-
-        public static SqlInt32 ToSqlInt32(Single p) { return checked((Int32)p); }
-        public static SqlInt32 ToSqlInt32(Double p) { return checked((Int32)p); }
-
-        public static SqlInt32 ToSqlInt32(Decimal p) { return checked((Int32)p); }
-        public static SqlInt32 ToSqlInt32(Char p) { return checked((Int32)p); }
-        public static SqlInt32 ToSqlInt32(Boolean p) { return p ? 1 : 0; }
+        public static SqlInt32 ToSqlInt32(UInt64 value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Single value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Double value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Decimal value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Char value) { return checked((Int32)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Boolean value) { return value ? 1 : 0; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlInt32 ToSqlInt32(Int32? p)      { return p.HasValue?         p.Value:  SqlInt32.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt32 ToSqlInt32(SByte? p)      { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
-		public static SqlInt32 ToSqlInt32(Int16? p)      { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
-		public static SqlInt32 ToSqlInt32(Int64? p)      { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
 
-		public static SqlInt32 ToSqlInt32(Byte? p)       { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt32 ToSqlInt32(UInt16? p)     { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt32 ToSqlInt32(UInt32? p)     { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt32 ToSqlInt32(UInt64? p)     { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
-
-		public static SqlInt32 ToSqlInt32(Single? p)     { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
-		public static SqlInt32 ToSqlInt32(Double? p)     { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
-
-		public static SqlInt32 ToSqlInt32(Boolean? p)    { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
-		public static SqlInt32 ToSqlInt32(Decimal? p)    { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
-		public static SqlInt32 ToSqlInt32(Char? p)       { return p.HasValue? ToInt32(p.Value): SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Int32? value) { return value.HasValue ? value.Value : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt32 ToSqlInt32(SByte? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Int16? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Int64? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Byte? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt32 ToSqlInt32(UInt16? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt32 ToSqlInt32(UInt32? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt32 ToSqlInt32(UInt64? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Single? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Double? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Boolean? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Decimal? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(Char? value) { return value.HasValue ? ToInt32(value.Value) : SqlInt32.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlInt32 ToSqlInt32(SqlString p) { return p.ToSqlInt32(); }
 
-        public static SqlInt32 ToSqlInt32(SqlByte p) { return p.ToSqlInt32(); }
-        public static SqlInt32 ToSqlInt32(SqlInt16 p) { return p.ToSqlInt32(); }
-        public static SqlInt32 ToSqlInt32(SqlInt64 p) { return p.ToSqlInt32(); }
-
-        public static SqlInt32 ToSqlInt32(SqlSingle p) { return p.ToSqlInt32(); }
-        public static SqlInt32 ToSqlInt32(SqlDouble p) { return p.ToSqlInt32(); }
-        public static SqlInt32 ToSqlInt32(SqlDecimal p) { return p.ToSqlInt32(); }
-        public static SqlInt32 ToSqlInt32(SqlMoney p) { return p.ToSqlInt32(); }
-
-        public static SqlInt32 ToSqlInt32(SqlBoolean p) { return p.ToSqlInt32(); }
-        public static SqlInt32 ToSqlInt32(SqlDateTime p) { return p.IsNull ? SqlInt32.Null : ToInt32(p.Value); }
-
-        public static SqlInt32 ToSqlInt32(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(SqlString value) { return value.ToSqlInt32(); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(SqlByte value) { return value.ToSqlInt32(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(SqlInt16 value) { return value.ToSqlInt32(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(SqlInt64 value) { return value.ToSqlInt32(); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(SqlSingle value) { return value.ToSqlInt32(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(SqlDouble value) { return value.ToSqlInt32(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(SqlDecimal value) { return value.ToSqlInt32(); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(SqlMoney value) { return value.ToSqlInt32(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(SqlBoolean value) { return value.ToSqlInt32(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(SqlDateTime value) { return value.IsNull ? SqlInt32.Null : ToInt32(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlInt32 representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
+        public static SqlInt32 ToSqlInt32(object value)
         {
-            if (p == null || p is DBNull) return SqlInt32.Null;
+            if (value == null || value is DBNull) return SqlInt32.Null;
 
-            if (p is SqlInt32) return (SqlInt32)p;
+            if (value is SqlInt32) return (SqlInt32)value;
 
             // Scalar Types.
             //
-            if (p is Int32) return ToSqlInt32((Int32)p);
-            if (p is String) return ToSqlInt32((String)p);
+            if (value is Int32) return ToSqlInt32((Int32)value);
+            if (value is String) return ToSqlInt32((String)value);
 
-            if (p is Char) return ToSqlInt32((Char)p);
-            if (p is Boolean) return ToSqlInt32((Boolean)p);
+            if (value is Char) return ToSqlInt32((Char)value);
+            if (value is Boolean) return ToSqlInt32((Boolean)value);
 
             // SqlTypes.
             //
-            if (p is SqlDateTime) return ToSqlInt32((SqlDateTime)p);
+            if (value is SqlDateTime) return ToSqlInt32((SqlDateTime)value);
 
-            return ToInt32(p);
+            return ToInt32(value);
         }
 #endif
         #endregion
@@ -5365,96 +9485,295 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlInt64 ToSqlInt64(Int64 p) { return p; }
-        public static SqlInt64 ToSqlInt64(String p) { return p == null ? SqlInt64.Null : SqlInt64.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Int64 value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(String value) { return value == null ? SqlInt64.Null : SqlInt64.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
         [CLSCompliant(false)]
-        public static SqlInt64 ToSqlInt64(SByte p) { return checked((Int64)p); }
-        public static SqlInt64 ToSqlInt64(Int16 p) { return checked((Int64)p); }
-        public static SqlInt64 ToSqlInt64(Int32 p) { return checked((Int64)p); }
-
-        public static SqlInt64 ToSqlInt64(Byte p) { return checked((Int64)p); }
+        public static SqlInt64 ToSqlInt64(SByte value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Int16 value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Int32 value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Byte value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
         [CLSCompliant(false)]
-        public static SqlInt64 ToSqlInt64(UInt16 p) { return checked((Int64)p); }
+        public static SqlInt64 ToSqlInt64(UInt16 value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
         [CLSCompliant(false)]
-        public static SqlInt64 ToSqlInt64(UInt32 p) { return checked((Int64)p); }
+        public static SqlInt64 ToSqlInt64(UInt32 value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
         [CLSCompliant(false)]
-        public static SqlInt64 ToSqlInt64(UInt64 p) { return checked((Int64)p); }
-
-        public static SqlInt64 ToSqlInt64(Single p) { return checked((Int64)p); }
-        public static SqlInt64 ToSqlInt64(Double p) { return checked((Int64)p); }
-
-        public static SqlInt64 ToSqlInt64(Decimal p) { return checked((Int64)p); }
-        public static SqlInt64 ToSqlInt64(Char p) { return checked((Int64)p); }
-        public static SqlInt64 ToSqlInt64(Boolean p) { return p ? 1 : 0; }
-        public static SqlInt64 ToSqlInt64(DateTime p) { return (p - DateTime.MinValue).Ticks; }
-        public static SqlInt64 ToSqlInt64(TimeSpan p) { return p.Ticks; }
+        public static SqlInt64 ToSqlInt64(UInt64 value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Single value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Double value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Decimal value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Char value) { return checked((Int64)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Boolean value) { return value ? 1 : 0; }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A DateTime.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(DateTime value) { return (value - DateTime.MinValue).Ticks; }
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A TimeSpan.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(TimeSpan value) { return value.Ticks; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlInt64 ToSqlInt64(Int64? p)      { return p.HasValue?         p.Value:  SqlInt64.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt64 ToSqlInt64(SByte? p)      { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-		public static SqlInt64 ToSqlInt64(Int16? p)      { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-		public static SqlInt64 ToSqlInt64(Int32? p)      { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
 
-		public static SqlInt64 ToSqlInt64(Byte? p)       { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt64 ToSqlInt64(UInt16? p)     { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt64 ToSqlInt64(UInt32? p)     { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-		[CLSCompliant(false)]
-		public static SqlInt64 ToSqlInt64(UInt64? p)     { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-
-		public static SqlInt64 ToSqlInt64(Single? p)     { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-		public static SqlInt64 ToSqlInt64(Double? p)     { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-
-		public static SqlInt64 ToSqlInt64(Boolean? p)    { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-		public static SqlInt64 ToSqlInt64(Decimal? p)    { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-		public static SqlInt64 ToSqlInt64(Char? p)       { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-		public static SqlInt64 ToSqlInt64(DateTime? p)   { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
-		public static SqlInt64 ToSqlInt64(TimeSpan? p)   { return p.HasValue? ToInt64(p.Value): SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Int64? value) { return value.HasValue ? value.Value : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt64 ToSqlInt64(SByte? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Int16? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Int32? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Byte? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt64 ToSqlInt64(UInt16? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt64 ToSqlInt64(UInt32? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        [CLSCompliant(false)]
+        public static SqlInt64 ToSqlInt64(UInt64? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Single? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Double? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Boolean? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Decimal? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(Char? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable DateTime.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(DateTime? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(TimeSpan? value) { return value.HasValue ? ToInt64(value.Value) : SqlInt64.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlInt64 ToSqlInt64(SqlString p) { return p.ToSqlInt64(); }
 
-        public static SqlInt64 ToSqlInt64(SqlByte p) { return p.ToSqlInt64(); }
-        public static SqlInt64 ToSqlInt64(SqlInt16 p) { return p.ToSqlInt64(); }
-        public static SqlInt64 ToSqlInt64(SqlInt32 p) { return p.ToSqlInt64(); }
-
-        public static SqlInt64 ToSqlInt64(SqlSingle p) { return p.ToSqlInt64(); }
-        public static SqlInt64 ToSqlInt64(SqlDouble p) { return p.ToSqlInt64(); }
-        public static SqlInt64 ToSqlInt64(SqlDecimal p) { return p.ToSqlInt64(); }
-        public static SqlInt64 ToSqlInt64(SqlMoney p) { return p.ToSqlInt64(); }
-
-        public static SqlInt64 ToSqlInt64(SqlBoolean p) { return p.ToSqlInt64(); }
-        public static SqlInt64 ToSqlInt64(SqlDateTime p) { return p.IsNull ? SqlInt64.Null : ToInt64(p.Value); }
-
-        public static SqlInt64 ToSqlInt64(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(SqlString value) { return value.ToSqlInt64(); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(SqlByte value) { return value.ToSqlInt64(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(SqlInt16 value) { return value.ToSqlInt64(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(SqlInt32 value) { return value.ToSqlInt64(); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(SqlSingle value) { return value.ToSqlInt64(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(SqlDouble value) { return value.ToSqlInt64(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(SqlDecimal value) { return value.ToSqlInt64(); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(SqlMoney value) { return value.ToSqlInt64(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(SqlBoolean value) { return value.ToSqlInt64(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(SqlDateTime value) { return value.IsNull ? SqlInt64.Null : ToInt64(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlInt64 representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
+        public static SqlInt64 ToSqlInt64(object value)
         {
-            if (p == null || p is DBNull) return SqlInt64.Null;
+            if (value == null || value is DBNull) return SqlInt64.Null;
 
-            if (p is SqlInt64) return (SqlInt64)p;
+            if (value is SqlInt64) return (SqlInt64)value;
 
             // Scalar Types.
             //
-            if (p is Int64) return ToSqlInt64((Int64)p);
-            if (p is String) return ToSqlInt64((String)p);
+            if (value is Int64) return ToSqlInt64((Int64)value);
+            if (value is String) return ToSqlInt64((String)value);
 
-            if (p is Char) return ToSqlInt64((Char)p);
-            if (p is Boolean) return ToSqlInt64((Boolean)p);
-            if (p is DateTime) return ToSqlInt64((DateTime)p);
-            if (p is TimeSpan) return ToSqlInt64((TimeSpan)p);
+            if (value is Char) return ToSqlInt64((Char)value);
+            if (value is Boolean) return ToSqlInt64((Boolean)value);
+            if (value is DateTime) return ToSqlInt64((DateTime)value);
+            if (value is TimeSpan) return ToSqlInt64((TimeSpan)value);
 
             // SqlTypes.
             //
-            if (p is SqlDateTime) return ToSqlInt64((SqlDateTime)p);
+            if (value is SqlDateTime) return ToSqlInt64((SqlDateTime)value);
 
-            return ToInt64(p);
+            return ToInt64(value);
         }
 #endif
         #endregion
@@ -5462,84 +9781,253 @@ namespace FluorineFx.Util
         #region SqlSingle
 #if! SILVERLIGHT
         // Scalar Types.
-        // 
-        public static SqlSingle ToSqlSingle(Single p) { return p; }
-        public static SqlSingle ToSqlSingle(String p) { return p == null ? SqlSingle.Null : SqlSingle.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Single value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(String value) { return value == null ? SqlSingle.Null : SqlSingle.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
         [CLSCompliant(false)]
-        public static SqlSingle ToSqlSingle(SByte p) { return checked((Single)p); }
-        public static SqlSingle ToSqlSingle(Int16 p) { return checked((Single)p); }
-        public static SqlSingle ToSqlSingle(Int32 p) { return checked((Single)p); }
-        public static SqlSingle ToSqlSingle(Int64 p) { return checked((Single)p); }
-
-        public static SqlSingle ToSqlSingle(Byte p) { return checked((Single)p); }
+        public static SqlSingle ToSqlSingle(SByte value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Int16 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Int32 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Int64 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Byte value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
         [CLSCompliant(false)]
-        public static SqlSingle ToSqlSingle(UInt16 p) { return checked((Single)p); }
+        public static SqlSingle ToSqlSingle(UInt16 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
         [CLSCompliant(false)]
-        public static SqlSingle ToSqlSingle(UInt32 p) { return checked((Single)p); }
+        public static SqlSingle ToSqlSingle(UInt32 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
         [CLSCompliant(false)]
-        public static SqlSingle ToSqlSingle(UInt64 p) { return checked((Single)p); }
-
-        public static SqlSingle ToSqlSingle(Double p) { return checked((Single)p); }
-
-        public static SqlSingle ToSqlSingle(Decimal p) { return checked((Single)p); }
-        public static SqlSingle ToSqlSingle(Char p) { return checked((Single)p); }
-        public static SqlSingle ToSqlSingle(Boolean p) { return p ? 1.0f : 0.0f; }
+        public static SqlSingle ToSqlSingle(UInt64 value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Double value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Decimal value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Char value) { return checked((Single)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Boolean value) { return value ? 1.0f : 0.0f; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlSingle ToSqlSingle(Single? p)     { return p.HasValue?          p.Value:  SqlSingle.Null; }
-		[CLSCompliant(false)]
-		public static SqlSingle ToSqlSingle(SByte? p)      { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
-		public static SqlSingle ToSqlSingle(Int16? p)      { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
-		public static SqlSingle ToSqlSingle(Int32? p)      { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
-		public static SqlSingle ToSqlSingle(Int64? p)      { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
 
-		public static SqlSingle ToSqlSingle(Byte? p)       { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
-		[CLSCompliant(false)]
-		public static SqlSingle ToSqlSingle(UInt16? p)     { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
-		[CLSCompliant(false)]
-		public static SqlSingle ToSqlSingle(UInt32? p)     { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
-		[CLSCompliant(false)]
-		public static SqlSingle ToSqlSingle(UInt64? p)     { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
-
-		public static SqlSingle ToSqlSingle(Double? p)     { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
-
-		public static SqlSingle ToSqlSingle(Boolean? p)    { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
-		public static SqlSingle ToSqlSingle(Decimal? p)    { return p.HasValue? ToSingle(p.Value): SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Single? value) { return value.HasValue ? value.Value : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        [CLSCompliant(false)]
+        public static SqlSingle ToSqlSingle(SByte? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Int16? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Int32? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Int64? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Byte? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        [CLSCompliant(false)]
+        public static SqlSingle ToSqlSingle(UInt16? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        [CLSCompliant(false)]
+        public static SqlSingle ToSqlSingle(UInt32? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        [CLSCompliant(false)]
+        public static SqlSingle ToSqlSingle(UInt64? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Double? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Boolean? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(Decimal? value) { return value.HasValue ? ToSingle(value.Value) : SqlSingle.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlSingle ToSqlSingle(SqlString p) { return p.ToSqlSingle(); }
 
-        public static SqlSingle ToSqlSingle(SqlByte p) { return p.ToSqlSingle(); }
-        public static SqlSingle ToSqlSingle(SqlInt16 p) { return p.ToSqlSingle(); }
-        public static SqlSingle ToSqlSingle(SqlInt32 p) { return p.ToSqlSingle(); }
-        public static SqlSingle ToSqlSingle(SqlInt64 p) { return p.ToSqlSingle(); }
-
-        public static SqlSingle ToSqlSingle(SqlDouble p) { return p.ToSqlSingle(); }
-        public static SqlSingle ToSqlSingle(SqlDecimal p) { return p.ToSqlSingle(); }
-        public static SqlSingle ToSqlSingle(SqlMoney p) { return p.ToSqlSingle(); }
-
-        public static SqlSingle ToSqlSingle(SqlBoolean p) { return p.ToSqlSingle(); }
-
-        public static SqlSingle ToSqlSingle(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(SqlString value) { return value.ToSqlSingle(); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(SqlByte value) { return value.ToSqlSingle(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(SqlInt16 value) { return value.ToSqlSingle(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(SqlInt32 value) { return value.ToSqlSingle(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(SqlInt64 value) { return value.ToSqlSingle(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(SqlDouble value) { return value.ToSqlSingle(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(SqlDecimal value) { return value.ToSqlSingle(); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(SqlMoney value) { return value.ToSqlSingle(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
+        public static SqlSingle ToSqlSingle(SqlBoolean value) { return value.ToSqlSingle(); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlSingle representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlSingle representation.</returns>
+        public static SqlSingle ToSqlSingle(object value)
         {
-            if (p == null || p is DBNull) return SqlSingle.Null;
+            if (value == null || value is DBNull) return SqlSingle.Null;
 
-            if (p is SqlSingle) return (SqlSingle)p;
+            if (value is SqlSingle) return (SqlSingle)value;
 
             // Scalar Types.
             //
-            if (p is Single) return ToSqlSingle((Single)p);
-            if (p is String) return ToSqlSingle((String)p);
+            if (value is Single) return ToSqlSingle((Single)value);
+            if (value is String) return ToSqlSingle((String)value);
 
-            if (p is Char) return ToSqlSingle((Char)p);
-            if (p is Boolean) return ToSqlSingle((Boolean)p);
+            if (value is Char) return ToSqlSingle((Char)value);
+            if (value is Boolean) return ToSqlSingle((Boolean)value);
 
-            return ToSingle(p);
+            return ToSingle(value);
         }
 #endif
         #endregion
@@ -5548,95 +10036,269 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlDouble ToSqlDouble(Double p) { return p; }
-        public static SqlDouble ToSqlDouble(String p) { return p == null ? SqlDouble.Null : SqlDouble.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlDouble representation.</returns>
+        public static SqlDouble ToSqlDouble(Double value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(String value) { return value == null ? SqlDouble.Null : SqlDouble.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlDouble representation.</returns>
         [CLSCompliant(false)]
-        public static SqlDouble ToSqlDouble(SByte p) { return checked((Double)p); }
-        public static SqlDouble ToSqlDouble(Int16 p) { return checked((Double)p); }
-        public static SqlDouble ToSqlDouble(Int32 p) { return checked((Double)p); }
-        public static SqlDouble ToSqlDouble(Int64 p) { return checked((Double)p); }
-
-        public static SqlDouble ToSqlDouble(Byte p) { return checked((Double)p); }
+        public static SqlDouble ToSqlDouble(SByte value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Int16 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Int32 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Int64 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Byte value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
         [CLSCompliant(false)]
-        public static SqlDouble ToSqlDouble(UInt16 p) { return checked((Double)p); }
+        public static SqlDouble ToSqlDouble(UInt16 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
         [CLSCompliant(false)]
-        public static SqlDouble ToSqlDouble(UInt32 p) { return checked((Double)p); }
+        public static SqlDouble ToSqlDouble(UInt32 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
         [CLSCompliant(false)]
-        public static SqlDouble ToSqlDouble(UInt64 p) { return checked((Double)p); }
-
-        public static SqlDouble ToSqlDouble(Single p) { return checked((Double)p); }
-
-        public static SqlDouble ToSqlDouble(Decimal p) { return checked((Double)p); }
-        public static SqlDouble ToSqlDouble(Char p) { return checked((Double)p); }
-        public static SqlDouble ToSqlDouble(Boolean p) { return p ? 1.0 : 0.0; }
-        public static SqlDouble ToSqlDouble(DateTime p) { return (p - DateTime.MinValue).TotalDays; }
-        public static SqlDouble ToSqlDouble(TimeSpan p) { return p.TotalDays; }
+        public static SqlDouble ToSqlDouble(UInt64 value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Single value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Decimal value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Char value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Boolean value) { return value ? 1.0 : 0.0; }
+        public static SqlDouble ToSqlDouble(DateTime value) { return (value - DateTime.MinValue).TotalDays; }
+        public static SqlDouble ToSqlDouble(TimeSpan value) { return value.TotalDays; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlDouble ToSqlDouble(Double? p)     { return p.HasValue?          p.Value:  SqlDouble.Null; }
-		[CLSCompliant(false)]
-		public static SqlDouble ToSqlDouble(SByte? p)      { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-		public static SqlDouble ToSqlDouble(Int16? p)      { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-		public static SqlDouble ToSqlDouble(Int32? p)      { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-		public static SqlDouble ToSqlDouble(Int64? p)      { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
 
-		public static SqlDouble ToSqlDouble(Byte? p)       { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-		[CLSCompliant(false)]
-		public static SqlDouble ToSqlDouble(UInt16? p)     { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-		[CLSCompliant(false)]
-		public static SqlDouble ToSqlDouble(UInt32? p)     { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-		[CLSCompliant(false)]
-		public static SqlDouble ToSqlDouble(UInt64? p)     { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-
-		public static SqlDouble ToSqlDouble(Single? p)     { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-
-		public static SqlDouble ToSqlDouble(Boolean? p)    { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-		public static SqlDouble ToSqlDouble(Decimal? p)    { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-		public static SqlDouble ToSqlDouble(DateTime? p)   { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
-		public static SqlDouble ToSqlDouble(TimeSpan? p)   { return p.HasValue? ToDouble(p.Value): SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Double? value) { return value.HasValue ? value.Value : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        [CLSCompliant(false)]
+        public static SqlDouble ToSqlDouble(SByte? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Int16? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Int32? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Int64? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Byte? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        [CLSCompliant(false)]
+        public static SqlDouble ToSqlDouble(UInt16? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        [CLSCompliant(false)]
+        public static SqlDouble ToSqlDouble(UInt32? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        [CLSCompliant(false)]
+        public static SqlDouble ToSqlDouble(UInt64? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Single? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Boolean? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(Decimal? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        public static SqlDouble ToSqlDouble(DateTime? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        public static SqlDouble ToSqlDouble(TimeSpan? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlDouble ToSqlDouble(SqlString p) { return p.ToSqlDouble(); }
 
-        public static SqlDouble ToSqlDouble(SqlByte p) { return p.ToSqlDouble(); }
-        public static SqlDouble ToSqlDouble(SqlInt16 p) { return p.ToSqlDouble(); }
-        public static SqlDouble ToSqlDouble(SqlInt32 p) { return p.ToSqlDouble(); }
-        public static SqlDouble ToSqlDouble(SqlInt64 p) { return p.ToSqlDouble(); }
-
-        public static SqlDouble ToSqlDouble(SqlSingle p) { return p.ToSqlDouble(); }
-        public static SqlDouble ToSqlDouble(SqlDecimal p) { return p.ToSqlDouble(); }
-        public static SqlDouble ToSqlDouble(SqlMoney p) { return p.ToSqlDouble(); }
-
-        public static SqlDouble ToSqlDouble(SqlBoolean p) { return p.ToSqlDouble(); }
-        public static SqlDouble ToSqlDouble(SqlDateTime p) { return p.IsNull ? SqlDouble.Null : ToDouble(p.Value); }
-
-        public static SqlDouble ToSqlDouble(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(SqlString value) { return value.ToSqlDouble(); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(SqlByte value) { return value.ToSqlDouble(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(SqlInt16 value) { return value.ToSqlDouble(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(SqlInt32 value) { return value.ToSqlDouble(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(SqlInt64 value) { return value.ToSqlDouble(); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(SqlSingle value) { return value.ToSqlDouble(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(SqlDecimal value) { return value.ToSqlDouble(); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(SqlMoney value) { return value.ToSqlDouble(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(SqlBoolean value) { return value.ToSqlDouble(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(SqlDateTime value) { return value.IsNull ? SqlDouble.Null : ToDouble(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        public static SqlDouble ToSqlDouble(object value)
         {
-            if (p == null || p is DBNull) return SqlDouble.Null;
+            if (value == null || value is DBNull) return SqlDouble.Null;
 
-            if (p is SqlDouble) return (SqlDouble)p;
+            if (value is SqlDouble) return (SqlDouble)value;
 
             // Scalar Types.
             //
-            if (p is Double) return ToSqlDouble((Double)p);
-            if (p is String) return ToSqlDouble((String)p);
+            if (value is Double) return ToSqlDouble((Double)value);
+            if (value is String) return ToSqlDouble((String)value);
 
-            if (p is Char) return ToSqlDouble((Char)p);
-            if (p is Boolean) return ToSqlDouble((Boolean)p);
-            if (p is DateTime) return ToSqlDouble((DateTime)p);
-            if (p is TimeSpan) return ToSqlDouble((TimeSpan)p);
+            if (value is Char) return ToSqlDouble((Char)value);
+            if (value is Boolean) return ToSqlDouble((Boolean)value);
+            if (value is DateTime) return ToSqlDouble((DateTime)value);
+            if (value is TimeSpan) return ToSqlDouble((TimeSpan)value);
 
             // SqlTypes.
             //
-            if (p is SqlDateTime) return ToSqlDouble((SqlDateTime)p);
+            if (value is SqlDateTime) return ToSqlDouble((SqlDateTime)value);
 
-            return ToDouble(p);
+            return ToDouble(value);
         }
 #endif
         #endregion
@@ -5645,84 +10307,253 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlDecimal ToSqlDecimal(Decimal p) { return p; }
-        public static SqlDecimal ToSqlDecimal(String p) { return p == null ? SqlDecimal.Null : SqlDecimal.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified Decimal to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A Decimal.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Decimal value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(String value) { return value == null ? SqlDecimal.Null : SqlDecimal.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
         [CLSCompliant(false)]
-        public static SqlDecimal ToSqlDecimal(SByte p) { return checked((Decimal)p); }
-        public static SqlDecimal ToSqlDecimal(Int16 p) { return checked((Decimal)p); }
-        public static SqlDecimal ToSqlDecimal(Int32 p) { return checked((Decimal)p); }
-        public static SqlDecimal ToSqlDecimal(Int64 p) { return checked((Decimal)p); }
-
-        public static SqlDecimal ToSqlDecimal(Byte p) { return checked((Decimal)p); }
+        public static SqlDecimal ToSqlDecimal(SByte value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Int16 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Int32 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Int64 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Byte value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
         [CLSCompliant(false)]
-        public static SqlDecimal ToSqlDecimal(UInt16 p) { return checked((Decimal)p); }
+        public static SqlDecimal ToSqlDecimal(UInt16 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
         [CLSCompliant(false)]
-        public static SqlDecimal ToSqlDecimal(UInt32 p) { return checked((Decimal)p); }
+        public static SqlDecimal ToSqlDecimal(UInt32 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
         [CLSCompliant(false)]
-        public static SqlDecimal ToSqlDecimal(UInt64 p) { return checked((Decimal)p); }
-
-        public static SqlDecimal ToSqlDecimal(Single p) { return checked((Decimal)p); }
-        public static SqlDecimal ToSqlDecimal(Double p) { return checked((Decimal)p); }
-
-        public static SqlDecimal ToSqlDecimal(Char p) { return checked((Decimal)p); }
-        public static SqlDecimal ToSqlDecimal(Boolean p) { return p ? 1.0m : 0.0m; }
+        public static SqlDecimal ToSqlDecimal(UInt64 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Single value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Double value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Char value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Boolean value) { return value ? 1.0m : 0.0m; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlDecimal ToSqlDecimal(Decimal? p)    { return p.HasValue?           p.Value:  SqlDecimal.Null; }
-		[CLSCompliant(false)]
-		public static SqlDecimal ToSqlDecimal(SByte? p)      { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
-		public static SqlDecimal ToSqlDecimal(Int16? p)      { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
-		public static SqlDecimal ToSqlDecimal(Int32? p)      { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
-		public static SqlDecimal ToSqlDecimal(Int64? p)      { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
 
-		public static SqlDecimal ToSqlDecimal(Byte? p)       { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
-		[CLSCompliant(false)]
-		public static SqlDecimal ToSqlDecimal(UInt16? p)     { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
-		[CLSCompliant(false)]
-		public static SqlDecimal ToSqlDecimal(UInt32? p)     { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
-		[CLSCompliant(false)]
-		public static SqlDecimal ToSqlDecimal(UInt64? p)     { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
-
-		public static SqlDecimal ToSqlDecimal(Single? p)     { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
-		public static SqlDecimal ToSqlDecimal(Double? p)     { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
-
-		public static SqlDecimal ToSqlDecimal(Boolean? p)    { return p.HasValue? ToDecimal(p.Value): SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Decimal? value) { return value.HasValue ? value.Value : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        [CLSCompliant(false)]
+        public static SqlDecimal ToSqlDecimal(SByte? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Int16? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Int32? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Int64? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Byte? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        [CLSCompliant(false)]
+        public static SqlDecimal ToSqlDecimal(UInt16? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        [CLSCompliant(false)]
+        public static SqlDecimal ToSqlDecimal(UInt32? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        [CLSCompliant(false)]
+        public static SqlDecimal ToSqlDecimal(UInt64? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Single? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Double? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(Boolean? value) { return value.HasValue ? ToDecimal(value.Value) : SqlDecimal.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlDecimal ToSqlDecimal(SqlString p) { return p.ToSqlDecimal(); }
 
-        public static SqlDecimal ToSqlDecimal(SqlByte p) { return p.ToSqlDecimal(); }
-        public static SqlDecimal ToSqlDecimal(SqlInt16 p) { return p.ToSqlDecimal(); }
-        public static SqlDecimal ToSqlDecimal(SqlInt32 p) { return p.ToSqlDecimal(); }
-        public static SqlDecimal ToSqlDecimal(SqlInt64 p) { return p.ToSqlDecimal(); }
-
-        public static SqlDecimal ToSqlDecimal(SqlSingle p) { return p.ToSqlDecimal(); }
-        public static SqlDecimal ToSqlDecimal(SqlDouble p) { return p.ToSqlDecimal(); }
-        public static SqlDecimal ToSqlDecimal(SqlMoney p) { return p.ToSqlDecimal(); }
-
-        public static SqlDecimal ToSqlDecimal(SqlBoolean p) { return p.ToSqlDecimal(); }
-
-        public static SqlDecimal ToSqlDecimal(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(SqlString value) { return value.ToSqlDecimal(); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(SqlByte value) { return value.ToSqlDecimal(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(SqlInt16 value) { return value.ToSqlDecimal(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(SqlInt32 value) { return value.ToSqlDecimal(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(SqlInt64 value) { return value.ToSqlDecimal(); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(SqlSingle value) { return value.ToSqlDecimal(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(SqlDouble value) { return value.ToSqlDecimal(); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(SqlMoney value) { return value.ToSqlDecimal(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(SqlBoolean value) { return value.ToSqlDecimal(); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlDecimal representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
+        public static SqlDecimal ToSqlDecimal(object value)
         {
-            if (p == null || p is DBNull) return SqlDecimal.Null;
+            if (value == null || value is DBNull) return SqlDecimal.Null;
 
-            if (p is SqlDecimal) return (SqlDecimal)p;
+            if (value is SqlDecimal) return (SqlDecimal)value;
 
             // Scalar Types.
             //
-            if (p is Decimal) return ToSqlDecimal((Decimal)p);
-            if (p is String) return ToSqlDecimal((String)p);
+            if (value is Decimal) return ToSqlDecimal((Decimal)value);
+            if (value is String) return ToSqlDecimal((String)value);
 
-            if (p is Char) return ToSqlDecimal((Char)p);
-            if (p is Boolean) return ToSqlDecimal((Boolean)p);
+            if (value is Char) return ToSqlDecimal((Char)value);
+            if (value is Boolean) return ToSqlDecimal((Boolean)value);
 
-            return ToDecimal(p);
+            return ToDecimal(value);
         }
 #endif
         #endregion
@@ -5731,84 +10562,253 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlMoney ToSqlMoney(Decimal p) { return p; }
-        public static SqlMoney ToSqlMoney(String p) { return p == null ? SqlMoney.Null : SqlMoney.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified Decimal to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A Decimal.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Decimal value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(String value) { return value == null ? SqlMoney.Null : SqlMoney.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
         [CLSCompliant(false)]
-        public static SqlMoney ToSqlMoney(SByte p) { return checked((Decimal)p); }
-        public static SqlMoney ToSqlMoney(Int16 p) { return checked((Decimal)p); }
-        public static SqlMoney ToSqlMoney(Int32 p) { return checked((Decimal)p); }
-        public static SqlMoney ToSqlMoney(Int64 p) { return checked((Decimal)p); }
-
-        public static SqlMoney ToSqlMoney(Byte p) { return checked((Decimal)p); }
+        public static SqlMoney ToSqlMoney(SByte value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Int16 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Int32 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Int64 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Byte value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
         [CLSCompliant(false)]
-        public static SqlMoney ToSqlMoney(UInt16 p) { return checked((Decimal)p); }
+        public static SqlMoney ToSqlMoney(UInt16 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
         [CLSCompliant(false)]
-        public static SqlMoney ToSqlMoney(UInt32 p) { return checked((Decimal)p); }
+        public static SqlMoney ToSqlMoney(UInt32 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
         [CLSCompliant(false)]
-        public static SqlMoney ToSqlMoney(UInt64 p) { return checked((Decimal)p); }
-
-        public static SqlMoney ToSqlMoney(Single p) { return checked((Decimal)p); }
-        public static SqlMoney ToSqlMoney(Double p) { return checked((Decimal)p); }
-
-        public static SqlMoney ToSqlMoney(Char p) { return checked((Decimal)p); }
-        public static SqlMoney ToSqlMoney(Boolean p) { return p ? 1.0m : 0.0m; }
+        public static SqlMoney ToSqlMoney(UInt64 value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Single value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Double value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Char value) { return checked((Decimal)value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Boolean value) { return value ? 1.0m : 0.0m; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlMoney ToSqlMoney(Decimal? p)    { return p.HasValue?           p.Value:  SqlMoney.Null; }
-		[CLSCompliant(false)]
-		public static SqlMoney ToSqlMoney(SByte? p)      { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
-		public static SqlMoney ToSqlMoney(Int16? p)      { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
-		public static SqlMoney ToSqlMoney(Int32? p)      { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
-		public static SqlMoney ToSqlMoney(Int64? p)      { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
 
-		public static SqlMoney ToSqlMoney(Byte? p)       { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
-		[CLSCompliant(false)]
-		public static SqlMoney ToSqlMoney(UInt16? p)     { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
-		[CLSCompliant(false)]
-		public static SqlMoney ToSqlMoney(UInt32? p)     { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
-		[CLSCompliant(false)]
-		public static SqlMoney ToSqlMoney(UInt64? p)     { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
-
-		public static SqlMoney ToSqlMoney(Single? p)     { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
-		public static SqlMoney ToSqlMoney(Double? p)     { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
-
-		public static SqlMoney ToSqlMoney(Boolean? p)    { return p.HasValue? ToDecimal(p.Value): SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Decimal? value) { return value.HasValue ? value.Value : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        [CLSCompliant(false)]
+        public static SqlMoney ToSqlMoney(SByte? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Int16? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Int32? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Int64? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Byte? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        [CLSCompliant(false)]
+        public static SqlMoney ToSqlMoney(UInt16? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        [CLSCompliant(false)]
+        public static SqlMoney ToSqlMoney(UInt32? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        [CLSCompliant(false)]
+        public static SqlMoney ToSqlMoney(UInt64? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Single? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Double? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(Boolean? value) { return value.HasValue ? ToDecimal(value.Value) : SqlMoney.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlMoney ToSqlMoney(SqlString p) { return p.ToSqlMoney(); }
 
-        public static SqlMoney ToSqlMoney(SqlByte p) { return p.ToSqlMoney(); }
-        public static SqlMoney ToSqlMoney(SqlInt16 p) { return p.ToSqlMoney(); }
-        public static SqlMoney ToSqlMoney(SqlInt32 p) { return p.ToSqlMoney(); }
-        public static SqlMoney ToSqlMoney(SqlInt64 p) { return p.ToSqlMoney(); }
-
-        public static SqlMoney ToSqlMoney(SqlSingle p) { return p.ToSqlMoney(); }
-        public static SqlMoney ToSqlMoney(SqlDouble p) { return p.ToSqlMoney(); }
-        public static SqlMoney ToSqlMoney(SqlDecimal p) { return p.ToSqlMoney(); }
-
-        public static SqlMoney ToSqlMoney(SqlBoolean p) { return p.ToSqlMoney(); }
-
-        public static SqlMoney ToSqlMoney(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(SqlString value) { return value.ToSqlMoney(); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(SqlByte value) { return value.ToSqlMoney(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(SqlInt16 value) { return value.ToSqlMoney(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(SqlInt32 value) { return value.ToSqlMoney(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(SqlInt64 value) { return value.ToSqlMoney(); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(SqlSingle value) { return value.ToSqlMoney(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(SqlDouble value) { return value.ToSqlMoney(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(SqlDecimal value) { return value.ToSqlMoney(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(SqlBoolean value) { return value.ToSqlMoney(); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlMoney representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
+        public static SqlMoney ToSqlMoney(object value)
         {
-            if (p == null || p is DBNull) return SqlMoney.Null;
+            if (value == null || value is DBNull) return SqlMoney.Null;
 
-            if (p is SqlMoney) return (SqlMoney)p;
+            if (value is SqlMoney) return (SqlMoney)value;
 
             // Scalar Types.
             //
-            if (p is Decimal) return ToSqlMoney((Decimal)p);
-            if (p is String) return ToSqlMoney((String)p);
+            if (value is Decimal) return ToSqlMoney((Decimal)value);
+            if (value is String) return ToSqlMoney((String)value);
 
-            if (p is Char) return ToSqlMoney((Char)p);
-            if (p is Boolean) return ToSqlMoney((Boolean)p);
+            if (value is Char) return ToSqlMoney((Char)value);
+            if (value is Boolean) return ToSqlMoney((Boolean)value);
 
-            return ToDecimal(p);
+            return ToDecimal(value);
         }
 #endif
         #endregion
@@ -5817,84 +10817,259 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlBoolean ToSqlBoolean(Boolean p) { return p; }
-        public static SqlBoolean ToSqlBoolean(String p) { return p == null ? SqlBoolean.Null : SqlBoolean.Parse(p); }
 
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Boolean value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(String value) { return value == null ? SqlBoolean.Null : SqlBoolean.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
         [CLSCompliant(false)]
-        public static SqlBoolean ToSqlBoolean(SByte p) { return p != 0; }
-        public static SqlBoolean ToSqlBoolean(Int16 p) { return p != 0; }
-        public static SqlBoolean ToSqlBoolean(Int32 p) { return p != 0; }
-        public static SqlBoolean ToSqlBoolean(Int64 p) { return p != 0; }
-
-        public static SqlBoolean ToSqlBoolean(Byte p) { return p != 0; }
+        public static SqlBoolean ToSqlBoolean(SByte value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Int16 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Int32 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Int64 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Byte value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
         [CLSCompliant(false)]
-        public static SqlBoolean ToSqlBoolean(UInt16 p) { return p != 0; }
+        public static SqlBoolean ToSqlBoolean(UInt16 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
         [CLSCompliant(false)]
-        public static SqlBoolean ToSqlBoolean(UInt32 p) { return p != 0; }
+        public static SqlBoolean ToSqlBoolean(UInt32 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
         [CLSCompliant(false)]
-        public static SqlBoolean ToSqlBoolean(UInt64 p) { return p != 0; }
-
-        public static SqlBoolean ToSqlBoolean(Single p) { return p != 0; }
-        public static SqlBoolean ToSqlBoolean(Double p) { return p != 0; }
-
-        public static SqlBoolean ToSqlBoolean(Decimal p) { return p != 0; }
-        public static SqlBoolean ToSqlBoolean(Char p) { return p != 0; }
+        public static SqlBoolean ToSqlBoolean(UInt64 value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Single value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Double value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Decimal value) { return value != 0; }
+        /// <summary>
+        /// Converts the value of the specified Unsigned character to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An Unsigned character.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Char value) { return value != 0; }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlBoolean ToSqlBoolean(Boolean? p)    { return p.HasValue?           p.Value:  SqlBoolean.Null; }
-		[CLSCompliant(false)]
-		public static SqlBoolean ToSqlBoolean(SByte? p)      { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
-		public static SqlBoolean ToSqlBoolean(Int16? p)      { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
-		public static SqlBoolean ToSqlBoolean(Int32? p)      { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
-		public static SqlBoolean ToSqlBoolean(Int64? p)      { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
 
-		public static SqlBoolean ToSqlBoolean(Byte? p)       { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
-		[CLSCompliant(false)]
-		public static SqlBoolean ToSqlBoolean(UInt16? p)     { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
-		[CLSCompliant(false)]
-		public static SqlBoolean ToSqlBoolean(UInt32? p)     { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
-		[CLSCompliant(false)]
-		public static SqlBoolean ToSqlBoolean(UInt64? p)     { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
-
-		public static SqlBoolean ToSqlBoolean(Single? p)     { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
-		public static SqlBoolean ToSqlBoolean(Double? p)     { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
-
-		public static SqlBoolean ToSqlBoolean(Decimal? p)    { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
-		public static SqlBoolean ToSqlBoolean(Char? p)       { return p.HasValue? ToBoolean(p.Value): SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Boolean? value) { return value.HasValue ? value.Value : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        [CLSCompliant(false)]
+        public static SqlBoolean ToSqlBoolean(SByte? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Int16? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Int32? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Int64? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Byte? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        [CLSCompliant(false)]
+        public static SqlBoolean ToSqlBoolean(UInt16? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        [CLSCompliant(false)]
+        public static SqlBoolean ToSqlBoolean(UInt32? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        [CLSCompliant(false)]
+        public static SqlBoolean ToSqlBoolean(UInt64? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Single? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Double? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Decimal? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(Char? value) { return value.HasValue ? ToBoolean(value.Value) : SqlBoolean.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlBoolean ToSqlBoolean(SqlString p) { return p.ToSqlBoolean(); }
 
-        public static SqlBoolean ToSqlBoolean(SqlByte p) { return p.ToSqlBoolean(); }
-        public static SqlBoolean ToSqlBoolean(SqlInt16 p) { return p.ToSqlBoolean(); }
-        public static SqlBoolean ToSqlBoolean(SqlInt32 p) { return p.ToSqlBoolean(); }
-        public static SqlBoolean ToSqlBoolean(SqlInt64 p) { return p.ToSqlBoolean(); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(SqlString value) { return value.ToSqlBoolean(); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(SqlByte value) { return value.ToSqlBoolean(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(SqlInt16 value) { return value.ToSqlBoolean(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(SqlInt32 value) { return value.ToSqlBoolean(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(SqlInt64 value) { return value.ToSqlBoolean(); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(SqlSingle value) { return value.ToSqlBoolean(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(SqlDouble value) { return value.ToSqlBoolean(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(SqlDecimal value) { return value.ToSqlBoolean(); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(SqlMoney value) { return value.ToSqlBoolean(); }
 
-        public static SqlBoolean ToSqlBoolean(SqlSingle p) { return p.ToSqlBoolean(); }
-        public static SqlBoolean ToSqlBoolean(SqlDouble p) { return p.ToSqlBoolean(); }
-        public static SqlBoolean ToSqlBoolean(SqlDecimal p) { return p.ToSqlBoolean(); }
-        public static SqlBoolean ToSqlBoolean(SqlMoney p) { return p.ToSqlBoolean(); }
-
-
-        public static SqlBoolean ToSqlBoolean(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlBoolean representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
+        public static SqlBoolean ToSqlBoolean(object value)
         {
-            if (p == null || p is DBNull) return SqlBoolean.Null;
+            if (value == null || value is DBNull) return SqlBoolean.Null;
 
-            if (p is SqlBoolean) return (SqlBoolean)p;
+            if (value is SqlBoolean) return (SqlBoolean)value;
 
             // Scalar Types.
             //
-            if (p is Boolean) return ToSqlBoolean((Boolean)p);
-            if (p is String) return ToSqlBoolean((String)p);
+            if (value is Boolean) return ToSqlBoolean((Boolean)value);
+            if (value is String) return ToSqlBoolean((String)value);
 
-            if (p is Char) return ToSqlBoolean((Char)p);
+            if (value is Char) return ToSqlBoolean((Char)value);
 
-            return ToBoolean(p);
+            return ToBoolean(value);
         }
 #endif
         #endregion
@@ -5903,49 +11078,113 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlDateTime ToSqlDateTime(String p) { return p == null ? SqlDateTime.Null : SqlDateTime.Parse(p); }
-        public static SqlDateTime ToSqlDateTime(DateTime p) { return p; }
-        public static SqlDateTime ToSqlDateTime(TimeSpan p) { return ToDateTime(p); }
-        public static SqlDateTime ToSqlDateTime(Int64 p) { return ToDateTime(p); }
-        public static SqlDateTime ToSqlDateTime(Double p) { return ToDateTime(p); }
+
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(String value) { return value == null ? SqlDateTime.Null : SqlDateTime.Parse(value); }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">A DateTime.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(DateTime value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">A TimeSpan.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(TimeSpan value) { return ToDateTime(value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(Int64 value) { return ToDateTime(value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(Double value) { return ToDateTime(value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlDateTime ToSqlDateTime(DateTime? p)   { return p.HasValue?            p.Value:  SqlDateTime.Null; }
-		public static SqlDateTime ToSqlDateTime(TimeSpan? p)   { return p.HasValue? ToDateTime(p.Value): SqlDateTime.Null; }
-		public static SqlDateTime ToSqlDateTime(Int64? p)      { return p.HasValue? ToDateTime(p.Value): SqlDateTime.Null; }
-		public static SqlDateTime ToSqlDateTime(Double? p)     { return p.HasValue? ToDateTime(p.Value): SqlDateTime.Null; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">A nullable DateTime.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(DateTime? value) { return value.HasValue ? value.Value : SqlDateTime.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(TimeSpan? value) { return value.HasValue ? ToDateTime(value.Value) : SqlDateTime.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer number to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(Int64? value) { return value.HasValue ? ToDateTime(value.Value) : SqlDateTime.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(Double? value) { return value.HasValue ? ToDateTime(value.Value) : SqlDateTime.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlDateTime ToSqlDateTime(SqlString p) { return p.ToSqlDateTime(); }
-        public static SqlDateTime ToSqlDateTime(SqlInt64 p) { return p.IsNull ? SqlDateTime.Null : ToDateTime(p); }
-        public static SqlDateTime ToSqlDateTime(SqlDouble p) { return p.IsNull ? SqlDateTime.Null : ToDateTime(p); }
 
-        public static SqlDateTime ToSqlDateTime(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(SqlString value) { return value.ToSqlDateTime(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(SqlInt64 value) { return value.IsNull ? SqlDateTime.Null : ToDateTime(value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(SqlDouble value) { return value.IsNull ? SqlDateTime.Null : ToDateTime(value); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlDateTime representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
+        public static SqlDateTime ToSqlDateTime(object value)
         {
-            if (p == null || p is DBNull) return SqlDateTime.Null;
+            if (value == null || value is DBNull) return SqlDateTime.Null;
 
-            if (p is SqlDateTime) return (SqlDateTime)p;
+            if (value is SqlDateTime) return (SqlDateTime)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToSqlDateTime((String)p);
-            if (p is DateTime) return ToSqlDateTime((DateTime)p);
-            if (p is TimeSpan) return ToSqlDateTime((TimeSpan)p);
-            if (p is Int64) return ToSqlDateTime((Int64)p);
-            if (p is Double) return ToSqlDateTime((Double)p);
+            if (value is String) return ToSqlDateTime((String)value);
+            if (value is DateTime) return ToSqlDateTime((DateTime)value);
+            if (value is TimeSpan) return ToSqlDateTime((TimeSpan)value);
+            if (value is Int64) return ToSqlDateTime((Int64)value);
+            if (value is Double) return ToSqlDateTime((Double)value);
 
             // SqlTypes.
             //
-            if (p is SqlString) return ToSqlDateTime((SqlString)p);
-            if (p is SqlInt64) return ToSqlDateTime((SqlInt64)p);
-            if (p is SqlDouble) return ToSqlDateTime((SqlDouble)p);
+            if (value is SqlString) return ToSqlDateTime((SqlString)value);
+            if (value is SqlInt64) return ToSqlDateTime((SqlInt64)value);
+            if (value is SqlDouble) return ToSqlDateTime((SqlDouble)value);
 
-            return ToDateTime(p);
+            return ToDateTime(value);
         }
 #endif
         #endregion
@@ -5954,54 +11193,98 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlGuid ToSqlGuid(Guid p) { return p; }
-        public static SqlGuid ToSqlGuid(String p) { return p == null ? SqlGuid.Null : SqlGuid.Parse(p); }
+
+        /// <summary>
+        /// Converts the value of the specified Guid to its equivalent SqlGuid representation.
+        /// </summary>
+        /// <param name="value">A Guid.</param>
+        /// <returns>The equivalent SqlGuid.</returns>
+        public static SqlGuid ToSqlGuid(Guid value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlGuid representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlGuid.</returns>
+        public static SqlGuid ToSqlGuid(String value) { return value == null ? SqlGuid.Null : SqlGuid.Parse(value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlGuid ToSqlGuid(Guid? p)       { return p.HasValue? p.Value : SqlGuid.Null; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable Guid to its equivalent SqlGuid representation.
+        /// </summary>
+        /// <param name="value">A nullable Guid.</param>
+        /// <returns>The equivalent SqlGuid.</returns>
+        public static SqlGuid ToSqlGuid(Guid? value) { return value.HasValue ? value.Value : SqlGuid.Null; }
 
 #endif
         // SqlTypes.
-        // 
-        public static SqlGuid ToSqlGuid(SqlBinary p) { return p.ToSqlGuid(); }
+
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent SqlGuid representation.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The equivalent SqlGuid.</returns>
+        public static SqlGuid ToSqlGuid(SqlBinary value) { return value.ToSqlGuid(); }
 #if !(NET_1_1)
-        public static SqlGuid ToSqlGuid(SqlBytes p)    { return p.ToSqlBinary().ToSqlGuid(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBytes to its equivalent SqlGuid representation.
+        /// </summary>
+        /// <param name="value">An SqlBytes.</param>
+        /// <returns>The equivalent SqlGuid.</returns>
+        public static SqlGuid ToSqlGuid(SqlBytes value) { return value.ToSqlBinary().ToSqlGuid(); }
 #endif
-        public static SqlGuid ToSqlGuid(SqlString p) { return p.ToSqlGuid(); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlGuid representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlGuid.</returns>
+        public static SqlGuid ToSqlGuid(SqlString value) { return value.ToSqlGuid(); }
 
         // Other Types.
-        // 
-        public static SqlGuid ToSqlGuid(Type p) { return p == null ? SqlGuid.Null : p.GUID; }
-        public static SqlGuid ToSqlGuid(Byte[] p) { return p == null ? SqlGuid.Null : new SqlGuid(p); }
 
-        public static SqlGuid ToSqlGuid(object p)
+        /// <summary>
+        /// Converts the value of the specified Type to its equivalent SqlGuid representation.
+        /// </summary>
+        /// <param name="value">A Type.</param>
+        /// <returns>The equivalent SqlGuid.</returns>
+        public static SqlGuid ToSqlGuid(Type value) { return value == null ? SqlGuid.Null : value.GUID; }
+        /// <summary>
+        /// Converts the value of the specified memory buffer to its equivalent SqlGuid representation.
+        /// </summary>
+        /// <param name="value">A memory buffer.</param>
+        /// <returns>The equivalent SqlGuid.</returns>
+        public static SqlGuid ToSqlGuid(Byte[] value) { return value == null ? SqlGuid.Null : new SqlGuid(value); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlGuid representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlGuid.</returns>
+        public static SqlGuid ToSqlGuid(object value)
         {
-            if (p == null || p is DBNull) return SqlGuid.Null;
+            if (value == null || value is DBNull) return SqlGuid.Null;
 
-            if (p is SqlGuid) return (SqlGuid)p;
+            if (value is SqlGuid) return (SqlGuid)value;
 
             // Scalar Types.
             //
-            if (p is Guid) return ToSqlGuid((Guid)p);
-            if (p is String) return ToSqlGuid((String)p);
+            if (value is Guid) return ToSqlGuid((Guid)value);
+            if (value is String) return ToSqlGuid((String)value);
 
             // SqlTypes.
             //
-            if (p is SqlBinary) return ToSqlGuid((SqlBinary)p);
+            if (value is SqlBinary) return ToSqlGuid((SqlBinary)value);
 #if !(NET_1_1)
-            if (p is SqlBytes)    return ToSqlGuid((SqlBytes)p);
+            if (value is SqlBytes) return ToSqlGuid((SqlBytes)value);
 #endif
-            if (p is SqlString) return ToSqlGuid((SqlString)p);
+            if (value is SqlString) return ToSqlGuid((SqlString)value);
 
             // Other Types.
             //
-            if (p is Type) return ToSqlGuid((Type)p);
-            if (p is Byte[]) return ToSqlGuid((Byte[])p);
+            if (value is Type) return ToSqlGuid((Type)value);
+            if (value is Byte[]) return ToSqlGuid((Byte[])value);
 
-            return ToGuid(p);
+            return ToGuid(value);
         }
 #endif
         #endregion
@@ -6010,42 +11293,70 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        // 
-        public static SqlBinary ToSqlBinary(Byte[] p) { return p; }
-        public static SqlBinary ToSqlBinary(Guid p) { return p == Guid.Empty ? SqlBinary.Null : new SqlGuid(p).ToSqlBinary(); }
+
+        /// <summary>
+        /// Converts the value of the specified memory buffer to its equivalent SqlBinary representation.
+        /// </summary>
+        /// <param name="value">A memory buffer.</param>
+        /// <returns>The equivalent SqlBinary.</returns>
+        public static SqlBinary ToSqlBinary(Byte[] value) { return value; }
+        /// <summary>
+        /// Converts the value of the specified Guid to its equivalent SqlBinary representation.
+        /// </summary>
+        /// <param name="value">A Guid.</param>
+        /// <returns>The equivalent SqlBinary.</returns>
+        public static SqlBinary ToSqlBinary(Guid value) { return value == Guid.Empty ? SqlBinary.Null : new SqlGuid(value).ToSqlBinary(); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static SqlBinary ToSqlBinary(Guid? p)       { return p.HasValue? new SqlGuid(p.Value).ToSqlBinary(): SqlBinary.Null; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable Guid to its equivalent SqlBinary representation.
+        /// </summary>
+        /// <param name="value">A nullable Guid.</param>
+        /// <returns>The equivalent SqlBinary.</returns>
+        public static SqlBinary ToSqlBinary(Guid? value) { return value.HasValue ? new SqlGuid(value.Value).ToSqlBinary() : SqlBinary.Null; }
 
 #endif
         // SqlTypes.
-        // 
 #if !(NET_1_1)
-        public static SqlBinary ToSqlBinary(SqlBytes p)    { return p.ToSqlBinary(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBytes to its equivalent SqlBinary representation.
+        /// </summary>
+        /// <param name="value">An SqlBytes.</param>
+        /// <returns>The equivalent SqlBinary.</returns>
+        public static SqlBinary ToSqlBinary(SqlBytes value) { return value.ToSqlBinary(); }
 #endif
-        public static SqlBinary ToSqlBinary(SqlGuid p) { return p.ToSqlBinary(); }
-
-        public static SqlBinary ToSqlBinary(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlGuid to its equivalent SqlBinary representation.
+        /// </summary>
+        /// <param name="value">An SqlGuid.</param>
+        /// <returns>The equivalent SqlBinary.</returns>
+        public static SqlBinary ToSqlBinary(SqlGuid value) { return value.ToSqlBinary(); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlBinary representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlBinary.</returns>
+        public static SqlBinary ToSqlBinary(object value)
         {
-            if (p == null || p is DBNull) return SqlBinary.Null;
+            if (value == null || value is DBNull) return SqlBinary.Null;
 
-            if (p is SqlBinary) return (SqlBinary)p;
+            if (value is SqlBinary) return (SqlBinary)value;
 
             // Scalar Types.
             //
-            if (p is Byte[]) return ToSqlBinary((Byte[])p);
-            if (p is Guid) return ToSqlBinary((Guid)p);
+            if (value is Byte[]) return ToSqlBinary((Byte[])value);
+            if (value is Guid) return ToSqlBinary((Guid)value);
 
             // SqlTypes.
             //
 #if !(NET_1_1)
-            if (p is SqlBytes)    return ToSqlBinary((SqlBytes)p);
+            if (value is SqlBytes) return ToSqlBinary((SqlBytes)value);
 #endif
-            if (p is SqlGuid) return ToSqlBinary((SqlGuid)p);
+            if (value is SqlGuid) return ToSqlBinary((SqlGuid)value);
 
-            return ToByteArray(p);
+            return ToByteArray(value);
         }
 #endif
         #endregion
@@ -6055,38 +11366,72 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-		// 
-		public static SqlBytes ToSqlBytes(Byte[] p)      { return p == null? SqlBytes.Null: new SqlBytes(p); }
-		public static SqlBytes ToSqlBytes(Stream p)      { return p == null? SqlBytes.Null: new SqlBytes(p); }
-		public static SqlBytes ToSqlBytes(Guid p)        { return p == Guid.Empty? SqlBytes.Null: new SqlBytes(p.ToByteArray()); }
+
+        /// <summary>
+        /// Converts the value of the specified memory buffer to its equivalent SqlBytes representation.
+        /// </summary>
+        /// <param name="value">A memory buffer.</param>
+        /// <returns>The equivalent SqlBytes.</returns>
+        public static SqlBytes ToSqlBytes(Byte[] value) { return value == null ? SqlBytes.Null : new SqlBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified Stream to its equivalent SqlBytes representation.
+        /// </summary>
+        /// <param name="value">A Stream.</param>
+        /// <returns>The equivalent SqlBytes.</returns>
+        public static SqlBytes ToSqlBytes(Stream value) { return value == null ? SqlBytes.Null : new SqlBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified Guid to its equivalent SqlBytes representation.
+        /// </summary>
+        /// <param name="value">A Guid.</param>
+        /// <returns>The equivalent SqlBytes.</returns>
+        public static SqlBytes ToSqlBytes(Guid value) { return value == Guid.Empty ? SqlBytes.Null : new SqlBytes(value.ToByteArray()); }
 
 		// Nullable Types.
-		// 
-		public static SqlBytes ToSqlBytes(Guid? p)       { return p.HasValue? new SqlBytes(p.Value.ToByteArray()): SqlBytes.Null; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable Guid to its equivalent SqlBytes representation.
+        /// </summary>
+        /// <param name="value">A nullable Guid.</param>
+        /// <returns>The equivalent SqlBytes.</returns>
+        public static SqlBytes ToSqlBytes(Guid? value) { return value.HasValue ? new SqlBytes(value.Value.ToByteArray()) : SqlBytes.Null; }
 
 		// SqlTypes.
-		// 
-		public static SqlBytes ToSqlBytes(SqlBinary p)   { return p.IsNull? SqlBytes.Null: new SqlBytes(p); }
-		public static SqlBytes ToSqlBytes(SqlGuid p)     { return p.IsNull? SqlBytes.Null: new SqlBytes(p.ToByteArray()); }
 
-		public static SqlBytes ToSqlBytes(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent SqlBytes representation.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The equivalent SqlBytes.</returns>
+        public static SqlBytes ToSqlBytes(SqlBinary value) { return value.IsNull ? SqlBytes.Null : new SqlBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified SqlGuid to its equivalent SqlBytes representation.
+        /// </summary>
+        /// <param name="value">An SqlGuid.</param>
+        /// <returns>The equivalent SqlBytes.</returns>
+        public static SqlBytes ToSqlBytes(SqlGuid value) { return value.IsNull ? SqlBytes.Null : new SqlBytes(value.ToByteArray()); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlBytes representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlBytes.</returns>
+        public static SqlBytes ToSqlBytes(object value)
 		{
-			if (p == null || p is DBNull) return SqlBytes.Null;
+            if (value == null || value is DBNull) return SqlBytes.Null;
 
-			if (p is SqlBytes)    return (SqlBytes)p;
+            if (value is SqlBytes) return (SqlBytes)value;
 
 			// Scalar Types.
 			//
-			if (p is Byte[])      return ToSqlBytes((Byte[])p);
-			if (p is Stream)      return ToSqlBytes((Stream)p);
-			if (p is Guid)        return ToSqlBytes((Guid)p);
+            if (value is Byte[]) return ToSqlBytes((Byte[])value);
+            if (value is Stream) return ToSqlBytes((Stream)value);
+            if (value is Guid) return ToSqlBytes((Guid)value);
 
 			// SqlTypes.
 			//
-			if (p is SqlBinary)   return ToSqlBytes((SqlBinary)p);
-			if (p is SqlGuid)     return ToSqlBytes((SqlGuid)p);
+            if (value is SqlBinary) return ToSqlBytes((SqlBinary)value);
+            if (value is SqlGuid) return ToSqlBytes((SqlGuid)value);
 
-			return new SqlBytes(ToByteArray(p));
+            return new SqlBytes(ToByteArray(value));
 		}
 #endif
         #endregion
@@ -6095,129 +11440,416 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
 		// Scalar Types.
-		// 
-		public static SqlChars ToSqlChars(String p)      { return p == null? SqlChars.Null: new SqlChars(p.ToCharArray()); }
-		public static SqlChars ToSqlChars(Char[] p)      { return p == null? SqlChars.Null: new SqlChars(p); }
 
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(String value) { return value == null ? SqlChars.Null : new SqlChars(value.ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified character array to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A character array.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Char[] value) { return value == null ? SqlChars.Null : new SqlChars(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
 		[CLSCompliant(false)]
-		public static SqlChars ToSqlChars(SByte p)       { return new SqlChars(ToString(p).ToCharArray()); }
-		public static SqlChars ToSqlChars(Int16 p)       { return new SqlChars(ToString(p).ToCharArray()); }
-		public static SqlChars ToSqlChars(Int32 p)       { return new SqlChars(ToString(p).ToCharArray()); }
-		public static SqlChars ToSqlChars(Int64 p)       { return new SqlChars(ToString(p).ToCharArray()); }
-
-		public static SqlChars ToSqlChars(Byte p)        { return new SqlChars(ToString(p).ToCharArray()); }
+        public static SqlChars ToSqlChars(SByte value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Int16 value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Int32 value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Int64 value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Byte value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
 		[CLSCompliant(false)]
-		public static SqlChars ToSqlChars(UInt16 p)      { return new SqlChars(ToString(p).ToCharArray()); }
+        public static SqlChars ToSqlChars(UInt16 value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
 		[CLSCompliant(false)]
-		public static SqlChars ToSqlChars(UInt32 p)      { return new SqlChars(ToString(p).ToCharArray()); }
+        public static SqlChars ToSqlChars(UInt32 value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
 		[CLSCompliant(false)]
-		public static SqlChars ToSqlChars(UInt64 p)      { return new SqlChars(ToString(p).ToCharArray()); }
-
-		public static SqlChars ToSqlChars(Single p)      { return new SqlChars(ToString(p).ToCharArray()); }
-		public static SqlChars ToSqlChars(Double p)      { return new SqlChars(ToString(p).ToCharArray()); }
-
-		public static SqlChars ToSqlChars(Boolean p)     { return new SqlChars(ToString(p).ToCharArray()); }
-		public static SqlChars ToSqlChars(Decimal p)     { return new SqlChars(ToString(p).ToCharArray()); }
-		public static SqlChars ToSqlChars(Char p)        { return new SqlChars(ToString(p).ToCharArray()); }
-		public static SqlChars ToSqlChars(TimeSpan p)    { return new SqlChars(ToString(p).ToCharArray()); }
-		public static SqlChars ToSqlChars(DateTime p)    { return new SqlChars(ToString(p).ToCharArray()); }
-		public static SqlChars ToSqlChars(Guid p)        { return new SqlChars(ToString(p).ToCharArray()); }
+        public static SqlChars ToSqlChars(UInt64 value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Single value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Double value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Boolean value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified Decimal number to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A Decimal number.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Decimal value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Char value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A TimeSpan.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(TimeSpan value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A DateTime.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(DateTime value) { return new SqlChars(ToString(value).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified Guid to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A Guid.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Guid value) { return new SqlChars(ToString(value).ToCharArray()); }
 
 		// Nullable Types.
-		// 
-		[CLSCompliant(false)]
-		public static SqlChars ToSqlChars(SByte? p)      { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		public static SqlChars ToSqlChars(Int16? p)      { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		public static SqlChars ToSqlChars(Int32? p)      { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		public static SqlChars ToSqlChars(Int64? p)      { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
 
-		public static SqlChars ToSqlChars(Byte? p)       { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		[CLSCompliant(false)]
-		public static SqlChars ToSqlChars(UInt16? p)     { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		[CLSCompliant(false)]
-		public static SqlChars ToSqlChars(UInt32? p)     { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		[CLSCompliant(false)]
-		public static SqlChars ToSqlChars(UInt64? p)     { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-
-		public static SqlChars ToSqlChars(Single? p)     { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		public static SqlChars ToSqlChars(Double? p)     { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-
-		public static SqlChars ToSqlChars(Boolean? p)    { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		public static SqlChars ToSqlChars(Decimal? p)    { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		public static SqlChars ToSqlChars(Char? p)       { return p.HasValue? new SqlChars(new Char[]{p.Value})       : SqlChars.Null; }
-		public static SqlChars ToSqlChars(TimeSpan? p)   { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		public static SqlChars ToSqlChars(DateTime? p)   { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
-		public static SqlChars ToSqlChars(Guid? p)       { return p.HasValue? new SqlChars(p.ToString().ToCharArray()): SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        [CLSCompliant(false)]
+        public static SqlChars ToSqlChars(SByte? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Int16? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Int32? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Int64? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Byte? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        [CLSCompliant(false)]
+        public static SqlChars ToSqlChars(UInt16? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        [CLSCompliant(false)]
+        public static SqlChars ToSqlChars(UInt32? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        [CLSCompliant(false)]
+        public static SqlChars ToSqlChars(UInt64? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to the equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Single? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to the equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Double? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to the equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Boolean? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal number to the equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal number.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Decimal? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the specified nullable character to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable Char.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Char? value) { return value.HasValue ? new SqlChars(new Char[] { value.Value }) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to the equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(TimeSpan? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to the equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable DateTime.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(DateTime? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Guid to the equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A nullable Guid.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Guid? value) { return value.HasValue ? new SqlChars(value.ToString().ToCharArray()) : SqlChars.Null; }
 
 		// SqlTypes.
-		// 
-		public static SqlChars ToSqlChars(SqlString p)   { return (SqlChars)p; }
 
-		public static SqlChars ToSqlChars(SqlByte p)     { return (SqlChars)p.ToSqlString(); }
-		public static SqlChars ToSqlChars(SqlInt16 p)    { return (SqlChars)p.ToSqlString(); }
-		public static SqlChars ToSqlChars(SqlInt32 p)    { return (SqlChars)p.ToSqlString(); }
-		public static SqlChars ToSqlChars(SqlInt64 p)    { return (SqlChars)p.ToSqlString(); }
-
-		public static SqlChars ToSqlChars(SqlSingle p)   { return (SqlChars)p.ToSqlString(); }
-		public static SqlChars ToSqlChars(SqlDouble p)   { return (SqlChars)p.ToSqlString(); }
-		public static SqlChars ToSqlChars(SqlDecimal p)  { return (SqlChars)p.ToSqlString(); }
-		public static SqlChars ToSqlChars(SqlMoney p)    { return (SqlChars)p.ToSqlString(); }
-
-		public static SqlChars ToSqlChars(SqlBoolean p)  { return (SqlChars)p.ToSqlString(); }
-		public static SqlChars ToSqlChars(SqlGuid p)     { return (SqlChars)p.ToSqlString(); }
-		public static SqlChars ToSqlChars(SqlDateTime p) { return (SqlChars)p.ToSqlString(); }
-		public static SqlChars ToSqlChars(SqlBinary p)   { return p.IsNull? SqlChars.Null: new SqlChars(p.ToString().ToCharArray()); }
-
-		public static SqlChars ToSqlChars(Type p)        { return p == null? SqlChars.Null: new SqlChars(p.FullName.ToCharArray()); }
-		public static SqlChars ToSqlChars(object p)      { return new SqlChars(ToString(p).ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlString value) { return (SqlChars)value; }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlByte value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlInt16 value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlInt32 value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlInt64 value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlSingle value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlDouble value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlDecimal value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlMoney value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlBoolean value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlGuid to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlGuid.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlGuid value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlDateTime value) { return (SqlChars)value.ToSqlString(); }
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(SqlBinary value) { return value.IsNull ? SqlChars.Null : new SqlChars(value.ToString().ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified Type to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">A Type.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(Type value) { return value == null ? SqlChars.Null : new SqlChars(value.FullName.ToCharArray()); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlChars representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlChars.</returns>
+        public static SqlChars ToSqlChars(object value) { return new SqlChars(ToString(value).ToCharArray()); }
 #endif
         #endregion
 
         #region SqlXml
 #if! SILVERLIGHT
 		// Scalar Types.
-		// 
-		public static SqlXml ToSqlXml(String p)      { return p == null? SqlXml.Null: new SqlXml(new XmlTextReader(new StringReader(p))); }
 
-		public static SqlXml ToSqlXml(Stream p)      { return p == null? SqlXml.Null: new SqlXml(p); }
-		public static SqlXml ToSqlXml(XmlReader p)   { return p == null? SqlXml.Null: new SqlXml(p); }
-		public static SqlXml ToSqlXml(XmlDocument p) { return p == null? SqlXml.Null: new SqlXml(new XmlTextReader(new StringReader(p.InnerXml))); }
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(String value) { return value == null ? SqlXml.Null : new SqlXml(new XmlTextReader(new StringReader(value))); }
+        /// <summary>
+        /// Converts the value of the specified Stream to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">A Stream.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(Stream value) { return value == null ? SqlXml.Null : new SqlXml(value); }
+        /// <summary>
+        /// Converts the value of the specified XmlReader to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">An XmlReader.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(XmlReader value) { return value == null ? SqlXml.Null : new SqlXml(value); }
+        /// <summary>
+        /// Converts the value of the specified XmlDocument to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">An XmlDocument.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(XmlDocument value) { return value == null ? SqlXml.Null : new SqlXml(new XmlTextReader(new StringReader(value.InnerXml))); }
 
-		public static SqlXml ToSqlXml(Char[] p)      { return p == null? SqlXml.Null: new SqlXml(new XmlTextReader(new StringReader(new string(p)))); }
-		public static SqlXml ToSqlXml(Byte[] p)      { return p == null? SqlXml.Null: new SqlXml(new MemoryStream(p)); }
+        /// <summary>
+        /// Converts the specified character array to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">A character array.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(Char[] value) { return value == null ? SqlXml.Null : new SqlXml(new XmlTextReader(new StringReader(new string(value)))); }
+        /// <summary>
+        /// Converts the specified memory buffer to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">A memory buffer.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(Byte[] value) { return value == null ? SqlXml.Null : new SqlXml(new MemoryStream(value)); }
 
 		// SqlTypes.
-		// 
-		public static SqlXml ToSqlXml(SqlString p)   { return p.IsNull? SqlXml.Null: new SqlXml(new XmlTextReader(new StringReader(p.Value))); }
-		public static SqlXml ToSqlXml(SqlChars p)    { return p.IsNull? SqlXml.Null: new SqlXml(new XmlTextReader(new StringReader(p.ToSqlString().Value))); }
-		public static SqlXml ToSqlXml(SqlBinary p)   { return p.IsNull? SqlXml.Null: new SqlXml(new MemoryStream(p.Value)); }
-		public static SqlXml ToSqlXml(SqlBytes p)    { return p.IsNull? SqlXml.Null: new SqlXml(p.Stream); }
 
-		public static SqlXml ToSqlXml(object p)
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(SqlString value) { return value.IsNull ? SqlXml.Null : new SqlXml(new XmlTextReader(new StringReader(value.Value))); }
+        /// <summary>
+        /// Converts the value of the specified SqlChars to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">An SqlChars.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(SqlChars value) { return value.IsNull ? SqlXml.Null : new SqlXml(new XmlTextReader(new StringReader(value.ToSqlString().Value))); }
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(SqlBinary value) { return value.IsNull ? SqlXml.Null : new SqlXml(new MemoryStream(value.Value)); }
+        /// <summary>
+        /// Converts the value of the specified SqlBytes to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">An SqlBytes.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(SqlBytes value) { return value.IsNull ? SqlXml.Null : new SqlXml(value.Stream); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlXml representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlXml.</returns>
+        public static SqlXml ToSqlXml(object value)
 		{
-			if (p == null || p is DBNull) return SqlXml.Null;
+            if (value == null || value is DBNull) return SqlXml.Null;
 
-			if (p is SqlXml)      return (SqlXml)p;
+            if (value is SqlXml) return (SqlXml)value;
 
 			// Scalar Types.
 			//
-			if (p is String)      return ToSqlXml((String)p);
+            if (value is String) return ToSqlXml((String)value);
 
-			if (p is Stream)      return ToSqlXml((Stream)p);
-			if (p is XmlReader)   return ToSqlXml((XmlReader)p);
-			if (p is XmlDocument) return ToSqlXml((XmlDocument)p);
+            if (value is Stream) return ToSqlXml((Stream)value);
+            if (value is XmlReader) return ToSqlXml((XmlReader)value);
+            if (value is XmlDocument) return ToSqlXml((XmlDocument)value);
 
-			if (p is Char[])      return ToSqlXml((Char[])p);
-			if (p is Byte[])      return ToSqlXml((Byte[])p);
+            if (value is Char[]) return ToSqlXml((Char[])value);
+            if (value is Byte[]) return ToSqlXml((Byte[])value);
 
 			// SqlTypes.
 			//
-			if (p is SqlString)   return ToSqlXml((SqlString)p);
-			if (p is SqlChars)    return ToSqlXml((SqlChars)p);
-			if (p is SqlBinary)   return ToSqlXml((SqlBinary)p);
-			if (p is SqlBytes)    return ToSqlXml((SqlBytes)p);
+            if (value is SqlString) return ToSqlXml((SqlString)value);
+            if (value is SqlChars) return ToSqlXml((SqlChars)value);
+            if (value is SqlBinary) return ToSqlXml((SqlBinary)value);
+            if (value is SqlBytes) return ToSqlXml((SqlBytes)value);
 
-			throw CreateInvalidCastException(p.GetType(), typeof(SqlXml));
+            throw CreateInvalidCastException(value.GetType(), typeof(SqlXml));
 		}
 #endif
         #endregion

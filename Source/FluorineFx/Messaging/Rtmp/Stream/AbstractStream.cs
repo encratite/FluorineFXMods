@@ -78,15 +78,21 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             get { return _scope; }
             set { _scope = value; }
         }
-
+        /// <summary>
+        /// Starts the stream.
+        /// </summary>
         public virtual void Start()
         {
         }
-
+        /// <summary>
+        /// Stops the stream.
+        /// </summary>
         public virtual void Stop()
         {
         }
-
+        /// <summary>
+        /// Closes the stream.
+        /// </summary>
         public virtual void Close()
         {
         }

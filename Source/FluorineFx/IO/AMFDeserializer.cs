@@ -109,7 +109,7 @@ namespace FluorineFx.IO
 				{
 					object content = base.ReadData();
                     AMFBody amfBody = new AMFBody(target, response, content);
-                    Exception exception = this.GetLastError();
+                    Exception exception = this.LastError;
                     if (exception != null)
                     {
                         ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);
@@ -142,7 +142,7 @@ namespace FluorineFx.IO
 				{
 					object content = base.ReadData();
                     AMFBody amfBody = new AMFBody(target, response, content);
-                    Exception exception = this.GetLastError();
+                    Exception exception = this.LastError;
                     if (exception != null)
                     {
                         ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);

@@ -61,12 +61,12 @@ namespace FluorineFx.IO.FLV
         private long _duration;
         /// <summary>
         /// Mapping between file position and timestamp in ms.
-        /// <Long, Long>
+        /// (Long, Long)
         /// </summary>
         private Hashtable _posTimeMap;
         /// <summary>
         /// Mapping between file position and tag number.
-        /// <Long, Integer>
+        /// (Long, Integer)
         /// </summary>
         private Hashtable _posTagMap;
 

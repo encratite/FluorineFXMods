@@ -131,7 +131,9 @@ namespace FluorineFx.IO
 		{
 			Reset();
 		}
-
+        /// <summary>
+        /// Resets object references.
+        /// </summary>
 		public void Reset()
 		{
 #if !(NET_1_1)
@@ -147,51 +149,62 @@ namespace FluorineFx.IO
 #endif
             _lastError = null;
 		}
-
-		public bool UseLegacyCollection
+        /// <summary>
+        /// Gets or sets whether legacy collection serialization is used for AMF3.
+        /// </summary>
+        public bool UseLegacyCollection
 		{
 			get{ return _useLegacyCollection; }
 			set{ _useLegacyCollection = value; }
 		}
-
+        /// <summary>
+        /// Indicates whether reflection errors should raise an exception or set the LastError property.
+        /// </summary>
         public bool FaultTolerancy
         {
             get { return _faultTolerancy; }
             set { _faultTolerancy = value; }
         }
-
-        public Exception GetLastError()
+        /// <summary>
+        /// Returns the last exception that ocurred while deserializing an object.
+        /// </summary>
+        /// <returns></returns>
+        public Exception LastError
         {
-            return _lastError;
+            get { return _lastError; }
         }
-
+        /// <summary>
+        /// Deserializes object graphs from Action Message Format (AMF).
+        /// </summary>
+        /// <returns>The Object deserialized from the AMF stream.</returns>
 		public object ReadData()
 		{
 			byte typeCode = ReadByte();
 			return ReadData(typeCode);
 		}
-
 		/// <summary>
-		/// Maps a type code to an access method.
+        /// Deserializes an object using the specified type marker.
 		/// </summary>
-		/// <param name="typeCode"></param>
-		/// <returns></returns>
-		public object ReadData(byte typeCode)
+        /// <param name="typeMarker">Type marker.</param>
+        /// <returns>The Object deserialized from the AMF stream.</returns>
+		public object ReadData(byte typeMarker)
 		{
-			return AmfTypeTable[0][typeCode].ReadData(this);
+            return AmfTypeTable[0][typeMarker].ReadData(this);
 		}
-
+        /// <summary>
+        /// Reads a reference type.
+        /// </summary>
+        /// <returns>The Object deserialized from the AMF stream.</returns>
 		public object ReadReference()
 		{
 			int reference = ReadUInt16();
 			//return _amf0ObjectReferences[reference-1];
             return _amf0ObjectReferences[reference];
 		}
-
 		/// <summary>
-		/// Reads a 2-byte unsigned integer from the current stream using little endian encoding and advances the position of the stream by two bytes.
+        /// Reads a 2-byte unsigned integer from the current AMF stream using network byte order encoding and advances the position of the stream by two bytes.
 		/// </summary>
-		/// <returns></returns>
+        /// <returns>The 2-byte unsigned integer.</returns>
         [CLSCompliant(false)]
         public override ushort ReadUInt16()
 		{
@@ -199,26 +212,38 @@ namespace FluorineFx.IO
 			byte[] bytes = ReadBytes(2);
 			return (ushort)(((bytes[0] & 0xff) << 8) | (bytes[1] & 0xff));
 		}
-
-		public override short ReadInt16()
+        /// <summary>
+        /// Reads a 2-byte signed integer from the current AMF stream using network byte order encoding and advances the position of the stream by two bytes.
+        /// </summary>
+        /// <returns>The 2-byte signed integer.</returns>
+        public override short ReadInt16()
 		{
 			//Read the next 2 bytes, shift and add.
 			byte[] bytes = ReadBytes(2);
 			return (short)((bytes[0] << 8) | bytes[1]);
 		}
-
+        /// <summary>
+        /// Reads an UTF-8 encoded String from the current AMF stream.
+        /// </summary>
+        /// <returns>The String value.</returns>
 		public override string ReadString()
 		{
 			//Get the length of the string (first 2 bytes).
 			int length = ReadUInt16();
 			return ReadUTF(length);
 		}
-
-		public override bool ReadBoolean()
+        /// <summary>
+        /// Reads a Boolean value from the current AMF stream using network byte order encoding and advances the position of the stream by one byte.
+        /// </summary>
+        /// <returns>The Boolean value.</returns>
+        public override bool ReadBoolean()
 		{
 			return base.ReadBoolean();
 		}
-
+        /// <summary>
+        /// Reads a 4-byte signed integer from the current AMF stream using network byte order encoding and advances the position of the stream by four bytes.
+        /// </summary>
+        /// <returns>The 4-byte signed integer.</returns>
 		public override int ReadInt32()
 		{
 			// Read the next 4 bytes, shift and add
@@ -226,14 +251,20 @@ namespace FluorineFx.IO
 			int value = (int)((bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3]);
             return value;
 		}
-
+        /// <summary>
+        /// Reads a 3-byte signed integer from the current AMF stream using network byte order encoding and advances the position of the stream by three bytes.
+        /// </summary>
+        /// <returns>The 3-byte signed integer.</returns>
         public int ReadUInt24()
         {
             byte[] bytes = this.ReadBytes(3);
             int value = bytes[0] << 16 | bytes[1] << 8 | bytes[2];
             return value;
         }
- 
+        /// <summary>
+        /// Reads an 8-byte IEEE-754 double precision floating point number from the current AMF stream using network byte order encoding and advances the position of the stream by eight bytes.
+        /// </summary>
+        /// <returns>The 8-byte double precision floating point number.</returns>
 		public override double ReadDouble()
 		{			
 			byte[] bytes = ReadBytes(8);
@@ -246,7 +277,10 @@ namespace FluorineFx.IO
 			double value = BitConverter.ToDouble(reverse, 0);
 			return value;
 		}
-
+        /// <summary>
+        /// Reads a single-precision floating point number from the current AMF stream using network byte order encoding and advances the position of the stream by eight bytes.
+        /// </summary>
+        /// <returns>The single-precision floating point number.</returns>
 		public float ReadFloat()
 		{			
 			byte[] bytes = this.ReadBytes(4);
@@ -259,12 +293,18 @@ namespace FluorineFx.IO
 			float value = BitConverter.ToSingle(invertedBytes, 0);
 			return value;
 		}
-
+        /// <summary>
+        /// Add object reference.
+        /// </summary>
+        /// <param name="instance">The object instance.</param>
 		public void AddReference(object instance)
 		{
 			_amf0ObjectReferences.Add(instance);
 		}
-
+        /// <summary>
+        /// Reads an AMF0 object.
+        /// </summary>
+        /// <returns>The Object deserialized from the AMF stream.</returns>
 		public object ReadObject()
 		{
 			string typeIdentifier = ReadString();
@@ -303,7 +343,10 @@ namespace FluorineFx.IO
 				return asObject;
 			}
 		}
-
+        /// <summary>
+        /// Reads an anonymous ActionScript object.
+        /// </summary>
+        /// <returns>The anonymous ActionScript object deserialized from the AMF stream.</returns>
 		public ASObject ReadASObject()
 		{
 			ASObject asObject = new ASObject();
@@ -317,8 +360,11 @@ namespace FluorineFx.IO
 			}
 			return asObject;
 		}
-
-		
+        /// <summary>
+        /// Reads an UTF-8 encoded String.
+        /// </summary>
+        /// <param name="length">Byte-length header.</param>
+        /// <returns>The String value.</returns>
 		public string ReadUTF(int length)
 		{
 			if( length == 0 )
@@ -332,7 +378,10 @@ namespace FluorineFx.IO
 #endif
             return decodedString;
 		}
-		
+		/// <summary>
+        /// Reads an UTF-8 encoded AMF0 Long String type.
+		/// </summary>
+        /// <returns>The String value.</returns>
 		public string ReadLongString()
 		{
 			int length = this.ReadInt32();
@@ -340,6 +389,10 @@ namespace FluorineFx.IO
 		}
 
 #if !(NET_1_1)
+        /// <summary>
+        /// Reads an An ECMA or associative Array.
+        /// </summary>
+        /// <returns>The associative Array.</returns>
         internal Dictionary<string, Object> ReadAssociativeArray()
         {
             // Get the length property set by flash.
@@ -372,7 +425,10 @@ namespace FluorineFx.IO
 			return result;
 		}
 #endif
-
+        /// <summary>
+        /// Reads an AMF0 strict Array.
+        /// </summary>
+        /// <returns>The Array.</returns>
 		internal IList ReadArray()
 		{
 			//Get the length of the array.
@@ -387,7 +443,10 @@ namespace FluorineFx.IO
 			}
 			return array;
 		} 
-
+        /// <summary>
+        /// Reads an ActionScript Date.
+        /// </summary>
+        /// <returns>The DateTime.</returns>
 		public DateTime ReadDateTime()
 		{
 			double milliseconds = this.ReadDouble();
@@ -423,6 +482,11 @@ namespace FluorineFx.IO
 		}
  
 #if !SILVERLIGHT
+        /// <summary>
+        /// Reads an XML Document Type.
+        /// The XML document type is always encoded as a long UTF-8 string.
+        /// </summary>
+        /// <returns>The XmlDocument.</returns>
 		public XmlDocument ReadXmlDocument()
 		{
 			string text = this.ReadLongString();
@@ -447,35 +511,42 @@ namespace FluorineFx.IO
 
 		#region AMF3
 
-		public object ReadAMF3Data()
+        /// <summary>
+        /// Deserializes object graphs from Action Message Format (AMF3).
+        /// </summary>
+        /// <returns>The Object deserialized from the AMF stream.</returns>
+        public object ReadAMF3Data()
 		{
 			byte typeCode = this.ReadByte();
 			return this.ReadAMF3Data(typeCode);
 		}
-
-		/// <summary>
-		/// Maps a type code to an access method.
-		/// </summary>
-		/// <param name="typeCode"></param>
-		/// <returns></returns>
-		public object ReadAMF3Data(byte typeCode)
+        /// <summary>
+        /// Deserializes an object using the specified type marker.
+        /// </summary>
+        /// <param name="typeMarker">Type marker.</param>
+        /// <returns>The Object deserialized from the AMF stream.</returns>
+        public object ReadAMF3Data(byte typeMarker)
 		{
-			return AmfTypeTable[3][typeCode].ReadData(this);
+            return AmfTypeTable[3][typeMarker].ReadData(this);
 		}
-
+        /// <summary>
+        /// Add object reference.
+        /// </summary>
+        /// <param name="instance">The object instance.</param>
         public void AddAMF3ObjectReference(object instance)
         {
             _objectReferences.Add(instance);
         }
-
+        /// <summary>
+        /// Reads a reference type.
+        /// </summary>
+        /// <returns>The Object deserialized from the AMF stream.</returns>
         public object ReadAMF3ObjectReference(int index)
         {
             return _objectReferences[index];
         }
-
 		/// <summary>
-		/// Handle decoding of the variable-length representation
-		/// which gives seven bits of value per serialized byte by using the high-order bit 
+		/// Handle decoding of the variable-length representation which gives seven bits of value per serialized byte by using the high-order bit 
 		/// of each byte as a continuation flag.
 		/// </summary>
 		/// <returns></returns>
@@ -516,14 +587,20 @@ namespace FluorineFx.IO
 			//s = 32 - 29;
 			//r = (x << s) >> s;
 		}
-
+        /// <summary>
+        /// Reads a 4-byte signed integer from the current AMF stream.
+        /// </summary>
+        /// <returns>The 4-byte signed integer.</returns>
 		public int ReadAMF3Int()
 		{
 			int intData = ReadAMF3IntegerData();
 			return intData;
 		}
-
-		public DateTime ReadAMF3Date()
+        /// <summary>
+        /// Reads an ActionScript Date.
+        /// </summary>
+        /// <returns>The DateTime.</returns>
+        public DateTime ReadAMF3Date()
 		{
 			int handle = ReadAMF3IntegerData();
 			bool inline = ((handle & 1)  != 0 );
@@ -565,8 +642,11 @@ namespace FluorineFx.IO
         {
             return _stringReferences[index] as string;
         }
-
-		public string ReadAMF3String()
+        /// <summary>
+        /// Reads an UTF-8 encoded String from the current AMF stream.
+        /// </summary>
+        /// <returns>The String value.</returns>
+        public string ReadAMF3String()
 		{
 			int handle = ReadAMF3IntegerData();
 			bool inline = ((handle & 1) != 0 );
@@ -587,7 +667,12 @@ namespace FluorineFx.IO
 		}
 
 #if !SILVERLIGHT
-		public XmlDocument ReadAMF3XmlDocument()
+        /// <summary>
+        /// Reads an XML Document Type.
+        /// The XML document type is always encoded as a long UTF-8 string.
+        /// </summary>
+        /// <returns>The XmlDocument.</returns>
+        public XmlDocument ReadAMF3XmlDocument()
 		{
 			int handle = ReadAMF3IntegerData();
 			bool inline = ((handle & 1) != 0 );
@@ -634,6 +719,20 @@ namespace FluorineFx.IO
         }
 #endif
 
+        /// <summary>
+        /// Reads a ByteArray.
+        /// </summary>
+        /// <returns>The ByteArray instance.</returns>
+        /// <remarks>
+        /// 	<para>ActionScript 3.0 introduces a new type to hold an Array of bytes, namely
+        ///     ByteArray. AMF 3 serializes this type using a variable length encoding 29-bit
+        ///     integer for the byte-length prefix followed by the raw bytes of the ByteArray.
+        ///     ByteArray instances can be sent as a reference to a previously occurring ByteArray
+        ///     instance by using an index to the implicit object reference table.</para>
+        /// 	<para>Note that this encoding imposes some theoretical limits on the use of
+        ///     ByteArray. The maximum byte-length of each ByteArray instance is limited to 2^28 -
+        ///     1 bytes (approx 256 MB).</para>
+        /// </remarks>
         [CLSCompliant(false)]
 		public ByteArray ReadAMF3ByteArray()
 		{
@@ -651,7 +750,10 @@ namespace FluorineFx.IO
 			else
 				return ReadAMF3ObjectReference(handle) as ByteArray;
 		}
-
+        /// <summary>
+        /// Reads an AMF3 Array (string or associative).
+        /// </summary>
+        /// <returns>The Array instance.</returns>
 		public object ReadAMF3Array()
 		{
 			int handle = ReadAMF3IntegerData();
@@ -810,7 +912,10 @@ namespace FluorineFx.IO
             }
             return instance;
         }
-
+        /// <summary>
+        /// Reads an AMF3 object.
+        /// </summary>
+        /// <returns>The Object deserialized from the AMF stream.</returns>
         public object ReadAMF3Object()
         {
             int handle = ReadAMF3IntegerData();

@@ -34,7 +34,10 @@ namespace FluorineFx.Data.Messages
 		int _pageCount;
 		int _pageIndex;
 
-		public PagedMessage()
+        /// <summary>
+        /// Initializes a new instance of the PagedMessage class.
+        /// </summary>
+        public PagedMessage()
 		{
 		}
 

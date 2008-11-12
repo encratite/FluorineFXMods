@@ -30,7 +30,6 @@ namespace FluorineFx.Messaging.Api
         /// Initializes a new instance of the ScopeNotFoundException class.
         /// </summary>
         /// <param name="scope"></param>
-        /// <param name="childName"></param>
         public ScopeShuttingDownException(IScope scope)
             : base("Scope shutting down: " + scope)
         {

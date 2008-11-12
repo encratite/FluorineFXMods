@@ -51,15 +51,7 @@ namespace FluorineFx.Messaging.Rtmp
             IClient client = null;
             if (connection.IsFlexClient)
             {
-                if (parameters != null && parameters.Length == 3)
-                {
-                    string clientId = parameters[1] as string;
-                    client = connectionScope.Context.ClientRegistry.GetClient(clientId);
-                    connection.Initialize(client);
-                    client.Renew(connection.ClientLeaseTime);
-                    return true;
-                }
-                if (parameters != null && parameters.Length == 2)
+                if (parameters != null && parameters.Length > 2)
                 {
                     string clientId = parameters[1] as string;
                     client = connectionScope.Context.ClientRegistry.GetClient(clientId);

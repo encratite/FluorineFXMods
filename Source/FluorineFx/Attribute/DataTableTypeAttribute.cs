@@ -24,22 +24,25 @@ using FluorineFx.Invocation;
 
 namespace FluorineFx
 {
-	/// <summary>
-	/// The DataTableTypeAttribute specifies the type of data in a DataTable.
-	/// Rows will be serialized as a collection of strongly typed ASObjects (columns as properties).
-	/// </summary>
+    /// <summary>
+    /// 	<para>The DataTableTypeAttribute specifies the type of data in a DataTable.</para>
+    /// 	<para>Rows will be serialized as a collection of strongly typed ASObjects (columns
+    ///     as properties).</para>
+    /// </summary>
     /// <example>
-    /// [DataTableType("FlexRemoteObjectSample.PhoneVO")]<br>
-    /// public DataTable GetDataTable()<br>
-    /// {<br>
-    ///     DataSet dataSet = new DataSet("mydataset");<br>
-    ///     DataTable dataTable = dataSet.Tables.Add("phones");<br>
-    ///     dataTable.Columns.Add( "number", typeof(string) );<br>
-    ///     dataTable.Rows.Add( new object[] {"123456"} );<br>
-    ///     dataTable.Rows.Add( new object[] {"456789"} );<br>
-    ///     return dataTable;<br>
-    /// }<br>
-    /// Flex will receive an Arraycollection of PhoneVO objects.
+    /// 	<code lang="CS">
+    /// In this sample the Flex client will receive an Arraycollection of PhoneVO objects.
+    /// [DataTableType("FlexRemoteObjectSample.PhoneVO")]
+    /// public DataTable GetDataTable()
+    /// {
+    ///     DataSet dataSet = new DataSet("mydataset");
+    ///     DataTable dataTable = dataSet.Tables.Add("phones");
+    ///     dataTable.Columns.Add( "number", typeof(string) );
+    ///     dataTable.Rows.Add( new object[] {"123456"} );
+    ///     dataTable.Rows.Add( new object[] {"456789"} );
+    ///     return dataTable;
+    /// }
+    /// </code>
     /// </example>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class DataTableTypeAttribute : System.Attribute, IInvocationCallback
@@ -57,7 +60,7 @@ namespace FluorineFx
 			_remoteClass = remoteClass;
 		}
         /// <summary>
-        /// Initializes a new instance of the DataTableTypeAttribute class. <see cref="FluorineFx.DataSetTypeAttribute"/> 
+        /// Initializes a new instance of the DataTableTypeAttribute class. See also <see cref="FluorineFx.DataSetTypeAttribute"/> 
         /// </summary>
         /// <param name="tableName">Refers to DataTable from a DataSet.</param>
         /// <param name="remoteClass">The ActionScript3 class name.</param>
@@ -67,7 +70,7 @@ namespace FluorineFx
 			_tableName = tableName;
 		}
         /// <summary>
-        /// Initializes a new instance of the DataTableTypeAttribute class. <see cref="FluorineFx.DataSetTypeAttribute"/> 
+        /// Initializes a new instance of the DataTableTypeAttribute class. See also <see cref="FluorineFx.DataSetTypeAttribute"/> 
         /// </summary>
         /// <param name="tableName">Refers to DataTable from a DataSet.</param>
         /// <param name="propertyName">The parent object's property name.</param>
@@ -78,9 +81,7 @@ namespace FluorineFx
 			_tableName = tableName;
 			_propertyName = propertyName;
 		}
-        /// <summary>
-        /// Gets the ActionScript3 class name.
-        /// </summary>
+        /// <summary>Gets the ActionScript 3 class name.</summary>
 		public string RemoteClass{ get{ return _remoteClass; } }
 
 		#region IInvocationCallback Members

@@ -112,7 +112,7 @@ namespace FluorineFx.Collections
         /// <para>Elements are put into the array in ascending sort order.</para>
         /// </remarks>
         /// <param name="array">Array to copy to.</param>
-        /// <param name="index">Index to start from<./param>
+        /// <param name="index">Index to start from.</param>
         public void CopyTo(Array array, int index)
         {
             if (array == null) throw new ArgumentNullException("array");

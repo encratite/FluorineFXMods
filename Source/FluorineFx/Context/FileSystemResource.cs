@@ -90,8 +90,8 @@ namespace FluorineFx.Context
 
             if (StringUtils.HasText(resourceName) && resourceName.TrimStart().StartsWith(basePathPlaceHolder))
             {
-                //return resourceName.Replace(basePathPlaceHolder, AppDomain.CurrentDomain.BaseDirectory).TrimStart();
-                return resourceName.Replace(basePathPlaceHolder, FluorineContext.Current.RootPath).TrimStart();
+                return resourceName.Replace(basePathPlaceHolder, AppDomain.CurrentDomain.BaseDirectory).TrimStart();
+                //return resourceName.Replace(basePathPlaceHolder, FluorineContext.Current.RootPath).TrimStart();
             }
             return resourceName;
         }

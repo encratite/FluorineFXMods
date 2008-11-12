@@ -47,7 +47,13 @@ namespace FluorineFx.Messaging.Api
         /// Closes all the connections.
         /// </summary>
 		void Disconnect();
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         void Timeout();
+        /// <summary>
+        /// Gets an object that can be used to synchronize access. 
+        /// </summary>
         object SyncRoot { get; }
         /// <summary>
         /// Gets pending messages.
@@ -55,10 +61,25 @@ namespace FluorineFx.Messaging.Api
         /// <param name="waitIntervalMillis"></param>
         /// <returns></returns>
         IMessage[] GetPendingMessages(int waitIntervalMillis);
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="messageClient"></param>
         void RegisterMessageClient(IMessageClient messageClient);
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="messageClient"></param>
         void UnregisterMessageClient(IMessageClient messageClient);
+        /// <summary>
+        /// Adds a session destroy listener that will be notified when the session is destroyed.
+        /// </summary>
+        /// <param name="listener">The listener to add.</param>
         void AddSessionDestroyedListener(ISessionListener listener);
+        /// <summary>
+        /// Removes a session destroy listener.
+        /// </summary>
+        /// <param name="listener">The listener to remove.</param>
         void RemoveSessionDestroyedListener(ISessionListener listener);
         /// <summary>
         /// Renews a lease.
@@ -69,9 +90,19 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
         /// <param name="clientLeaseTime">The amount of time in minutes before client times out.</param>
         void Renew(int clientLeaseTime);
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         int ClientLeaseTime { get; }
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="connection"></param>
         void Register(IConnection connection);
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="connection"></param>
         void Unregister(IConnection connection);
 	}
 }

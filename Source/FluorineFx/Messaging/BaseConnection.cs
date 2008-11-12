@@ -42,9 +42,15 @@ namespace FluorineFx.Messaging
 #endif
 
         object _syncLock = new object();
+        /// <summary>
+        /// Connection id.
+        /// </summary>
         protected string _connectionId;
+        /// <summary>
+        /// AMF version.
+        /// </summary>
         protected ObjectEncoding _objectEncoding;
-
+        /// <summary>
         /// Path of scope client connected to.
         /// </summary>
         protected string _path;
@@ -84,13 +90,16 @@ namespace FluorineFx.Messaging
         protected CopyOnWriteArraySet _basicScopes = new CopyOnWriteArraySet();
 #endif
 
-        //1 IsClosed
-        //2 IsClosing
-        //4
-        //8 IsFlexClient
-        //16 IsTunnelingDetected
-        //32 IsTunneled
-        //64
+        /// <summary>
+        /// State bit field.
+        /// 1 IsClosed
+        /// 2 IsClosing
+        /// 4
+        /// 8 IsFlexClient
+        /// 16 IsTunnelingDetected
+        /// 32 IsTunneled
+        /// 64
+        /// </summary>
         protected byte __fields;
 
         /// <summary>
@@ -128,6 +137,9 @@ namespace FluorineFx.Messaging
         /// </summary>
         public string Path { get { return _path; } }
 
+        /// <summary>
+        /// Gets whether the connection is closed.
+        /// </summary>
         public bool IsClosed
         {
             get { return (__fields & 1) == 1; }
@@ -138,6 +150,9 @@ namespace FluorineFx.Messaging
             __fields = (value) ? (byte)(__fields | 1) : (byte)(__fields & ~1);
         }
 
+        /// <summary>
+        /// Gets whether the connection is being closed.
+        /// </summary>
         public bool IsClosing
         {
             get { return (__fields & 2) == 2; }
@@ -148,6 +163,9 @@ namespace FluorineFx.Messaging
             __fields = (value) ? (byte)(__fields | 2) : (byte)(__fields & ~2);
         }
 
+        /// <summary>
+        /// Gets whether the connected client is a Flex client (swf).
+        /// </summary>
         public bool IsFlexClient
         {
             get { return (__fields & 8) == 8; }
@@ -269,43 +287,65 @@ namespace FluorineFx.Messaging
             }
         }
 
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         public virtual void Timeout()
         {
         }
-
+        /// <summary>
+        /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         public virtual int ClientLeaseTime { get { return 0; } }
 
         /// <summary>
         /// Gets connection parameters.
         /// </summary>
         public IDictionary Parameters { get { return _parameters; } }
-
+        /// <summary>
+        /// Gets the client object associated with this connection.
+        /// </summary>
         public IClient Client
         {
             get{ return _client; }
         }
-
+        /// <summary>
+        /// Get the scope this client is connected to.
+        /// </summary>
         public IScope Scope
         {
             get{ return _scope; }
         }
-
+        /// <summary>
+        /// Gets the basic scopes this connection has subscribed.  This list will
+        /// contain the shared objects and broadcast streams the connection connected to.
+        /// </summary>
         public IEnumerator BasicScopes
         {
             get{ return _basicScopes.GetEnumerator(); }
         }
-
+        /// <summary>
+        /// Gets the connection id.
+        /// </summary>
         public string ConnectionId { get { return _connectionId; } }
-
+        /// <summary>
+        /// Gets the session id.
+        /// </summary>
         public string SessionId { get { return _connectionId; } }
-
+        /// <summary>
+        /// Gets the object encoding (AMF version) for this connection.
+        /// </summary>
         public ObjectEncoding ObjectEncoding
         {
             get { return _objectEncoding; }
         }
-
+        /// <summary>
+        /// Gets an object that can be used to synchronize access to the connection.
+        /// </summary>
         public object SyncRoot { get { return _syncLock; } }
-
+        /// <summary>
+        /// Start measuring the roundtrip time for a packet on the connection.
+        /// </summary>
         public virtual void Ping()
         {
         }
@@ -368,19 +408,47 @@ namespace FluorineFx.Messaging
             _basicScopes.Remove(basicScope);
             basicScope.RemoveEventListener(this);
         }
-
+        /// <summary>
+        /// Gets the total number of bytes read from the connection.
+        /// </summary>
         public abstract long ReadBytes { get; }
+        /// <summary>
+        /// Gets the total number of bytes written to the connection.
+        /// </summary>
         public abstract long WrittenBytes { get; }
-
+        /// <summary>
+        /// Gets the total number of messages read from the connection.
+        /// </summary>
         public long ReadMessages { get { return _readMessages; } }
+        /// <summary>
+        /// Gets the total number of messages written to the connection.
+        /// </summary>
         public long WrittenMessages { get { return _writtenMessages; } }
+        /// <summary>
+        /// Gets the total number of messages that have been dropped.
+        /// </summary>
         public long DroppedMessages { get { return _droppedMessages; } }
+        /// <summary>
+        /// Gets the total number of messages that are pending to be sent to the connection.
+        /// </summary>
         public long PendingMessages { get { return 0; } }
+        /// <summary>
+        /// Get the total number of video messages that are pending to be sent to a stream.
+        /// </summary>
+        /// <param name="streamId">The stream id.</param>
+        /// <returns>Number of pending video messages.</returns>
         public virtual long GetPendingVideoMessages(int streamId)
         {
             return 0;
         }
+        /// <summary>
+        /// Gets the number of written bytes the client reports to have received.
+        /// This is the last value of the BytesRead message received from a client.
+        /// </summary>
         public virtual long ClientBytesRead { get { return 0; } }
+        /// <summary>
+        /// Gets roundtrip time of last ping command.
+        /// </summary>
         public abstract int LastPingTime { get; }
     }
 }

@@ -21,7 +21,11 @@ using FluorineFx.Messaging.Api.Messaging;
 
 namespace FluorineFx.Messaging.Api.Stream.Support
 {
-    class SimplePlayItem : IPlayItem
+    /// <summary>
+    /// Simple playlist item implementation.
+    /// </summary>
+    [CLSCompliant(false)]
+    public class SimplePlayItem : IPlayItem
     {
         private long _length = -1;
         private string _name;
@@ -44,7 +48,9 @@ namespace FluorineFx.Messaging.Api.Stream.Support
             get { return _name; }
             set { _name = value; }
         }
-
+        /// <summary>
+        /// Gets or sets start position.
+        /// </summary>
         public long Start
         {
             get { return _start; }
@@ -59,7 +65,9 @@ namespace FluorineFx.Messaging.Api.Stream.Support
             get { return _length; }
             set { _length = value; }
         }
-
+        /// <summary>
+        /// Gets or sets the message input source.
+        /// </summary>
         public IMessageInput MessageInput
         {
             get { return _msgInput; }

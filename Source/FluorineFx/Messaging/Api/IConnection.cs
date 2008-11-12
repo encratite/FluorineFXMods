@@ -116,7 +116,6 @@ namespace FluorineFx.Messaging.Api
         /// <summary>
         /// Gets the total number of messages written to the connection.
         /// </summary>
-        /// <returns></returns>
         long WrittenMessages { get; }
         /// <summary>
         /// Gets the total number of messages that have been dropped.
@@ -125,7 +124,6 @@ namespace FluorineFx.Messaging.Api
         /// <summary>
         /// Gets the total number of messages that are pending to be sent to the connection.
         /// </summary>
-        /// <returns></returns>
         long PendingMessages { get;}
         /// <summary>
         /// Gets the number of written bytes the client reports to have received.
@@ -135,7 +133,6 @@ namespace FluorineFx.Messaging.Api
         /// <summary>
         /// Gets roundtrip time of last ping command.
         /// </summary>
-        /// <returns></returns>
         int LastPingTime { get; }
         /// <summary>
         /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.

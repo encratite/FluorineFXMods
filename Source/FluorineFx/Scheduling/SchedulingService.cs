@@ -737,7 +737,7 @@ namespace FluorineFx.Scheduling
                 {
                     if (triggerInstCode == SchedulerInstruction.DeleteTrigger)
                     {
-                        log.Debug("Deleting trigger");
+                        //log.Debug("Deleting trigger");
                         NullableDateTime d = trigger.GetNextFireTimeUtc();
                         if (!d.HasValue)
                         {

@@ -29,7 +29,13 @@ namespace FluorineFx.Messaging.Messages
     [CLSCompliant(false)]
     public class ErrorMessage : AcknowledgeMessage
 	{
+        /// <summary>
+        /// Client authentication fault code.
+        /// </summary>
         public const string ClientAuthenticationError = "Client.Authentication";
+        /// <summary>
+        /// Client authorization fault code.
+        /// </summary>
         public const string ClientAuthorizationError = "Client.Authorization";
 
 		string _faultCode;

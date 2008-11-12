@@ -31,10 +31,18 @@ namespace FluorineFx.Data.Messages
     [CLSCompliant(false)]
     public class DataMessage : AsyncMessage
 	{
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public const string PageSizeHeader = "pageSize";
-		public const string PageIndexHeader = "pageIndex";
-		public const string SequenceIdHeader = "sequenceId";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const string PageIndexHeader = "pageIndex";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const string SequenceIdHeader = "sequenceId";
 
 		/// <summary>
 		/// Indicates a create operation.
@@ -101,7 +109,10 @@ namespace FluorineFx.Data.Messages
 		/// This operation requests the remote destination remove an association between the specified instances.
 		/// </summary>
 		public const int AssociationRemoveOperation = 14;
-		public const int RefreshFillOperation = 16;
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const int RefreshFillOperation = 16;
 		/// <summary>
 		/// This operation is sent when a local or remote sequence has been modified by insert(s) or delete(s).
 		/// </summary>
@@ -132,11 +143,20 @@ namespace FluorineFx.Data.Messages
 		/// </summary>
 		public const int UpdateBodyNew = 2;
 
-		
-		protected int _operation;
+
+        /// <summary>
+        /// Operation/command of this DataMessage.
+        /// </summary>
+        protected int _operation;
+        /// <summary>
+        /// Identity hash which defines the unique identity of the item affected by this DataMessage.
+        /// </summary>
 		Hashtable	_identity;
 
-		public DataMessage()
+        /// <summary>
+        /// Initializes a new instance of the DataMessage class.
+        /// </summary>
+        public DataMessage()
 		{
 			_timestamp = System.Environment.TickCount;
 		}

@@ -42,16 +42,37 @@ namespace FluorineFx.Messaging.Messages
     public class MessageBase : IMessage, ICloneable
 #endif
 	{
+        /// <summary>
+        /// Message headers.
+        /// </summary>
 #if !(NET_1_1)
         protected Dictionary<string, object> _headers = new Dictionary<string,object>();
 #else
         protected Hashtable _headers = new Hashtable();
 #endif
+        /// <summary>
+        /// Timestamp of the message.
+        /// </summary>
         protected long _timestamp;
+        /// <summary>
+        /// Cclient id indicating the client that sent the message.
+        /// </summary>
 		protected object _clientId;
+        /// <summary>
+        /// The destination that the message targets. 
+        /// </summary>
 		protected string _destination;
+        /// <summary>
+        /// A unique message id.
+        /// </summary>
 		protected string _messageId;
+        /// <summary>
+        /// Time to live for the message. This is the number of milliseconds beyond the message timestamp that the message is considered valid and deliverable.
+        /// </summary>
 		protected long _timeToLive;
+        /// <summary>
+        /// The body of the message.
+        /// </summary>
 		protected object _body;
 
 		/// <summary>

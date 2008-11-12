@@ -82,32 +82,17 @@ namespace FluorineFx.Messaging.Api.Stream
         /// <param name="index">Position in list</param>
         void SetItem(int index);
         /// <summary>
-        /// Gets whether items are randomly played.
+        /// Gets or sets whether items are randomly played.
         /// </summary>
-        bool IsRandom { get; }
+        bool IsRandom { get; set; }
         /// <summary>
-        /// Sets whether items should be randomly played.
+        /// Gets or sets whether rewind the list.
         /// </summary>
-        /// <param name="random">Shuffle flag.</param>
-        void SetRandom(bool random);
+        bool IsRewind { get; set; }
         /// <summary>
-        /// Gets whether rewind the list.
+        /// Gets or sets whether repeat playing an item.
         /// </summary>
-        bool IsRewind { get; }
-        /// <summary>
-        /// Set whether rewind the list.
-        /// </summary>
-        /// <param name="rewind">New value for rewind flag.</param>
-        void SetRewind(bool rewind);
-        /// <summary>
-        /// Gets whether repeat playing an item.
-        /// </summary>
-        bool IsRepeat { get; }
-        /// <summary>
-        /// Sets whether repeat playing an item.
-        /// </summary>
-        /// <param name="repeat">New value for item playback repeat flag.</param>
-        void SetRepeat(bool repeat);
+        bool IsRepeat { get; set; }
         /// <summary>
         /// Sets list controller.
         /// </summary>

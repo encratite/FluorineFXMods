@@ -34,12 +34,14 @@ namespace FluorineFx.Messaging.Services
     public abstract class ServiceAdapter
 	{
         private object _syncLock = new object();
-        private IService _service;
         private Destination _destination;
         private DestinationSettings _destinationSettings;
         private AdapterSettings _adapterSettings;
 
-		protected ServiceAdapter()
+        /// <summary>
+        /// Initializes a new instance of the ServiceAdapter class.
+        /// </summary>
+        protected ServiceAdapter()
 		{
 		}
 
@@ -75,15 +77,39 @@ namespace FluorineFx.Messaging.Services
 		public virtual void Init()
 		{
 		}
-
+        /// <summary>
+        /// Stops the adapter.
+        /// </summary>
         public virtual void Stop()
         {
         }
-
-        public IService Service { get { return _service; } set { _service = value; } }
-        internal Destination Destination { get { return _destination; } set { _destination = value; } }
-        internal DestinationSettings DestinationSettings { get { return _destinationSettings; } set { _destinationSettings = value; } }
-		public AdapterSettings AdapterSettings { get { return _adapterSettings; } set { _adapterSettings = value; } }
+        /// <summary>
+        /// Returns the Destination of the ServiceAdapter.
+        /// </summary>
+        public Destination Destination { get { return _destination; } }
+        internal void SetDestination(Destination value)
+        {
+            _destination = value;
+        }
+        /// <summary>
+        /// Gets the settings for the Destination of the ServiceAdapter.
+        /// </summary>
+        public DestinationSettings DestinationSettings { get { return _destinationSettings; } }
+        internal void SetDestinationSettings(DestinationSettings value)
+        {
+            _destinationSettings = value;
+        }
+        /// <summary>
+        /// Gets settings for the ServiceAdapter.
+        /// </summary>
+        public AdapterSettings AdapterSettings { get { return _adapterSettings; } }
+        internal void SetAdapterSettings(AdapterSettings value)
+        {
+            _adapterSettings = value;
+        }
+        /// <summary>
+        /// Gets an object that can be used to synchronize access. 
+        /// </summary>
         public object SyncRoot { get { return _syncLock; } }
 	}
 }

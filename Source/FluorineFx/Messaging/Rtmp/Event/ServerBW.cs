@@ -30,18 +30,23 @@ namespace FluorineFx.Messaging.Rtmp.Event
 	{
 		private int _bandwidth;
 
-		public ServerBW(int bandwidth):base(EventType.STREAM_CONTROL)
+		internal ServerBW(int bandwidth):base(EventType.STREAM_CONTROL)
 		{
 			_dataType = Constants.TypeServerBandwidth;
 			_bandwidth = bandwidth;
 		}
-
+        /// <summary>
+        /// Gets or sets the bandwidth value.
+        /// </summary>
 		public int Bandwidth
 		{
 			get{ return _bandwidth; }
 			set{ _bandwidth = value; }
 		}
-
+        /// <summary>
+        /// Returns a string that represents the current ServerBW object.
+        /// </summary>
+        /// <returns>A string that represents the current ServerBW object.</returns>
 		public override string ToString()
 		{
 			return "ServerBW: " + _bandwidth;

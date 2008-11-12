@@ -1095,12 +1095,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "IO\FLV\IKeyFrameDataAnalyzer.cs"
+                    RelPath = "IO\IKeyFrameDataAnalyzer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "IO\FLV\KeyFrameMeta.cs"
+                    RelPath = "IO\KeyFrameMeta.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -1120,7 +1120,27 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "IO\FLV\Tag.cs"
+                    RelPath = "IO\Mp3\IMp3File.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IO\Mp3\Mp3File.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IO\Mp3\Mp3Header.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IO\Mp3\Mp3Reader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IO\Tag.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -2595,6 +2615,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Messaging\Rtmp\IO\Mp3\IMp3Service.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Messaging\Rtmp\IO\Mp3\Mp3Service.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Messaging\Rtmp\Messaging\IFilter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -2891,11 +2921,6 @@
                 />
                 <File
                     RelPath = "Messaging\Services\AuthenticationService.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Messaging\Services\IAdapter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

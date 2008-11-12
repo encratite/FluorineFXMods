@@ -32,9 +32,21 @@ namespace FluorineFx.Messaging.Api.Event
 	/// </summary>
 	public interface IEvent
 	{
+        /// <summary>
+        /// Gets event type.
+        /// </summary>
 		EventType EventType{ get; }
+        /// <summary>
+        /// Gets event context object.
+        /// </summary>
 		object Object{ get; }
+        /// <summary>
+        /// Gets whether event has source (event listeners).
+        /// </summary>
 		bool HasSource{ get; }
+        /// <summary>
+        /// Gets event listener.
+        /// </summary>
 		IEventListener Source{ get;set; }
 	}
 }

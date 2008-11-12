@@ -102,9 +102,12 @@ namespace FluorineFx.Messaging.Endpoints
 			return response;
 		}
 
-		public virtual bool IsSecure()
+		public virtual bool IsSecure
 		{
-			return false;
+            get
+            {
+                return false;
+            }
 		}
 
 		#endregion

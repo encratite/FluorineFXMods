@@ -79,7 +79,7 @@ namespace FluorineFx.Collections.Generic
         /// </summary>
         /// <param name="elem"></param>
         /// <param name="elementData"></param>
-        /// <param name="len"></param>
+        /// <param name="length"></param>
         /// <returns></returns>
         private static int IndexOf(T elem, T[] elementData, int length)
         {

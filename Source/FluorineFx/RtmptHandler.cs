@@ -24,6 +24,9 @@ using FluorineFx.Messaging;
 
 namespace FluorineFx
 {
+    /// <summary>
+    /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// </summary>
     public class RtmptHandler : IHttpHandler
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(RtmptHandler));

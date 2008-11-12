@@ -47,7 +47,10 @@ namespace FluorineFx.Messaging.Services.Messaging
 		{
 			_regex = new Regex(SubtopicCheckExpression, RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 		}
-
+        /// <summary>
+        /// Initializes a new instance of the Subtopic class.
+        /// </summary>
+        /// <param name="subtopic"></param>
 		public Subtopic(string subtopic):this(subtopic, SubtopicSeparator)
 		{
 		}

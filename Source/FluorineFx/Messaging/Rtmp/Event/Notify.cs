@@ -33,9 +33,21 @@ namespace FluorineFx.Messaging.Rtmp.Event
     [CLSCompliant(false)]
     public class Notify : BaseEvent
 	{
+        /// <summary>
+        /// Service call.
+        /// </summary>
 		protected IServiceCall		_serviceCall = null;
+        /// <summary>
+        /// Event data.
+        /// </summary>
 		protected ByteBuffer		_data = null;
+        /// <summary>
+        /// Invoke id.
+        /// </summary>
 		int							_invokeId = 0;
+        /// <summary>
+        /// Connection parameters.
+        /// </summary>
 		IDictionary					_connectionParameters;
 
         internal Notify()
@@ -61,25 +73,33 @@ namespace FluorineFx.Messaging.Rtmp.Event
 		{
 			_serviceCall = serviceCall;
 		}
-
+        /// <summary>
+        /// Gets or sets event data.
+        /// </summary>
 		public ByteBuffer Data
 		{
 			get{ return _data; }
 			set{ _data = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets invocation id.
+        /// </summary>
 		public int InvokeId
 		{
 			get{ return _invokeId; }
 			set{ _invokeId = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the service call.
+        /// </summary>
 		public IServiceCall ServiceCall
 		{
 			get{ return _serviceCall; }
 			set{ _serviceCall = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets connection parameters.
+        /// </summary>
 		public IDictionary ConnectionParameters
 		{
 			get{ return _connectionParameters; }

@@ -29,7 +29,13 @@ namespace FluorineFx.Messaging.Config
     /// </summary>
     public sealed class MsmqSettings : Hashtable
     {
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         public const string BinaryMessageFormatter = "BinaryMessageFormatter";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         public const string XmlMessageFormatter = "XmlMessageFormatter";
 
         private MsmqSettings()

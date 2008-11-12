@@ -25,6 +25,10 @@ namespace FluorineFx.Messaging.Api.Event
 	/// </summary>
 	public interface IEventListener
 	{
+        /// <summary>
+        /// Event notification. 
+        /// </summary>
+        /// <param name="evt">The event object.</param>
 		void NotifyEvent(IEvent evt);
 	}
 }

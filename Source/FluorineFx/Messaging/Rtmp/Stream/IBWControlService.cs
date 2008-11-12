@@ -22,17 +22,13 @@ using FluorineFx.Messaging.Api;
 namespace FluorineFx.Messaging.Rtmp.Stream
 {
     /// <summary>
-    /// Bandwidth controller service interface.
-    /// <p>
-    /// The bandwidth controllable is registered in the bandwidth
-    /// controller which provides the three token buckets used for
-    /// bandwidth control.
-    /// <p>
-    /// The bandwidth controller manages the token buckets assigned
-    /// to the bandwidth controllable and distributes the tokens
-    /// to the buckets in an implementation-specific way. (eg timely
-    /// distribute the tokens according to the bandwidth config of
-    /// the controllable)
+    /// 	<para>Bandwidth controller service interface.</para>
+    /// 	<para>The bandwidth controllable is registered in the bandwidth controller which
+    ///     provides the three token buckets used for bandwidth control.</para>
+    /// 	<para>The bandwidth controller manages the token buckets assigned to the bandwidth
+    ///     controllable and distributes the tokens to the buckets in an
+    ///     implementation-specific way. (eg timely distribute the tokens according to the
+    ///     bandwidth config of the controllable).</para>
     /// </summary>
     public interface IBWControlService : IService
     {

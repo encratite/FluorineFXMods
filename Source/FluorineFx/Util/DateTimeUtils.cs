@@ -74,7 +74,11 @@ namespace FluorineFx.Util
                 return null;
             }
         }
-
+        /// <summary>
+        /// Returns a date from a string using the internet format.
+        /// </summary>
+        /// <param name="input">Date string using the internet format.</param>
+        /// <returns>DateTime parsed from string.</returns>
         public static DateTime ParseInternetDate(string input)
         {
             ValidationUtils.ArgumentNotNull(input, "input");

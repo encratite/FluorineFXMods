@@ -44,8 +44,13 @@ namespace FluorineFx.AMF3
 			_dynamic = dynamic;
 		}
 
+        /// <summary>
+        /// Gets the class name.
+        /// </summary>
 		public string ClassName{ get{ return _className; } }
-
+        /// <summary>
+        /// Gets the class member count.
+        /// </summary>
 		public int MemberCount
         { 
             get
@@ -55,13 +60,21 @@ namespace FluorineFx.AMF3
                 return _members.Length; 
             } 
         }
-
+        /// <summary>
+        /// Gets the array of class members.
+        /// </summary>
         public ClassMember[] Members { get { return _members; } }
-
+        /// <summary>
+        /// Indicates whether the class is externalizable.
+        /// </summary>
 		public bool IsExternalizable{ get{ return _externalizable; } }
-
+        /// <summary>
+        /// Indicates whether the class is dynamic.
+        /// </summary>
 		public bool IsDynamic{ get{ return _dynamic; } }
-
+        /// <summary>
+        /// Indicates whether the class is typed (not anonymous).
+        /// </summary>
 		public bool IsTypedObject{ get{ return (_className != null && _className != string.Empty); } }
  	}
 
@@ -80,17 +93,23 @@ namespace FluorineFx.AMF3
             _bindingFlags = bindingFlags;
             _memberType = memberType;
         }
-
+        /// <summary>
+        /// Gets the member name.
+        /// </summary>
         public string Name
         {
             get { return _name; }
         }
-
+        /// <summary>
+        /// Gets the member binding flags.
+        /// </summary>
         public BindingFlags BindingFlags
         {
             get { return _bindingFlags; }
         }
-
+        /// <summary>
+        /// Gets the member type.
+        /// </summary>
         public MemberTypes MemberType
         {
             get { return _memberType; }

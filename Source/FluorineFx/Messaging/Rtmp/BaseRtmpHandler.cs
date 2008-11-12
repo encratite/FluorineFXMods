@@ -103,7 +103,7 @@ namespace FluorineFx.Messaging.Rtmp
         {
         }
 
-        protected static string GetHostname(string url)
+        internal static string GetHostname(string url)
         {
             string[] parts = url.Split(new char[] { '/' });
             if (parts.Length == 2)
@@ -365,7 +365,7 @@ namespace FluorineFx.Messaging.Rtmp
             }
         }
 
-        public static void Push(RtmpConnection connection, IMessage message, IMessageClient messageClient)
+        internal static void Push(RtmpConnection connection, IMessage message, IMessageClient messageClient)
         {
             if (connection != null)
             {

@@ -73,8 +73,16 @@ namespace FluorineFx.Messaging.Api.Stream
         /// <param name="streamId">Stream id.</param>
         /// <returns>Number of pending video messages.</returns>
         long GetPendingVideoMessages(int streamId);
-
+        /// <summary>
+        /// Returns a stream by given channel id.
+        /// </summary>
+        /// <param name="channelId">The channel id.</param>
+        /// <returns>Stream that channel belongs to the specified channel.</returns>
         IClientStream GetStreamByChannelId(int channelId);
+        /// <summary>
+        /// Returns a collection of client streams.
+        /// </summary>
+        /// <returns></returns>
         ICollection GetStreams();
     }
 }

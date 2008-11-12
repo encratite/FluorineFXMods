@@ -21,12 +21,44 @@ using FluorineFx.Messaging.Api;
 
 namespace FluorineFx.Context
 {
-	/// <summary>
-	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
-	/// </summary>
+    /// <summary>
+    /// Interface to be notified when a session is created or destroyed.
+    /// </summary>
+    /// <remarks>
+    /// This is not the ASP.NET provided session-state but rather the server side client
+    /// object representing a client-side session.
+    /// </remarks>
+    /// <example>
+    /// 	<code lang="CS">
+    ///     class ChatAdapter : MessagingAdapter, ISessionListener
+    ///     {
+    ///         public ChatAdapter()
+    ///         {
+    ///             ClientManager.AddSessionCreatedListener(this);
+    ///         }
+    ///  
+    ///         public void SessionCreated(IClient client)
+    ///         {
+    ///             client.AddSessionDestroyedListener(this);
+    ///         }
+    ///  
+    ///         public void SessionDestroyed(IClient client)
+    ///         {
+    ///         }
+    ///     }
+    /// </code>
+    /// </example>
 	public interface ISessionListener
 	{
+        /// <summary>
+        /// Notification that a client session was created.
+        /// </summary>
+        /// <param name="client">The client that was created.</param>
         void SessionCreated(IClient client);
+        /// <summary>
+        /// Notification that a session is about to be destroyed.
+        /// </summary>
+        /// <param name="client">The client that will be destroyed.</param>
         void SessionDestroyed(IClient client);
 	}
 }

@@ -18,11 +18,16 @@
 */
 using System;
 using System.IO;
+using System.Collections;
+#if !NET_1_1
+using System.Collections.Generic;
+#endif
 using log4net;
 using FluorineFx.Collections;
 using FluorineFx.Configuration;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Rtmp.IO.Flv;
+using FluorineFx.Messaging.Rtmp.IO.Mp3;
 
 namespace FluorineFx.Messaging.Rtmp.IO
 {
@@ -36,17 +41,24 @@ namespace FluorineFx.Messaging.Rtmp.IO
         public StreamableFileFactory()
         {
             _services.Add(new FlvService());
+            _services.Add(new Mp3Service());
         }
 
         /// <summary>
         /// Set of IStreamableFileService instances.
         /// </summary>
-        private Set _services = new Set();
+#if !NET_1_1
+        List<IStreamableFileService> _services = new List<IStreamableFileService>();
+#else
+        ArrayList _services = new ArrayList();
+#endif
 
+        /*
         public void SetServices(Set services)
         {
             _services = services;
         }
+        */
 
         #region IStreamableFileFactory Members
 
@@ -73,9 +85,13 @@ namespace FluorineFx.Messaging.Rtmp.IO
 		    return null;
         }
 
-        public Set GetServices()
+#if !NET_1_1
+        public ICollection<IStreamableFileService> GetServices()
+#else
+        public ICollection GetServices()
+#endif
         {
-            log.Info("StreamableFileFactory get services.");
+            //log.Info("StreamableFileFactory get services.");
             return _services;
         }
 

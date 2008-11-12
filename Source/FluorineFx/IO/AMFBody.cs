@@ -35,21 +35,51 @@ namespace FluorineFx.IO
     [CLSCompliant(false)]
     public class AMFBody
 	{
-		public const string Recordset = "rs://";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const string Recordset = "rs://";
+        /// <summary>
+        /// Suffix to denote a success.
+        /// </summary>
         public const string OnResult = "/onResult";
+        /// <summary>
+        /// Suffix to denote a failure.
+        /// </summary>
         public const string OnStatus = "/onStatus";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         public const string OnDebugEvents = "/onDebugEvents";
         
+        /// <summary>
+        /// The actual data associated with the operation.
+        /// </summary>
         protected object _content;
+        /// <summary>
+        /// Response URI which specifies a unique operation name that will be used to match the response to the client invocation.
+        /// </summary>
 		protected string	_response;
+        /// <summary>
+        /// Target URI describes which operation, function, or method is to be remotely invoked.
+        /// </summary>
 		protected string	_target;
 		/// <summary>
 		/// IgnoreResults is a flag to tell the serializer to ignore the results of the body message.
 		/// </summary>
 		protected bool	_ignoreResults;
-		protected bool	_isAuthenticationAction;
-		protected bool	_isDebug;
-		protected bool	_isDescribeService;
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        protected bool _isAuthenticationAction;
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        protected bool _isDebug;
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        protected bool _isDescribeService;
 
 		/// <summary>
 		/// Initializes a new instance of the AMFBody class.
@@ -69,7 +99,10 @@ namespace FluorineFx.IO
 			this._response = response;
 			this._content = content;
 		}
-
+        /// <summary>
+        /// Gets or set the target URI.
+        /// The target URI describes which operation, function, or method is to be remotely invoked.
+        /// </summary>
 		public string Target
 		{
 			get{ return _target; }
@@ -78,7 +111,9 @@ namespace FluorineFx.IO
 				_target = value;
 			}
 		}
-
+        /// <summary>
+        /// Indicates an empty target.
+        /// </summary>
 		public bool IsEmptyTarget
 		{
 			get
@@ -86,44 +121,59 @@ namespace FluorineFx.IO
 				return _target == null || _target == string.Empty || _target == "null";
 			}
 		}
-
+        /// <summary>
+        /// Gets or sets the response URI.
+        /// Response URI which specifies a unique operation name that will be used to match the response to the client invocation.
+        /// </summary>
 		public string Response
 		{
 			get{ return _response; }
 			set{ _response = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the actual data associated with the operation.
+        /// </summary>
 		public object Content
 		{
 			get{ return _content; }
 			set{ _content = value; }
 		}
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public bool IsAuthenticationAction
 		{
 			get{ return _isAuthenticationAction; }
 			set{ _isAuthenticationAction = value; }
 		}
-
-		public bool IgnoreResults
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public bool IgnoreResults
 		{
 			get{ return _ignoreResults; }
 			set{ _ignoreResults = value; }
 		}
-
-		public bool IsDebug
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public bool IsDebug
 		{
 			get{ return _isDebug; }
 			set{ _isDebug = value; }
 		}
-
-		public bool IsDescribeService
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public bool IsDescribeService
 		{
 			get{ return _isDescribeService; }
 			set{ _isDescribeService = value; }
 		}
-
-		public bool IsWebService
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public bool IsWebService
 		{
 			get
 			{
@@ -135,8 +185,10 @@ namespace FluorineFx.IO
 				return false;
 			}
 		}
-		
-		public bool IsRecordsetDelivery
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public bool IsRecordsetDelivery
 		{
 			get
 			{
@@ -147,8 +199,10 @@ namespace FluorineFx.IO
 				
 			}
 		}
-
-		public string GetRecordsetArgs()
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public string GetRecordsetArgs()
 		{
 			if( _target != null )
 			{
@@ -161,7 +215,9 @@ namespace FluorineFx.IO
 			}
 			return null;
 		}
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public string TypeName
 		{
 			get
@@ -183,7 +239,9 @@ namespace FluorineFx.IO
 				return null;
 			}
 		}
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public string Method
 		{
 			get
@@ -209,13 +267,17 @@ namespace FluorineFx.IO
 				return null;
 			}
 		}
-
-		public string Call
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public string Call
 		{
 			get{ return this.TypeName + "." + this.Method; }
 		}
-
-		public string GetSignature()
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public string GetSignature()
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.Append( this.Target );
@@ -227,8 +289,10 @@ namespace FluorineFx.IO
 			}
 			return sb.ToString();
 		}
-
-		public virtual IList GetParameterList()
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public virtual IList GetParameterList()
 		{
 			IList list = null;
 			if( !this.IsEmptyTarget )//Flash RPC parameters
@@ -287,7 +351,9 @@ namespace FluorineFx.IO
 
             WriteBodyData(objectEncoding, writer);
         }
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         protected virtual void WriteBodyData(ObjectEncoding objectEncoding, AMFWriter writer)
         {
             object content = this.Content;

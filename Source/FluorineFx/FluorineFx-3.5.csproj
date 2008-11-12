@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A9B8375B-579D-4F8A-B00C-F2828DB58F3A}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -165,6 +165,13 @@
     <Compile Include="Expression\StringLiteralNode.cs" />
     <Compile Include="Expression\UnaryOperator.cs" />
     <Compile Include="Expression\VariableNode.cs" />
+    <Compile Include="IO\IKeyFrameDataAnalyzer.cs" />
+    <Compile Include="IO\KeyFrameMeta.cs" />
+    <Compile Include="IO\Mp3\IMp3File.cs" />
+    <Compile Include="IO\Mp3\Mp3File.cs" />
+    <Compile Include="IO\Mp3\Mp3Header.cs" />
+    <Compile Include="IO\Mp3\Mp3Reader.cs" />
+    <Compile Include="IO\Tag.cs" />
     <Compile Include="IO\Writers\AMF0\AMF0XElementWriter.cs" />
     <Compile Include="IO\Writers\AMF0\AMF0XDocumentWriter.cs" />
     <Compile Include="IO\Writers\AMF3\AMF3XDocumentWriter.cs" />
@@ -208,12 +215,9 @@
     <Compile Include="IO\FLV\FlvReader.cs" />
     <Compile Include="IO\FLV\FlvWriter.cs" />
     <Compile Include="IO\FLV\IFlv.cs" />
-    <Compile Include="IO\FLV\IKeyFrameDataAnalyzer.cs" />
-    <Compile Include="IO\FLV\KeyFrameMeta.cs" />
     <Compile Include="IO\FLV\MetaCue.cs" />
     <Compile Include="IO\FLV\MetaData.cs" />
     <Compile Include="IO\FLV\MetaService.cs" />
-    <Compile Include="IO\FLV\Tag.cs" />
     <Compile Include="IO\Writers\AMF0\AMF0NameObjectCollectionWriter.cs" />
     <Compile Include="IO\Writers\AMF3\AMF3NameObjectCollectionWriter.cs" />
     <Compile Include="Json\Identifier.cs" />
@@ -268,6 +272,8 @@
     <Compile Include="Messaging\Rtmp\IO\BaseStreamableFileService.cs" />
     <Compile Include="Messaging\Rtmp\IO\Flv\FlvService.cs" />
     <Compile Include="Messaging\Rtmp\IO\Flv\IFlvService.cs" />
+    <Compile Include="Messaging\Rtmp\IO\Mp3\IMp3Service.cs" />
+    <Compile Include="Messaging\Rtmp\IO\Mp3\Mp3Service.cs" />
     <Compile Include="Messaging\Rtmp\IRtmpHandler.cs" />
     <Compile Include="Messaging\Rtmp\Persistence\PersistenceUtils.cs" />
     <Compile Include="Messaging\Rtmp\RtmpServerConnection.cs" />
@@ -650,7 +656,6 @@
     <Compile Include="Messaging\Server\IApplication.cs" />
     <Compile Include="Messaging\Server\StatefulScopeWrappingAdapter.cs" />
     <Compile Include="Messaging\Services\AuthenticationService.cs" />
-    <Compile Include="Messaging\Services\IAdapter.cs" />
     <Compile Include="Messaging\Services\IService.cs" />
     <Compile Include="Messaging\Services\MessageService.cs" />
     <Compile Include="Messaging\Services\Messaging\MessagingAdapter.cs" />
@@ -712,9 +717,9 @@
     <None Include="App.config.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="antlr.runtime, Version=2.7.5.2, Culture=neutral, PublicKeyToken=1875756ba09931ab">
+    <Reference Include="antlr.runtime, Version=2.7.6.2, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\antlr\antlr.runtime\bin\antlr.runtime.dll</HintPath>
+      <HintPath>..\antlr\net\2.0\antlr.runtime.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

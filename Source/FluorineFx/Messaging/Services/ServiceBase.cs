@@ -204,13 +204,13 @@ namespace FluorineFx.Messaging.Services
         /// <summary>
         /// Performs any startup actions necessary after the service has been added to the broker.
         /// </summary>
-        public void Start()
+        public virtual void Start()
 		{
 		}
         /// <summary>
         /// Performs any actions necessary before removing the service from the broker.
         /// </summary>
-		public void Stop()
+        public virtual void Stop()
 		{
 		}
 

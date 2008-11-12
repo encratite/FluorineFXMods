@@ -36,7 +36,10 @@ namespace FluorineFx.Data.Messages
 		DataMessage _dataMessage;
 		object[] _sequenceProxies;
 
-		public SequencedMessage()
+        /// <summary>
+        /// Initializes a new instance of the SequencedMessage class.
+        /// </summary>
+        public SequencedMessage()
 		{
 		}
 

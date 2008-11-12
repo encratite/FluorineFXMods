@@ -35,7 +35,13 @@ namespace FluorineFx.Messaging.Rtmp.Event
         /// Event target object.
         /// </summary>
 		protected object _object;
+        /// <summary>
+        /// Event timestamp.
+        /// </summary>
 		protected int _timestamp;
+        /// <summary>
+        /// Event data type.
+        /// </summary>
 		protected byte _dataType;
         /// <summary>
         /// Event type.
@@ -59,41 +65,56 @@ namespace FluorineFx.Messaging.Rtmp.Event
 			_source = source;
 		}
 
-		public EventType EventType
+        /// <summary>
+        /// Gets or sets event type.
+        /// </summary>
+        public EventType EventType
 		{ 
 			get{ return _eventType; }
 			set{ _eventType = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the RTMP packet header.
+        /// </summary>
 		public RtmpHeader Header
 		{
 			get{ return _header; }
 			set{ _header = value; }
 		}
-
+        /// <summary>
+        /// Gets event context object.
+        /// </summary>
 		public virtual object Object
 		{ 
 			get{ return _object; }
 		}
-
+        /// <summary>
+        /// Gets or sets the event timestamp.
+        /// </summary>
 		public int Timestamp
 		{
 			get{ return _timestamp; }
 			set{ _timestamp = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the data type.
+        /// </summary>
         public byte DataType
 		{
 			get{ return _dataType; }
 			set{ _dataType = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the event listener.
+        /// </summary>
 		public IEventListener Source
 		{
 			get{ return _source; }
 			set{ _source = value; }
 		}
-
+        /// <summary>
+        /// Gets whether event has source (event listeners).
+        /// </summary>
 		public bool HasSource
 		{
 			get{ return _source != null; }

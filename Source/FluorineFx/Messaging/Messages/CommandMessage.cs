@@ -86,7 +86,9 @@ namespace FluorineFx.Messaging.Messages
 		///	unsubscribe message is due to a client session being invalidated. 
 		/// </summary>
 		public static string SessionInvalidatedHeader = "DSSessionInvalidated";
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public static string FluorineMessageClientTimeoutHeader = "FluorineMessageClientTimeout";
         /// <summary>
         /// Poll wait must be suppressed.

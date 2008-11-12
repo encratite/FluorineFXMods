@@ -136,13 +136,21 @@ namespace FluorineFx.Messaging.Rtmp
 			// These parameters will be set during the call of "connect" later.
 			_context = new RtmpContext(RtmpMode.Server);
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="newScope"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
 	    public override bool Connect(IScope newScope, object[] parameters) 
         {
 		    bool success = base.Connect(newScope, parameters);
 		    return success;
 	    }
 
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         public override void Timeout()
         {
             lock (this.SyncRoot)
@@ -168,6 +176,9 @@ namespace FluorineFx.Messaging.Rtmp
             }
         }
 
+        /// <summary>
+        /// Closes the connection. This will disconnect the client from the associated scope.
+        /// </summary>
         public override void Close()
         {
 #if !SILVERLIGHT
@@ -195,7 +206,7 @@ namespace FluorineFx.Messaging.Rtmp
             get { return _context.State; }
         }
 
-		public void Setup(string host, string path, IDictionary parameters)
+		internal void Setup(string host, string path, IDictionary parameters)
 		{
 			_path = path;
 			_parameters = parameters;
@@ -211,8 +222,11 @@ namespace FluorineFx.Messaging.Rtmp
 		{
 			get{ return _context; }
 		}
-
-
+        /// <summary>
+        /// Checks whether a channel is used.
+        /// </summary>
+        /// <param name="channelId">Channel id.</param>
+        /// <returns><code>true</code> if channel is in use, <code>false</code> otherwise</returns>
 		public bool IsChannelUsed(int channelId) 
 		{
             lock (((ICollection)_channels).SyncRoot)
@@ -220,7 +234,11 @@ namespace FluorineFx.Messaging.Rtmp
                 return _channels.ContainsKey(channelId) && _channels[channelId] != null;
             }
 		}
-
+        /// <summary>
+        /// Returns channel by id.
+        /// </summary>
+        /// <param name="channelId">The channel id.</param>
+        /// <returns>Channel object by id.</returns>
 		public RtmpChannel GetChannel(int channelId) 
 		{
             lock (((ICollection)_channels).SyncRoot)
@@ -230,7 +248,10 @@ namespace FluorineFx.Messaging.Rtmp
 				return _channels[channelId] as RtmpChannel;
 			}
 		}
-
+        /// <summary>
+        /// Closes channel.
+        /// </summary>
+        /// <param name="channelId">Channel id</param>
 		public void CloseChannel(int channelId) 
 		{
             lock (((ICollection)_channels).SyncRoot)
@@ -238,19 +259,29 @@ namespace FluorineFx.Messaging.Rtmp
 				_channels[channelId] = null;
 			}
 		}
-
+        /// <summary>
+        /// Gets identifier for remote calls.
+        /// </summary>
 		public int InvokeId
 		{ 
 			get{ return _invokeId.Increment(); } 
 		}
-
+        /// <summary>
+        /// Returns a stream id for given channel id.
+        /// </summary>
+        /// <param name="channelId">Channel id.</param>
+        /// <returns>Id of stream that channel belongs to.</returns>
 		public int GetStreamIdForChannel(int channelId) 
 		{
 			if (channelId < 4) 
 				return 0;
 			return ((channelId - 4) / 5) + 1;
 		}
-
+        /// <summary>
+        /// Gets pending call service by id.
+        /// </summary>
+        /// <param name="invokeId">Pending call service id.</param>
+        /// <returns>Pending call service object.</returns>
 		public IPendingServiceCall GetPendingCall(int invokeId)
 		{
 			IPendingServiceCall result = null;
@@ -281,13 +312,19 @@ namespace FluorineFx.Messaging.Rtmp
                 _pendingCalls[invokeId] = call;
             }
         }
-
+        /// <summary>
+        /// Write a RTMP packet.
+        /// </summary>
+        /// <param name="packet">The RTMP packet.</param>
 		public abstract void Write(RtmpPacket packet);
 
 
         #region IConnection Members
 
-
+        /// <summary>
+        /// Mark message as being written.
+        /// </summary>
+        /// <param name="packet">The RTMP packet</param>
         protected virtual void WritingMessage(RtmpPacket packet)
         {
         }
@@ -310,7 +347,10 @@ namespace FluorineFx.Messaging.Rtmp
         }
 
         #endregion
-
+        /// <summary>
+        /// Start measuring the roundtrip time for a packet on the connection.
+        /// </summary>
+        /// <param name="ping"></param>
         public void Ping(Ping ping)
         {
             GetChannel((byte)2).Write(ping);
@@ -326,7 +366,9 @@ namespace FluorineFx.Messaging.Rtmp
             int now = (int)(_lastPongReceived & 0xffffffff);
             _lastPingTime = now - pong.Value2;
         }
-
+        /// <summary>
+        /// Gets roundtrip time of last ping command.
+        /// </summary>
         public override int LastPingTime { get { return _lastPingTime; } }
 
 
@@ -439,7 +481,11 @@ namespace FluorineFx.Messaging.Rtmp
 
 		#endregion
 
-		public override string ToString()
+        /// <summary>
+        /// Returns a string that represents the current RtmpConnection object.
+        /// </summary>
+        /// <returns>A string that represents the current RtmpConnection object.</returns>
+        public override string ToString()
 		{
 			return "RtmpConnection " + _connectionId;
 		}
@@ -447,6 +493,10 @@ namespace FluorineFx.Messaging.Rtmp
 
 		#region IMessageConnection Members
 
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="client"></param>
 		public void RegisterMessageClient(IMessageClient client)
 		{
             lock (((ICollection)_clients).SyncRoot)
@@ -457,7 +507,10 @@ namespace FluorineFx.Messaging.Rtmp
 				}
 			}
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="clientId"></param>
 		public void RemoveMessageClient(string clientId)
 		{
             lock (((ICollection)_clients).SyncRoot)
@@ -469,7 +522,9 @@ namespace FluorineFx.Messaging.Rtmp
 				}
 			}
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public void RemoveMessageClients()
 		{
             lock (((ICollection)_clients).SyncRoot)
@@ -477,7 +532,11 @@ namespace FluorineFx.Messaging.Rtmp
 				_clients.Clear();
 			}
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <returns></returns>
 		public bool IsClientRegistered(string clientId)
 		{
             lock (((ICollection)_clients).SyncRoot)
@@ -485,7 +544,9 @@ namespace FluorineFx.Messaging.Rtmp
 				return _clients.ContainsKey(clientId);
 			}
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public int ClientCount
 		{
 			get
@@ -496,7 +557,11 @@ namespace FluorineFx.Messaging.Rtmp
 				}
 			}
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="messageClient"></param>
 		public abstract void Push(IMessage message, IMessageClient messageClient);
 
 		#endregion
@@ -529,9 +594,13 @@ namespace FluorineFx.Messaging.Rtmp
                 _nextBytesRead += _bytesReadInterval;
             }
         }
-
+        /// <summary>
+        /// Gets the total number of bytes read from the connection.
+        /// </summary>
         public override long ReadBytes { get { return 0; } }
-
+        /// <summary>
+        /// Gets the total number of bytes written to the connection.
+        /// </summary>
         public override long WrittenBytes { get { return 0; } }
 
         public void ReceivedBytesRead(int bytes)

@@ -60,13 +60,17 @@ namespace FluorineFx.IO
 			_content = content;
 			_response = "null";
 		}
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public AMFBody RequestBody
 		{
 			get{ return _requestBody; }
 			set{ _requestBody = value; }
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public override IList GetParameterList()
 		{
 			if( _requestBody == null )

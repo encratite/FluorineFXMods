@@ -43,63 +43,63 @@ namespace FluorineFx
         /// <summary>
         /// AMF Number data type.
         /// </summary>
-		public const int Number = 0;
+		public const byte Number = 0;
         /// <summary>
         /// AMF Boolean data type.
         /// </summary>
-        public const int Boolean = 1;
+        public const byte Boolean = 1;
         /// <summary>
         /// AMF String data type.
         /// </summary>
-        public const int String = 2;
+        public const byte String = 2;
         /// <summary>
         /// AMF ASObject data type.
         /// </summary>
-        public const int ASObject = 3;
+        public const byte ASObject = 3;
         /// <summary>
         /// AMF Null data type.
         /// </summary>
-        public const int Null = 5;
+        public const byte Null = 5;
         /// <summary>
         /// AMF Undefined data type.
         /// </summary>
-        public const int Undefined = 6;
+        public const byte Undefined = 6;
         /// <summary>
         /// AMF Reference data type.
         /// </summary>
-        public const int Reference = 7;
+        public const byte Reference = 7;
         /// <summary>
         /// AMF AssociativeArray data type.
         /// </summary>
-        public const int AssociativeArray = 8;
+        public const byte AssociativeArray = 8;
         /// <summary>
         /// AMF EndOfObject data type.
         /// </summary>
-        public const int EndOfObject = 9;
+        public const byte EndOfObject = 9;
         /// <summary>
         /// AMF Array data type.
         /// </summary>
-        public const int Array = 10;
+        public const byte Array = 10;
         /// <summary>
         /// AMF DateTime data type.
         /// </summary>
-        public const int DateTime = 11;
+        public const byte DateTime = 11;
         /// <summary>
         /// AMF LongString data type.
         /// </summary>
-        public const int LongString = 12;
+        public const byte LongString = 12;
         /// <summary>
         /// AMF Xml data type.
         /// </summary>
-        public const int Xml = 15;
+        public const byte Xml = 15;
         /// <summary>
         /// AMF CustomClass(TypedObject) data type.
         /// </summary>
-        public const int CustomClass = 16;
+        public const byte CustomClass = 16;
         /// <summary>
         /// AMF3 data.
         /// </summary>
-        public const int AMF3Tag = 17;
+        public const byte AMF3Tag = 17;
 	}
 
     /// <summary>
@@ -110,55 +110,55 @@ namespace FluorineFx
         /// <summary>
         /// AMF Undefined data type.
         /// </summary>
-        public const int Undefined = 0;
+        public const byte Undefined = 0;
         /// <summary>
         /// AMF Null data type.
         /// </summary>
-        public const int Null = 1;
+        public const byte Null = 1;
         /// <summary>
         /// AMF Boolean false data type.
         /// </summary>
-        public const int BooleanFalse = 2;
+        public const byte BooleanFalse = 2;
         /// <summary>
         /// AMF Boolean true data type.
         /// </summary>
-        public const int BooleanTrue = 3;
+        public const byte BooleanTrue = 3;
         /// <summary>
         /// AMF Integer data type.
         /// </summary>
-        public const int Integer = 4;
+        public const byte Integer = 4;
         /// <summary>
         /// AMF Number data type.
         /// </summary>
-        public const int Number = 5;
+        public const byte Number = 5;
         /// <summary>
         /// AMF String data type.
         /// </summary>
-        public const int String = 6;
+        public const byte String = 6;
         /// <summary>
         /// AMF DateTime data type.
         /// </summary>
-        public const int DateTime = 8;
+        public const byte DateTime = 8;
         /// <summary>
         /// AMF Array data type.
         /// </summary>
-        public const int Array = 9;
+        public const byte Array = 9;
         /// <summary>
         /// AMF Object data type.
         /// </summary>
-        public const int Object = 10;
+        public const byte Object = 10;
         /// <summary>
         /// AMF Xml data type.
         /// </summary>
-        public const int Xml = 11;
+        public const byte Xml = 11;
         /// <summary>
         /// AMF Xml data type.
         /// </summary>
-        public const int Xml2 = 7;
+        public const byte Xml2 = 7;
         /// <summary>
         /// AMF ByteArray data type.
         /// </summary>
-        public const int ByteArray = 12;
+        public const byte ByteArray = 12;
 	}
 
     public sealed class ContentType

@@ -110,6 +110,10 @@ namespace FluorineFx
 #endif
         }
 
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <returns></returns>
         static public Assembly[] GetAssemblies()
         {
 #if SILVERLIGHT
@@ -122,6 +126,11 @@ namespace FluorineFx
 #endif
         }
 
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
         static public Type Locate(string typeName)
 		{
 			if( typeName == null || typeName == string.Empty )
@@ -136,7 +145,12 @@ namespace FluorineFx
 			}
 			return null;
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <param name="lac"></param>
+        /// <returns></returns>
 		static public Type LocateInLac(string typeName, string lac)
 		{
 			if( lac == null  )
@@ -180,6 +194,12 @@ namespace FluorineFx
 		}
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="lac"></param>
+        /// <param name="excludedBaseTypes"></param>
+        /// <returns></returns>
 		static public Type[] SearchAllTypes(string lac, Hashtable excludedBaseTypes)
 		{
 			ArrayList result = new ArrayList();
@@ -214,7 +234,11 @@ namespace FluorineFx
 			return (Type[])result.ToArray(typeof(Type));
 		}
 #endif
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
 		public static bool SkipMethod(MethodInfo methodInfo)
 		{
 			if (methodInfo.ReturnType == typeof(System.IAsyncResult))
@@ -226,21 +250,29 @@ namespace FluorineFx
 			}
 			return false;
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
 		public static string GetDescription(Type type)
 		{
-            object[] attributes = type.GetCustomAttributes(typeof(DescriptionAttribute), false);
-			if (attributes != null && attributes.Length > 0)
-				return (attributes[0] as DescriptionAttribute).Description;
+            Attribute attribute = ReflectionUtils.GetAttribute(typeof(DescriptionAttribute), type, false);
+			if (attribute != null)
+				return (attribute as DescriptionAttribute).Description;
 			return null;
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
 		public static string GetDescription(MethodInfo methodInfo)
 		{
-            object[] attributes = methodInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
-			if (attributes != null && attributes.Length > 0)
-				return (attributes[0] as DescriptionAttribute).Description;
-			return null;
+            Attribute attribute = ReflectionUtils.GetAttribute(typeof(DescriptionAttribute), methodInfo, false);
+            if (attribute != null)
+                return (attribute as DescriptionAttribute).Description;
+            return null;
 		}
 
 		internal static void NarrowValues(object[] values, ParameterInfo[] parameterInfos)
@@ -354,7 +386,10 @@ namespace FluorineFx
 				return (typeof(object).Assembly.GetType("System.MonoType") != null);
 			}
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <returns></returns>
 		public static string[] GetLacLocations()
 		{
 #if !FXCLIENT
@@ -435,7 +470,11 @@ namespace FluorineFx
             return new string[0];
 #endif
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static bool GetTypeIsAccessible(Type type)
         {
             if (type == null)
@@ -446,8 +485,8 @@ namespace FluorineFx
             if (FluorineConfiguration.Instance.RemotingServiceAttributeConstraint == RemotingServiceAttributeConstraint.Access)
             {
                 //Additional check for RemotingServiceAttribute presence
-                object[] remotingServiceAttributes = type.GetCustomAttributes(typeof(RemotingServiceAttribute), true);
-                if (remotingServiceAttributes != null && remotingServiceAttributes.Length == 1)
+                Attribute attribute = ReflectionUtils.GetAttribute(typeof(RemotingServiceAttribute), type, false);
+                if (attribute != null)
                     return true;
                 else
                     return false;
@@ -483,7 +522,11 @@ namespace FluorineFx
 
             return type;
         }
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static string GetCSharpName(Type type)
         {
             int dimensions = 0;
@@ -541,7 +584,12 @@ namespace FluorineFx
             sb.Append(name);
             return index;
         }
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="targetType"></param>
+        /// <returns></returns>
         public static bool IsAssignable(object obj, Type targetType)
         {
             return IsAssignable(obj, targetType, ReflectionUtils.IsNullable(targetType));
@@ -730,7 +778,12 @@ namespace FluorineFx
 
             return false;
         }
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <returns></returns>
         static public object ChangeType(object value, Type targetType)
         {
             return ConvertChangeType(value, targetType, ReflectionUtils.IsNullable(targetType));

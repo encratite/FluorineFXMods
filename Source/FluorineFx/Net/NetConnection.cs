@@ -59,6 +59,46 @@ namespace FluorineFx.Net
     /// <summary>
     /// The NetConnection class creates a connection between a .NET client and a Flash Media Server application or application server running Flash Remoting.
     /// </summary>
+    /// <example>
+    /// <code lang="CS">
+    /// _netConnection = new NetConnection();
+    /// _netConnection.ObjectEncoding = ObjectEncoding.AMF3;
+    /// _netConnection.NetStatus += new NetStatusHandler(_netConnection_NetStatus);
+    /// _netConnection.Connect(“http://localhost:1781/SilverlightApplicationWeb/Gateway.aspx”);
+    /// ...
+    /// _netConnection.Call("ServiceLibrary.MyDataService.GetCustomers", new GetCustomersHandler(), new object[] { txtSearch.Text });
+    /// 
+    /// void _netConnection_NetStatus(object sender, NetStatusEventArgs e)
+    /// {
+    ///     string level = e.Info[“level”] as string;
+    ///     if (level == “error”)
+    ///     {
+    ///         Log(“Error: ” + e.Info[“code”] as string);
+    ///     }
+    ///     if (level == “status”)
+    ///     {
+    ///         Log(“Status: ” + e.Info[“code”] as string);
+    ///     }
+    /// }
+    /// 
+    /// public class GetCustomersHandler : IPendingServiceCallback
+    /// {
+    ///     public GetCustomersHandler()
+    ///     {
+    ///     }
+    /// 
+    ///     public void ResultReceived(IPendingServiceCall call)
+    ///     {
+    ///         object result = call.Result;
+    ///         ArrayCollection items = result as ArrayCollection;
+    ///         foreach (object item in items)
+    ///         {
+    ///             ...
+    ///         }
+    ///     }
+    /// }
+    /// </code>
+    /// </example>
     [CLSCompliant(false)]
     public sealed class NetConnection
     {
@@ -69,6 +109,9 @@ namespace FluorineFx.Net
         ObjectEncoding _objectEncoding;
         string _playerVersion;
         object _client;
+#if !(SILVERLIGHT)
+        CookieContainer _cookieContainer;
+#endif
 #if !(NET_1_1)
         Dictionary<string, AMFHeader> _headers;
 #else
@@ -93,7 +136,9 @@ namespace FluorineFx.Net
             _headers = new Hashtable();
 #endif
             _client = this;
-
+#if !(SILVERLIGHT)
+            _cookieContainer = new CookieContainer();
+#endif
             TypeHelper._Init();
         }
         /// <summary>
@@ -163,7 +208,15 @@ namespace FluorineFx.Net
         {
             get { return _clientId; }
         }
-
+#if !(SILVERLIGHT)
+        /// <summary>
+        /// Gets CookieContainer for HTTP requests.
+        /// </summary>
+        public CookieContainer CookieContainer
+        {
+            get { return _cookieContainer; }
+        }
+#endif
         internal void SetClientId(string clientId)
         {
             _clientId = clientId;
@@ -240,19 +293,6 @@ namespace FluorineFx.Net
         /// Set the command parameter to the URI of the application on the server that runs when the connection is made.
         /// Use the following format. protocol://host[:port]/appname/[instanceName]
         /// </remarks>
-        /// <example>
-        /// NetConnection conn = new NetConnection();
-        /// conn.Connect("http://localhost:2896/WebSite/Gateway.aspx");
-        /// conn.Call("ServiceLibrary.MyDataService.GetCustomers", new GetCustomersHandler(), new object[] { "415" });
-        /// <br/>
-        /// public class GetCustomersHandler : IPendingServiceCallback
-        /// {
-        ///     public void ResultReceived(IPendingServiceCall call)
-        ///     {
-        ///         object result = call.Result;
-        ///     }
-        /// }
-        /// </example>
         public void Connect(string command, params object[] arguments)
         {
             _uri = new Uri(command);

@@ -27,6 +27,9 @@ namespace FluorineFx
 	/// <remarks>DateWrapper uses time zone in the last Date encountered during deserialization.</remarks>
 	public sealed class DateWrapper
 	{
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         public const string FluorineContextKey = "__@fluorinetimezone";
 
 		/// <summary>

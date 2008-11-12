@@ -154,7 +154,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
 			    // Default to .flv files if no prefix and no extension is given.
 			    name = "flv:" + name;
 		    }
-		    log.Info("GetStreamFile null check - factory: " + factory + " name: " + name);
+		    log.Info("GetStreamFile factory: " + factory + " name: " + name);
 		    foreach(IStreamableFileService service in factory.GetServices()) 
             {
 			    if (name.StartsWith(service.Prefix + ':')) 

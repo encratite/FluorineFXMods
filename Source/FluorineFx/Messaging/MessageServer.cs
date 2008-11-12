@@ -54,18 +54,25 @@ namespace FluorineFx.Messaging
 		public MessageServer()
 		{
 		}
-
+        
         internal ServiceConfigSettings ServiceConfigSettings
         {
             get { return _serviceConfigSettings; }
         }
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="configPath"></param>
         public void Init(string configPath)
         {
             Init(configPath, false);
         }
-
-		public void Init(string configPath, bool serviceBrowserAvailable)
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="configPath"></param>
+        /// <param name="serviceBrowserAvailable"></param>
+        public void Init(string configPath, bool serviceBrowserAvailable)
 		{
 			_messageBroker = new MessageBroker(this);
 
@@ -186,9 +193,13 @@ namespace FluorineFx.Messaging
 			AuthenticationService service = new AuthenticationService(_messageBroker, serviceSettings);
 			_messageBroker.AddService(service);
 		}
-
+        /// <summary>
+        /// Gets the message broker started by this server.
+        /// </summary>
 		public MessageBroker MessageBroker{ get { return _messageBroker; } }
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public void Start()
 		{
 			if (log.IsInfoEnabled)
@@ -200,7 +211,9 @@ namespace FluorineFx.Messaging
             else
                 log.Error(__Res.GetString(__Res.MessageServer_StartError));
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public void Stop()
 		{
 			if( _messageBroker != null )
@@ -240,7 +253,9 @@ namespace FluorineFx.Messaging
 
 
 		#endregion
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public void Service()
 		{
 			if( _messageBroker == null )
@@ -272,7 +287,9 @@ namespace FluorineFx.Messaging
                 throw new FluorineException(msg);
 			}
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         public void ServiceRtmpt()
         {
             IEndpoint endpoint = _messageBroker.GetEndpoint(RtmptEndpoint.FluorineRtmptEndpointId);

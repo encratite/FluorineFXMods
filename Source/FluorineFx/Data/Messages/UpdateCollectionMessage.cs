@@ -55,6 +55,9 @@ namespace FluorineFx.Data.Messages
 		bool _replace;
 		int _updateMode;
 
+        /// <summary>
+        /// Initializes a new instance of the UpdateCollectionMessage class.
+        /// </summary>
 		public UpdateCollectionMessage()
 		{
 			_operation = DataMessage.UpdateCollectionOperation;
@@ -94,7 +97,12 @@ namespace FluorineFx.Data.Messages
 			get{ return _updateMode; }
 			set{ _updateMode = value; }
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="updateType"></param>
+        /// <param name="position"></param>
+        /// <param name="identity"></param>
 		public void AddItemIdentityChange(int updateType, int position, object identity)
 		{
 			UpdateCollectionRange range = new UpdateCollectionRange();

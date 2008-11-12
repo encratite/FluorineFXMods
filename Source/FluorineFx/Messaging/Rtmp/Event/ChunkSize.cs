@@ -37,7 +37,9 @@ namespace FluorineFx.Messaging.Rtmp.Event
 			_dataType = Constants.TypeChunkSize;
 			_size = size;
 		}
-
+        /// <summary>
+        /// Chunk size.
+        /// </summary>
 		public int Size
 		{
 			get{ return _size; }

@@ -1,4 +1,4 @@
-// $ANTLR 2.7.5 (20050201): "selector.g" -> "ExpressionParser.cs"$
+// $ANTLR 2.7.6 (2005-12-22): "selector.g" -> "ExpressionParser.cs"$
 
 namespace FluorineFx.Expression
 {
@@ -148,14 +148,14 @@ namespace FluorineFx.Expression
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST expr_AST = null;
 		
 		try {      // for error handling
 			expression();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			match(Token.EOF_TYPE);
 			expr_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
@@ -173,21 +173,20 @@ namespace FluorineFx.Expression
 			}
 		}
 		returnAST = expr_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void expression() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST expression_AST = null;
 		
 		try {      // for error handling
 			logicalOrExpression();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			expression_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 		}
@@ -204,21 +203,20 @@ namespace FluorineFx.Expression
 			}
 		}
 		returnAST = expression_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void logicalOrExpression() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST logicalOrExpression_AST = null;
 		
 		try {      // for error handling
 			logicalAndExpression();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			{    // ( ... )*
 				for (;;)
@@ -227,12 +225,12 @@ namespace FluorineFx.Expression
 					{
 						FluorineFx.Expression.OpOR tmp2_AST = null;
 						tmp2_AST = (FluorineFx.Expression.OpOR) astFactory.create(LT(1), "FluorineFx.Expression.OpOR");
-						astFactory.makeASTRoot(currentAST, (AST)tmp2_AST);
+						astFactory.makeASTRoot(ref currentAST, (AST)tmp2_AST);
 						match(OR);
 						logicalAndExpression();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, (AST)returnAST);
+							astFactory.addASTChild(ref currentAST, (AST)returnAST);
 						}
 					}
 					else
@@ -258,21 +256,20 @@ _loop5_breakloop:				;
 			}
 		}
 		returnAST = logicalOrExpression_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void logicalAndExpression() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST logicalAndExpression_AST = null;
 		
 		try {      // for error handling
 			relationalExpression();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			{    // ( ... )*
 				for (;;)
@@ -281,12 +278,12 @@ _loop5_breakloop:				;
 					{
 						FluorineFx.Expression.OpAND tmp3_AST = null;
 						tmp3_AST = (FluorineFx.Expression.OpAND) astFactory.create(LT(1), "FluorineFx.Expression.OpAND");
-						astFactory.makeASTRoot(currentAST, (AST)tmp3_AST);
+						astFactory.makeASTRoot(ref currentAST, (AST)tmp3_AST);
 						match(AND);
 						relationalExpression();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, (AST)returnAST);
+							astFactory.addASTChild(ref currentAST, (AST)returnAST);
 						}
 					}
 					else
@@ -312,14 +309,13 @@ _loop8_breakloop:				;
 			}
 		}
 		returnAST = logicalAndExpression_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void relationalExpression() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST relationalExpression_AST = null;
 		FluorineFx.Expression.FluorineAST e1_AST = null;
 		FluorineFx.Expression.FluorineAST op_AST = null;
@@ -329,7 +325,7 @@ _loop8_breakloop:				;
 			if (0 == inputState.guessing)
 			{
 				e1_AST = (FluorineFx.Expression.FluorineAST)returnAST;
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			{
 				switch ( LA(1) )
@@ -350,7 +346,7 @@ _loop8_breakloop:				;
 					sumExpr();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, (AST)returnAST);
+						astFactory.addASTChild(ref currentAST, (AST)returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -371,7 +367,7 @@ _loop8_breakloop:				;
 					listInitializer();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, (AST)returnAST);
+						astFactory.addASTChild(ref currentAST, (AST)returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -392,7 +388,7 @@ _loop8_breakloop:				;
 					betweenExpr();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, (AST)returnAST);
+						astFactory.addASTChild(ref currentAST, (AST)returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -413,7 +409,7 @@ _loop8_breakloop:				;
 					pattern();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, (AST)returnAST);
+						astFactory.addASTChild(ref currentAST, (AST)returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -444,7 +440,7 @@ _loop8_breakloop:				;
 						listInitializer();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, (AST)returnAST);
+							astFactory.addASTChild(ref currentAST, (AST)returnAST);
 						}
 						if (0==inputState.guessing)
 						{
@@ -464,7 +460,7 @@ _loop8_breakloop:				;
 						betweenExpr();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, (AST)returnAST);
+							astFactory.addASTChild(ref currentAST, (AST)returnAST);
 						}
 						if (0==inputState.guessing)
 						{
@@ -484,7 +480,7 @@ _loop8_breakloop:				;
 						pattern();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, (AST)returnAST);
+							astFactory.addASTChild(ref currentAST, (AST)returnAST);
 						}
 						if (0==inputState.guessing)
 						{
@@ -519,21 +515,20 @@ _loop8_breakloop:				;
 			}
 		}
 		returnAST = relationalExpression_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void sumExpr() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST sumExpr_AST = null;
 		
 		try {      // for error handling
 			prodExpr();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			{    // ( ... )*
 				for (;;)
@@ -545,13 +540,13 @@ _loop8_breakloop:				;
 							{
 								FluorineFx.Expression.OpADD tmp13_AST = null;
 								tmp13_AST = (FluorineFx.Expression.OpADD) astFactory.create(LT(1), "FluorineFx.Expression.OpADD");
-								astFactory.makeASTRoot(currentAST, (AST)tmp13_AST);
+								astFactory.makeASTRoot(ref currentAST, (AST)tmp13_AST);
 								match(PLUS);
 							}
 							else if ((LA(1)==MINUS)) {
 								FluorineFx.Expression.OpSUBTRACT tmp14_AST = null;
 								tmp14_AST = (FluorineFx.Expression.OpSUBTRACT) astFactory.create(LT(1), "FluorineFx.Expression.OpSUBTRACT");
-								astFactory.makeASTRoot(currentAST, (AST)tmp14_AST);
+								astFactory.makeASTRoot(ref currentAST, (AST)tmp14_AST);
 								match(MINUS);
 							}
 							else
@@ -563,7 +558,7 @@ _loop8_breakloop:				;
 						prodExpr();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, (AST)returnAST);
+							astFactory.addASTChild(ref currentAST, (AST)returnAST);
 						}
 					}
 					else
@@ -589,14 +584,13 @@ _loop14_breakloop:				;
 			}
 		}
 		returnAST = sumExpr_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void relationalOperator() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST relationalOperator_AST = null;
 		
 		try {      // for error handling
@@ -606,7 +600,7 @@ _loop14_breakloop:				;
 			{
 				FluorineFx.Expression.FluorineAST tmp15_AST = null;
 				tmp15_AST = (FluorineFx.Expression.FluorineAST) astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, (AST)tmp15_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp15_AST);
 				match(EQUAL);
 				relationalOperator_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -615,7 +609,7 @@ _loop14_breakloop:				;
 			{
 				FluorineFx.Expression.FluorineAST tmp16_AST = null;
 				tmp16_AST = (FluorineFx.Expression.FluorineAST) astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, (AST)tmp16_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp16_AST);
 				match(NOT_EQUAL);
 				relationalOperator_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -624,7 +618,7 @@ _loop14_breakloop:				;
 			{
 				FluorineFx.Expression.FluorineAST tmp17_AST = null;
 				tmp17_AST = (FluorineFx.Expression.FluorineAST) astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, (AST)tmp17_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp17_AST);
 				match(LESS_THAN);
 				relationalOperator_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -633,7 +627,7 @@ _loop14_breakloop:				;
 			{
 				FluorineFx.Expression.FluorineAST tmp18_AST = null;
 				tmp18_AST = (FluorineFx.Expression.FluorineAST) astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, (AST)tmp18_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp18_AST);
 				match(LESS_THAN_OR_EQUAL);
 				relationalOperator_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -642,7 +636,7 @@ _loop14_breakloop:				;
 			{
 				FluorineFx.Expression.FluorineAST tmp19_AST = null;
 				tmp19_AST = (FluorineFx.Expression.FluorineAST) astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, (AST)tmp19_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp19_AST);
 				match(GREATER_THAN);
 				relationalOperator_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -651,7 +645,7 @@ _loop14_breakloop:				;
 			{
 				FluorineFx.Expression.FluorineAST tmp20_AST = null;
 				tmp20_AST = (FluorineFx.Expression.FluorineAST) astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, (AST)tmp20_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp20_AST);
 				match(GREATER_THAN_OR_EQUAL);
 				relationalOperator_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -660,7 +654,7 @@ _loop14_breakloop:				;
 			{
 				FluorineFx.Expression.FluorineAST tmp21_AST = null;
 				tmp21_AST = (FluorineFx.Expression.FluorineAST) astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, (AST)tmp21_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp21_AST);
 				match(IS);
 				relationalOperator_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -684,25 +678,24 @@ _loop14_breakloop:				;
 			}
 		}
 		returnAST = relationalOperator_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void listInitializer() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST listInitializer_AST = null;
 		
 		try {      // for error handling
 			FluorineFx.Expression.ListInitializerNode tmp22_AST = null;
 			tmp22_AST = (FluorineFx.Expression.ListInitializerNode) astFactory.create(LT(1), "FluorineFx.Expression.ListInitializerNode");
-			astFactory.makeASTRoot(currentAST, (AST)tmp22_AST);
+			astFactory.makeASTRoot(ref currentAST, (AST)tmp22_AST);
 			match(LPAREN);
 			primaryExpression();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			{    // ( ... )*
 				for (;;)
@@ -713,7 +706,7 @@ _loop14_breakloop:				;
 						primaryExpression();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, (AST)returnAST);
+							astFactory.addASTChild(ref currentAST, (AST)returnAST);
 						}
 					}
 					else
@@ -740,14 +733,13 @@ _loop38_breakloop:				;
 			}
 		}
 		returnAST = listInitializer_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void betweenExpr() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST betweenExpr_AST = null;
 		FluorineFx.Expression.FluorineAST e1_AST = null;
 		FluorineFx.Expression.FluorineAST e2_AST = null;
@@ -757,17 +749,17 @@ _loop38_breakloop:				;
 			if (0 == inputState.guessing)
 			{
 				e1_AST = (FluorineFx.Expression.FluorineAST)returnAST;
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			FluorineFx.Expression.ListInitializerNode tmp25_AST = null;
 			tmp25_AST = (FluorineFx.Expression.ListInitializerNode) astFactory.create(LT(1), "FluorineFx.Expression.ListInitializerNode");
-			astFactory.makeASTRoot(currentAST, (AST)tmp25_AST);
+			astFactory.makeASTRoot(ref currentAST, (AST)tmp25_AST);
 			match(AND);
 			sumExpr();
 			if (0 == inputState.guessing)
 			{
 				e2_AST = (FluorineFx.Expression.FluorineAST)returnAST;
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			betweenExpr_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 		}
@@ -784,14 +776,13 @@ _loop38_breakloop:				;
 			}
 		}
 		returnAST = betweenExpr_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void pattern() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST pattern_AST = null;
 		
 		try {      // for error handling
@@ -818,7 +809,7 @@ _loop38_breakloop:				;
 				literal();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				pattern_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -829,7 +820,7 @@ _loop38_breakloop:				;
 				functionOrVar();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				pattern_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -853,21 +844,20 @@ _loop38_breakloop:				;
 			}
 		}
 		returnAST = pattern_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void prodExpr() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST prodExpr_AST = null;
 		
 		try {      // for error handling
 			powExpr();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			{    // ( ... )*
 				for (;;)
@@ -881,7 +871,7 @@ _loop38_breakloop:				;
 							{
 								FluorineFx.Expression.OpMULTIPLY tmp26_AST = null;
 								tmp26_AST = (FluorineFx.Expression.OpMULTIPLY) astFactory.create(LT(1), "FluorineFx.Expression.OpMULTIPLY");
-								astFactory.makeASTRoot(currentAST, (AST)tmp26_AST);
+								astFactory.makeASTRoot(ref currentAST, (AST)tmp26_AST);
 								match(STAR);
 								break;
 							}
@@ -889,7 +879,7 @@ _loop38_breakloop:				;
 							{
 								FluorineFx.Expression.OpDIVIDE tmp27_AST = null;
 								tmp27_AST = (FluorineFx.Expression.OpDIVIDE) astFactory.create(LT(1), "FluorineFx.Expression.OpDIVIDE");
-								astFactory.makeASTRoot(currentAST, (AST)tmp27_AST);
+								astFactory.makeASTRoot(ref currentAST, (AST)tmp27_AST);
 								match(DIV);
 								break;
 							}
@@ -897,7 +887,7 @@ _loop38_breakloop:				;
 							{
 								FluorineFx.Expression.OpMODULUS tmp28_AST = null;
 								tmp28_AST = (FluorineFx.Expression.OpMODULUS) astFactory.create(LT(1), "FluorineFx.Expression.OpMODULUS");
-								astFactory.makeASTRoot(currentAST, (AST)tmp28_AST);
+								astFactory.makeASTRoot(ref currentAST, (AST)tmp28_AST);
 								match(MOD);
 								break;
 							}
@@ -910,7 +900,7 @@ _loop38_breakloop:				;
 						powExpr();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, (AST)returnAST);
+							astFactory.addASTChild(ref currentAST, (AST)returnAST);
 						}
 					}
 					else
@@ -936,33 +926,32 @@ _loop18_breakloop:				;
 			}
 		}
 		returnAST = prodExpr_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void powExpr() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST powExpr_AST = null;
 		
 		try {      // for error handling
 			unaryExpression();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			{
 				if ((LA(1)==POWER))
 				{
 					FluorineFx.Expression.OpPOWER tmp29_AST = null;
 					tmp29_AST = (FluorineFx.Expression.OpPOWER) astFactory.create(LT(1), "FluorineFx.Expression.OpPOWER");
-					astFactory.makeASTRoot(currentAST, (AST)tmp29_AST);
+					astFactory.makeASTRoot(ref currentAST, (AST)tmp29_AST);
 					match(POWER);
 					unaryExpression();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, (AST)returnAST);
+						astFactory.addASTChild(ref currentAST, (AST)returnAST);
 					}
 				}
 				else if ((tokenSet_7_.member(LA(1)))) {
@@ -988,14 +977,13 @@ _loop18_breakloop:				;
 			}
 		}
 		returnAST = powExpr_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void unaryExpression() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST unaryExpression_AST = null;
 		
 		try {      // for error handling
@@ -1008,7 +996,7 @@ _loop18_breakloop:				;
 					{
 						FluorineFx.Expression.OpUnaryPlus tmp30_AST = null;
 						tmp30_AST = (FluorineFx.Expression.OpUnaryPlus) astFactory.create(LT(1), "FluorineFx.Expression.OpUnaryPlus");
-						astFactory.makeASTRoot(currentAST, (AST)tmp30_AST);
+						astFactory.makeASTRoot(ref currentAST, (AST)tmp30_AST);
 						match(PLUS);
 						break;
 					}
@@ -1016,7 +1004,7 @@ _loop18_breakloop:				;
 					{
 						FluorineFx.Expression.OpUnaryMinus tmp31_AST = null;
 						tmp31_AST = (FluorineFx.Expression.OpUnaryMinus) astFactory.create(LT(1), "FluorineFx.Expression.OpUnaryMinus");
-						astFactory.makeASTRoot(currentAST, (AST)tmp31_AST);
+						astFactory.makeASTRoot(ref currentAST, (AST)tmp31_AST);
 						match(MINUS);
 						break;
 					}
@@ -1024,7 +1012,7 @@ _loop18_breakloop:				;
 					{
 						FluorineFx.Expression.OpNOT tmp32_AST = null;
 						tmp32_AST = (FluorineFx.Expression.OpNOT) astFactory.create(LT(1), "FluorineFx.Expression.OpNOT");
-						astFactory.makeASTRoot(currentAST, (AST)tmp32_AST);
+						astFactory.makeASTRoot(ref currentAST, (AST)tmp32_AST);
 						match(NOT);
 						break;
 					}
@@ -1037,7 +1025,7 @@ _loop18_breakloop:				;
 				unaryExpression();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				unaryExpression_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 			}
@@ -1045,7 +1033,7 @@ _loop18_breakloop:				;
 				primaryExpression();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				unaryExpression_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 			}
@@ -1068,14 +1056,13 @@ _loop18_breakloop:				;
 			}
 		}
 		returnAST = unaryExpression_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void primaryExpression() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST primaryExpression_AST = null;
 		
 		try {      // for error handling
@@ -1086,7 +1073,7 @@ _loop18_breakloop:				;
 				parenExpr();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				primaryExpression_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -1103,7 +1090,7 @@ _loop18_breakloop:				;
 				literal();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				primaryExpression_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -1114,7 +1101,7 @@ _loop18_breakloop:				;
 				functionOrVar();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				if (0==inputState.guessing)
 				{
@@ -1149,14 +1136,13 @@ _loop18_breakloop:				;
 			}
 		}
 		returnAST = primaryExpression_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void parenExpr() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST parenExpr_AST = null;
 		
 		try {      // for error handling
@@ -1164,7 +1150,7 @@ _loop18_breakloop:				;
 			expression();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			match(RPAREN);
 			parenExpr_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
@@ -1182,14 +1168,13 @@ _loop18_breakloop:				;
 			}
 		}
 		returnAST = parenExpr_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void literal() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST literal_AST = null;
 		
 		try {      // for error handling
@@ -1199,7 +1184,7 @@ _loop18_breakloop:				;
 			{
 				FluorineFx.Expression.NullLiteralNode tmp35_AST = null;
 				tmp35_AST = (FluorineFx.Expression.NullLiteralNode) astFactory.create(LT(1), "FluorineFx.Expression.NullLiteralNode");
-				astFactory.addASTChild(currentAST, (AST)tmp35_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp35_AST);
 				match(NULL_LITERAL);
 				literal_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -1208,7 +1193,7 @@ _loop18_breakloop:				;
 			{
 				FluorineFx.Expression.IntLiteralNode tmp36_AST = null;
 				tmp36_AST = (FluorineFx.Expression.IntLiteralNode) astFactory.create(LT(1), "FluorineFx.Expression.IntLiteralNode");
-				astFactory.addASTChild(currentAST, (AST)tmp36_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp36_AST);
 				match(INTEGER_LITERAL);
 				literal_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -1217,7 +1202,7 @@ _loop18_breakloop:				;
 			{
 				FluorineFx.Expression.HexLiteralNode tmp37_AST = null;
 				tmp37_AST = (FluorineFx.Expression.HexLiteralNode) astFactory.create(LT(1), "FluorineFx.Expression.HexLiteralNode");
-				astFactory.addASTChild(currentAST, (AST)tmp37_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp37_AST);
 				match(HEXADECIMAL_INTEGER_LITERAL);
 				literal_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -1226,7 +1211,7 @@ _loop18_breakloop:				;
 			{
 				FluorineFx.Expression.RealLiteralNode tmp38_AST = null;
 				tmp38_AST = (FluorineFx.Expression.RealLiteralNode) astFactory.create(LT(1), "FluorineFx.Expression.RealLiteralNode");
-				astFactory.addASTChild(currentAST, (AST)tmp38_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp38_AST);
 				match(REAL_LITERAL);
 				literal_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -1235,7 +1220,7 @@ _loop18_breakloop:				;
 			{
 				FluorineFx.Expression.StringLiteralNode tmp39_AST = null;
 				tmp39_AST = (FluorineFx.Expression.StringLiteralNode) astFactory.create(LT(1), "FluorineFx.Expression.StringLiteralNode");
-				astFactory.addASTChild(currentAST, (AST)tmp39_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp39_AST);
 				match(STRING_LITERAL);
 				literal_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -1246,7 +1231,7 @@ _loop18_breakloop:				;
 				boolLiteral();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				literal_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -1256,7 +1241,7 @@ _loop18_breakloop:				;
 				dateLiteral();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				literal_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 				break;
@@ -1280,14 +1265,13 @@ _loop18_breakloop:				;
 			}
 		}
 		returnAST = literal_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void functionOrVar() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST functionOrVar_AST = null;
 		
 		try {      // for error handling
@@ -1316,7 +1300,7 @@ _loop18_breakloop:				;
 				function();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				functionOrVar_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 			}
@@ -1324,7 +1308,7 @@ _loop18_breakloop:				;
 				var();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, (AST)returnAST);
+					astFactory.addASTChild(ref currentAST, (AST)returnAST);
 				}
 				functionOrVar_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 			}
@@ -1347,26 +1331,25 @@ _loop18_breakloop:				;
 			}
 		}
 		returnAST = functionOrVar_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void function() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST function_AST = null;
 		
 		try {      // for error handling
 			match(POUND);
 			FluorineFx.Expression.FunctionNode tmp41_AST = null;
 			tmp41_AST = (FluorineFx.Expression.FunctionNode) astFactory.create(LT(1), "FluorineFx.Expression.FunctionNode");
-			astFactory.makeASTRoot(currentAST, (AST)tmp41_AST);
+			astFactory.makeASTRoot(ref currentAST, (AST)tmp41_AST);
 			match(ID);
 			methodArgs();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			function_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 		}
@@ -1383,20 +1366,19 @@ _loop18_breakloop:				;
 			}
 		}
 		returnAST = function_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void var() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST var_AST = null;
 		
 		try {      // for error handling
 			FluorineFx.Expression.VariableNode tmp42_AST = null;
 			tmp42_AST = (FluorineFx.Expression.VariableNode) astFactory.create(LT(1), "FluorineFx.Expression.VariableNode");
-			astFactory.makeASTRoot(currentAST, (AST)tmp42_AST);
+			astFactory.makeASTRoot(ref currentAST, (AST)tmp42_AST);
 			match(ID);
 			var_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 		}
@@ -1413,14 +1395,13 @@ _loop18_breakloop:				;
 			}
 		}
 		returnAST = var_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void methodArgs() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST methodArgs_AST = null;
 		
 		try {      // for error handling
@@ -1431,7 +1412,7 @@ _loop18_breakloop:				;
 					argument();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, (AST)returnAST);
+						astFactory.addASTChild(ref currentAST, (AST)returnAST);
 					}
 					{    // ( ... )*
 						for (;;)
@@ -1442,7 +1423,7 @@ _loop18_breakloop:				;
 								argument();
 								if (0 == inputState.guessing)
 								{
-									astFactory.addASTChild(currentAST, (AST)returnAST);
+									astFactory.addASTChild(ref currentAST, (AST)returnAST);
 								}
 							}
 							else
@@ -1478,21 +1459,20 @@ _loop33_breakloop:						;
 			}
 		}
 		returnAST = methodArgs_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void argument() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST argument_AST = null;
 		
 		try {      // for error handling
 			expression();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, (AST)returnAST);
+				astFactory.addASTChild(ref currentAST, (AST)returnAST);
 			}
 			argument_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 		}
@@ -1509,14 +1489,13 @@ _loop33_breakloop:						;
 			}
 		}
 		returnAST = argument_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void boolLiteral() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST boolLiteral_AST = null;
 		
 		try {      // for error handling
@@ -1524,14 +1503,14 @@ _loop33_breakloop:						;
 			{
 				FluorineFx.Expression.BooleanLiteralNode tmp46_AST = null;
 				tmp46_AST = (FluorineFx.Expression.BooleanLiteralNode) astFactory.create(LT(1), "FluorineFx.Expression.BooleanLiteralNode");
-				astFactory.addASTChild(currentAST, (AST)tmp46_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp46_AST);
 				match(TRUE);
 				boolLiteral_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 			}
 			else if ((LA(1)==FALSE)) {
 				FluorineFx.Expression.BooleanLiteralNode tmp47_AST = null;
 				tmp47_AST = (FluorineFx.Expression.BooleanLiteralNode) astFactory.create(LT(1), "FluorineFx.Expression.BooleanLiteralNode");
-				astFactory.addASTChild(currentAST, (AST)tmp47_AST);
+				astFactory.addASTChild(ref currentAST, (AST)tmp47_AST);
 				match(FALSE);
 				boolLiteral_AST = (FluorineFx.Expression.FluorineAST)currentAST.root;
 			}
@@ -1554,25 +1533,24 @@ _loop33_breakloop:						;
 			}
 		}
 		returnAST = boolLiteral_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void dateLiteral() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		FluorineFx.Expression.FluorineAST dateLiteral_AST = null;
 		
 		try {      // for error handling
 			FluorineFx.Expression.DateLiteralNode tmp48_AST = null;
 			tmp48_AST = (FluorineFx.Expression.DateLiteralNode) astFactory.create(LT(1), "FluorineFx.Expression.DateLiteralNode");
-			astFactory.makeASTRoot(currentAST, (AST)tmp48_AST);
+			astFactory.makeASTRoot(ref currentAST, (AST)tmp48_AST);
 			match(LITERAL_date);
 			match(LPAREN);
 			FluorineFx.Expression.FluorineAST tmp50_AST = null;
 			tmp50_AST = (FluorineFx.Expression.FluorineAST) astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, (AST)tmp50_AST);
+			astFactory.addASTChild(ref currentAST, (AST)tmp50_AST);
 			match(STRING_LITERAL);
 			{
 				if ((LA(1)==COMMA))
@@ -1580,7 +1558,7 @@ _loop33_breakloop:						;
 					match(COMMA);
 					FluorineFx.Expression.FluorineAST tmp52_AST = null;
 					tmp52_AST = (FluorineFx.Expression.FluorineAST) astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, (AST)tmp52_AST);
+					astFactory.addASTChild(ref currentAST, (AST)tmp52_AST);
 					match(STRING_LITERAL);
 				}
 				else if ((LA(1)==RPAREN)) {
@@ -1607,7 +1585,6 @@ _loop33_breakloop:						;
 			}
 		}
 		returnAST = dateLiteral_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public new FluorineFx.Expression.FluorineAST getAST()

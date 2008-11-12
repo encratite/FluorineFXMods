@@ -34,8 +34,39 @@ using FluorineFx.Messaging.Endpoints;
 namespace FluorineFx.Messaging
 {
     /// <summary>
-    /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// ClientManager manages clients connected to the FluorineFx server.
     /// </summary>
+    /// <example>
+    /// 	<code lang="CS">
+    /// classChatAdapter : MessagingAdapter, ISessionListener
+    /// {
+    ///     private Hashtable _clients;
+    ///  
+    ///     public ChatAdapter()
+    ///     {
+    ///         _clients = new Hashtable();
+    ///         ClientManager.AddSessionCreatedListener(this);
+    ///     }
+    ///  
+    ///     public void SessionCreated(IClient client)
+    ///     {
+    ///         lock (_clients.SyncRoot)
+    ///         {
+    ///             _clients.Add(client.Id, client);
+    ///         }
+    ///         client.AddSessionDestroyedListener(this);
+    ///     }
+    ///  
+    ///     public void SessionDestroyed(IClient client)
+    ///     {
+    ///         lock (_clients.SyncRoot)
+    ///         {
+    ///             _clients.Remove(client.Id);
+    ///         }
+    ///     }
+    /// }
+    /// </code>
+    /// </example>
     public class ClientManager : IClientRegistry
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(ClientManager));
@@ -59,7 +90,10 @@ namespace FluorineFx.Messaging
         {
             return Guid.NewGuid().ToString("N");
         }
-
+        /// <summary>
+        /// Adds a session create listener that will be notified when the session is created.
+        /// </summary>
+        /// <param name="listener">The listener to add.</param>
         public static void AddSessionCreatedListener(ISessionListener listener)
         {
             if (listener == null)
@@ -69,7 +103,10 @@ namespace FluorineFx.Messaging
                 _sessionCreatedListeners[listener] = null;
             }
         }
-
+        /// <summary>
+        /// Removes a session create listener.
+        /// </summary>
+        /// <param name="listener">The listener to remove.</param>
         public static void RemoveSessionCreatedListener(ISessionListener listener)
         {
             if (listener == null)
@@ -80,7 +117,10 @@ namespace FluorineFx.Messaging
                     _sessionCreatedListeners.Remove(listener);
             }
         }
-
+        /// <summary>
+        /// Notifies session listeners.
+        /// </summary>
+        /// <param name="client">The client(sesion) created.</param>
         protected void NotifyCreated(IClient client)
         {
             lock (_sessionCreatedListeners.SyncRoot)
@@ -92,6 +132,11 @@ namespace FluorineFx.Messaging
 
         #region IClientRegistry Members
 
+        /// <summary>
+        /// Returns an existing client from the message header transporting the global FlexClient Id value or creates a new one if not found.
+        /// </summary>
+        /// <param name="message">Message sent from client.</param>
+        /// <returns>The client object.</returns>
         public IClient GetClient(IMessage message)
         {
             if (message.HeaderExists(MessageBase.FlexClientIdHeader))
@@ -101,7 +146,11 @@ namespace FluorineFx.Messaging
             }
             return null;
         }
-
+        /// <summary>
+        /// Returns an existing client from a client id or creates a new one if not found.
+        /// </summary>
+        /// <param name="id">The identity of the client to return.</param>
+        /// <returns>The client object.</returns>
         public IClient GetClient(string id)
         {
             lock (_objLock)
@@ -121,7 +170,11 @@ namespace FluorineFx.Messaging
                 return client;
             }
         }
-
+        /// <summary>
+        /// Check if a client with a given id exists.
+        /// </summary>
+        /// <param name="id">The identity of the client to check for.</param>
+        /// <returns><c>true</c> if the client exists, <c>false</c> otherwise.</returns>
         public bool HasClient(string id)
         {
             if (id == null)
@@ -131,7 +184,11 @@ namespace FluorineFx.Messaging
                 return _clients.ContainsKey(id);
             }
         }
-
+        /// <summary>
+        /// Returns an existing client from a client id.
+        /// </summary>
+        /// <param name="clientId">The identity of the client to return.</param>
+        /// <returns>The client object if exists, null otherwise.</returns>
         public IClient LookupClient(string clientId)
         {
             if (clientId == null)

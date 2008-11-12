@@ -31,18 +31,21 @@ namespace FluorineFx
     /// The DataSetTypeAttribute specifies the types of data in a DataSet. The attribute controls how a DataSet is sent to the Flex client.
 	/// </summary>
     /// <example>
-    /// [DataSetType("FlexRemoteObjectSample.PersonVO")]<br>
-    /// [DataTableType("phones", "phoneNumbers", "FlexRemoteObjectSample.PhoneVO")]<br>
-    /// public DataSet GetDataSet()<br>
-    /// {<br>
-    ///     DataSet dataSet = new DataSet("mydataset");<br>
-    ///     DataTable dataTable = dataSet.Tables.Add("phones");<br>
-    ///     dataTable.Columns.Add( "number", typeof(string) );<br>
-    ///     dataTable.Rows.Add( new object[] {"123456"} );<br>
-    ///     dataTable.Rows.Add( new object[] {"456789"} );<br>
-    ///     return dataSet;<br>
-    /// }<br>
-    /// In this sample Flex will receive a PersonVO object with a "phoneNumbers" property having an Arraycollection of PhoneVO objects.
+    /// <code lang="CS">
+    /// In this sample the Flex client will receive a PersonVO object with a "phoneNumbers" property having an Arraycollection of PhoneVO objects.
+    /// 
+    /// [DataSetType("FlexRemoteObjectSample.PersonVO")]
+    /// [DataTableType("phones", "phoneNumbers", "FlexRemoteObjectSample.PhoneVO")]
+    /// public DataSet GetDataSet()
+    /// {
+    ///     DataSet dataSet = new DataSet("mydataset");
+    ///     DataTable dataTable = dataSet.Tables.Add("phones");
+    ///     dataTable.Columns.Add( "number", typeof(string) );
+    ///     dataTable.Rows.Add( new object[] {"123456"} );
+    ///     dataTable.Rows.Add( new object[] {"456789"} );
+    ///     return dataSet;
+    /// }
+    /// </code>
     /// </example>
 	public class DataSetTypeAttribute : System.Attribute, IInvocationResultHandler
 	{

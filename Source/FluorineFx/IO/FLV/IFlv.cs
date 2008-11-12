@@ -43,7 +43,13 @@ namespace FluorineFx.IO.FLV
         /// Gets or sets the metadata.
         /// </summary>
         MetaData MetaData { get; set; }
+        /// <summary>
+        /// Gets or sets the MetaService.
+        /// </summary>
         MetaService MetaService { get; set; }
+        /// <summary>
+        /// Gets or sets the keyframe data.
+        /// </summary>
         Hashtable KeyFrameData { get; set; }
         /// <summary>
         /// Refreshes the headers. Usually used after data is added to the flv file.

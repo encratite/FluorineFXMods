@@ -42,11 +42,19 @@ namespace FluorineFx.Messaging.Services
         private MessageService()
         {
         }
-		
+		/// <summary>
+        /// Initializes a new instance of the MessageService class.
+		/// </summary>
+		/// <param name="messageBroker"></param>
+		/// <param name="serviceSettings"></param>
 		public MessageService(MessageBroker messageBroker, ServiceSettings serviceSettings) : base(messageBroker, serviceSettings)
 		{
 		}
-
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="destinationSettings"></param>
+        /// <returns></returns>
         [CLSCompliant(false)]
         protected override Destination NewDestination(DestinationSettings destinationSettings)
 		{

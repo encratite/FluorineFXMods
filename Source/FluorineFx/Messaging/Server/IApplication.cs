@@ -34,14 +34,14 @@ namespace FluorineFx.Messaging.Adapter
 		/// Called once when application or room starts.
 		/// </summary>
 		/// <param name="application">Application or room level scope.</param>
-		/// <returns><code>true</code> continues application run, <code>false</code> terminates</returns>
+		/// <returns><c>true</c> continues application run, <c>false</c> terminates</returns>
 		bool OnAppStart(IScope application);
 		/// <summary>
 		/// Called per each client connect
 		/// </summary>
 		/// <param name="connection">Connection object used to provide basic connection methods.</param>
 		/// <param name="parameters">List of params sent from client with NetConnection.connect call</param>
-		/// <returns><code>true</code> accepts the connection, <code>false</code> rejects it</returns>
+		/// <returns><c>true</c> accepts the connection, <c>false</c> rejects it</returns>
 		bool OnAppConnect(IConnection connection, object[] parameters);
 		/// <summary>
 		/// Called every time client joins app level scope.
@@ -70,21 +70,21 @@ namespace FluorineFx.Messaging.Adapter
 		/// Called on application room start.
 		/// </summary>
 		/// <param name="room">Scope object</param>
-		/// <returns><code>true</code> if scope can be started, <code>false</code> otherwise</returns>
+		/// <returns><c>true</c> if scope can be started, <c>false</c> otherwise</returns>
 		bool OnRoomStart(IScope room);
 		/// <summary>
 		/// Called every time client connects to the room.
 		/// </summary>
 		/// <param name="connection">Connection object.</param>
 		/// <param name="parameters">List of params sent from client with NetConnection.connect call</param>
-		/// <returns><code>true</code> accepts the connection, <code>false</code> rejects it.</returns>
+		/// <returns><c>true</c> accepts the connection, <c>false</c> rejects it.</returns>
 		bool OnRoomConnect(IConnection connection, object[] parameters);
 		/// <summary>
 		/// Called when user joins room scope.
 		/// </summary>
 		/// <param name="client">Client object.</param>
 		/// <param name="room">Scope object.</param>
-		/// <returns><code>true</code> accepts the client, <code>false</code> rejects it.</returns>
+		/// <returns><c>true</c> accepts the client, <c>false</c> rejects it.</returns>
 		bool OnRoomJoin(IClient client, IScope room);
 		/// <summary>
 		/// Called when client disconnects from room scope.

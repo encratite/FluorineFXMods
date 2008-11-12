@@ -131,9 +131,9 @@ namespace FluorineFx.Messaging.Rtmp
         DateTime _lastAction;
         volatile RtmpConnectionState _state;
         FluorineFx.Messaging.Endpoints.IEndpoint _endpoint;
-        /// <summary>
-        /// Name of job that is waiting for a valid handshake.
-        /// </summary>
+        // <summary>
+        // Name of job that is waiting for a valid handshake.
+        // </summary>
         //private string _waitForHandshakeJob;
         /// <summary>
         /// Name of job that keeps connection alive.

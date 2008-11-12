@@ -22,6 +22,9 @@ using System.Net.Sockets;
 
 namespace FluorineFx.Util
 {
+    /// <summary>
+    /// Network utility class.
+    /// </summary>
     public abstract class NetworkUtils
     {
         protected NetworkUtils() { }

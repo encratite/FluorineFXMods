@@ -20,6 +20,9 @@ using System;
 
 namespace FluorineFx.Messaging.Api
 {
+    /// <summary>
+    /// Defines a mechanism for retrieving a service object; that is, an object that provides custom support to other objects.
+    /// </summary>
     public interface IServiceProvider
     {
         /// <summary>
@@ -30,7 +33,9 @@ namespace FluorineFx.Messaging.Api
         object GetService(Type serviceType);
     }
 
-
+    /// <summary>
+    /// Provides a container for services.
+    /// </summary>
     public interface IServiceContainer : IServiceProvider
     {
         /// <summary>
@@ -44,7 +49,7 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
         /// <param name="serviceType">The type of service to add.</param>
         /// <param name="service">An instance of the service type to add.</param>
-        /// <param name="promote"></param>
+        /// <param name="promote">true to promote this request to any parent service containers; otherwise, false.</param>
         void AddService(Type serviceType, object service, bool promote);
         /// <summary>
         /// Removes the specified service type from the service container.
@@ -55,7 +60,7 @@ namespace FluorineFx.Messaging.Api
         /// Removes the specified service type from the service container.
         /// </summary>
         /// <param name="serviceType">The type of service to remove.</param>
-        /// <param name="promote"></param>
+        /// <param name="promote">true to promote this request to any parent service containers; otherwise, false.</param>
         void RemoveService(Type serviceType, bool promote);
     }
 }

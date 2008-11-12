@@ -30,7 +30,10 @@ namespace FluorineFx.Messaging.Services.Messaging
     [CLSCompliant(false)]
     public class MessagingAdapter : ServiceAdapter
 	{
-		public MessagingAdapter()
+        /// <summary>
+        /// Initializes a new instance of the MessagingAdapter class.
+        /// </summary>
+        public MessagingAdapter()
 		{
 		}
 
@@ -42,7 +45,7 @@ namespace FluorineFx.Messaging.Services.Messaging
 		/// <returns>The body of the acknowledge message (or null if there is no body).</returns>
 		public override object Invoke(IMessage message)
 		{
-			MessageService messageService = this.Service as MessageService;
+			MessageService messageService = this.Destination.Service as MessageService;
 			messageService.PushMessageToClients(message);
 			return null;
 		}

@@ -104,6 +104,9 @@ namespace FluorineFx.Silverlight
     public delegate void ConnectHandler(object sender, ConnectEventArgs e);
     public delegate void DisconnectHandler(object sender, DisconnectEventArgs e);
 
+    /// <summary>
+    /// Event argument for connection events.
+    /// </summary>
     public class ConnectEventArgs : EventArgs
     {
         EndPoint _endPoint;
@@ -115,7 +118,9 @@ namespace FluorineFx.Silverlight
 
         public EndPoint EndPoint { get { return _endPoint; } }
     }
-
+    /// <summary>
+    /// Event argument for disconnection events.
+    /// </summary>
     public class DisconnectEventArgs : EventArgs
     {
         EndPoint _endPoint;
@@ -128,6 +133,9 @@ namespace FluorineFx.Silverlight
         public EndPoint EndPoint { get { return _endPoint; } }
     }
 
+    /// <summary>
+    /// Silverlight policy server implementation.
+    /// </summary>
     public class PolicyServer    
     {        
         private Socket _listener;        

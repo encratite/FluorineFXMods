@@ -25,6 +25,7 @@ using FluorineFx.Collections.Generic;
 #if !SILVERLIGHT
 using log4net;
 #endif
+using FluorineFx.Context;
 using FluorineFx.Collections;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Persistence;
@@ -728,6 +729,13 @@ namespace FluorineFx.Messaging
 
             #endregion
         }
-	
+
+        public IResource GetResource(string path)
+        {
+            if (HasContext)
+                return _context.GetResource(path);
+            return this.Context.GetResource(this.ContextPath + '/' + path);
+        }
+
 	}
 }

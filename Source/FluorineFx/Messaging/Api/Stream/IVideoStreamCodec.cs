@@ -21,6 +21,9 @@ using FluorineFx.Util;
 
 namespace FluorineFx.Messaging.Api.Stream
 {
+    /// <summary>
+    /// Video codec info used by stream codec.
+    /// </summary>
     [CLSCompliant(false)]
     public interface IVideoStreamCodec
     {

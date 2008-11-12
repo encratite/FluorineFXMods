@@ -44,11 +44,7 @@ namespace FluorineFx.AMF3
 		/// <param name="context">An ITypeDescriptorContext that provides a format context.</param>
 		/// <param name="destinationType">A Type that represents the type you want to convert to.</param>
 		/// <returns>true if this converter can perform the conversion; otherwise, false.</returns>
-#if !SILVERLIGHT
 		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-#else
-		public override bool CanConvertTo(Type destinationType)
-#endif
 		{
 			if (destinationType == null)
 				throw new ArgumentNullException("destinationType");
@@ -84,11 +80,7 @@ namespace FluorineFx.AMF3
 		/// <param name="value">The Object to convert.</param>
 		/// <param name="destinationType">The Type to convert the value parameter to.</param>
 		/// <returns>An Object that represents the converted value.</returns>
-#if !SILVERLIGHT
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
-#else
-        public override object ConvertTo(object value, Type destinationType)
-#endif
 		{
             ArrayCollection ac = value as ArrayCollection;
             ValidationUtils.ArgumentNotNull(ac, "value");

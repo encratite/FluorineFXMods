@@ -31,7 +31,9 @@ namespace FluorineFx.Messaging.Messages
 		/// Messages sent by a MessageAgent with a defined subtopic property indicate their target subtopic in this header.
 		/// </summary>
 		public const string SubtopicHeader = "DSSubtopic";
-
+        /// <summary>
+        /// Correlation id for the AsyncMessage.
+        /// </summary>
 		protected string _correlationId;
 		/// <summary>
 		/// Initializes a new instance of the AsyncMessage class.

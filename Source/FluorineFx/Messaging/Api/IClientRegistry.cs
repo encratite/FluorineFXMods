@@ -29,8 +29,8 @@ namespace FluorineFx.Messaging.Api
 		/// <summary>
 		/// Check if a client with a given id exists.
 		/// </summary>
-		/// <param name="id">The id of the client to check for.</param>
-		/// <returns><code>true</code> if the client exists, <code>false</code> otherwise.</returns>
+		/// <param name="id">The identity of the client to check for.</param>
+		/// <returns><c>true</c> if the client exists, <c>false</c> otherwise.</returns>
 		bool HasClient(string id);
 
         /*
@@ -51,13 +51,22 @@ namespace FluorineFx.Messaging.Api
         IClient NewClient(string id, int clientLeaseTime, object[] parameters);
         */
 		/// <summary>
-		/// Return an existing client from a client id.
+		/// Returns an existing client from a client id.
 		/// </summary>
-		/// <param name="id">The id of the client to return.</param>
+		/// <param name="id">The identity of the client to return.</param>
 		/// <returns>The client object.</returns>
 		IClient LookupClient(string id);
-
+        /// <summary>
+        /// Returns an existing client from a client id or creates a new one if not found.
+        /// </summary>
+        /// <param name="id">The identity of the client to return.</param>
+        /// <returns>The client object.</returns>
         IClient GetClient(string id);
+        /// <summary>
+        /// Returns an existing client from the message header transporting the global FlexClient Id value or creates a new one if not found.
+        /// </summary>
+        /// <param name="message">Message sent from client.</param>
+        /// <returns>The client object.</returns>
         IClient GetClient(IMessage message);
 	}
 }

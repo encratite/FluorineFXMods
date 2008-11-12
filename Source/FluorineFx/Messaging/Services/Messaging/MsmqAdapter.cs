@@ -166,7 +166,7 @@ namespace FluorineFx.Messaging.Services.Messaging
             try
             {
                 AsyncMessage asyncMessage = ConvertMsmqMessage(message);
-                MessageService messageService = this.Service as MessageService;
+                MessageService messageService = this.Destination.Service as MessageService;
                 messageService.PushMessageToClients(asyncMessage);
                 //msgBroker.RouteMessage(msg);
             }

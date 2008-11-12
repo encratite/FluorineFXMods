@@ -62,6 +62,8 @@ namespace FluorineFx.Messaging.Config
         ServerSettings _server;
         ChannelSettingsCollection _channels;
 
+        XmlNode _propertiesNode;
+
         internal DestinationSettings(ServiceSettings serviceSettings, string id, AdapterSettings adapter, string source)
         {
             _serviceSettings = serviceSettings;
@@ -88,16 +90,16 @@ namespace FluorineFx.Messaging.Config
                 _adapter = adapterSettings;
             }
 
-            XmlNode propertiesNode = destinationNode.SelectSingleNode("properties");
-            if (propertiesNode != null)
+            _propertiesNode = destinationNode.SelectSingleNode("properties");
+            if (_propertiesNode != null)
             {
-                XmlNode sourceNode = propertiesNode.SelectSingleNode("source");
+                XmlNode sourceNode = _propertiesNode.SelectSingleNode("source");
                 if (sourceNode != null)
                     _properties["source"] = sourceNode.InnerXml;
-                XmlNode factoryNode = propertiesNode.SelectSingleNode("factory");
+                XmlNode factoryNode = _propertiesNode.SelectSingleNode("factory");
                 if (factoryNode != null)
                     _properties["factory"] = factoryNode.InnerXml;
-                XmlNode attributeIdNode = propertiesNode.SelectSingleNode("attribute-id");
+                XmlNode attributeIdNode = _propertiesNode.SelectSingleNode("attribute-id");
                 if (attributeIdNode != null)
                 {
                     //If you specify an attribute-id element in the destination, you can control which attribute the component is stored in
@@ -110,31 +112,31 @@ namespace FluorineFx.Messaging.Config
                     _properties["attribute-id"] = _id;
                 }
 
-                XmlNode scopeNode = propertiesNode.SelectSingleNode("scope");
+                XmlNode scopeNode = _propertiesNode.SelectSingleNode("scope");
                 if (scopeNode != null)
                 {
                     _properties["scope"] = scopeNode.InnerXml;
                 }
 
-                XmlNode networkNode = propertiesNode.SelectSingleNode("network");
+                XmlNode networkNode = _propertiesNode.SelectSingleNode("network");
                 if (networkNode != null)
                 {
                     NetworkSettings networkSettings = new NetworkSettings(networkNode);
                     _network = networkSettings;
                 }
-                XmlNode metadataNode = propertiesNode.SelectSingleNode("metadata");
+                XmlNode metadataNode = _propertiesNode.SelectSingleNode("metadata");
                 if (metadataNode != null)
                 {
                     MetadataSettings metadataSettings = new MetadataSettings(metadataNode);
                     _metadata = metadataSettings;
                 }
-                XmlNode serverNode = propertiesNode.SelectSingleNode("server");
+                XmlNode serverNode = _propertiesNode.SelectSingleNode("server");
                 if (serverNode != null)
                 {
                     ServerSettings serverSettings = new ServerSettings(serverNode);
                     _server = serverSettings;
                 }
-                XmlNode msmqNode = propertiesNode.SelectSingleNode("msmq");
+                XmlNode msmqNode = _propertiesNode.SelectSingleNode("msmq");
                 if (msmqNode != null)
                 {
                     MsmqSettings msmqSettings = new MsmqSettings(msmqNode);
@@ -169,6 +171,15 @@ namespace FluorineFx.Messaging.Config
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the properties XmlNode object. Custom adapters can use this object to query additional settings.
+        /// </summary>
+        public XmlNode PropertiesNode
+        {
+            get { return _propertiesNode; }
+        }
+
         /// <summary>
         /// Gets the identity of the destination.
         /// </summary>
@@ -333,7 +344,7 @@ namespace FluorineFx.Messaging.Config
         /// <summary>
         /// Determines whether the collection contains a destination with a specific identity.
         /// </summary>
-        /// <param name="value">The destination identity.</param>
+        /// <param name="key">The destination identity.</param>
         /// <returns>true if the DestinationSettings is found in the collection; otherwise, false.</returns>
         public bool ContainsKey(string key)
         {

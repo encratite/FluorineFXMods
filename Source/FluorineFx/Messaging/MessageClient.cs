@@ -32,9 +32,25 @@ using FluorineFx.Messaging.Api;
 
 namespace FluorineFx.Messaging
 {
-	/// <summary>
-	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
-	/// </summary>
+    /// <summary>
+    /// Represents a client-side MessageAgent instance. 
+    /// A server-side MessageClient is only created if its client-side counterpart has subscribed to a destination for pushed data (e.g. Consumer).
+    /// </summary>
+    /// <remarks>
+    /// 	<para>Client-side Producers do not result in the creation of corresponding
+    ///     server-side MessageClient instances.</para>
+    /// 	<para></para>
+    /// 	<para>Each MessageClient instance is bound to a client class (session) and when the
+    ///     client is invalidated any associated MessageClient instances are invalidated as
+    ///     well.</para>
+    /// 	<para>MessageClient instances may also be timed out on a per-destination basis and
+    ///     based on subscription inactivity. If no messages are pushed to the MessageClient
+    ///     within the destination's subscription timeout period the MessageClient will be
+    ///     shutdown.</para>
+    /// 	<para>Per-destination subscription timeout should be used when inactive
+    ///     subscriptions should be shut down opportunistically to preserve server
+    ///     resources.</para>
+    /// </remarks>
     public sealed class MessageClient : IMessageClient
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(MessageClient));
@@ -80,17 +96,29 @@ namespace FluorineFx.Messaging
             }
 		}
 
+        /// <summary>
+        /// Gets an object that can be used to synchronize access. 
+        /// </summary>
         public object SyncRoot { get { return _syncLock; } }
 
 		internal MessageDestination Destination{ get{ return _messageDestination; } }
 
+        /// <summary>
+        /// Gets the destination identity the MessageClient is subscribed to.
+        /// </summary>
         public string DestinationId { get { return _messageDestination.Id; } }
 
         internal IMessageConnection MessageConnection { get { return _connection; } }
 
-		public string Endpoint{ get{ return _endpoint; } }
-
-		public byte[] GetBinaryId()
+        /// <summary>
+        /// Gets the endpoint identity the MessageClient is subscribed to.
+        /// </summary>
+        public string Endpoint { get { return _endpoint; } }
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetBinaryId()
 		{
 			if( _binaryId == null )
 			{
@@ -102,6 +130,7 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Gets the client identity.
         /// </summary>
+        /// <value>The client identity.</value>
 		public string ClientId
 		{
 			get
@@ -109,7 +138,9 @@ namespace FluorineFx.Messaging
 				return _messageClientId;
 			}
 		}
-
+        /// <summary>
+        /// Gets whether the connection is being disconnected.
+        /// </summary>
         public bool IsDisconnecting
         {
             get{ return _isDisconnecting; }
@@ -126,8 +157,9 @@ namespace FluorineFx.Messaging
 			set{ _selector = value; }
 		}
         /// <summary>
-        /// Gets the client subtopic.
+        /// Gets the MessageClient subtopic.
         /// </summary>
+        /// <value>The MessageClient subtopic.</value>
 		public Subtopic Subtopic
 		{
 			get{ return _subtopic; }
@@ -149,7 +181,10 @@ namespace FluorineFx.Messaging
                 return _messageQueue;
             }
         }
-
+        /// <summary>
+        /// Adds a MessageClient created listener.
+        /// </summary>
+        /// <param name="listener">The listener to add.</param>
         public static void AddMessageClientCreatedListener(IMessageClientListener listener)
         {
             lock(typeof(MessageClient))
@@ -159,7 +194,10 @@ namespace FluorineFx.Messaging
                 _messageClientCreatedListeners[listener] = null;
             }
         }
-
+        /// <summary>
+        /// Removes a MessageClient created listener.
+        /// </summary>
+        /// <param name="listener">The listener to remove.</param>
         public static void RemoveMessageClientCreatedListener(IMessageClientListener listener)
         {
             lock (typeof(MessageClient))
@@ -171,14 +209,20 @@ namespace FluorineFx.Messaging
                 }
             }
         }
-
+        /// <summary>
+        /// Adds a MessageClient destroy listener.
+        /// </summary>
+        /// <param name="listener">The listener to add.</param>
         public void AddMessageClientDestroyedListener(IMessageClientListener listener)
         {
             if (_messageClientDestroyedListeners == null)
                 _messageClientDestroyedListeners = new Hashtable(1);
             _messageClientDestroyedListeners[listener] = null;
         }
-
+        /// <summary>
+        /// Removes a MessageClient destroyed listener.
+        /// </summary>
+        /// <param name="listener">The listener to remove.</param>
         public void RemoveMessageClientDestroyedListener(IMessageClientListener listener)
         {
             if (_messageClientDestroyedListeners != null)
@@ -283,6 +327,7 @@ namespace FluorineFx.Messaging
 
         /// <summary>
         /// Renews a lease.
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         public void Renew()
         {

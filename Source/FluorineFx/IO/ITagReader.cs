@@ -21,6 +21,9 @@ using System.IO;
 
 namespace FluorineFx.IO
 {
+    /// <summary>
+    /// Tag reader interface.
+    /// </summary>
     [CLSCompliant(false)]
     public interface ITagReader
     {

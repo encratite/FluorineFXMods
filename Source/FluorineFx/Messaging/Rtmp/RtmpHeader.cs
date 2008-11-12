@@ -26,47 +26,77 @@ namespace FluorineFx.Messaging.Rtmp
 	/// </summary>
 	public sealed class RtmpHeader
 	{
+        /// <summary>
+        /// Channel.
+        /// </summary>
 		int _channelId = 0;
+        /// <summary>
+        /// Timer.
+        /// </summary>
 		int _timer = 0;
+        /// <summary>
+        /// Header size
+        /// </summary>
 		int _size = 0;
+        /// <summary>
+        /// Type of data.
+        /// </summary>
 		byte _headerDataType = 0;
+        /// <summary>
+        /// Stream id.
+        /// </summary>
 		int _streamId = 0;
+        /// <summary>
+        /// Whether timer value is relative.
+        /// </summary>
 		bool _timerRelative = true;
 
         internal RtmpHeader()
 		{
 		}
-
+        /// <summary>
+        /// Gets or set the channel id.
+        /// </summary>
 		public int ChannelId
 		{
 			get{ return _channelId; }
 			set{ _channelId = value; }
 		}
-
+        /// <summary>
+        /// Gets or set the data type.
+        /// </summary>
 		public byte DataType
 		{
 			get{ return _headerDataType; }
 			set{ _headerDataType = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the header size.
+        /// </summary>
 		public int Size
 		{
 			get{ return _size; }
 			set{ _size = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the stream id.
+        /// </summary>
 		public int StreamId
 		{
 			get{ return _streamId; }
 			set{ _streamId = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the timer.
+        /// </summary>
 		public int Timer
 		{
 			get{ return _timer; }
 			set{ _timer = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the timer relative flag.
+        /// </summary>
 		public bool IsTimerRelative
 		{
 			get{ return _timerRelative; }
@@ -89,7 +119,10 @@ namespace FluorineFx.Messaging.Rtmp
 					return -1;
 			}
 		}
-
+        /// <summary>
+        /// Returns a string that represents the current RtmpHeader object.
+        /// </summary>
+        /// <returns>A string that represents the current RtmpHeader object.</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

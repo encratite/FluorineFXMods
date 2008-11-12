@@ -327,6 +327,12 @@ namespace FluorineFx.Collections
 
         #endregion
 
+        /// <summary>
+        /// Adds an item to the hashtable if this hashtable does not yet contain this item.
+        /// </summary>
+        ///<param name="key">The <see cref="T:System.Object"></see> to use as the key of the element to add. </param>
+        ///<param name="value">The <see cref="T:System.Object"></see> to use as the value of the element to add. </param>
+        /// <returns>The passwd value if added, otherwise the old value in the hashtable.</returns>
         public object AddIfAbsent(object key, object value)
         {
             lock (SyncRoot)

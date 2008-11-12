@@ -37,7 +37,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 #endif
 #if SILVERLIGHT
-using System.Xml.Linq;
+//using System.Xml.Linq;
 #else
 using System.Data;
 using log4net;
@@ -213,7 +213,9 @@ namespace FluorineFx.IO
             _classDefinitionReferences = writer._classDefinitionReferences;
             _useLegacyCollection = writer._useLegacyCollection;
         }
-
+        /// <summary>
+        /// Resets object references.
+        /// </summary>
 		public void Reset()
 		{
 #if !(NET_1_1)
@@ -228,66 +230,87 @@ namespace FluorineFx.IO
 			_classDefinitionReferences = new Hashtable();
 #endif
         }
-
+        /// <summary>
+        /// Gets or sets whether legacy collection serialization is used for AMF3.
+        /// </summary>
 		public bool UseLegacyCollection
 		{
 			get{ return _useLegacyCollection; }
 			set{ _useLegacyCollection = value; }
 		}
 
+        /// <summary>
+        /// Writes a byte to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">A byte to write to the stream.</param>
 		public void WriteByte(byte value)
 		{
 			this.BaseStream.WriteByte(value);
 		}
-
-		public void WriteByte(int value)
-		{
-			this.BaseStream.WriteByte((byte)value);
-		}
-
+        /// <summary>
+        /// Writes a stream of bytes to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="buffer">The memory buffer containing the bytes to write to the AMF stream</param>
 		public void WriteBytes(byte[] buffer)
 		{
 			for(int i = 0; buffer != null && i < buffer.Length; i++)
 				this.BaseStream.WriteByte(buffer[i]);
 		}
-
-		public void WriteShort(int n)
+        /// <summary>
+        /// Writes a 16-bit unsigned integer to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        public void WriteShort(int value)
 		{
-			byte[] bytes = BitConverter.GetBytes((ushort)n);
+            byte[] bytes = BitConverter.GetBytes((ushort)value);
 			WriteBigEndian(bytes);
 		}
-
-		public void WriteString(string str)
+        /// <summary>
+        /// Writes an UTF-8 string to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">The UTF-8 string.</param>
+        /// <remarks>Standard or long string header is written depending on the string length.</remarks>
+		public void WriteString(string value)
 		{
 			UTF8Encoding utf8Encoding = new UTF8Encoding(true, true);
-			int byteCount = utf8Encoding.GetByteCount(str);
+            int byteCount = utf8Encoding.GetByteCount(value);
 			if( byteCount < 65536 )
 			{
 				WriteByte(AMF0TypeCode.String);
-				WriteUTF(str);
+                WriteUTF(value);
 			}
 			else
 			{
 				WriteByte(AMF0TypeCode.LongString);
-				WriteLongUTF(str);
+                WriteLongUTF(value);
 			}
 		}
-
-		public void WriteUTF(string str)
+        /// <summary>
+        /// Writes a UTF-8 string to the current position in the AMF stream.
+        /// The length of the UTF-8 string in bytes is written first, as a 16-bit integer, followed by the bytes representing the characters of the string.
+        /// </summary>
+        /// <param name="value">The UTF-8 string.</param>
+        /// <remarks>Standard or long string header is not written.</remarks>
+        public void WriteUTF(string value)
 		{
 			//null string is not accepted
-			//in case of custom serialization TypeError: Error #2007: Parameter value must be non-null.  at flash.utils::ObjectOutput/writeUTF()
+			//in case of custom serialization leads to TypeError: Error #2007: Parameter value must be non-null.  at flash.utils::ObjectOutput/writeUTF()
 
 			//Length - max 65536.
 			UTF8Encoding utf8Encoding = new UTF8Encoding();
-			int byteCount = utf8Encoding.GetByteCount(str);
-			byte[] buffer = utf8Encoding.GetBytes(str);
+            int byteCount = utf8Encoding.GetByteCount(value);
+            byte[] buffer = utf8Encoding.GetBytes(value);
 			this.WriteShort(byteCount);
 			if (buffer.Length > 0)
 				base.Write(buffer);
 		}
-
-		public void WriteUTFBytes(string value)
+        /// <summary>
+        /// Writes a UTF-8 string to the current position in the AMF stream.
+        /// Similar to WriteUTF, but does not prefix the string with a 16-bit length word.
+        /// </summary>
+        /// <param name="value">The UTF-8 string.</param>
+        /// <remarks>Standard or long string header is not written.</remarks>
+        public void WriteUTFBytes(string value)
 		{
 			//Length - max 65536.
 			UTF8Encoding utf8Encoding = new UTF8Encoding();
@@ -296,23 +319,26 @@ namespace FluorineFx.IO
 				base.Write(buffer);
 		}
 
-		protected void WriteLongUTF(string str)
+        private void WriteLongUTF(string value)
 		{
 			UTF8Encoding utf8Encoding = new UTF8Encoding(true, true);
-			uint byteCount = (uint)utf8Encoding.GetByteCount(str);
+            uint byteCount = (uint)utf8Encoding.GetByteCount(value);
 			byte[] buffer = new Byte[byteCount+4];
 			//unsigned long (always 32 bit, big endian byte order)
 			buffer[0] = (byte)((byteCount >> 0x18) & 0xff);
 			buffer[1] = (byte)((byteCount >> 0x10) & 0xff);
 			buffer[2] = (byte)((byteCount >> 8) & 0xff);
 			buffer[3] = (byte)((byteCount & 0xff));
-			int bytesEncodedCount = utf8Encoding.GetBytes(str, 0, str.Length, buffer, 4);
-
+            int bytesEncodedCount = utf8Encoding.GetBytes(value, 0, value.Length, buffer, 4);
             if (buffer.Length > 0)
                 base.BaseStream.Write(buffer, 0, buffer.Length);
 		}
 
-		
+		/// <summary>
+        /// Serializes object graphs in Action Message Format (AMF).
+		/// </summary>
+        /// <param name="objectEncoding">AMF version to use.</param>
+        /// <param name="data">The Object to serialize in the AMF stream.</param>
 		public void WriteData(ObjectEncoding objectEncoding, object data)
 		{
 			//If we have ObjectEncoding.AMF3 anything that serializes to String, Number, Boolean, Date will use AMF0 encoding
@@ -391,33 +417,48 @@ namespace FluorineFx.IO
 			WriteByte(AMF0TypeCode.Reference);
 			WriteShort((int)_amf0ObjectReferences[value]);
 		}
-
+        /// <summary>
+        /// Writes a null type marker to the current position in the AMF stream.
+        /// </summary>
 		public void WriteNull()
 		{
-			//Write the null code (0x05) to the output stream.
 			WriteByte(AMF0TypeCode.Null);
 		}
-
+        /// <summary>
+        /// Writes a double-precision floating point number to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
 		public void WriteDouble(double value)
 		{
-			//long tmp = BitConverter.DoubleToInt64Bits( value );
-			//this.WriteLong(tmp);
             byte[] bytes = BitConverter.GetBytes(value);
             WriteBigEndian(bytes);
 		}
-
-		public void WriteFloat(float value)
+        /// <summary>
+        /// Writes a single-precision floating point number to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
+        public void WriteFloat(float value)
 		{
 			byte[] bytes = BitConverter.GetBytes(value);			
 			WriteBigEndian(bytes);
 		}
-
-		public void WriteInt32(int value)
+        /// <summary>
+        /// Writes a 32-bit signed integer to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
+        public void WriteInt32(int value)
 		{
 			byte[] bytes = BitConverter.GetBytes(value);
 			WriteBigEndian(bytes);
 		}
-
+        /// <summary>
+        /// Writes a 32-bit signed integer to the current position in the AMF stream using variable length unsigned 29-bit integer encoding.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
         public void WriteUInt24(int value)
         {
             byte[] bytes = new byte[3];
@@ -426,15 +467,23 @@ namespace FluorineFx.IO
             bytes[2] = (byte)(0xFF & (value >> 0));
             this.BaseStream.Write(bytes, 0, bytes.Length);
         }
-
-		public void WriteBoolean(bool b)
+        /// <summary>
+        /// Writes a Boolean value to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">A Boolean value.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
+        public void WriteBoolean(bool value)
 		{
-			this.BaseStream.WriteByte(b ? ((byte) 1) : ((byte) 0));
+            this.BaseStream.WriteByte(value ? ((byte)1) : ((byte)0));
 		}
-
-		public void WriteLong(long number)
+        /// <summary>
+        /// Writes a 64-bit signed integer to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
+        public void WriteLong(long value)
 		{
-			byte[] bytes = BitConverter.GetBytes(number);
+            byte[] bytes = BitConverter.GetBytes(value);
 			WriteBigEndian(bytes);
 		}
 
@@ -447,7 +496,12 @@ namespace FluorineFx.IO
 				base.BaseStream.WriteByte( bytes[i] );
 			}
 		}
-
+        /// <summary>
+        /// Writes a DateTime value to the current position in the AMF stream.
+        /// An ActionScript Date is serialized as the number of milliseconds elapsed since the epoch of midnight on 1st Jan 1970 in the UTC time zone.
+        /// </summary>
+        /// <param name="value">A DateTime value.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
         public void WriteDateTime(DateTime value)
 		{
 /*
@@ -470,7 +524,7 @@ namespace FluorineFx.IO
 
 #if !SILVERLIGHT
             span = TimeZone.CurrentTimeZone.GetUtcOffset(value);
-			//whatever we write back, is ignored
+			//whatever we write back, it is ignored
 			//this.WriteLong(span.TotalMinutes);
 			//this.WriteShort((int)span.TotalHours);
 			//this.WriteShort(65236);
@@ -484,13 +538,18 @@ namespace FluorineFx.IO
         }
 
 #if !SILVERLIGHT
-		public void WriteXmlDocument(XmlDocument xmlDocument)
+        /// <summary>
+        /// Writes an XmlDocument object to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">An XmlDocument object.</param>
+        /// <remarks>Xml type marker is written in the AMF stream.</remarks>
+        public void WriteXmlDocument(XmlDocument value)
 		{
-			if(xmlDocument != null)
+            if (value != null)
 			{
-				AddReference(xmlDocument);
-				this.BaseStream.WriteByte((byte)15);//xml code (0x0F)
-				string xml = xmlDocument.DocumentElement.OuterXml;
+                AddReference(value);
+				this.BaseStream.WriteByte(AMF0TypeCode.Xml);
+                string xml = value.DocumentElement.OuterXml;
 				this.WriteLongUTF(xml);
 			}
 			else
@@ -526,32 +585,42 @@ namespace FluorineFx.IO
 
 #endif
 
-		public void WriteArray(ObjectEncoding objectEcoding, Array array)
+        /// <summary>
+        /// Writes an Array value to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="objectEcoding">Object encoding used.</param>
+        /// <param name="value">An Array object.</param>
+        public void WriteArray(ObjectEncoding objectEcoding, Array value)
 		{
-			if(array == null)
+            if (value == null)
 				this.WriteNull();
 			else
 			{
-				AddReference(array);
-				WriteByte(10);
-				WriteInt32(array.Length);
-				for(int i = 0; i < array.Length; i++)
+                AddReference(value);
+                WriteByte(AMF0TypeCode.Array);
+                WriteInt32(value.Length);
+                for (int i = 0; i < value.Length; i++)
 				{
-					WriteData(objectEcoding, array.GetValue(i));
+                    WriteData(objectEcoding, value.GetValue(i));
 				}
 			}
 		}
-
-		public void WriteAssociativeArray(ObjectEncoding objectEncoding, IDictionary dictionary)
+        /// <summary>
+        /// Writes an associative array to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="objectEncoding">Object encoding used.</param>
+        /// <param name="value">An Dictionary object.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
+        public void WriteAssociativeArray(ObjectEncoding objectEncoding, IDictionary value)
 		{
-			if(dictionary == null)
+            if (value == null)
 				this.WriteNull();
 			else
 			{
-				AddReference(dictionary);
+                AddReference(value);
 				WriteByte(AMF0TypeCode.AssociativeArray);
-				WriteInt32(dictionary.Count);
-				foreach(DictionaryEntry entry in dictionary)
+                WriteInt32(value.Count);
+                foreach (DictionaryEntry entry in value)
 				{
 					this.WriteUTF(entry.Key.ToString());
 					this.WriteData(objectEncoding, entry.Value);
@@ -560,7 +629,13 @@ namespace FluorineFx.IO
 			}
 		}
 
-		public void WriteObject(ObjectEncoding objectEncoding, object obj)
+        /// <summary>
+        /// Writes an object to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="objectEncoding">Object encoding used.</param>
+        /// <param name="obj">The object to serialize.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
+        public void WriteObject(ObjectEncoding objectEncoding, object obj)
 		{
 			if( obj == null )
 			{
@@ -630,14 +705,18 @@ namespace FluorineFx.IO
 			WriteEndMarkup();
 		}
 
-		public void WriteEndMarkup()
+		internal void WriteEndMarkup()
 		{
 			//Write the end object flag 0x00, 0x00, 0x09
 			base.BaseStream.WriteByte(0);
 			base.BaseStream.WriteByte(0);
 			base.BaseStream.WriteByte(AMF0TypeCode.EndOfObject);
 		}
-
+        /// <summary>
+        /// Writes an anonymous ActionScript object to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="objectEncoding">Object encoding to use.</param>
+        /// <param name="asObject">The ActionScript object.</param>
 		public void WriteASO(ObjectEncoding objectEncoding, ASObject asObject)
 		{
 			if( asObject != null )
@@ -671,7 +750,11 @@ namespace FluorineFx.IO
 		#region AMF3
 
 
-		public void WriteAMF3Data(object data)
+        /// <summary>
+        /// Serializes object graphs in Action Message Format (AMF).
+        /// </summary>
+        /// <param name="data">The Object to serialize in the AMF stream.</param>
+        public void WriteAMF3Data(object data)
 		{
 			if( data == null )
 			{
@@ -726,47 +809,60 @@ namespace FluorineFx.IO
 			//WriteByte(AMF3TypeCode.Object);
 			//WriteAMF3Object(data);
 		}
-
+        /// <summary>
+        /// Writes a null type marker to the current position in the AMF stream.
+        /// </summary>
 		public void WriteAMF3Null()
 		{
 			//Write the null code (0x1) to the output stream.
 			WriteByte(AMF3TypeCode.Null);
 		}
-
+        /// <summary>
+        /// Writes a Boolean value to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">A Boolean value.</param>
 		public void WriteAMF3Bool(bool value)
 		{
 			WriteByte( (byte)(value ? AMF3TypeCode.BooleanTrue : AMF3TypeCode.BooleanFalse));
 		}
-
-		public void WriteAMF3Array(Array array)
+        /// <summary>
+        /// Writes an Array value to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">An Array object.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
+        public void WriteAMF3Array(Array value)
 		{
-            if (_amf0ObjectReferences.ContainsKey(array))
+            if (_amf0ObjectReferences.ContainsKey(value))
 			{
-				WriteReference(array);
+                WriteReference(value);
 				return;
 			}
 
-            if (!_objectReferences.ContainsKey(array))
+            if (!_objectReferences.ContainsKey(value))
 			{
-				_objectReferences.Add(array, _objectReferences.Count);
-				int handle = array.Length;
+                _objectReferences.Add(value, _objectReferences.Count);
+                int handle = value.Length;
 				handle = handle << 1;
 				handle = handle | 1;
 				WriteAMF3IntegerData(handle);
 				WriteAMF3UTF(string.Empty);//hash name
-				for(int i = 0; i < array.Length; i++)
+                for (int i = 0; i < value.Length; i++)
 				{
-					WriteAMF3Data(array.GetValue(i));
+                    WriteAMF3Data(value.GetValue(i));
 				}
 			}
 			else
 			{
-				int handle = (int)_objectReferences[array];
+                int handle = (int)_objectReferences[value];
 				handle = handle << 1;
 				WriteAMF3IntegerData(handle);
 			}
 		}
-
+        /// <summary>
+        /// Writes an Array value to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">An Array object.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
 		public void WriteAMF3Array(IList value)
 		{
             if (!_objectReferences.ContainsKey(value))
@@ -789,7 +885,11 @@ namespace FluorineFx.IO
 				WriteAMF3IntegerData(handle);
 			}
 		}
-
+        /// <summary>
+        /// Writes an associative array to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">An Dictionary object.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
 		public void WriteAMF3AssociativeArray(IDictionary value)
 		{
             if (!_objectReferences.ContainsKey(value))
@@ -821,7 +921,11 @@ namespace FluorineFx.IO
 			WriteAMF3IntegerData(handle);
 			WriteBytes( byteArray.MemoryStream.ToArray() );
 		}
-
+        /// <summary>
+        /// Writes a UTF-8 string to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">The UTF-8 string.</param>
+        /// <remarks>Standard or long string header is not written.</remarks>
 		public void WriteAMF3UTF(string value)
 		{
 			if( value == string.Empty )
@@ -851,15 +955,24 @@ namespace FluorineFx.IO
 				}
 			}
 		}
-
-		public void WriteAMF3String(string value)
+        /// <summary>
+        /// Writes an UTF-8 string to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">The UTF-8 string.</param>
+        /// <remarks>Standard or long string header is written depending on the string length.</remarks>
+        public void WriteAMF3String(string value)
 		{
 			WriteByte(AMF3TypeCode.String);
 			WriteAMF3UTF(value);
 		}
-
-
-		public void WriteAMF3DateTime(DateTime value)
+        /// <summary>
+        /// Writes a DateTime value to the current position in the AMF stream.
+        /// An ActionScript Date is serialized as the number of milliseconds elapsed since the epoch of midnight on 1st Jan 1970 in the UTC time zone.
+        /// Local time zone information is not sent.
+        /// </summary>
+        /// <param name="value">A DateTime value.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
+        public void WriteAMF3DateTime(DateTime value)
 		{
             if (!_objectReferences.ContainsKey(value))
 			{
@@ -898,29 +1011,33 @@ namespace FluorineFx.IO
 			//Clear 3 bits 
 			value &= 0x1fffffff;
 			if(value < 0x80)
-				this.WriteByte(value);
+				this.WriteByte((byte)value);
 			else
 				if(value < 0x4000)
 			{
-					this.WriteByte(value >> 7 & 0x7f | 0x80);
-					this.WriteByte(value & 0x7f);
+					this.WriteByte((byte)(value >> 7 & 0x7f | 0x80));
+					this.WriteByte((byte)(value & 0x7f));
 			}
 			else
 				if(value < 0x200000)
 			{
-				this.WriteByte(value >> 14 & 0x7f | 0x80);
-				this.WriteByte(value >> 7 & 0x7f | 0x80);
-				this.WriteByte(value & 0x7f);
+				this.WriteByte((byte)(value >> 14 & 0x7f | 0x80));
+				this.WriteByte((byte)(value >> 7 & 0x7f | 0x80));
+				this.WriteByte((byte)(value & 0x7f));
 			} 
 			else
 			{
-				this.WriteByte(value >> 22 & 0x7f | 0x80);
-				this.WriteByte(value >> 15 & 0x7f | 0x80);
-				this.WriteByte(value >> 8 & 0x7f | 0x80);
-				this.WriteByte(value & 0xff);
+				this.WriteByte((byte)(value >> 22 & 0x7f | 0x80));
+				this.WriteByte((byte)(value >> 15 & 0x7f | 0x80));
+				this.WriteByte((byte)(value >> 8 & 0x7f | 0x80));
+				this.WriteByte((byte)(value & 0xff));
 			}
 		}
-
+        /// <summary>
+        /// Writes a 32-bit signed integer to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <remarks>Type marker is written in the AMF stream.</remarks>
 		public void WriteAMF3Int(int value)
 		{
 			if(value >= -268435456 && value <= 268435455)//check valid range for 29bits
@@ -934,7 +1051,11 @@ namespace FluorineFx.IO
 				WriteAMF3Double((double)value);
 			}
 		}
-
+        /// <summary>
+        /// Writes a double-precision floating point number to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <remarks>Type marker is written in the AMF stream.</remarks>
 		public void WriteAMF3Double(double value)
 		{
 			WriteByte(AMF3TypeCode.Number);
@@ -943,13 +1064,18 @@ namespace FluorineFx.IO
 		}
 
 #if !SILVERLIGHT
-        public void WriteAMF3XmlDocument(XmlDocument xmlDocument)
+        /// <summary>
+        /// Writes an XmlDocument object to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">An XmlDocument object.</param>
+        /// <remarks>Xml type marker is written in the AMF stream.</remarks>
+        public void WriteAMF3XmlDocument(XmlDocument value)
 		{
 			WriteByte(AMF3TypeCode.Xml);
-            string value = string.Empty;
-            if (xmlDocument.DocumentElement != null && xmlDocument.DocumentElement.OuterXml != null )
-                value = xmlDocument.DocumentElement.OuterXml;
-            if (value == string.Empty)
+            string xml = string.Empty;
+            if (value.DocumentElement != null && value.DocumentElement.OuterXml != null)
+                xml = value.DocumentElement.OuterXml;
+            if (xml == string.Empty)
             {
                 WriteAMF3IntegerData(1);
             }
@@ -959,12 +1085,12 @@ namespace FluorineFx.IO
                 {
                     _objectReferences.Add(value, _objectReferences.Count);
                     UTF8Encoding utf8Encoding = new UTF8Encoding();
-                    int byteCount = utf8Encoding.GetByteCount(value);
+                    int byteCount = utf8Encoding.GetByteCount(xml);
                     int handle = byteCount;
                     handle = handle << 1;
                     handle = handle | 1;
                     WriteAMF3IntegerData(handle);
-                    byte[] buffer = utf8Encoding.GetBytes(value);
+                    byte[] buffer = utf8Encoding.GetBytes(xml);
                     if (buffer.Length > 0)
                         Write(buffer);
                 }
@@ -1047,7 +1173,12 @@ namespace FluorineFx.IO
         }
 #endif
 
-		public void WriteAMF3Object(object value)
+        /// <summary>
+        /// Writes an object to the current position in the AMF stream.
+        /// </summary>
+        /// <param name="value">The object to serialize.</param>
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
+        public void WriteAMF3Object(object value)
 		{
             if (!_objectReferences.ContainsKey(value))
 			{

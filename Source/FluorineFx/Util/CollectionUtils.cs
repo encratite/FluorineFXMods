@@ -27,6 +27,9 @@ using System.Collections;
 
 namespace FluorineFx.Util
 {
+    /// <summary>
+    /// Collection utility class.
+    /// </summary>
 	public abstract class CollectionUtils
 	{
         protected CollectionUtils() { }

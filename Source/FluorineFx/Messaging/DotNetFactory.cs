@@ -28,12 +28,21 @@ namespace FluorineFx.Messaging
 	/// </summary>
 	public class DotNetFactory : IFlexFactory
 	{
-		public DotNetFactory()
+        /// <summary>
+        /// Initializes a new instance of the DotNetFactory class.
+        /// </summary>
+        public DotNetFactory()
 		{
 		}
 
 		#region IFlexFactory Members
 
+        /// <summary>
+        /// Creates a FactoryInstance.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="properties">Configuration properties for the destination.</param>
+        /// <returns></returns>
 		public FactoryInstance CreateFactoryInstance(string id, Hashtable properties)
 		{
 			DotNetFactoryInstance factoryInstance = new DotNetFactoryInstance(this, id, properties);
@@ -44,7 +53,11 @@ namespace FluorineFx.Messaging
 			factoryInstance.AttributeId = properties["attribute-id"] as string;
 			return factoryInstance;
 		}
-
+        /// <summary>
+        /// Return an instance as appropriate for this instance of the given factory.
+        /// </summary>
+        /// <param name="factoryInstance"></param>
+        /// <returns></returns>
 		public object Lookup(FactoryInstance factoryInstance)
 		{
 			DotNetFactoryInstance dotNetFactoryInstance = factoryInstance as DotNetFactoryInstance;

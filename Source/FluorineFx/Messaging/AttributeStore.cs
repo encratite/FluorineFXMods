@@ -34,12 +34,18 @@ namespace FluorineFx.Messaging
     [CLSCompliant(false)]
 	public class AttributeStore : DisposableBase, IAttributeStore
 	{
+        /// <summary>
+        /// Attribute dictionary.
+        /// </summary>
 #if !(NET_1_1)
         protected Dictionary<string, object> _attributes = new Dictionary<string,object>();
 #else
         protected Hashtable _attributes = new Hashtable();
 #endif
-		public AttributeStore()
+        /// <summary>
+        /// Initializes a new instance of the AttributeStore class.
+        /// </summary>
+        public AttributeStore()
 		{
 		}
 

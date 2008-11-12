@@ -1,8 +1,8 @@
-// $ANTLR 2.7.5 (20050201): "selector.g" -> "ExpressionLexer.cs"$
+// $ANTLR 2.7.6 (2005-12-22): "selector.g" -> "ExpressionLexer.cs"$
 
 namespace FluorineFx.Expression
 {
-	class ExpressionParserTokenTypes
+	public class ExpressionParserTokenTypes
 	{
 		public const int EOF = 1;
 		public const int NULL_TREE_LOOKAHEAD = 3;

@@ -26,11 +26,29 @@ namespace FluorineFx.IO
 	/// </summary>
 	public class AMFHeader
 	{
-		public const string CredentialsHeader = "Credentials";
-		public const string DebugHeader = "amf_server_debug";
-		public const string ServiceBrowserHeader = "DescribeService";
-		public const string ClearedCredentials = "ClearedCredentials";
-        public const string CredentialsIdHeader = "CredentialsId";        
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const string CredentialsHeader = "Credentials";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const string DebugHeader = "amf_server_debug";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const string ServiceBrowserHeader = "DescribeService";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const string ClearedCredentials = "ClearedCredentials";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const string CredentialsIdHeader = "CredentialsId";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         public const string RequestPersistentHeader = "RequestPersistentHeader";
 
 		object	_content;
@@ -49,22 +67,30 @@ namespace FluorineFx.IO
 			this._mustUnderstand = mustUnderstand;
 			this._content = content;
 		}
-
+        /// <summary>
+        /// Gets the header name.
+        /// </summary>
 		public string Name
 		{
 			get{ return _name; }
 		}
-
+        /// <summary>
+        /// Gets the header content.
+        /// </summary>
 		public object Content
 		{
 			get{ return _content; }
 		}
-
+        /// <summary>
+        /// If a header is sent to the Flash Player with must understand set to true and the NetConnection instance's client object does not have a method to handle the header, then the Flash Player will invoke the onStatus handler on the NetConnection object.
+        /// </summary>
 		public bool MustUnderstand
 		{
 			get{ return _mustUnderstand; }
 		}
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public bool IsClearedCredentials
 		{
 			get

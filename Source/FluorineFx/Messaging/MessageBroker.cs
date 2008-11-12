@@ -45,23 +45,43 @@ using FluorineFx.Collections;
 namespace FluorineFx.Messaging
 {
 	/// <summary>
+    /// <para>
 	/// All communication with the various services provided is mediated by the message broker.
-	/// <br/><br/>
+    /// </para>
+	/// <para>
 	/// It has a number of endpoints which send and receive messages over the network, and it has 
 	/// a number of services that are message destinations. The broker routes messages to 
 	/// endpoints based on the content type of those messages, and routes decoded messages 
 	/// to services based on message type.
+    /// </para>
+    /// <para>
 	/// The broker also has a means of calling back into the endpoints in order to push messages 
 	/// back through them. 
+    /// </para>
 	/// </summary>
 	/// <example>
-	/// A RemoteObject message arrives over the RTMP endpoint. The endpoint decodes 
-	/// the message and sends it to the Message Broker, and the broker then passes it on to 
-	/// the RemotingService which will perform the RemoteObject invocation. 
-	/// </example>
+    /// <para>Pushing a message to connected clients (Flex Messaging)</para>
+    /// <code lang="CS">
+    /// MessageBroker msgBroker = MessageBroker.GetMessageBroker(null);
+    /// AsyncMessage msg = new AsyncMessage();
+    /// msg.destination = "chat";
+    /// msg.headers.Add(AsyncMessage.SubtopicHeader, "status." + userId);
+    /// msg.clientId = Guid.NewGuid().ToString("D");
+    /// msg.messageId = Guid.NewGuid().ToString("D");
+    /// msg.timestamp = Environment.TickCount;
+    /// Hashtable body = new Hashtable();
+    /// body.Add("userId", userId);
+    /// body.Add("status", status);
+    /// msg.body = body;
+    /// msgBroker.RouteMessage(msg);
+    /// </code>
+    /// </example>
     public class MessageBroker
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(MessageBroker));
+        /// <summary>
+        /// Default MessageBroker identity.
+        /// </summary>
 		public static string DefaultMessageBrokerId = "default";
 
         private static Hashtable	_messageBrokers = new Hashtable(1);
@@ -100,8 +120,16 @@ namespace FluorineFx.Messaging
             get { return _messageBrokerId; }
         }
 
+        /// <summary>
+        /// Gets an object that can be used to synchronize access. 
+        /// </summary>
         public object SyncRoot { get { return _syncLock; } }
-
+        /// <summary>
+        /// Gets the Global scope.
+        /// </summary>
+        /// <remarks>
+        /// The global scope is the parent of all Web scopes. For Flex Messaging applications the Global scope is accessible through the message broker.
+        /// </remarks>
         public FluorineFx.Messaging.Api.IGlobalScope GlobalScope { get { return _globalScope; } }
 
 		internal ILoginCommand LoginCommand
@@ -119,7 +147,9 @@ namespace FluorineFx.Messaging
         {
             get { return _messageServer.ServiceConfigSettings.FlexClientSettings; }
         }
-
+        /// <summary>
+        /// Registers the message broker.
+        /// </summary>
 		protected void RegisterMessageBroker()
 		{
 			if(_messageBrokerId == null)
@@ -133,7 +163,9 @@ namespace FluorineFx.Messaging
 				_messageBrokers[_messageBrokerId] = this;
 			}
 		}
-
+        /// <summary>
+        /// Unregisters the message broker.
+        /// </summary>
 		protected void UnregisterMessageBroker()
 		{
 			if(_messageBrokerId == null)

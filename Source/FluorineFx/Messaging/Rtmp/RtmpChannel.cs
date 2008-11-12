@@ -31,7 +31,13 @@ namespace FluorineFx.Messaging.Rtmp
     [CLSCompliant(false)]
 	public class RtmpChannel
 	{
+        /// <summary>
+        /// RTMP connection used to transfer packets.
+        /// </summary>
 		RtmpConnection	_connection;
+        /// <summary>
+        /// Channel id.
+        /// </summary>
 		int				_channelId;
 
         internal RtmpChannel(RtmpConnection connection, int channelId)
@@ -39,22 +45,31 @@ namespace FluorineFx.Messaging.Rtmp
 			_connection = connection;
 			_channelId = channelId;
 		}
-
+        /// <summary>
+        /// Gets the channel id.
+        /// </summary>
 		public int ChannelId
 		{
 			get{ return _channelId; }
 		}
-
+        /// <summary>
+        /// Get the connection.
+        /// </summary>
         public RtmpConnection Connection
         {
             get { return _connection; }
         }
-
+        /// <summary>
+        /// Closes channel with this id on RTMP connection.
+        /// </summary>
 		public void Close()
 		{
 			_connection.CloseChannel(_channelId);
 		}
-
+        /// <summary>
+        /// Writes packet from event data to the RTMP connection.
+        /// </summary>
+        /// <param name="message">Event data.</param>
         public void Write(IRtmpEvent message)
 		{
             IClientStream stream = null;
@@ -68,7 +83,11 @@ namespace FluorineFx.Messaging.Rtmp
 			int streamId = (stream == null) ? 0 : stream.StreamId;
 			Write(message, streamId);
 		}
-
+        /// <summary>
+        /// Writes packet from event data to the RTMP connection using the specified stream id.
+        /// </summary>
+        /// <param name="message">Event data.</param>
+        /// <param name="streamId">Stream id.</param>
         private void Write(IRtmpEvent message, int streamId) 
 		{
 			RtmpHeader header = new RtmpHeader();
@@ -82,7 +101,10 @@ namespace FluorineFx.Messaging.Rtmp
 			    header.IsTimerRelative =  message.Header.IsTimerRelative;
 			_connection.Write(packet);
 		}
-
+        /// <summary>
+        /// Sends status notification.
+        /// </summary>
+        /// <param name="status">Status object.</param>
         public void SendStatus(StatusASO status)
         {
             bool andReturn = !status.code.Equals(StatusASO.NS_DATA_START);
@@ -106,8 +128,11 @@ namespace FluorineFx.Messaging.Rtmp
             // "getStreamByChannelId" will fail.
             Write(invoke, _connection.GetStreamIdForChannel(_channelId));
         }
-
-		public override string ToString()
+        /// <summary>
+        /// Returns a string that represents the current RtmpChannel object.
+        /// </summary>
+        /// <returns>A string that represents the current RtmpChannel object.</returns>
+        public override string ToString()
 		{
 			return "RtmpChannel " + _channelId;
 		}

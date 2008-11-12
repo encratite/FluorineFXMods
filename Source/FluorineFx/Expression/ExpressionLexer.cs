@@ -1,4 +1,4 @@
-// $ANTLR 2.7.5 (20050201): "selector.g" -> "ExpressionLexer.cs"$
+// $ANTLR 2.7.6 (2005-12-22): "selector.g" -> "ExpressionLexer.cs"$
 
 namespace FluorineFx.Expression
 {
@@ -108,11 +108,7 @@ namespace FluorineFx.Expression
 		{
 			caseSensitiveLiterals = true;
 			setCaseSensitive(true);
-#if NET_1_1
 			literals = new Hashtable(100, (float) 0.4, null, Comparer.Default);
-#else
-            literals = new Hashtable(100, (float)0.4, StringComparer.OrdinalIgnoreCase);
-#endif
 			literals.Add("IS", 12);
 			literals.Add("NULL", 15);
 			literals.Add("LIKE", 14);

@@ -102,9 +102,9 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// Recieve audio?
         /// </summary>
 	    private bool _receiveAudio = true;
-        /// <summary>
-        /// Executor that will be used to schedule stream playback to keep the client buffer filled.
-        /// </summary>
+        // <summary>
+        // Executor that will be used to schedule stream playback to keep the client buffer filled.
+        // </summary>
 	    //private volatile ScheduledThreadPoolExecutor executor;
         /// <summary>
         /// Interval in ms to check for buffer underruns in VOD streams.
@@ -553,32 +553,21 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         public bool IsRandom
         {
             get { return _isRandom; }
-        }
-
-        public void SetRandom(bool random)
-        {
-            _isRandom = random;
+            set { _isRandom = value; }
         }
 
         public bool IsRewind
         {
             get { return _isRewind; }
-        }
-
-        public void SetRewind(bool rewind)
-        {
-            _isRewind = rewind;
+            set { _isRewind = value; }
         }
 
         public bool IsRepeat
         {
             get { return _isRepeat; }
+            set { _isRepeat = value; }
         }
 
-        public void SetRepeat(bool repeat)
-        {
-            _isRepeat = repeat;
-        }
 
         public void SetPlaylistController(IPlaylistController controller)
         {

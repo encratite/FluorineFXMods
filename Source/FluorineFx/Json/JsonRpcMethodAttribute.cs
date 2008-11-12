@@ -8,14 +8,23 @@ using FluorineFx.Json.Services;
 
 namespace FluorineFx.Json
 {
+    /// <summary>
+    /// Indicates whether an operation (method) can be invoked using Json RPC.
+    /// </summary>
     [Serializable]
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class JsonRpcMethodAttribute : Attribute, IInvocationResultHandler
     {
         private string _name;
 
+        /// <summary>
+        /// Initializes a new instance of the JsonRpcMethodAttribute class.
+        /// </summary>
         public JsonRpcMethodAttribute() { }
-
+        /// <summary>
+        /// Initializes a new instance of the JsonRpcMethodAttribute class.
+        /// </summary>
+        /// <param name="name"></param>
         public JsonRpcMethodAttribute(string name)
         {
             _name = name;

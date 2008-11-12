@@ -29,8 +29,17 @@ namespace FluorineFx.Messaging.Api
 	/// </summary>
 	public sealed class ScopeUtils
 	{
+        /// <summary>
+        /// Depth of Global scope.
+        /// </summary>
 		public static int Global = 0x00;
+        /// <summary>
+        /// Application scope depth.
+        /// </summary>
 		public static int Application = 0x01;
+        /// <summary>
+        /// Room depth.
+        /// </summary>
 		public static int Room = 0x02;
 		//private static string ServiceCachePrefix = "__service_cache:";
 
@@ -105,12 +114,23 @@ namespace FluorineFx.Messaging.Api
             return service;
 		}
         */
-
+        /// <summary>
+        /// Returns scope service by service type.
+        /// </summary>
+        /// <param name="scope">The scope service belongs to.</param>
+        /// <param name="type">Service type.</param>
+        /// <returns>Service object.</returns>
         public static object GetScopeService(IScope scope, Type type)
         {
             return GetScopeService(scope, type, true);
         }
-
+        /// <summary>
+        /// Returns scope service by service type.
+        /// </summary>
+        /// <param name="scope">The scope service belongs to.</param>
+        /// <param name="type">Service type.</param>
+        /// <param name="checkHandler">Indicates whether to check the scope's handler for the requested service.</param>
+        /// <returns>Service object.</returns>
         public static object GetScopeService(IScope scope, Type type, bool checkHandler)
         {
             if (scope == null || type == null)

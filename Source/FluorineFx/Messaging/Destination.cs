@@ -36,8 +36,17 @@ namespace FluorineFx.Messaging
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(Destination));
 
+        /// <summary>
+        /// Service managing this Destination.
+        /// </summary>
 		protected IService				_service;
+        /// <summary>
+        /// Destination settings.
+        /// </summary>
 		protected DestinationSettings	_settings;
+        /// <summary>
+        /// ServiceAdapter for the Destination.
+        /// </summary>
 		protected ServiceAdapter		_adapter;
 		private FactoryInstance			_factoryInstance;
 
@@ -69,7 +78,9 @@ namespace FluorineFx.Messaging
 				return "dotnet";
 			}
 		}
-
+        /// <summary>
+        /// Returns the Service managing this Destination.
+        /// </summary>
 		public IService Service{ get{ return _service; } }
 
 		internal void Init(AdapterSettings adapterSettings)
@@ -81,10 +92,9 @@ namespace FluorineFx.Messaging
 				if( type != null )
 				{
                     _adapter = ObjectFactory.CreateInstance(type) as ServiceAdapter;
-					_adapter.Service = _service;
-					_adapter.Destination = this;
-					_adapter.AdapterSettings = adapterSettings;
-					_adapter.DestinationSettings = _settings;
+					_adapter.SetDestination(this);
+                    _adapter.SetAdapterSettings(adapterSettings);
+                    _adapter.SetDestinationSettings(_settings);
 					_adapter.Init();
 
 				}
@@ -110,6 +120,9 @@ namespace FluorineFx.Messaging
         /// </summary>
 		public DestinationSettings DestinationSettings{ get{ return _settings; } }
 
+        /// <summary>
+        /// Gets the source property where applicable.
+        /// </summary>
         public string Source
         {
             get
@@ -121,7 +134,9 @@ namespace FluorineFx.Messaging
                 return null;
             }
         }
-
+        /// <summary>
+        /// Gets the scope property where applicable.
+        /// </summary>
         public string Scope
         {
             get
@@ -138,7 +153,10 @@ namespace FluorineFx.Messaging
 		{
 			dumpContext.AppendLine("Destination Id = " + this.Id);
 		}
-
+        /// <summary>
+        /// Returns the FactoryInstance used by the Destination to create object instances.
+        /// </summary>
+        /// <returns></returns>
 		public FactoryInstance GetFactoryInstance()
 		{
 			if( _factoryInstance != null )

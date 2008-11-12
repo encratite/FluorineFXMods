@@ -28,6 +28,9 @@ using System.ComponentModel;
 
 namespace FluorineFx.Util
 {
+    /// <summary>
+    /// Reflection utility class.
+    /// </summary>
 	internal abstract class ReflectionUtils
 	{
         protected ReflectionUtils() { }

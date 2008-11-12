@@ -33,6 +33,9 @@ namespace FluorineFx.Security
 	/// </summary>
 	public class GenericLoginCommand : ILoginCommand
 	{
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public static string FluorineTicket = "fluorineauthticket";
 
 		/// <summary>

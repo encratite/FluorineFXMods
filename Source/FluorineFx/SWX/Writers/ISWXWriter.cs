@@ -31,11 +31,10 @@ namespace FluorineFx.SWX.Writers
         /// </summary>
         /// <remarks>The primitive types are those serialized as String, Number, Boolean, Date</remarks>
         bool IsPrimitive { get; }
-
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        /// <param name="buffer"></param>
+        /// <param name="assembler"></param>
         /// <param name="data"></param>
         void WriteData(SwxAssembler assembler, object data);
     }

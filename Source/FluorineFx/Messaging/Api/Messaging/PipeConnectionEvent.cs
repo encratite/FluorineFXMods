@@ -120,6 +120,9 @@ namespace FluorineFx.Messaging.Api.Messaging
 #endif
 
         object _source;
+        /// <summary>
+        /// Gets or sets the vent source.
+        /// </summary>
         public object Source
         {
             get { return _source; }

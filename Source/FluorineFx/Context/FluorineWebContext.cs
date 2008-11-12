@@ -37,7 +37,7 @@ namespace FluorineFx.Context
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	public sealed class FluorineWebContext : FluorineContext
+	sealed class FluorineWebContext : FluorineContext
 	{
 		internal FluorineWebContext() : base()
 		{

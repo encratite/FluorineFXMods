@@ -20,10 +20,19 @@ using System;
 
 namespace FluorineFx.Util
 {
+    /// <summary>
+    /// Array utility class.
+    /// </summary>
     public abstract class ArrayUtils
     {
-        protected ArrayUtils() { }
+        private ArrayUtils() { }
 
+        /// <summary>
+        /// Changes the size of an array to the specified new size.
+        /// </summary>
+        /// <param name="array">The one-dimensional, zero-based array to resize.</param>
+        /// <param name="newSize">The size of the new array.</param>
+        /// <returns>The resized array.</returns>
         public static Array Resize(Array array, int newSize)
         {
             Type type = array.GetType();

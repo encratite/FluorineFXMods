@@ -17,8 +17,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+using System.Collections;
+#if !NET_1_1
+using System.Collections.Generic;
+#endif
 using System.IO;
-using FluorineFx.Collections;
 using FluorineFx.Messaging.Api;
 
 namespace FluorineFx.Messaging.Rtmp.IO
@@ -35,6 +38,10 @@ namespace FluorineFx.Messaging.Rtmp.IO
         /// Returns streamable file services.
         /// </summary>
         /// <returns>Set of streamable file services.</returns>
-        Set GetServices();
+#if !NET_1_1
+        ICollection<IStreamableFileService> GetServices();
+#else
+        ICollection GetServices();
+#endif
     }
 }

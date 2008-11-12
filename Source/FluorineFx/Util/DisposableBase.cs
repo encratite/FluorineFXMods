@@ -30,6 +30,9 @@ namespace FluorineFx.Util
 		/// </summary>
         private volatile bool _disposed = false;
 
+        /// <summary>
+        /// Initializes a new instance of the DisposableBase class.
+        /// </summary>
 		public DisposableBase()
 		{
 		}
@@ -43,10 +46,16 @@ namespace FluorineFx.Util
 			Dispose(false);
 		}
 
+        /// <summary>
+        /// Gets a value indicating whether the object is disposed.
+        /// </summary>
 		public bool IsDisposed{ get{ return _disposed; } }
 
 		#region IDisposable Members
 
+        /// <summary>
+        /// Releases all resources used by this object.
+        /// </summary>
 		public void Dispose()
 		{
 			Dispose(true);
@@ -93,7 +102,10 @@ namespace FluorineFx.Util
 		protected virtual void FreeUnmanaged()
 		{
 		}
-
+        /// <summary>
+        /// Check whether object is disposed.
+        /// </summary>
+        /// <remarks>Throws ObjectDisposedException if the object is disposed.</remarks>
 		protected virtual void CheckDisposed()
 		{
 			if(_disposed)

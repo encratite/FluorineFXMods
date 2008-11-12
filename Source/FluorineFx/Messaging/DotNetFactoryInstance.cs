@@ -32,7 +32,14 @@ namespace FluorineFx.Messaging
 		Type _cachedType;
 		object _applicationInstance;
 
-		public DotNetFactoryInstance(IFlexFactory flexFactory, string id, Hashtable properties):base(flexFactory, id, properties)
+        /// <summary>
+        /// Initializes a new instance of the DotNetFactoryInstance class.
+        /// </summary>
+        /// <param name="flexFactory"></param>
+        /// <param name="id"></param>
+        /// <param name="properties"></param>
+        public DotNetFactoryInstance(IFlexFactory flexFactory, string id, Hashtable properties)
+            : base(flexFactory, id, properties)
 		{
 		}
 
