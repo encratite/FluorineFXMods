@@ -162,9 +162,9 @@
     <EmbeddedResource Include="Resource\swfobject.js" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="antlr.runtime, Version=2.7.7.1, Culture=neutral, PublicKeyToken=1875756ba09931ab">
+    <Reference Include="antlr.runtime, Version=2.7.6.2, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\antlr\antlr.runtime\bin\antlr.runtime.dll</HintPath>
+      <HintPath>..\antlr\net\2.0\antlr.runtime.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

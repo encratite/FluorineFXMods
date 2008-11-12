@@ -1,4 +1,4 @@
-// $ANTLR 2.7.5 (20050201): "sql.g" -> "SQLParser.cs"$
+// $ANTLR 2.7.6 (2005-12-22): "sql.g" -> "SQLParser.cs"$
 
 namespace FluorineFx.ServiceBrowser.Sql
 {
@@ -396,12 +396,11 @@ using FluorineFx.Management.Data;
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST any_token_AST = null;
 		
 		matchNot(EOF);
 		returnAST = any_token_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void sql_script(
@@ -410,7 +409,7 @@ using FluorineFx.Management.Data;
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST sql_script_AST = null;
 		
 		{
@@ -419,7 +418,7 @@ using FluorineFx.Management.Data;
 				sql_stmt(sqlScript);
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==EOF||LA(1)==SEMICOLON)) {
@@ -437,7 +436,7 @@ using FluorineFx.Management.Data;
 				{
 					AST tmp2_AST = null;
 					tmp2_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp2_AST);
+					astFactory.addASTChild(ref currentAST, tmp2_AST);
 					match(SEMICOLON);
 					{
 						if ((tokenSet_0_.member(LA(1))))
@@ -445,7 +444,7 @@ using FluorineFx.Management.Data;
 							sql_stmt(sqlScript);
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 						}
 						else if ((LA(1)==EOF||LA(1)==SEMICOLON)) {
@@ -467,7 +466,6 @@ _loop101_breakloop:			;
 		}    // ( ... )*
 		sql_script_AST = currentAST.root;
 		returnAST = sql_script_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void sql_stmt(
@@ -476,17 +474,16 @@ _loop101_breakloop:			;
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST sql_stmt_AST = null;
 		
 		sql_data_stmt(sqlScript);
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		sql_stmt_AST = currentAST.root;
 		returnAST = sql_stmt_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void sql_single_stmt(
@@ -495,7 +492,7 @@ _loop101_breakloop:			;
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST sql_single_stmt_AST = null;
 		
 		{
@@ -504,7 +501,7 @@ _loop101_breakloop:			;
 				sql_stmt(sqlScript);
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==EOF||LA(1)==SEMICOLON)) {
@@ -520,7 +517,7 @@ _loop101_breakloop:			;
 			{
 				AST tmp3_AST = null;
 				tmp3_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp3_AST);
+				astFactory.addASTChild(ref currentAST, tmp3_AST);
 				match(SEMICOLON);
 			}
 			else if ((LA(1)==EOF)) {
@@ -533,7 +530,6 @@ _loop101_breakloop:			;
 		}
 		sql_single_stmt_AST = currentAST.root;
 		returnAST = sql_single_stmt_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void sql_data_stmt(
@@ -542,7 +538,7 @@ _loop101_breakloop:			;
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST sql_data_stmt_AST = null;
 		ISqlStatement sqlStatement;
 		
@@ -561,7 +557,7 @@ _loop101_breakloop:			;
 			sqlStatement=select_stmt();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			if (0==inputState.guessing)
 			{
@@ -577,7 +573,7 @@ _loop101_breakloop:			;
 			insert_stmt();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			sql_data_stmt_AST = currentAST.root;
 			break;
@@ -587,7 +583,7 @@ _loop101_breakloop:			;
 			update_stmt();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			sql_data_stmt_AST = currentAST.root;
 			break;
@@ -597,7 +593,7 @@ _loop101_breakloop:			;
 			delete_stmt();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			sql_data_stmt_AST = currentAST.root;
 			break;
@@ -608,7 +604,6 @@ _loop101_breakloop:			;
 		}
 		 }
 		returnAST = sql_data_stmt_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public ISelectStatement  select_stmt() //throws RecognitionException, TokenStreamException
@@ -616,7 +611,7 @@ _loop101_breakloop:			;
 		ISelectStatement selectStatement;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST select_stmt_AST = null;
 		
 			selectStatement = new SelectStatement();
@@ -626,7 +621,7 @@ _loop101_breakloop:			;
 		queryExpression=query_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -642,7 +637,7 @@ _loop101_breakloop:			;
 				into_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				{
 					if ((LA(1)==SQL2RW_order))
@@ -650,7 +645,7 @@ _loop101_breakloop:			;
 						order_by_clause(selectStatement);
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 					}
 					else if ((LA(1)==EOF||LA(1)==SQL2RW_for||LA(1)==SEMICOLON)) {
@@ -667,7 +662,7 @@ _loop101_breakloop:			;
 						updatability_clause();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 					}
 					else if ((LA(1)==EOF||LA(1)==SEMICOLON)) {
@@ -685,7 +680,7 @@ _loop101_breakloop:			;
 				order_by_clause(selectStatement);
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				{
 					if ((LA(1)==SQL2RW_into))
@@ -693,7 +688,7 @@ _loop101_breakloop:			;
 						into_clause();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 					}
 					else if ((LA(1)==EOF||LA(1)==SQL2RW_for||LA(1)==SEMICOLON)) {
@@ -710,7 +705,7 @@ _loop101_breakloop:			;
 						updatability_clause();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 					}
 					else if ((LA(1)==EOF||LA(1)==SEMICOLON)) {
@@ -728,7 +723,7 @@ _loop101_breakloop:			;
 				updatability_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				{
 					if ((LA(1)==SQL2RW_into))
@@ -736,7 +731,7 @@ _loop101_breakloop:			;
 						into_clause();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 					}
 					else if ((LA(1)==EOF||LA(1)==SEMICOLON)) {
@@ -763,49 +758,47 @@ _loop101_breakloop:			;
 		select_stmt_AST = currentAST.root;
 		returnAST = select_stmt_AST;
 		return selectStatement;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void insert_stmt() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST insert_stmt_AST = null;
 		
 		AST tmp4_AST = null;
 		tmp4_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp4_AST);
+		astFactory.addASTChild(ref currentAST, tmp4_AST);
 		match(SQL2RW_insert);
 		AST tmp5_AST = null;
 		tmp5_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp5_AST);
+		astFactory.addASTChild(ref currentAST, tmp5_AST);
 		match(SQL2RW_into);
 		table_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		insert_columns_and_source();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		insert_stmt_AST = currentAST.root;
 		returnAST = insert_stmt_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void update_stmt() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST update_stmt_AST = null;
 		
 		AST tmp6_AST = null;
 		tmp6_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp6_AST);
+		astFactory.addASTChild(ref currentAST, tmp6_AST);
 		match(SQL2RW_update);
 		{
 			if ((LA(1)==SQL2NRW_ada||LA(1)==SQL2RW_module||LA(1)==REGULAR_ID||LA(1)==DELIMITED_ID||LA(1)==INTRODUCER))
@@ -813,23 +806,23 @@ _loop101_breakloop:			;
 				table_name();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				AST tmp7_AST = null;
 				tmp7_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp7_AST);
+				astFactory.addASTChild(ref currentAST, tmp7_AST);
 				match(SQL2RW_set);
 				set_clause_list();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				{
 					if ((LA(1)==SQL2RW_where))
 					{
 						AST tmp8_AST = null;
 						tmp8_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp8_AST);
+						astFactory.addASTChild(ref currentAST, tmp8_AST);
 						match(SQL2RW_where);
 						{
 							if ((tokenSet_1_.member(LA(1))))
@@ -837,22 +830,22 @@ _loop101_breakloop:			;
 								search_condition();
 								if (0 == inputState.guessing)
 								{
-									astFactory.addASTChild(currentAST, returnAST);
+									astFactory.addASTChild(ref currentAST, returnAST);
 								}
 							}
 							else if ((LA(1)==SQL2RW_current)) {
 								AST tmp9_AST = null;
 								tmp9_AST = astFactory.create(LT(1));
-								astFactory.addASTChild(currentAST, tmp9_AST);
+								astFactory.addASTChild(ref currentAST, tmp9_AST);
 								match(SQL2RW_current);
 								AST tmp10_AST = null;
 								tmp10_AST = astFactory.create(LT(1));
-								astFactory.addASTChild(currentAST, tmp10_AST);
+								astFactory.addASTChild(ref currentAST, tmp10_AST);
 								match(SQL2RW_of);
 								dyn_cursor_name();
 								if (0 == inputState.guessing)
 								{
-									astFactory.addASTChild(currentAST, returnAST);
+									astFactory.addASTChild(ref currentAST, returnAST);
 								}
 							}
 							else
@@ -874,29 +867,29 @@ _loop101_breakloop:			;
 			else if ((LA(1)==SQL2RW_set)) {
 				AST tmp11_AST = null;
 				tmp11_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp11_AST);
+				astFactory.addASTChild(ref currentAST, tmp11_AST);
 				match(SQL2RW_set);
 				set_clause_list();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				AST tmp12_AST = null;
 				tmp12_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp12_AST);
+				astFactory.addASTChild(ref currentAST, tmp12_AST);
 				match(SQL2RW_where);
 				AST tmp13_AST = null;
 				tmp13_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp13_AST);
+				astFactory.addASTChild(ref currentAST, tmp13_AST);
 				match(SQL2RW_current);
 				AST tmp14_AST = null;
 				tmp14_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp14_AST);
+				astFactory.addASTChild(ref currentAST, tmp14_AST);
 				match(SQL2RW_of);
 				cursor_name();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else
@@ -907,38 +900,37 @@ _loop101_breakloop:			;
 		}
 		update_stmt_AST = currentAST.root;
 		returnAST = update_stmt_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void delete_stmt() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST delete_stmt_AST = null;
 		
 		AST tmp15_AST = null;
 		tmp15_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp15_AST);
+		astFactory.addASTChild(ref currentAST, tmp15_AST);
 		match(SQL2RW_delete);
 		{
 			if ((LA(1)==SQL2RW_from))
 			{
 				AST tmp16_AST = null;
 				tmp16_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp16_AST);
+				astFactory.addASTChild(ref currentAST, tmp16_AST);
 				match(SQL2RW_from);
 				table_name();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				{
 					if ((LA(1)==SQL2RW_where))
 					{
 						AST tmp17_AST = null;
 						tmp17_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp17_AST);
+						astFactory.addASTChild(ref currentAST, tmp17_AST);
 						match(SQL2RW_where);
 						{
 							if ((tokenSet_1_.member(LA(1))))
@@ -946,22 +938,22 @@ _loop101_breakloop:			;
 								search_condition();
 								if (0 == inputState.guessing)
 								{
-									astFactory.addASTChild(currentAST, returnAST);
+									astFactory.addASTChild(ref currentAST, returnAST);
 								}
 							}
 							else if ((LA(1)==SQL2RW_current)) {
 								AST tmp18_AST = null;
 								tmp18_AST = astFactory.create(LT(1));
-								astFactory.addASTChild(currentAST, tmp18_AST);
+								astFactory.addASTChild(ref currentAST, tmp18_AST);
 								match(SQL2RW_current);
 								AST tmp19_AST = null;
 								tmp19_AST = astFactory.create(LT(1));
-								astFactory.addASTChild(currentAST, tmp19_AST);
+								astFactory.addASTChild(ref currentAST, tmp19_AST);
 								match(SQL2RW_of);
 								dyn_cursor_name();
 								if (0 == inputState.guessing)
 								{
-									astFactory.addASTChild(currentAST, returnAST);
+									astFactory.addASTChild(ref currentAST, returnAST);
 								}
 							}
 							else
@@ -983,20 +975,20 @@ _loop101_breakloop:			;
 			else if ((LA(1)==SQL2RW_where)) {
 				AST tmp20_AST = null;
 				tmp20_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp20_AST);
+				astFactory.addASTChild(ref currentAST, tmp20_AST);
 				match(SQL2RW_where);
 				AST tmp21_AST = null;
 				tmp21_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp21_AST);
+				astFactory.addASTChild(ref currentAST, tmp21_AST);
 				match(SQL2RW_current);
 				AST tmp22_AST = null;
 				tmp22_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp22_AST);
+				astFactory.addASTChild(ref currentAST, tmp22_AST);
 				match(SQL2RW_of);
 				cursor_name();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else
@@ -1007,7 +999,6 @@ _loop101_breakloop:			;
 		}
 		delete_stmt_AST = currentAST.root;
 		returnAST = delete_stmt_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IQueryExpression  query_exp() //throws RecognitionException, TokenStreamException
@@ -1015,7 +1006,7 @@ _loop101_breakloop:			;
 		IQueryExpression queryExpression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST query_exp_AST = null;
 		
 			IQueryExpression queryExpression2;
@@ -1026,7 +1017,7 @@ _loop101_breakloop:			;
 		queryExpression=query_term();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -1038,7 +1029,7 @@ _loop101_breakloop:			;
 						{
 							AST tmp23_AST = null;
 							tmp23_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp23_AST);
+							astFactory.addASTChild(ref currentAST, tmp23_AST);
 							match(SQL2RW_union);
 							if (0==inputState.guessing)
 							{
@@ -1048,7 +1039,7 @@ _loop101_breakloop:			;
 						else if ((LA(1)==SQL2RW_except)) {
 							AST tmp24_AST = null;
 							tmp24_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp24_AST);
+							astFactory.addASTChild(ref currentAST, tmp24_AST);
 							match(SQL2RW_except);
 							if (0==inputState.guessing)
 							{
@@ -1073,7 +1064,7 @@ _loop101_breakloop:			;
 						{
 							AST tmp25_AST = null;
 							tmp25_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp25_AST);
+							astFactory.addASTChild(ref currentAST, tmp25_AST);
 							match(SQL2RW_all);
 							if (0==inputState.guessing)
 							{
@@ -1094,7 +1085,7 @@ _loop101_breakloop:			;
 							corresponding_spec();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 							if (0==inputState.guessing)
 							{
@@ -1112,7 +1103,7 @@ _loop101_breakloop:			;
 					queryExpression2=query_term();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -1139,24 +1130,23 @@ _loop280_breakloop:			;
 		query_exp_AST = currentAST.root;
 		returnAST = query_exp_AST;
 		return queryExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void into_clause() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST into_clause_AST = null;
 		
 		AST tmp26_AST = null;
 		tmp26_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp26_AST);
+		astFactory.addASTChild(ref currentAST, tmp26_AST);
 		match(SQL2RW_into);
 		target_spec();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -1165,12 +1155,12 @@ _loop280_breakloop:			;
 				{
 					AST tmp27_AST = null;
 					tmp27_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp27_AST);
+					astFactory.addASTChild(ref currentAST, tmp27_AST);
 					match(COMMA);
 					target_spec();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -1183,7 +1173,6 @@ _loop116_breakloop:			;
 		}    // ( ... )*
 		into_clause_AST = currentAST.root;
 		returnAST = into_clause_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void order_by_clause(
@@ -1192,66 +1181,65 @@ _loop116_breakloop:			;
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST order_by_clause_AST = null;
 		
 		AST tmp28_AST = null;
 		tmp28_AST = astFactory.create(LT(1));
-		astFactory.makeASTRoot(currentAST, tmp28_AST);
+		astFactory.makeASTRoot(ref currentAST, tmp28_AST);
 		match(SQL2RW_order);
 		AST tmp29_AST = null;
 		tmp29_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp29_AST);
+		astFactory.addASTChild(ref currentAST, tmp29_AST);
 		match(SQL2RW_by);
 		sort_spec_list(selectStatement);
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		order_by_clause_AST = currentAST.root;
 		returnAST = order_by_clause_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void updatability_clause() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST updatability_clause_AST = null;
 		
 		AST tmp30_AST = null;
 		tmp30_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp30_AST);
+		astFactory.addASTChild(ref currentAST, tmp30_AST);
 		match(SQL2RW_for);
 		{
 			if ((LA(1)==SQL2RW_read))
 			{
 				AST tmp31_AST = null;
 				tmp31_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp31_AST);
+				astFactory.addASTChild(ref currentAST, tmp31_AST);
 				match(SQL2RW_read);
 				AST tmp32_AST = null;
 				tmp32_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp32_AST);
+				astFactory.addASTChild(ref currentAST, tmp32_AST);
 				match(SQL2RW_only);
 			}
 			else if ((LA(1)==SQL2RW_update)) {
 				AST tmp33_AST = null;
 				tmp33_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp33_AST);
+				astFactory.addASTChild(ref currentAST, tmp33_AST);
 				match(SQL2RW_update);
 				{
 					if ((LA(1)==SQL2RW_of))
 					{
 						AST tmp34_AST = null;
 						tmp34_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp34_AST);
+						astFactory.addASTChild(ref currentAST, tmp34_AST);
 						match(SQL2RW_of);
 						column_name_list();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 					}
 					else if ((LA(1)==EOF||LA(1)==SQL2RW_into||LA(1)==SEMICOLON)) {
@@ -1271,14 +1259,13 @@ _loop116_breakloop:			;
 		}
 		updatability_clause_AST = currentAST.root;
 		returnAST = updatability_clause_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void target_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST target_spec_AST = null;
 		
 		if ((LA(1)==COLON))
@@ -1286,7 +1273,7 @@ _loop116_breakloop:			;
 			parameter_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			target_spec_AST = currentAST.root;
 		}
@@ -1294,7 +1281,7 @@ _loop116_breakloop:			;
 			variable_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			target_spec_AST = currentAST.root;
 		}
@@ -1304,7 +1291,6 @@ _loop116_breakloop:			;
 		}
 		
 		returnAST = target_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void sort_spec_list(
@@ -1313,7 +1299,7 @@ _loop116_breakloop:			;
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST sort_spec_list_AST = null;
 		
 			IOrderBySortSpec orderBySortSpec;
@@ -1322,7 +1308,7 @@ _loop116_breakloop:			;
 		orderBySortSpec=sort_spec();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -1337,12 +1323,12 @@ _loop116_breakloop:			;
 				{
 					AST tmp35_AST = null;
 					tmp35_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp35_AST);
+					astFactory.addASTChild(ref currentAST, tmp35_AST);
 					match(COMMA);
 					orderBySortSpec=sort_spec();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -1361,7 +1347,6 @@ _loop120_breakloop:			;
 		}    // ( ... )*
 		sort_spec_list_AST = currentAST.root;
 		returnAST = sort_spec_list_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IOrderBySortSpec  sort_spec() //throws RecognitionException, TokenStreamException
@@ -1369,7 +1354,7 @@ _loop120_breakloop:			;
 		IOrderBySortSpec orderBySortSpec;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST sort_spec_AST = null;
 		
 			orderBySortSpec = new OrderBySortSpec();
@@ -1380,7 +1365,7 @@ _loop120_breakloop:			;
 		sortKey=sort_key();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -1394,7 +1379,7 @@ _loop120_breakloop:			;
 				collate_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==EOF||LA(1)==SQL2RW_asc||LA(1)==SQL2RW_desc||LA(1)==SQL2RW_for||LA(1)==SQL2RW_into||LA(1)==COMMA||LA(1)==SEMICOLON)) {
@@ -1411,7 +1396,7 @@ _loop120_breakloop:			;
 				sortKind=ordering_spec();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				if (0==inputState.guessing)
 				{
@@ -1429,7 +1414,6 @@ _loop120_breakloop:			;
 		sort_spec_AST = currentAST.root;
 		returnAST = sort_spec_AST;
 		return orderBySortSpec;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  sort_key() //throws RecognitionException, TokenStreamException
@@ -1437,7 +1421,7 @@ _loop120_breakloop:			;
 		string sortKey = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST sort_key_AST = null;
 		
 		if ((LA(1)==SQL2NRW_ada||LA(1)==REGULAR_ID||LA(1)==DELIMITED_ID||LA(1)==INTRODUCER))
@@ -1445,14 +1429,14 @@ _loop120_breakloop:			;
 			sortKey=column_ref();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			sort_key_AST = currentAST.root;
 		}
 		else if ((LA(1)==UNSIGNED_INTEGER)) {
 			AST tmp36_AST = null;
 			tmp36_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp36_AST);
+			astFactory.addASTChild(ref currentAST, tmp36_AST);
 			match(UNSIGNED_INTEGER);
 			sort_key_AST = currentAST.root;
 		}
@@ -1463,28 +1447,26 @@ _loop120_breakloop:			;
 		
 		returnAST = sort_key_AST;
 		return sortKey;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void collate_clause() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST collate_clause_AST = null;
 		
 		AST tmp37_AST = null;
 		tmp37_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp37_AST);
+		astFactory.addASTChild(ref currentAST, tmp37_AST);
 		match(SQL2RW_collate);
 		collation_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		collate_clause_AST = currentAST.root;
 		returnAST = collate_clause_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public SortKind  ordering_spec() //throws RecognitionException, TokenStreamException
@@ -1492,14 +1474,14 @@ _loop120_breakloop:			;
 		 SortKind sortKind = SortKind.Ascending;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST ordering_spec_AST = null;
 		
 		if ((LA(1)==SQL2RW_asc))
 		{
 			AST tmp38_AST = null;
 			tmp38_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp38_AST);
+			astFactory.addASTChild(ref currentAST, tmp38_AST);
 			match(SQL2RW_asc);
 			if (0==inputState.guessing)
 			{
@@ -1510,7 +1492,7 @@ _loop120_breakloop:			;
 		else if ((LA(1)==SQL2RW_desc)) {
 			AST tmp39_AST = null;
 			tmp39_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp39_AST);
+			astFactory.addASTChild(ref currentAST, tmp39_AST);
 			match(SQL2RW_desc);
 			if (0==inputState.guessing)
 			{
@@ -1525,7 +1507,6 @@ _loop120_breakloop:			;
 		
 		returnAST = ordering_spec_AST;
 		return sortKind;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  column_ref() //throws RecognitionException, TokenStreamException
@@ -1533,7 +1514,7 @@ _loop120_breakloop:			;
 		string columnName = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST column_ref_AST = null;
 		
 			string ident;
@@ -1542,7 +1523,7 @@ _loop120_breakloop:			;
 		ident=id();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -1553,12 +1534,12 @@ _loop120_breakloop:			;
 			{
 				AST tmp40_AST = null;
 				tmp40_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp40_AST);
+				astFactory.addASTChild(ref currentAST, tmp40_AST);
 				match(PERIOD);
 				ident=id();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				if (0==inputState.guessing)
 				{
@@ -1569,12 +1550,12 @@ _loop120_breakloop:			;
 					{
 						AST tmp41_AST = null;
 						tmp41_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp41_AST);
+						astFactory.addASTChild(ref currentAST, tmp41_AST);
 						match(PERIOD);
 						ident=id();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 						if (0==inputState.guessing)
 						{
@@ -1585,12 +1566,12 @@ _loop120_breakloop:			;
 							{
 								AST tmp42_AST = null;
 								tmp42_AST = astFactory.create(LT(1));
-								astFactory.addASTChild(currentAST, tmp42_AST);
+								astFactory.addASTChild(ref currentAST, tmp42_AST);
 								match(PERIOD);
 								ident=id();
 								if (0 == inputState.guessing)
 								{
-									astFactory.addASTChild(currentAST, returnAST);
+									astFactory.addASTChild(ref currentAST, returnAST);
 								}
 								if (0==inputState.guessing)
 								{
@@ -1626,20 +1607,19 @@ _loop120_breakloop:			;
 		column_ref_AST = currentAST.root;
 		returnAST = column_ref_AST;
 		return columnName;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void column_name_list() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST column_name_list_AST = null;
 		
 		column_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -1648,12 +1628,12 @@ _loop120_breakloop:			;
 				{
 					AST tmp43_AST = null;
 					tmp43_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp43_AST);
+					astFactory.addASTChild(ref currentAST, tmp43_AST);
 					match(COMMA);
 					column_name();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -1666,7 +1646,6 @@ _loop411_breakloop:			;
 		}    // ( ... )*
 		column_name_list_AST = currentAST.root;
 		returnAST = column_name_list_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  table_name() //throws RecognitionException, TokenStreamException
@@ -1674,7 +1653,7 @@ _loop411_breakloop:			;
 		 string tableName = null ;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST table_name_AST = null;
 		
 		if ((LA(1)==SQL2NRW_ada||LA(1)==REGULAR_ID||LA(1)==DELIMITED_ID||LA(1)==INTRODUCER))
@@ -1682,7 +1661,7 @@ _loop411_breakloop:			;
 			tableName=qualified_name();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			table_name_AST = currentAST.root;
 		}
@@ -1690,7 +1669,7 @@ _loop411_breakloop:			;
 			tableName=qualified_local_table_name();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			table_name_AST = currentAST.root;
 		}
@@ -1701,14 +1680,13 @@ _loop411_breakloop:			;
 		
 		returnAST = table_name_AST;
 		return tableName;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void insert_columns_and_source() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST insert_columns_and_source_AST = null;
 		
 		bool synPredMatched132 = false;
@@ -1735,21 +1713,21 @@ _loop411_breakloop:			;
 		{
 			AST tmp44_AST = null;
 			tmp44_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp44_AST);
+			astFactory.addASTChild(ref currentAST, tmp44_AST);
 			match(LEFT_PAREN);
 			column_name_list();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp45_AST = null;
 			tmp45_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp45_AST);
+			astFactory.addASTChild(ref currentAST, tmp45_AST);
 			match(RIGHT_PAREN);
 			query_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			insert_columns_and_source_AST = currentAST.root;
 		}
@@ -1757,18 +1735,18 @@ _loop411_breakloop:			;
 			query_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			insert_columns_and_source_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_default)) {
 			AST tmp46_AST = null;
 			tmp46_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp46_AST);
+			astFactory.addASTChild(ref currentAST, tmp46_AST);
 			match(SQL2RW_default);
 			AST tmp47_AST = null;
 			tmp47_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp47_AST);
+			astFactory.addASTChild(ref currentAST, tmp47_AST);
 			match(SQL2RW_values);
 			insert_columns_and_source_AST = currentAST.root;
 		}
@@ -1778,20 +1756,19 @@ _loop411_breakloop:			;
 		}
 		
 		returnAST = insert_columns_and_source_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void set_clause_list() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST set_clause_list_AST = null;
 		
 		set_clause();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -1800,12 +1777,12 @@ _loop411_breakloop:			;
 				{
 					AST tmp48_AST = null;
 					tmp48_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp48_AST);
+					astFactory.addASTChild(ref currentAST, tmp48_AST);
 					match(COMMA);
 					set_clause();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -1818,7 +1795,6 @@ _loop139_breakloop:			;
 		}    // ( ... )*
 		set_clause_list_AST = currentAST.root;
 		returnAST = set_clause_list_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  search_condition() //throws RecognitionException, TokenStreamException
@@ -1826,7 +1802,7 @@ _loop139_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST search_condition_AST = null;
 		
 			IExpression expressionRhs = null;
@@ -1835,7 +1811,7 @@ _loop139_breakloop:			;
 		expression=boolean_term();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -1845,12 +1821,12 @@ _loop139_breakloop:			;
 					boolean_term_op();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					expressionRhs=boolean_term();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -1874,14 +1850,13 @@ _loop196_breakloop:			;
 		search_condition_AST = currentAST.root;
 		returnAST = search_condition_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void dyn_cursor_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST dyn_cursor_name_AST = null;
 		
 		if (((tokenSet_6_.member(LA(1))) && (tokenSet_7_.member(LA(2))))&&(LA(1) == INTRODUCER))
@@ -1910,14 +1885,14 @@ _loop196_breakloop:			;
 					cursor_name();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else if ((tokenSet_8_.member(LA(1))) && (tokenSet_7_.member(LA(2)))) {
 					extended_cursor_name();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -1932,7 +1907,7 @@ _loop196_breakloop:			;
 			cursor_name();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			dyn_cursor_name_AST = currentAST.root;
 		}
@@ -1940,7 +1915,7 @@ _loop196_breakloop:			;
 			extended_cursor_name();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			dyn_cursor_name_AST = currentAST.root;
 		}
@@ -1950,50 +1925,47 @@ _loop196_breakloop:			;
 		}
 		
 		returnAST = dyn_cursor_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void cursor_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST cursor_name_AST = null;
 		
 		id();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		cursor_name_AST = currentAST.root;
 		returnAST = cursor_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void set_clause() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST set_clause_AST = null;
 		
 		column_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp49_AST = null;
 		tmp49_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp49_AST);
+		astFactory.addASTChild(ref currentAST, tmp49_AST);
 		match(EQUALS_OP);
 		update_source();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		set_clause_AST = currentAST.root;
 		returnAST = set_clause_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  column_name() //throws RecognitionException, TokenStreamException
@@ -2001,25 +1973,24 @@ _loop196_breakloop:			;
 		 string columnName = null ;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST column_name_AST = null;
 		
 		columnName=id();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		column_name_AST = currentAST.root;
 		returnAST = column_name_AST;
 		return columnName;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void update_source() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST update_source_AST = null;
 		
 		if ((tokenSet_9_.member(LA(1))))
@@ -2027,21 +1998,21 @@ _loop196_breakloop:			;
 			value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			update_source_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_null)) {
 			AST tmp50_AST = null;
 			tmp50_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp50_AST);
+			astFactory.addASTChild(ref currentAST, tmp50_AST);
 			match(SQL2RW_null);
 			update_source_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_default)) {
 			AST tmp51_AST = null;
 			tmp51_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp51_AST);
+			astFactory.addASTChild(ref currentAST, tmp51_AST);
 			match(SQL2RW_default);
 			update_source_AST = currentAST.root;
 		}
@@ -2051,7 +2022,6 @@ _loop196_breakloop:			;
 		}
 		
 		returnAST = update_source_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  value_exp() //throws RecognitionException, TokenStreamException
@@ -2059,7 +2029,7 @@ _loop196_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST value_exp_AST = null;
 		
 			IExpression expressionRhs = null;
@@ -2068,7 +2038,7 @@ _loop196_breakloop:			;
 		expression=term();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -2081,13 +2051,13 @@ _loop196_breakloop:			;
 							term_op();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 						}
 						else if ((LA(1)==CONCATENATION_OP)) {
 							AST tmp52_AST = null;
 							tmp52_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp52_AST);
+							astFactory.addASTChild(ref currentAST, tmp52_AST);
 							match(CONCATENATION_OP);
 						}
 						else
@@ -2099,7 +2069,7 @@ _loop196_breakloop:			;
 					expressionRhs=term();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -2122,7 +2092,6 @@ _loop360_breakloop:			;
 		value_exp_AST = currentAST.root;
 		returnAST = value_exp_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  id() //throws RecognitionException, TokenStreamException
@@ -2130,7 +2099,7 @@ _loop360_breakloop:			;
 		 string strId = null ;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST id_AST = null;
 		IToken  ident = null;
 		AST ident_AST = null;
@@ -2142,12 +2111,12 @@ _loop360_breakloop:			;
 			{
 				AST tmp53_AST = null;
 				tmp53_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp53_AST);
+				astFactory.addASTChild(ref currentAST, tmp53_AST);
 				match(INTRODUCER);
 				char_set_name();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==SQL2NRW_ada||LA(1)==REGULAR_ID||LA(1)==DELIMITED_ID)) {
@@ -2163,7 +2132,7 @@ _loop360_breakloop:			;
 			{
 				ident = LT(1);
 				ident_AST = astFactory.create(ident);
-				astFactory.addASTChild(currentAST, ident_AST);
+				astFactory.addASTChild(ref currentAST, ident_AST);
 				match(REGULAR_ID);
 				if (0==inputState.guessing)
 				{
@@ -2173,7 +2142,7 @@ _loop360_breakloop:			;
 			else if ((LA(1)==DELIMITED_ID)) {
 				ident2 = LT(1);
 				ident2_AST = astFactory.create(ident2);
-				astFactory.addASTChild(currentAST, ident2_AST);
+				astFactory.addASTChild(ref currentAST, ident2_AST);
 				match(DELIMITED_ID);
 				if (0==inputState.guessing)
 				{
@@ -2184,7 +2153,7 @@ _loop360_breakloop:			;
 				non_reserved_word();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else
@@ -2196,44 +2165,43 @@ _loop360_breakloop:			;
 		id_AST = currentAST.root;
 		returnAST = id_AST;
 		return strId;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void char_set_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST char_set_name_AST = null;
 		
 		id();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{
 			if ((LA(1)==PERIOD))
 			{
 				AST tmp54_AST = null;
 				tmp54_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp54_AST);
+				astFactory.addASTChild(ref currentAST, tmp54_AST);
 				match(PERIOD);
 				id();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				{
 					if ((LA(1)==PERIOD))
 					{
 						AST tmp55_AST = null;
 						tmp55_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp55_AST);
+						astFactory.addASTChild(ref currentAST, tmp55_AST);
 						match(PERIOD);
 						id();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 					}
 					else if ((LA(1)==SQL2NRW_ada||LA(1)==REGULAR_ID||LA(1)==CHAR_STRING||LA(1)==DELIMITED_ID||LA(1)==RIGHT_PAREN)) {
@@ -2255,48 +2223,46 @@ _loop360_breakloop:			;
 		}
 		char_set_name_AST = currentAST.root;
 		returnAST = char_set_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void non_reserved_word() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST non_reserved_word_AST = null;
 		
 		AST tmp56_AST = null;
 		tmp56_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp56_AST);
+		astFactory.addASTChild(ref currentAST, tmp56_AST);
 		match(SQL2NRW_ada);
 		non_reserved_word_AST = currentAST.root;
 		returnAST = non_reserved_word_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void schema_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST schema_name_AST = null;
 		
 		id();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{
 			if ((LA(1)==PERIOD))
 			{
 				AST tmp57_AST = null;
 				tmp57_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp57_AST);
+				astFactory.addASTChild(ref currentAST, tmp57_AST);
 				match(PERIOD);
 				id();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==EOF)) {
@@ -2309,7 +2275,6 @@ _loop360_breakloop:			;
 		}
 		schema_name_AST = currentAST.root;
 		returnAST = schema_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public  string  qualified_name() //throws RecognitionException, TokenStreamException
@@ -2317,7 +2282,7 @@ _loop360_breakloop:			;
 		 string qualifiedName ;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST qualified_name_AST = null;
 		
 			qualifiedName = null;
@@ -2327,7 +2292,7 @@ _loop360_breakloop:			;
 		ident=id();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -2338,12 +2303,12 @@ _loop360_breakloop:			;
 			{
 				AST tmp58_AST = null;
 				tmp58_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp58_AST);
+				astFactory.addASTChild(ref currentAST, tmp58_AST);
 				match(PERIOD);
 				ident=id();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				if (0==inputState.guessing)
 				{
@@ -2354,12 +2319,12 @@ _loop360_breakloop:			;
 					{
 						AST tmp59_AST = null;
 						tmp59_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp59_AST);
+						astFactory.addASTChild(ref currentAST, tmp59_AST);
 						match(PERIOD);
 						ident=id();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 						if (0==inputState.guessing)
 						{
@@ -2386,7 +2351,6 @@ _loop360_breakloop:			;
 		qualified_name_AST = currentAST.root;
 		returnAST = qualified_name_AST;
 		return qualifiedName ;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public SelectColumnCollection  select_list() //throws RecognitionException, TokenStreamException
@@ -2394,7 +2358,7 @@ _loop360_breakloop:			;
 		SelectColumnCollection selectColumnCollection;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST select_list_AST = null;
 		
 			selectColumnCollection = new SelectColumnCollection();
@@ -2405,7 +2369,7 @@ _loop360_breakloop:			;
 		{
 			AST tmp60_AST = null;
 			tmp60_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp60_AST);
+			astFactory.addASTChild(ref currentAST, tmp60_AST);
 			match(ASTERISK);
 			if (0==inputState.guessing)
 			{
@@ -2422,7 +2386,7 @@ _loop360_breakloop:			;
 			selectColumn=select_sublist();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			if (0==inputState.guessing)
 			{
@@ -2435,12 +2399,12 @@ _loop360_breakloop:			;
 					{
 						AST tmp61_AST = null;
 						tmp61_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp61_AST);
+						astFactory.addASTChild(ref currentAST, tmp61_AST);
 						match(COMMA);
 						selectColumn=select_sublist();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 						if (0==inputState.guessing)
 						{
@@ -2464,7 +2428,6 @@ _loop159_breakloop:				;
 		
 		returnAST = select_list_AST;
 		return selectColumnCollection;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public SelectColumn  select_sublist() //throws RecognitionException, TokenStreamException
@@ -2472,7 +2435,7 @@ _loop159_breakloop:				;
 		SelectColumn selectColumn = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST select_sublist_AST = null;
 		
 			string tableName;
@@ -2503,15 +2466,15 @@ _loop159_breakloop:				;
 			tableName=table_name();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp62_AST = null;
 			tmp62_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp62_AST);
+			astFactory.addASTChild(ref currentAST, tmp62_AST);
 			match(PERIOD);
 			AST tmp63_AST = null;
 			tmp63_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp63_AST);
+			astFactory.addASTChild(ref currentAST, tmp63_AST);
 			match(ASTERISK);
 			if (0==inputState.guessing)
 			{
@@ -2527,7 +2490,7 @@ _loop159_breakloop:				;
 			selectColumn=derived_column();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			select_sublist_AST = currentAST.root;
 		}
@@ -2538,7 +2501,6 @@ _loop159_breakloop:				;
 		
 		returnAST = select_sublist_AST;
 		return selectColumn;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public SelectColumn  derived_column() //throws RecognitionException, TokenStreamException
@@ -2546,7 +2508,7 @@ _loop159_breakloop:				;
 		SelectColumn selectColumn = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST derived_column_AST = null;
 		
 			selectColumn = new SelectColumn();
@@ -2557,7 +2519,7 @@ _loop159_breakloop:				;
 		expression=value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -2568,12 +2530,12 @@ _loop159_breakloop:				;
 			{
 				AST tmp64_AST = null;
 				tmp64_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp64_AST);
+				astFactory.addASTChild(ref currentAST, tmp64_AST);
 				match(SQL2RW_as);
 				columnName=column_name();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				if (0==inputState.guessing)
 				{
@@ -2591,7 +2553,6 @@ _loop159_breakloop:				;
 		derived_column_AST = currentAST.root;
 		returnAST = derived_column_AST;
 		return selectColumn;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  value_exp_primary() //throws RecognitionException, TokenStreamException
@@ -2599,7 +2560,7 @@ _loop159_breakloop:				;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST value_exp_primary_AST = null;
 		
 			string tmp;
@@ -2610,7 +2571,7 @@ _loop159_breakloop:				;
 			set_fct_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			value_exp_primary_AST = currentAST.root;
 		}
@@ -2618,7 +2579,7 @@ _loop159_breakloop:				;
 			case_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			value_exp_primary_AST = currentAST.root;
 		}
@@ -2626,7 +2587,7 @@ _loop159_breakloop:				;
 			cast_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			value_exp_primary_AST = currentAST.root;
 		}
@@ -2655,7 +2616,7 @@ _loop159_breakloop:				;
 					tmp=column_ref();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -2671,7 +2632,7 @@ _loop159_breakloop:				;
 					tmp=unsigned_value_spec();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -2694,7 +2655,7 @@ _loop159_breakloop:				;
 			tmp=column_ref();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			if (0==inputState.guessing)
 			{
@@ -2710,7 +2671,7 @@ _loop159_breakloop:				;
 			tmp=unsigned_value_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			if (0==inputState.guessing)
 			{
@@ -2747,16 +2708,16 @@ _loop159_breakloop:				;
 			{
 				AST tmp65_AST = null;
 				tmp65_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp65_AST);
+				astFactory.addASTChild(ref currentAST, tmp65_AST);
 				match(LEFT_PAREN);
 				expression=value_exp();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				AST tmp66_AST = null;
 				tmp66_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp66_AST);
+				astFactory.addASTChild(ref currentAST, tmp66_AST);
 				match(RIGHT_PAREN);
 				value_exp_primary_AST = currentAST.root;
 			}
@@ -2764,7 +2725,7 @@ _loop159_breakloop:				;
 				scalar_subquery();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				value_exp_primary_AST = currentAST.root;
 			}
@@ -2775,32 +2736,31 @@ _loop159_breakloop:				;
 			}
 			returnAST = value_exp_primary_AST;
 			return expression;
-			ASTPair.PutInstance(currentAST);
 		}
 		
 	public void set_fct_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST set_fct_spec_AST = null;
 		
 		if ((LA(1)==SQL2RW_count))
 		{
 			AST tmp67_AST = null;
 			tmp67_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp67_AST);
+			astFactory.addASTChild(ref currentAST, tmp67_AST);
 			match(SQL2RW_count);
 			AST tmp68_AST = null;
 			tmp68_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp68_AST);
+			astFactory.addASTChild(ref currentAST, tmp68_AST);
 			match(LEFT_PAREN);
 			{
 				if ((LA(1)==ASTERISK))
 				{
 					AST tmp69_AST = null;
 					tmp69_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp69_AST);
+					astFactory.addASTChild(ref currentAST, tmp69_AST);
 					match(ASTERISK);
 				}
 				else if ((tokenSet_19_.member(LA(1)))) {
@@ -2810,7 +2770,7 @@ _loop159_breakloop:				;
 							set_quantifier();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 						}
 						else if ((tokenSet_9_.member(LA(1)))) {
@@ -2824,7 +2784,7 @@ _loop159_breakloop:				;
 					value_exp();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -2835,7 +2795,7 @@ _loop159_breakloop:				;
 			}
 			AST tmp70_AST = null;
 			tmp70_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp70_AST);
+			astFactory.addASTChild(ref currentAST, tmp70_AST);
 			match(RIGHT_PAREN);
 			set_fct_spec_AST = currentAST.root;
 		}
@@ -2847,7 +2807,7 @@ _loop159_breakloop:				;
 				{
 					AST tmp71_AST = null;
 					tmp71_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp71_AST);
+					astFactory.addASTChild(ref currentAST, tmp71_AST);
 					match(SQL2RW_avg);
 					break;
 				}
@@ -2855,7 +2815,7 @@ _loop159_breakloop:				;
 				{
 					AST tmp72_AST = null;
 					tmp72_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp72_AST);
+					astFactory.addASTChild(ref currentAST, tmp72_AST);
 					match(SQL2RW_max);
 					break;
 				}
@@ -2863,7 +2823,7 @@ _loop159_breakloop:				;
 				{
 					AST tmp73_AST = null;
 					tmp73_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp73_AST);
+					astFactory.addASTChild(ref currentAST, tmp73_AST);
 					match(SQL2RW_min);
 					break;
 				}
@@ -2871,7 +2831,7 @@ _loop159_breakloop:				;
 				{
 					AST tmp74_AST = null;
 					tmp74_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp74_AST);
+					astFactory.addASTChild(ref currentAST, tmp74_AST);
 					match(SQL2RW_sum);
 					break;
 				}
@@ -2883,7 +2843,7 @@ _loop159_breakloop:				;
 			}
 			AST tmp75_AST = null;
 			tmp75_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp75_AST);
+			astFactory.addASTChild(ref currentAST, tmp75_AST);
 			match(LEFT_PAREN);
 			{
 				if ((LA(1)==SQL2RW_all||LA(1)==SQL2RW_distinct))
@@ -2891,7 +2851,7 @@ _loop159_breakloop:				;
 					set_quantifier();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else if ((tokenSet_9_.member(LA(1)))) {
@@ -2905,11 +2865,11 @@ _loop159_breakloop:				;
 			value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp76_AST = null;
 			tmp76_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp76_AST);
+			astFactory.addASTChild(ref currentAST, tmp76_AST);
 			match(RIGHT_PAREN);
 			set_fct_spec_AST = currentAST.root;
 		}
@@ -2919,14 +2879,13 @@ _loop159_breakloop:				;
 		}
 		
 		returnAST = set_fct_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void case_exp() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST case_exp_AST = null;
 		
 		if ((LA(1)==SQL2RW_coalesce||LA(1)==SQL2RW_nullif))
@@ -2934,7 +2893,7 @@ _loop159_breakloop:				;
 			case_abbreviation();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			case_exp_AST = currentAST.root;
 		}
@@ -2942,7 +2901,7 @@ _loop159_breakloop:				;
 			case_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			case_exp_AST = currentAST.root;
 		}
@@ -2952,45 +2911,43 @@ _loop159_breakloop:				;
 		}
 		
 		returnAST = case_exp_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void cast_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST cast_spec_AST = null;
 		
 		AST tmp77_AST = null;
 		tmp77_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp77_AST);
+		astFactory.addASTChild(ref currentAST, tmp77_AST);
 		match(SQL2RW_cast);
 		AST tmp78_AST = null;
 		tmp78_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp78_AST);
+		astFactory.addASTChild(ref currentAST, tmp78_AST);
 		match(LEFT_PAREN);
 		cast_operand();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp79_AST = null;
 		tmp79_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp79_AST);
+		astFactory.addASTChild(ref currentAST, tmp79_AST);
 		match(SQL2RW_as);
 		cast_target();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp80_AST = null;
 		tmp80_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp80_AST);
+		astFactory.addASTChild(ref currentAST, tmp80_AST);
 		match(RIGHT_PAREN);
 		cast_spec_AST = currentAST.root;
 		returnAST = cast_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  unsigned_value_spec() //throws RecognitionException, TokenStreamException
@@ -2998,7 +2955,7 @@ _loop159_breakloop:				;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST unsigned_value_spec_AST = null;
 		
 		if ((tokenSet_20_.member(LA(1))))
@@ -3006,7 +2963,7 @@ _loop159_breakloop:				;
 			literal=unsigned_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			unsigned_value_spec_AST = currentAST.root;
 		}
@@ -3014,7 +2971,7 @@ _loop159_breakloop:				;
 			literal=general_value_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			unsigned_value_spec_AST = currentAST.root;
 		}
@@ -3025,45 +2982,43 @@ _loop159_breakloop:				;
 		
 		returnAST = unsigned_value_spec_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void scalar_subquery() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST scalar_subquery_AST = null;
 		
 		subquery();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		scalar_subquery_AST = currentAST.root;
 		returnAST = scalar_subquery_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void set_quantifier() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST set_quantifier_AST = null;
 		
 		if ((LA(1)==SQL2RW_distinct))
 		{
 			AST tmp81_AST = null;
 			tmp81_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp81_AST);
+			astFactory.addASTChild(ref currentAST, tmp81_AST);
 			match(SQL2RW_distinct);
 			set_quantifier_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_all)) {
 			AST tmp82_AST = null;
 			tmp82_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp82_AST);
+			astFactory.addASTChild(ref currentAST, tmp82_AST);
 			match(SQL2RW_all);
 			set_quantifier_AST = currentAST.root;
 		}
@@ -3073,59 +3028,58 @@ _loop159_breakloop:				;
 		}
 		
 		returnAST = set_quantifier_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void case_abbreviation() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST case_abbreviation_AST = null;
 		
 		if ((LA(1)==SQL2RW_nullif))
 		{
 			AST tmp83_AST = null;
 			tmp83_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp83_AST);
+			astFactory.addASTChild(ref currentAST, tmp83_AST);
 			match(SQL2RW_nullif);
 			AST tmp84_AST = null;
 			tmp84_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp84_AST);
+			astFactory.addASTChild(ref currentAST, tmp84_AST);
 			match(LEFT_PAREN);
 			value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp85_AST = null;
 			tmp85_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp85_AST);
+			astFactory.addASTChild(ref currentAST, tmp85_AST);
 			match(COMMA);
 			value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp86_AST = null;
 			tmp86_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp86_AST);
+			astFactory.addASTChild(ref currentAST, tmp86_AST);
 			match(RIGHT_PAREN);
 			case_abbreviation_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_coalesce)) {
 			AST tmp87_AST = null;
 			tmp87_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp87_AST);
+			astFactory.addASTChild(ref currentAST, tmp87_AST);
 			match(SQL2RW_coalesce);
 			AST tmp88_AST = null;
 			tmp88_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp88_AST);
+			astFactory.addASTChild(ref currentAST, tmp88_AST);
 			match(LEFT_PAREN);
 			value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			{    // ( ... )*
 				for (;;)
@@ -3134,12 +3088,12 @@ _loop159_breakloop:				;
 					{
 						AST tmp89_AST = null;
 						tmp89_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp89_AST);
+						astFactory.addASTChild(ref currentAST, tmp89_AST);
 						match(COMMA);
 						value_exp();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 					}
 					else
@@ -3152,7 +3106,7 @@ _loop180_breakloop:				;
 			}    // ( ... )*
 			AST tmp90_AST = null;
 			tmp90_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp90_AST);
+			astFactory.addASTChild(ref currentAST, tmp90_AST);
 			match(RIGHT_PAREN);
 			case_abbreviation_AST = currentAST.root;
 		}
@@ -3162,14 +3116,13 @@ _loop180_breakloop:				;
 		}
 		
 		returnAST = case_abbreviation_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void case_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST case_spec_AST = null;
 		
 		if ((LA(1)==SQL2RW_case) && (tokenSet_9_.member(LA(2))))
@@ -3177,7 +3130,7 @@ _loop180_breakloop:				;
 			simple_case();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			case_spec_AST = currentAST.root;
 		}
@@ -3185,7 +3138,7 @@ _loop180_breakloop:				;
 			searched_case();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			case_spec_AST = currentAST.root;
 		}
@@ -3195,24 +3148,23 @@ _loop180_breakloop:				;
 		}
 		
 		returnAST = case_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void simple_case() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST simple_case_AST = null;
 		
 		AST tmp91_AST = null;
 		tmp91_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp91_AST);
+		astFactory.addASTChild(ref currentAST, tmp91_AST);
 		match(SQL2RW_case);
 		value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{ // ( ... )+
 			int _cnt184=0;
@@ -3223,7 +3175,7 @@ _loop180_breakloop:				;
 					simple_when_clause();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -3241,7 +3193,7 @@ _loop184_breakloop:			;
 				else_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==SQL2RW_end)) {
@@ -3254,23 +3206,22 @@ _loop184_breakloop:			;
 		}
 		AST tmp92_AST = null;
 		tmp92_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp92_AST);
+		astFactory.addASTChild(ref currentAST, tmp92_AST);
 		match(SQL2RW_end);
 		simple_case_AST = currentAST.root;
 		returnAST = simple_case_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void searched_case() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST searched_case_AST = null;
 		
 		AST tmp93_AST = null;
 		tmp93_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp93_AST);
+		astFactory.addASTChild(ref currentAST, tmp93_AST);
 		match(SQL2RW_case);
 		{ // ( ... )+
 			int _cnt191=0;
@@ -3281,7 +3232,7 @@ _loop184_breakloop:			;
 					searched_when_clause();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -3299,7 +3250,7 @@ _loop191_breakloop:			;
 				else_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==SQL2RW_end)) {
@@ -3312,69 +3263,66 @@ _loop191_breakloop:			;
 		}
 		AST tmp94_AST = null;
 		tmp94_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp94_AST);
+		astFactory.addASTChild(ref currentAST, tmp94_AST);
 		match(SQL2RW_end);
 		searched_case_AST = currentAST.root;
 		returnAST = searched_case_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void simple_when_clause() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST simple_when_clause_AST = null;
 		
 		AST tmp95_AST = null;
 		tmp95_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp95_AST);
+		astFactory.addASTChild(ref currentAST, tmp95_AST);
 		match(SQL2RW_when);
 		value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp96_AST = null;
 		tmp96_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp96_AST);
+		astFactory.addASTChild(ref currentAST, tmp96_AST);
 		match(SQL2RW_then);
 		result();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		simple_when_clause_AST = currentAST.root;
 		returnAST = simple_when_clause_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void else_clause() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST else_clause_AST = null;
 		
 		AST tmp97_AST = null;
 		tmp97_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp97_AST);
+		astFactory.addASTChild(ref currentAST, tmp97_AST);
 		match(SQL2RW_else);
 		result();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		else_clause_AST = currentAST.root;
 		returnAST = else_clause_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void result() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST result_AST = null;
 		
 		if ((tokenSet_9_.member(LA(1))))
@@ -3382,14 +3330,14 @@ _loop191_breakloop:			;
 			value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			result_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_null)) {
 			AST tmp98_AST = null;
 			tmp98_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp98_AST);
+			astFactory.addASTChild(ref currentAST, tmp98_AST);
 			match(SQL2RW_null);
 			result_AST = currentAST.root;
 		}
@@ -3399,37 +3347,35 @@ _loop191_breakloop:			;
 		}
 		
 		returnAST = result_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void searched_when_clause() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST searched_when_clause_AST = null;
 		
 		AST tmp99_AST = null;
 		tmp99_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp99_AST);
+		astFactory.addASTChild(ref currentAST, tmp99_AST);
 		match(SQL2RW_when);
 		search_condition();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp100_AST = null;
 		tmp100_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp100_AST);
+		astFactory.addASTChild(ref currentAST, tmp100_AST);
 		match(SQL2RW_then);
 		result();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		searched_when_clause_AST = currentAST.root;
 		returnAST = searched_when_clause_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  boolean_term() //throws RecognitionException, TokenStreamException
@@ -3437,7 +3383,7 @@ _loop191_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST boolean_term_AST = null;
 		
 			IExpression expressionRhs = null;
@@ -3446,7 +3392,7 @@ _loop191_breakloop:			;
 		expression=boolean_factor();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -3456,12 +3402,12 @@ _loop191_breakloop:			;
 					boolean_factor_op();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					expressionRhs=boolean_factor();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -3485,23 +3431,21 @@ _loop200_breakloop:			;
 		boolean_term_AST = currentAST.root;
 		returnAST = boolean_term_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void boolean_term_op() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST boolean_term_op_AST = null;
 		
 		AST tmp101_AST = null;
 		tmp101_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp101_AST);
+		astFactory.addASTChild(ref currentAST, tmp101_AST);
 		match(SQL2RW_or);
 		boolean_term_op_AST = currentAST.root;
 		returnAST = boolean_term_op_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  boolean_factor() //throws RecognitionException, TokenStreamException
@@ -3509,7 +3453,7 @@ _loop200_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST boolean_factor_AST = null;
 		
 		{
@@ -3517,7 +3461,7 @@ _loop200_breakloop:			;
 			{
 				AST tmp102_AST = null;
 				tmp102_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp102_AST);
+				astFactory.addASTChild(ref currentAST, tmp102_AST);
 				match(SQL2RW_not);
 			}
 			else if ((tokenSet_22_.member(LA(1)))) {
@@ -3531,28 +3475,26 @@ _loop200_breakloop:			;
 		expression=boolean_test();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		boolean_factor_AST = currentAST.root;
 		returnAST = boolean_factor_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void boolean_factor_op() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST boolean_factor_op_AST = null;
 		
 		AST tmp103_AST = null;
 		tmp103_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp103_AST);
+		astFactory.addASTChild(ref currentAST, tmp103_AST);
 		match(SQL2RW_and);
 		boolean_factor_op_AST = currentAST.root;
 		returnAST = boolean_factor_op_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  boolean_test() //throws RecognitionException, TokenStreamException
@@ -3560,27 +3502,27 @@ _loop200_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST boolean_test_AST = null;
 		
 		expression=boolean_primary();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{
 			if ((LA(1)==SQL2RW_is))
 			{
 				AST tmp104_AST = null;
 				tmp104_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp104_AST);
+				astFactory.addASTChild(ref currentAST, tmp104_AST);
 				match(SQL2RW_is);
 				{
 					if ((LA(1)==SQL2RW_not))
 					{
 						AST tmp105_AST = null;
 						tmp105_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp105_AST);
+						astFactory.addASTChild(ref currentAST, tmp105_AST);
 						match(SQL2RW_not);
 					}
 					else if ((LA(1)==SQL2RW_false||LA(1)==SQL2RW_true||LA(1)==SQL2RW_unknown)) {
@@ -3594,7 +3536,7 @@ _loop200_breakloop:			;
 				truth_value();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((tokenSet_23_.member(LA(1)))) {
@@ -3608,7 +3550,6 @@ _loop200_breakloop:			;
 		boolean_test_AST = currentAST.root;
 		returnAST = boolean_test_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  boolean_primary() //throws RecognitionException, TokenStreamException
@@ -3616,7 +3557,7 @@ _loop200_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST boolean_primary_AST = null;
 		
 		bool synPredMatched210 = false;
@@ -3642,23 +3583,23 @@ _loop200_breakloop:			;
 			expression=predicate();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			boolean_primary_AST = currentAST.root;
 		}
 		else if ((LA(1)==LEFT_PAREN) && (tokenSet_1_.member(LA(2)))) {
 			AST tmp106_AST = null;
 			tmp106_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp106_AST);
+			astFactory.addASTChild(ref currentAST, tmp106_AST);
 			match(LEFT_PAREN);
 			search_condition();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp107_AST = null;
 			tmp107_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp107_AST);
+			astFactory.addASTChild(ref currentAST, tmp107_AST);
 			match(RIGHT_PAREN);
 			boolean_primary_AST = currentAST.root;
 		}
@@ -3669,35 +3610,34 @@ _loop200_breakloop:			;
 		
 		returnAST = boolean_primary_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void truth_value() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST truth_value_AST = null;
 		
 		if ((LA(1)==SQL2RW_true))
 		{
 			AST tmp108_AST = null;
 			tmp108_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp108_AST);
+			astFactory.addASTChild(ref currentAST, tmp108_AST);
 			match(SQL2RW_true);
 			truth_value_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_false)) {
 			AST tmp109_AST = null;
 			tmp109_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp109_AST);
+			astFactory.addASTChild(ref currentAST, tmp109_AST);
 			match(SQL2RW_false);
 			truth_value_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_unknown)) {
 			AST tmp110_AST = null;
 			tmp110_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp110_AST);
+			astFactory.addASTChild(ref currentAST, tmp110_AST);
 			match(SQL2RW_unknown);
 			truth_value_AST = currentAST.root;
 		}
@@ -3707,7 +3647,6 @@ _loop200_breakloop:			;
 		}
 		
 		returnAST = truth_value_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  predicate() //throws RecognitionException, TokenStreamException
@@ -3715,7 +3654,7 @@ _loop200_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST predicate_AST = null;
 		
 			ITwoPartExpression twoPartExpression = null;
@@ -3729,7 +3668,7 @@ _loop200_breakloop:			;
 			expression=row_value_constructor();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			{
 				switch ( LA(1) )
@@ -3744,7 +3683,7 @@ _loop200_breakloop:			;
 						{
 							AST tmp111_AST = null;
 							tmp111_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp111_AST);
+							astFactory.addASTChild(ref currentAST, tmp111_AST);
 							match(SQL2RW_not);
 							if (0==inputState.guessing)
 							{
@@ -3765,21 +3704,21 @@ _loop200_breakloop:			;
 							between_predicate();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 						}
 						else if ((LA(1)==SQL2RW_in)) {
 							in_predicate();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 						}
 						else if ((LA(1)==SQL2RW_like)) {
 							likeExpression=like_predicate();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 							if (0==inputState.guessing)
 							{
@@ -3805,7 +3744,7 @@ _loop200_breakloop:			;
 					nullExpression=null_predicate();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -3823,7 +3762,7 @@ _loop200_breakloop:			;
 					match_predicate();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					break;
 				}
@@ -3832,7 +3771,7 @@ _loop200_breakloop:			;
 					overlaps_predicate();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					break;
 				}
@@ -3842,7 +3781,7 @@ _loop200_breakloop:			;
 						twoPartExpression=comp_predicate();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 						if (0==inputState.guessing)
 						{
@@ -3856,7 +3795,7 @@ _loop200_breakloop:			;
 						quantified_comp_predicate();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 					}
 				else
@@ -3871,7 +3810,7 @@ _loop200_breakloop:			;
 			exists_predicate();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			predicate_AST = currentAST.root;
 		}
@@ -3879,7 +3818,7 @@ _loop200_breakloop:			;
 			unique_predicate();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			predicate_AST = currentAST.root;
 		}
@@ -3890,7 +3829,6 @@ _loop200_breakloop:			;
 		
 		returnAST = predicate_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  row_value_constructor() //throws RecognitionException, TokenStreamException
@@ -3898,7 +3836,7 @@ _loop200_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST row_value_constructor_AST = null;
 		
 		bool synPredMatched299 = false;
@@ -3924,23 +3862,23 @@ _loop200_breakloop:			;
 			expression=row_value_constructor_elem();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			row_value_constructor_AST = currentAST.root;
 		}
 		else if ((LA(1)==LEFT_PAREN) && (tokenSet_25_.member(LA(2)))) {
 			AST tmp112_AST = null;
 			tmp112_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp112_AST);
+			astFactory.addASTChild(ref currentAST, tmp112_AST);
 			match(LEFT_PAREN);
 			row_value_const_list();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp113_AST = null;
 			tmp113_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp113_AST);
+			astFactory.addASTChild(ref currentAST, tmp113_AST);
 			match(RIGHT_PAREN);
 			row_value_constructor_AST = currentAST.root;
 		}
@@ -3951,7 +3889,6 @@ _loop200_breakloop:			;
 		
 		returnAST = row_value_constructor_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public ITwoPartExpression  comp_predicate() //throws RecognitionException, TokenStreamException
@@ -3959,7 +3896,7 @@ _loop200_breakloop:			;
 		ITwoPartExpression twoPartExpression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST comp_predicate_AST = null;
 		
 			IExpression expressionRhs = null;
@@ -3969,12 +3906,12 @@ _loop200_breakloop:			;
 		op=comp_op();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		expressionRhs=row_value_constructor();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -3987,58 +3924,55 @@ _loop200_breakloop:			;
 		comp_predicate_AST = currentAST.root;
 		returnAST = comp_predicate_AST;
 		return twoPartExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void between_predicate() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST between_predicate_AST = null;
 		
 		AST tmp114_AST = null;
 		tmp114_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp114_AST);
+		astFactory.addASTChild(ref currentAST, tmp114_AST);
 		match(SQL2RW_between);
 		row_value_constructor();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp115_AST = null;
 		tmp115_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp115_AST);
+		astFactory.addASTChild(ref currentAST, tmp115_AST);
 		match(SQL2RW_and);
 		row_value_constructor();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		between_predicate_AST = currentAST.root;
 		returnAST = between_predicate_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void in_predicate() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST in_predicate_AST = null;
 		
 		AST tmp116_AST = null;
 		tmp116_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp116_AST);
+		astFactory.addASTChild(ref currentAST, tmp116_AST);
 		match(SQL2RW_in);
 		in_predicate_value();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		in_predicate_AST = currentAST.root;
 		returnAST = in_predicate_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public ILikeExpression  like_predicate() //throws RecognitionException, TokenStreamException
@@ -4046,7 +3980,7 @@ _loop200_breakloop:			;
 		ILikeExpression likeExpression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST like_predicate_AST = null;
 		
 			likeExpression = new LikeExpression();
@@ -4055,12 +3989,12 @@ _loop200_breakloop:			;
 		
 		AST tmp117_AST = null;
 		tmp117_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp117_AST);
+		astFactory.addASTChild(ref currentAST, tmp117_AST);
 		match(SQL2RW_like);
 		patternExpression=pattern();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -4071,12 +4005,12 @@ _loop200_breakloop:			;
 			{
 				AST tmp118_AST = null;
 				tmp118_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp118_AST);
+				astFactory.addASTChild(ref currentAST, tmp118_AST);
 				match(SQL2RW_escape);
 				escapeExpression=escape_char();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				if (0==inputState.guessing)
 				{
@@ -4094,7 +4028,6 @@ _loop200_breakloop:			;
 		like_predicate_AST = currentAST.root;
 		returnAST = like_predicate_AST;
 		return likeExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public INullExpression  null_predicate() //throws RecognitionException, TokenStreamException
@@ -4102,7 +4035,7 @@ _loop200_breakloop:			;
 		INullExpression nullExpression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST null_predicate_AST = null;
 		
 			nullExpression = new NullExpression();
@@ -4110,14 +4043,14 @@ _loop200_breakloop:			;
 		
 		AST tmp119_AST = null;
 		tmp119_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp119_AST);
+		astFactory.addASTChild(ref currentAST, tmp119_AST);
 		match(SQL2RW_is);
 		{
 			if ((LA(1)==SQL2RW_not))
 			{
 				AST tmp120_AST = null;
 				tmp120_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp120_AST);
+				astFactory.addASTChild(ref currentAST, tmp120_AST);
 				match(SQL2RW_not);
 				if (0==inputState.guessing)
 				{
@@ -4134,44 +4067,43 @@ _loop200_breakloop:			;
 		}
 		AST tmp121_AST = null;
 		tmp121_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp121_AST);
+		astFactory.addASTChild(ref currentAST, tmp121_AST);
 		match(SQL2RW_null);
 		null_predicate_AST = currentAST.root;
 		returnAST = null_predicate_AST;
 		return nullExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void quantified_comp_predicate() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST quantified_comp_predicate_AST = null;
 		
 		comp_op();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{
 			if ((LA(1)==SQL2RW_all))
 			{
 				AST tmp122_AST = null;
 				tmp122_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp122_AST);
+				astFactory.addASTChild(ref currentAST, tmp122_AST);
 				match(SQL2RW_all);
 			}
 			else if ((LA(1)==SQL2RW_some)) {
 				AST tmp123_AST = null;
 				tmp123_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp123_AST);
+				astFactory.addASTChild(ref currentAST, tmp123_AST);
 				match(SQL2RW_some);
 			}
 			else if ((LA(1)==SQL2RW_any)) {
 				AST tmp124_AST = null;
 				tmp124_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp124_AST);
+				astFactory.addASTChild(ref currentAST, tmp124_AST);
 				match(SQL2RW_any);
 			}
 			else
@@ -4183,30 +4115,29 @@ _loop200_breakloop:			;
 		table_subquery();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		quantified_comp_predicate_AST = currentAST.root;
 		returnAST = quantified_comp_predicate_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void match_predicate() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST match_predicate_AST = null;
 		
 		AST tmp125_AST = null;
 		tmp125_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp125_AST);
+		astFactory.addASTChild(ref currentAST, tmp125_AST);
 		match(SQL2RW_match);
 		{
 			if ((LA(1)==SQL2RW_unique))
 			{
 				AST tmp126_AST = null;
 				tmp126_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp126_AST);
+				astFactory.addASTChild(ref currentAST, tmp126_AST);
 				match(SQL2RW_unique);
 			}
 			else if ((LA(1)==SQL2RW_full||LA(1)==SQL2RW_partial||LA(1)==LEFT_PAREN)) {
@@ -4222,13 +4153,13 @@ _loop200_breakloop:			;
 			{
 				AST tmp127_AST = null;
 				tmp127_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp127_AST);
+				astFactory.addASTChild(ref currentAST, tmp127_AST);
 				match(SQL2RW_full);
 			}
 			else if ((LA(1)==SQL2RW_partial)) {
 				AST tmp128_AST = null;
 				tmp128_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp128_AST);
+				astFactory.addASTChild(ref currentAST, tmp128_AST);
 				match(SQL2RW_partial);
 			}
 			else if ((LA(1)==LEFT_PAREN)) {
@@ -4242,74 +4173,70 @@ _loop200_breakloop:			;
 		table_subquery();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		match_predicate_AST = currentAST.root;
 		returnAST = match_predicate_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void overlaps_predicate() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST overlaps_predicate_AST = null;
 		
 		AST tmp129_AST = null;
 		tmp129_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp129_AST);
+		astFactory.addASTChild(ref currentAST, tmp129_AST);
 		match(SQL2RW_overlaps);
 		row_value_constructor();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		overlaps_predicate_AST = currentAST.root;
 		returnAST = overlaps_predicate_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void exists_predicate() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST exists_predicate_AST = null;
 		
 		AST tmp130_AST = null;
 		tmp130_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp130_AST);
+		astFactory.addASTChild(ref currentAST, tmp130_AST);
 		match(SQL2RW_exists);
 		table_subquery();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		exists_predicate_AST = currentAST.root;
 		returnAST = exists_predicate_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void unique_predicate() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST unique_predicate_AST = null;
 		
 		AST tmp131_AST = null;
 		tmp131_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp131_AST);
+		astFactory.addASTChild(ref currentAST, tmp131_AST);
 		match(SQL2RW_unique);
 		table_subquery();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		unique_predicate_AST = currentAST.root;
 		returnAST = unique_predicate_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public SqlOperator  comp_op() //throws RecognitionException, TokenStreamException
@@ -4317,7 +4244,7 @@ _loop200_breakloop:			;
 		SqlOperator op;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST comp_op_AST = null;
 		
 			op = SqlOperator.Unknown;
@@ -4329,7 +4256,7 @@ _loop200_breakloop:			;
 		{
 			AST tmp132_AST = null;
 			tmp132_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp132_AST);
+			astFactory.addASTChild(ref currentAST, tmp132_AST);
 			match(EQUALS_OP);
 			if (0==inputState.guessing)
 			{
@@ -4342,7 +4269,7 @@ _loop200_breakloop:			;
 		{
 			AST tmp133_AST = null;
 			tmp133_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp133_AST);
+			astFactory.addASTChild(ref currentAST, tmp133_AST);
 			match(NOT_EQUALS_OP);
 			if (0==inputState.guessing)
 			{
@@ -4355,7 +4282,7 @@ _loop200_breakloop:			;
 		{
 			AST tmp134_AST = null;
 			tmp134_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp134_AST);
+			astFactory.addASTChild(ref currentAST, tmp134_AST);
 			match(LESS_THAN_OP);
 			if (0==inputState.guessing)
 			{
@@ -4368,7 +4295,7 @@ _loop200_breakloop:			;
 		{
 			AST tmp135_AST = null;
 			tmp135_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp135_AST);
+			astFactory.addASTChild(ref currentAST, tmp135_AST);
 			match(GREATER_THAN_OP);
 			if (0==inputState.guessing)
 			{
@@ -4381,7 +4308,7 @@ _loop200_breakloop:			;
 		{
 			AST tmp136_AST = null;
 			tmp136_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp136_AST);
+			astFactory.addASTChild(ref currentAST, tmp136_AST);
 			match(LESS_THAN_OR_EQUALS_OP);
 			if (0==inputState.guessing)
 			{
@@ -4394,7 +4321,7 @@ _loop200_breakloop:			;
 		{
 			AST tmp137_AST = null;
 			tmp137_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp137_AST);
+			astFactory.addASTChild(ref currentAST, tmp137_AST);
 			match(GREATER_THAN_OR_EQUALS_OP);
 			if (0==inputState.guessing)
 			{
@@ -4410,14 +4337,13 @@ _loop200_breakloop:			;
 		 }
 		returnAST = comp_op_AST;
 		return op;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void in_predicate_value() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST in_predicate_value_AST = null;
 		
 		bool synPredMatched221 = false;
@@ -4443,23 +4369,23 @@ _loop200_breakloop:			;
 			table_subquery();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			in_predicate_value_AST = currentAST.root;
 		}
 		else if ((LA(1)==LEFT_PAREN) && (tokenSet_9_.member(LA(2)))) {
 			AST tmp138_AST = null;
 			tmp138_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp138_AST);
+			astFactory.addASTChild(ref currentAST, tmp138_AST);
 			match(LEFT_PAREN);
 			in_value_list();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp139_AST = null;
 			tmp139_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp139_AST);
+			astFactory.addASTChild(ref currentAST, tmp139_AST);
 			match(RIGHT_PAREN);
 			in_predicate_value_AST = currentAST.root;
 		}
@@ -4469,37 +4395,35 @@ _loop200_breakloop:			;
 		}
 		
 		returnAST = in_predicate_value_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void table_subquery() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST table_subquery_AST = null;
 		
 		subquery();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		table_subquery_AST = currentAST.root;
 		returnAST = table_subquery_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void in_value_list() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST in_value_list_AST = null;
 		
 		value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -4508,12 +4432,12 @@ _loop200_breakloop:			;
 				{
 					AST tmp140_AST = null;
 					tmp140_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp140_AST);
+					astFactory.addASTChild(ref currentAST, tmp140_AST);
 					match(COMMA);
 					value_exp();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -4526,7 +4450,6 @@ _loop224_breakloop:			;
 		}    // ( ... )*
 		in_value_list_AST = currentAST.root;
 		returnAST = in_value_list_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  pattern() //throws RecognitionException, TokenStreamException
@@ -4534,18 +4457,17 @@ _loop224_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST pattern_AST = null;
 		
 		expression=char_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		pattern_AST = currentAST.root;
 		returnAST = pattern_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  escape_char() //throws RecognitionException, TokenStreamException
@@ -4553,18 +4475,17 @@ _loop224_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST escape_char_AST = null;
 		
 		expression=char_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		escape_char_AST = currentAST.root;
 		returnAST = escape_char_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  char_value_exp() //throws RecognitionException, TokenStreamException
@@ -4572,25 +4493,24 @@ _loop224_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST char_value_exp_AST = null;
 		
 		expression=value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		char_value_exp_AST = currentAST.root;
 		returnAST = char_value_exp_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void cast_operand() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST cast_operand_AST = null;
 		
 		if ((tokenSet_9_.member(LA(1))))
@@ -4598,14 +4518,14 @@ _loop224_breakloop:			;
 			value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			cast_operand_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_null)) {
 			AST tmp141_AST = null;
 			tmp141_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp141_AST);
+			astFactory.addASTChild(ref currentAST, tmp141_AST);
 			match(SQL2RW_null);
 			cast_operand_AST = currentAST.root;
 		}
@@ -4615,14 +4535,13 @@ _loop224_breakloop:			;
 		}
 		
 		returnAST = cast_operand_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void cast_target() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST cast_target_AST = null;
 		
 		if ((LA(1)==SQL2NRW_ada||LA(1)==REGULAR_ID||LA(1)==DELIMITED_ID||LA(1)==INTRODUCER))
@@ -4630,7 +4549,7 @@ _loop224_breakloop:			;
 			domain_name();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			cast_target_AST = currentAST.root;
 		}
@@ -4638,7 +4557,7 @@ _loop224_breakloop:			;
 			data_type();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			cast_target_AST = currentAST.root;
 		}
@@ -4648,31 +4567,29 @@ _loop224_breakloop:			;
 		}
 		
 		returnAST = cast_target_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void domain_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST domain_name_AST = null;
 		
 		qualified_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		domain_name_AST = currentAST.root;
 		returnAST = domain_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void data_type() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST data_type_AST = null;
 		
 		switch ( LA(1) )
@@ -4684,23 +4601,23 @@ _loop224_breakloop:			;
 			char_string_type();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			{
 				if ((LA(1)==SQL2RW_character))
 				{
 					AST tmp142_AST = null;
 					tmp142_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp142_AST);
+					astFactory.addASTChild(ref currentAST, tmp142_AST);
 					match(SQL2RW_character);
 					AST tmp143_AST = null;
 					tmp143_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp143_AST);
+					astFactory.addASTChild(ref currentAST, tmp143_AST);
 					match(SQL2RW_set);
 					char_set_name();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else if ((LA(1)==RIGHT_PAREN)) {
@@ -4720,7 +4637,7 @@ _loop224_breakloop:			;
 			national_char_string_type();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			data_type_AST = currentAST.root;
 			break;
@@ -4730,7 +4647,7 @@ _loop224_breakloop:			;
 			bit_string_type();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			data_type_AST = currentAST.root;
 			break;
@@ -4748,7 +4665,7 @@ _loop224_breakloop:			;
 			num_type();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			data_type_AST = currentAST.root;
 			break;
@@ -4760,7 +4677,7 @@ _loop224_breakloop:			;
 			datetime_type();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			data_type_AST = currentAST.root;
 			break;
@@ -4770,7 +4687,7 @@ _loop224_breakloop:			;
 			interval_type();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			data_type_AST = currentAST.root;
 			break;
@@ -4781,37 +4698,36 @@ _loop224_breakloop:			;
 		}
 		 }
 		returnAST = data_type_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void char_string_type() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST char_string_type_AST = null;
 		
 		if ((LA(1)==SQL2RW_character) && (LA(2)==SQL2RW_character||LA(2)==LEFT_PAREN||LA(2)==RIGHT_PAREN))
 		{
 			AST tmp144_AST = null;
 			tmp144_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp144_AST);
+			astFactory.addASTChild(ref currentAST, tmp144_AST);
 			match(SQL2RW_character);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp145_AST = null;
 					tmp145_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp145_AST);
+					astFactory.addASTChild(ref currentAST, tmp145_AST);
 					match(LEFT_PAREN);
 					length();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					AST tmp146_AST = null;
 					tmp146_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp146_AST);
+					astFactory.addASTChild(ref currentAST, tmp146_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==SQL2RW_character||LA(1)==RIGHT_PAREN)) {
@@ -4827,23 +4743,23 @@ _loop224_breakloop:			;
 		else if ((LA(1)==SQL2RW_char) && (LA(2)==SQL2RW_character||LA(2)==LEFT_PAREN||LA(2)==RIGHT_PAREN)) {
 			AST tmp147_AST = null;
 			tmp147_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp147_AST);
+			astFactory.addASTChild(ref currentAST, tmp147_AST);
 			match(SQL2RW_char);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp148_AST = null;
 					tmp148_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp148_AST);
+					astFactory.addASTChild(ref currentAST, tmp148_AST);
 					match(LEFT_PAREN);
 					length();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					AST tmp149_AST = null;
 					tmp149_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp149_AST);
+					astFactory.addASTChild(ref currentAST, tmp149_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==SQL2RW_character||LA(1)==RIGHT_PAREN)) {
@@ -4859,68 +4775,68 @@ _loop224_breakloop:			;
 		else if ((LA(1)==SQL2RW_character) && (LA(2)==SQL2RW_varying)) {
 			AST tmp150_AST = null;
 			tmp150_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp150_AST);
+			astFactory.addASTChild(ref currentAST, tmp150_AST);
 			match(SQL2RW_character);
 			AST tmp151_AST = null;
 			tmp151_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp151_AST);
+			astFactory.addASTChild(ref currentAST, tmp151_AST);
 			match(SQL2RW_varying);
 			AST tmp152_AST = null;
 			tmp152_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp152_AST);
+			astFactory.addASTChild(ref currentAST, tmp152_AST);
 			match(LEFT_PAREN);
 			length();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp153_AST = null;
 			tmp153_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp153_AST);
+			astFactory.addASTChild(ref currentAST, tmp153_AST);
 			match(RIGHT_PAREN);
 			char_string_type_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_char) && (LA(2)==SQL2RW_varying)) {
 			AST tmp154_AST = null;
 			tmp154_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp154_AST);
+			astFactory.addASTChild(ref currentAST, tmp154_AST);
 			match(SQL2RW_char);
 			AST tmp155_AST = null;
 			tmp155_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp155_AST);
+			astFactory.addASTChild(ref currentAST, tmp155_AST);
 			match(SQL2RW_varying);
 			AST tmp156_AST = null;
 			tmp156_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp156_AST);
+			astFactory.addASTChild(ref currentAST, tmp156_AST);
 			match(LEFT_PAREN);
 			length();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp157_AST = null;
 			tmp157_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp157_AST);
+			astFactory.addASTChild(ref currentAST, tmp157_AST);
 			match(RIGHT_PAREN);
 			char_string_type_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_varchar)) {
 			AST tmp158_AST = null;
 			tmp158_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp158_AST);
+			astFactory.addASTChild(ref currentAST, tmp158_AST);
 			match(SQL2RW_varchar);
 			AST tmp159_AST = null;
 			tmp159_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp159_AST);
+			astFactory.addASTChild(ref currentAST, tmp159_AST);
 			match(LEFT_PAREN);
 			length();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp160_AST = null;
 			tmp160_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp160_AST);
+			astFactory.addASTChild(ref currentAST, tmp160_AST);
 			match(RIGHT_PAREN);
 			char_string_type_AST = currentAST.root;
 		}
@@ -4930,44 +4846,43 @@ _loop224_breakloop:			;
 		}
 		
 		returnAST = char_string_type_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void national_char_string_type() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST national_char_string_type_AST = null;
 		
 		if ((LA(1)==SQL2RW_national))
 		{
 			AST tmp161_AST = null;
 			tmp161_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp161_AST);
+			astFactory.addASTChild(ref currentAST, tmp161_AST);
 			match(SQL2RW_national);
 			{
 				if ((LA(1)==SQL2RW_character) && (LA(2)==LEFT_PAREN||LA(2)==RIGHT_PAREN))
 				{
 					AST tmp162_AST = null;
 					tmp162_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp162_AST);
+					astFactory.addASTChild(ref currentAST, tmp162_AST);
 					match(SQL2RW_character);
 					{
 						if ((LA(1)==LEFT_PAREN))
 						{
 							AST tmp163_AST = null;
 							tmp163_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp163_AST);
+							astFactory.addASTChild(ref currentAST, tmp163_AST);
 							match(LEFT_PAREN);
 							length();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 							AST tmp164_AST = null;
 							tmp164_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp164_AST);
+							astFactory.addASTChild(ref currentAST, tmp164_AST);
 							match(RIGHT_PAREN);
 						}
 						else if ((LA(1)==RIGHT_PAREN)) {
@@ -4982,23 +4897,23 @@ _loop224_breakloop:			;
 				else if ((LA(1)==SQL2RW_char) && (LA(2)==LEFT_PAREN||LA(2)==RIGHT_PAREN)) {
 					AST tmp165_AST = null;
 					tmp165_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp165_AST);
+					astFactory.addASTChild(ref currentAST, tmp165_AST);
 					match(SQL2RW_char);
 					{
 						if ((LA(1)==LEFT_PAREN))
 						{
 							AST tmp166_AST = null;
 							tmp166_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp166_AST);
+							astFactory.addASTChild(ref currentAST, tmp166_AST);
 							match(LEFT_PAREN);
 							length();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 							AST tmp167_AST = null;
 							tmp167_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp167_AST);
+							astFactory.addASTChild(ref currentAST, tmp167_AST);
 							match(RIGHT_PAREN);
 						}
 						else if ((LA(1)==RIGHT_PAREN)) {
@@ -5013,47 +4928,47 @@ _loop224_breakloop:			;
 				else if ((LA(1)==SQL2RW_character) && (LA(2)==SQL2RW_varying)) {
 					AST tmp168_AST = null;
 					tmp168_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp168_AST);
+					astFactory.addASTChild(ref currentAST, tmp168_AST);
 					match(SQL2RW_character);
 					AST tmp169_AST = null;
 					tmp169_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp169_AST);
+					astFactory.addASTChild(ref currentAST, tmp169_AST);
 					match(SQL2RW_varying);
 					AST tmp170_AST = null;
 					tmp170_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp170_AST);
+					astFactory.addASTChild(ref currentAST, tmp170_AST);
 					match(LEFT_PAREN);
 					length();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					AST tmp171_AST = null;
 					tmp171_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp171_AST);
+					astFactory.addASTChild(ref currentAST, tmp171_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==SQL2RW_char) && (LA(2)==SQL2RW_varying)) {
 					AST tmp172_AST = null;
 					tmp172_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp172_AST);
+					astFactory.addASTChild(ref currentAST, tmp172_AST);
 					match(SQL2RW_char);
 					AST tmp173_AST = null;
 					tmp173_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp173_AST);
+					astFactory.addASTChild(ref currentAST, tmp173_AST);
 					match(SQL2RW_varying);
 					AST tmp174_AST = null;
 					tmp174_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp174_AST);
+					astFactory.addASTChild(ref currentAST, tmp174_AST);
 					match(LEFT_PAREN);
 					length();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					AST tmp175_AST = null;
 					tmp175_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp175_AST);
+					astFactory.addASTChild(ref currentAST, tmp175_AST);
 					match(RIGHT_PAREN);
 				}
 				else
@@ -5067,23 +4982,23 @@ _loop224_breakloop:			;
 		else if ((LA(1)==SQL2RW_nchar) && (LA(2)==LEFT_PAREN||LA(2)==RIGHT_PAREN)) {
 			AST tmp176_AST = null;
 			tmp176_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp176_AST);
+			astFactory.addASTChild(ref currentAST, tmp176_AST);
 			match(SQL2RW_nchar);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp177_AST = null;
 					tmp177_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp177_AST);
+					astFactory.addASTChild(ref currentAST, tmp177_AST);
 					match(LEFT_PAREN);
 					length();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					AST tmp178_AST = null;
 					tmp178_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp178_AST);
+					astFactory.addASTChild(ref currentAST, tmp178_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==RIGHT_PAREN)) {
@@ -5099,24 +5014,24 @@ _loop224_breakloop:			;
 		else if ((LA(1)==SQL2RW_nchar) && (LA(2)==SQL2RW_varying)) {
 			AST tmp179_AST = null;
 			tmp179_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp179_AST);
+			astFactory.addASTChild(ref currentAST, tmp179_AST);
 			match(SQL2RW_nchar);
 			AST tmp180_AST = null;
 			tmp180_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp180_AST);
+			astFactory.addASTChild(ref currentAST, tmp180_AST);
 			match(SQL2RW_varying);
 			AST tmp181_AST = null;
 			tmp181_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp181_AST);
+			astFactory.addASTChild(ref currentAST, tmp181_AST);
 			match(LEFT_PAREN);
 			length();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp182_AST = null;
 			tmp182_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp182_AST);
+			astFactory.addASTChild(ref currentAST, tmp182_AST);
 			match(RIGHT_PAREN);
 			national_char_string_type_AST = currentAST.root;
 		}
@@ -5126,37 +5041,36 @@ _loop224_breakloop:			;
 		}
 		
 		returnAST = national_char_string_type_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void bit_string_type() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST bit_string_type_AST = null;
 		
 		if ((LA(1)==SQL2RW_bit) && (LA(2)==LEFT_PAREN||LA(2)==RIGHT_PAREN))
 		{
 			AST tmp183_AST = null;
 			tmp183_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp183_AST);
+			astFactory.addASTChild(ref currentAST, tmp183_AST);
 			match(SQL2RW_bit);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp184_AST = null;
 					tmp184_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp184_AST);
+					astFactory.addASTChild(ref currentAST, tmp184_AST);
 					match(LEFT_PAREN);
 					length();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					AST tmp185_AST = null;
 					tmp185_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp185_AST);
+					astFactory.addASTChild(ref currentAST, tmp185_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==RIGHT_PAREN)) {
@@ -5172,24 +5086,24 @@ _loop224_breakloop:			;
 		else if ((LA(1)==SQL2RW_bit) && (LA(2)==SQL2RW_varying)) {
 			AST tmp186_AST = null;
 			tmp186_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp186_AST);
+			astFactory.addASTChild(ref currentAST, tmp186_AST);
 			match(SQL2RW_bit);
 			AST tmp187_AST = null;
 			tmp187_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp187_AST);
+			astFactory.addASTChild(ref currentAST, tmp187_AST);
 			match(SQL2RW_varying);
 			AST tmp188_AST = null;
 			tmp188_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp188_AST);
+			astFactory.addASTChild(ref currentAST, tmp188_AST);
 			match(LEFT_PAREN);
 			length();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp189_AST = null;
 			tmp189_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp189_AST);
+			astFactory.addASTChild(ref currentAST, tmp189_AST);
 			match(RIGHT_PAREN);
 			bit_string_type_AST = currentAST.root;
 		}
@@ -5199,14 +5113,13 @@ _loop224_breakloop:			;
 		}
 		
 		returnAST = bit_string_type_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void num_type() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST num_type_AST = null;
 		
 		if ((LA(1)==SQL2RW_dec||LA(1)==SQL2RW_decimal||LA(1)==SQL2RW_int||LA(1)==SQL2RW_integer||LA(1)==SQL2RW_numeric||LA(1)==SQL2RW_smallint))
@@ -5214,7 +5127,7 @@ _loop224_breakloop:			;
 			exact_num_type();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			num_type_AST = currentAST.root;
 		}
@@ -5222,7 +5135,7 @@ _loop224_breakloop:			;
 			approximate_num_type();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			num_type_AST = currentAST.root;
 		}
@@ -5232,44 +5145,43 @@ _loop224_breakloop:			;
 		}
 		
 		returnAST = num_type_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void datetime_type() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST datetime_type_AST = null;
 		
 		if ((LA(1)==SQL2RW_date))
 		{
 			AST tmp190_AST = null;
 			tmp190_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp190_AST);
+			astFactory.addASTChild(ref currentAST, tmp190_AST);
 			match(SQL2RW_date);
 			datetime_type_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_time)) {
 			AST tmp191_AST = null;
 			tmp191_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp191_AST);
+			astFactory.addASTChild(ref currentAST, tmp191_AST);
 			match(SQL2RW_time);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp192_AST = null;
 					tmp192_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp192_AST);
+					astFactory.addASTChild(ref currentAST, tmp192_AST);
 					match(LEFT_PAREN);
 					time_precision();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					AST tmp193_AST = null;
 					tmp193_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp193_AST);
+					astFactory.addASTChild(ref currentAST, tmp193_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==SQL2RW_with||LA(1)==RIGHT_PAREN)) {
@@ -5285,15 +5197,15 @@ _loop224_breakloop:			;
 				{
 					AST tmp194_AST = null;
 					tmp194_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp194_AST);
+					astFactory.addASTChild(ref currentAST, tmp194_AST);
 					match(SQL2RW_with);
 					AST tmp195_AST = null;
 					tmp195_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp195_AST);
+					astFactory.addASTChild(ref currentAST, tmp195_AST);
 					match(SQL2RW_time);
 					AST tmp196_AST = null;
 					tmp196_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp196_AST);
+					astFactory.addASTChild(ref currentAST, tmp196_AST);
 					match(SQL2RW_zone);
 				}
 				else if ((LA(1)==RIGHT_PAREN)) {
@@ -5309,23 +5221,23 @@ _loop224_breakloop:			;
 		else if ((LA(1)==SQL2RW_timestamp)) {
 			AST tmp197_AST = null;
 			tmp197_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp197_AST);
+			astFactory.addASTChild(ref currentAST, tmp197_AST);
 			match(SQL2RW_timestamp);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp198_AST = null;
 					tmp198_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp198_AST);
+					astFactory.addASTChild(ref currentAST, tmp198_AST);
 					match(LEFT_PAREN);
 					timestamp_precision();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					AST tmp199_AST = null;
 					tmp199_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp199_AST);
+					astFactory.addASTChild(ref currentAST, tmp199_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==SQL2RW_with||LA(1)==RIGHT_PAREN)) {
@@ -5341,15 +5253,15 @@ _loop224_breakloop:			;
 				{
 					AST tmp200_AST = null;
 					tmp200_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp200_AST);
+					astFactory.addASTChild(ref currentAST, tmp200_AST);
 					match(SQL2RW_with);
 					AST tmp201_AST = null;
 					tmp201_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp201_AST);
+					astFactory.addASTChild(ref currentAST, tmp201_AST);
 					match(SQL2RW_time);
 					AST tmp202_AST = null;
 					tmp202_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp202_AST);
+					astFactory.addASTChild(ref currentAST, tmp202_AST);
 					match(SQL2RW_zone);
 				}
 				else if ((LA(1)==RIGHT_PAREN)) {
@@ -5368,83 +5280,78 @@ _loop224_breakloop:			;
 		}
 		
 		returnAST = datetime_type_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void interval_type() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST interval_type_AST = null;
 		
 		AST tmp203_AST = null;
 		tmp203_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp203_AST);
+		astFactory.addASTChild(ref currentAST, tmp203_AST);
 		match(SQL2RW_interval);
 		interval_qualifier();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		interval_type_AST = currentAST.root;
 		returnAST = interval_type_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void length() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST length_AST = null;
 		
 		AST tmp204_AST = null;
 		tmp204_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp204_AST);
+		astFactory.addASTChild(ref currentAST, tmp204_AST);
 		match(UNSIGNED_INTEGER);
 		length_AST = currentAST.root;
 		returnAST = length_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void precision() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST precision_AST = null;
 		
 		AST tmp205_AST = null;
 		tmp205_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp205_AST);
+		astFactory.addASTChild(ref currentAST, tmp205_AST);
 		match(UNSIGNED_INTEGER);
 		precision_AST = currentAST.root;
 		returnAST = precision_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void scale() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST scale_AST = null;
 		
 		AST tmp206_AST = null;
 		tmp206_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp206_AST);
+		astFactory.addASTChild(ref currentAST, tmp206_AST);
 		match(UNSIGNED_INTEGER);
 		scale_AST = currentAST.root;
 		returnAST = scale_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void exact_num_type() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST exact_num_type_AST = null;
 		
 		switch ( LA(1) )
@@ -5453,31 +5360,31 @@ _loop224_breakloop:			;
 		{
 			AST tmp207_AST = null;
 			tmp207_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp207_AST);
+			astFactory.addASTChild(ref currentAST, tmp207_AST);
 			match(SQL2RW_numeric);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp208_AST = null;
 					tmp208_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp208_AST);
+					astFactory.addASTChild(ref currentAST, tmp208_AST);
 					match(LEFT_PAREN);
 					precision();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					{
 						if ((LA(1)==COMMA))
 						{
 							AST tmp209_AST = null;
 							tmp209_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp209_AST);
+							astFactory.addASTChild(ref currentAST, tmp209_AST);
 							match(COMMA);
 							scale();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 						}
 						else if ((LA(1)==RIGHT_PAREN)) {
@@ -5490,7 +5397,7 @@ _loop224_breakloop:			;
 					}
 					AST tmp210_AST = null;
 					tmp210_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp210_AST);
+					astFactory.addASTChild(ref currentAST, tmp210_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==RIGHT_PAREN)) {
@@ -5508,31 +5415,31 @@ _loop224_breakloop:			;
 		{
 			AST tmp211_AST = null;
 			tmp211_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp211_AST);
+			astFactory.addASTChild(ref currentAST, tmp211_AST);
 			match(SQL2RW_decimal);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp212_AST = null;
 					tmp212_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp212_AST);
+					astFactory.addASTChild(ref currentAST, tmp212_AST);
 					match(LEFT_PAREN);
 					precision();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					{
 						if ((LA(1)==COMMA))
 						{
 							AST tmp213_AST = null;
 							tmp213_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp213_AST);
+							astFactory.addASTChild(ref currentAST, tmp213_AST);
 							match(COMMA);
 							scale();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 						}
 						else if ((LA(1)==RIGHT_PAREN)) {
@@ -5545,7 +5452,7 @@ _loop224_breakloop:			;
 					}
 					AST tmp214_AST = null;
 					tmp214_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp214_AST);
+					astFactory.addASTChild(ref currentAST, tmp214_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==RIGHT_PAREN)) {
@@ -5563,31 +5470,31 @@ _loop224_breakloop:			;
 		{
 			AST tmp215_AST = null;
 			tmp215_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp215_AST);
+			astFactory.addASTChild(ref currentAST, tmp215_AST);
 			match(SQL2RW_dec);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp216_AST = null;
 					tmp216_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp216_AST);
+					astFactory.addASTChild(ref currentAST, tmp216_AST);
 					match(LEFT_PAREN);
 					precision();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					{
 						if ((LA(1)==COMMA))
 						{
 							AST tmp217_AST = null;
 							tmp217_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp217_AST);
+							astFactory.addASTChild(ref currentAST, tmp217_AST);
 							match(COMMA);
 							scale();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 						}
 						else if ((LA(1)==RIGHT_PAREN)) {
@@ -5600,7 +5507,7 @@ _loop224_breakloop:			;
 					}
 					AST tmp218_AST = null;
 					tmp218_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp218_AST);
+					astFactory.addASTChild(ref currentAST, tmp218_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==RIGHT_PAREN)) {
@@ -5618,7 +5525,7 @@ _loop224_breakloop:			;
 		{
 			AST tmp219_AST = null;
 			tmp219_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp219_AST);
+			astFactory.addASTChild(ref currentAST, tmp219_AST);
 			match(SQL2RW_integer);
 			exact_num_type_AST = currentAST.root;
 			break;
@@ -5627,7 +5534,7 @@ _loop224_breakloop:			;
 		{
 			AST tmp220_AST = null;
 			tmp220_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp220_AST);
+			astFactory.addASTChild(ref currentAST, tmp220_AST);
 			match(SQL2RW_int);
 			exact_num_type_AST = currentAST.root;
 			break;
@@ -5636,7 +5543,7 @@ _loop224_breakloop:			;
 		{
 			AST tmp221_AST = null;
 			tmp221_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp221_AST);
+			astFactory.addASTChild(ref currentAST, tmp221_AST);
 			match(SQL2RW_smallint);
 			exact_num_type_AST = currentAST.root;
 			break;
@@ -5647,37 +5554,36 @@ _loop224_breakloop:			;
 		}
 		 }
 		returnAST = exact_num_type_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void approximate_num_type() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST approximate_num_type_AST = null;
 		
 		if ((LA(1)==SQL2RW_float))
 		{
 			AST tmp222_AST = null;
 			tmp222_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp222_AST);
+			astFactory.addASTChild(ref currentAST, tmp222_AST);
 			match(SQL2RW_float);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp223_AST = null;
 					tmp223_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp223_AST);
+					astFactory.addASTChild(ref currentAST, tmp223_AST);
 					match(LEFT_PAREN);
 					precision();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					AST tmp224_AST = null;
 					tmp224_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp224_AST);
+					astFactory.addASTChild(ref currentAST, tmp224_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((LA(1)==RIGHT_PAREN)) {
@@ -5693,18 +5599,18 @@ _loop224_breakloop:			;
 		else if ((LA(1)==SQL2RW_real)) {
 			AST tmp225_AST = null;
 			tmp225_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp225_AST);
+			astFactory.addASTChild(ref currentAST, tmp225_AST);
 			match(SQL2RW_real);
 			approximate_num_type_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_double)) {
 			AST tmp226_AST = null;
 			tmp226_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp226_AST);
+			astFactory.addASTChild(ref currentAST, tmp226_AST);
 			match(SQL2RW_double);
 			AST tmp227_AST = null;
 			tmp227_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp227_AST);
+			astFactory.addASTChild(ref currentAST, tmp227_AST);
 			match(SQL2RW_precision);
 			approximate_num_type_AST = currentAST.root;
 		}
@@ -5714,46 +5620,43 @@ _loop224_breakloop:			;
 		}
 		
 		returnAST = approximate_num_type_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void time_precision() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST time_precision_AST = null;
 		
 		AST tmp228_AST = null;
 		tmp228_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp228_AST);
+		astFactory.addASTChild(ref currentAST, tmp228_AST);
 		match(UNSIGNED_INTEGER);
 		time_precision_AST = currentAST.root;
 		returnAST = time_precision_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void timestamp_precision() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST timestamp_precision_AST = null;
 		
 		AST tmp229_AST = null;
 		tmp229_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp229_AST);
+		astFactory.addASTChild(ref currentAST, tmp229_AST);
 		match(UNSIGNED_INTEGER);
 		timestamp_precision_AST = currentAST.root;
 		returnAST = timestamp_precision_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void interval_qualifier() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST interval_qualifier_AST = null;
 		
 		if ((LA(1)==SQL2RW_day||LA(1)==SQL2RW_hour||LA(1)==SQL2RW_minute||LA(1)==SQL2RW_month||LA(1)==SQL2RW_year))
@@ -5761,19 +5664,19 @@ _loop224_breakloop:			;
 			start_field();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			{
 				if ((LA(1)==SQL2RW_to))
 				{
 					AST tmp230_AST = null;
 					tmp230_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp230_AST);
+					astFactory.addASTChild(ref currentAST, tmp230_AST);
 					match(SQL2RW_to);
 					end_field();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else if ((tokenSet_29_.member(LA(1)))) {
@@ -5789,29 +5692,29 @@ _loop224_breakloop:			;
 		else if ((LA(1)==SQL2RW_second)) {
 			AST tmp231_AST = null;
 			tmp231_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp231_AST);
+			astFactory.addASTChild(ref currentAST, tmp231_AST);
 			match(SQL2RW_second);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp232_AST = null;
 					tmp232_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp232_AST);
+					astFactory.addASTChild(ref currentAST, tmp232_AST);
 					match(LEFT_PAREN);
 					AST tmp233_AST = null;
 					tmp233_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp233_AST);
+					astFactory.addASTChild(ref currentAST, tmp233_AST);
 					match(UNSIGNED_INTEGER);
 					{
 						if ((LA(1)==COMMA))
 						{
 							AST tmp234_AST = null;
 							tmp234_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp234_AST);
+							astFactory.addASTChild(ref currentAST, tmp234_AST);
 							match(COMMA);
 							AST tmp235_AST = null;
 							tmp235_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp235_AST);
+							astFactory.addASTChild(ref currentAST, tmp235_AST);
 							match(UNSIGNED_INTEGER);
 						}
 						else if ((LA(1)==RIGHT_PAREN)) {
@@ -5824,7 +5727,7 @@ _loop224_breakloop:			;
 					}
 					AST tmp236_AST = null;
 					tmp236_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp236_AST);
+					astFactory.addASTChild(ref currentAST, tmp236_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((tokenSet_29_.member(LA(1)))) {
@@ -5843,32 +5746,30 @@ _loop224_breakloop:			;
 		}
 		
 		returnAST = interval_qualifier_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void subquery() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST subquery_AST = null;
 		
 		AST tmp237_AST = null;
 		tmp237_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp237_AST);
+		astFactory.addASTChild(ref currentAST, tmp237_AST);
 		match(LEFT_PAREN);
 		query_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp238_AST = null;
 		tmp238_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp238_AST);
+		astFactory.addASTChild(ref currentAST, tmp238_AST);
 		match(RIGHT_PAREN);
 		subquery_AST = currentAST.root;
 		returnAST = subquery_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IQueryExpression  query_term() //throws RecognitionException, TokenStreamException
@@ -5876,7 +5777,7 @@ _loop224_breakloop:			;
 		IQueryExpression queryExpression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST query_term_AST = null;
 		
 			IQueryExpression queryExpression2;
@@ -5887,7 +5788,7 @@ _loop224_breakloop:			;
 		queryExpression=query_primary();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -5896,7 +5797,7 @@ _loop224_breakloop:			;
 				{
 					AST tmp239_AST = null;
 					tmp239_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp239_AST);
+					astFactory.addASTChild(ref currentAST, tmp239_AST);
 					match(SQL2RW_intersect);
 					if (0==inputState.guessing)
 					{
@@ -5907,7 +5808,7 @@ _loop224_breakloop:			;
 						{
 							AST tmp240_AST = null;
 							tmp240_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp240_AST);
+							astFactory.addASTChild(ref currentAST, tmp240_AST);
 							match(SQL2RW_all);
 							if (0==inputState.guessing)
 							{
@@ -5928,7 +5829,7 @@ _loop224_breakloop:			;
 							corresponding_spec();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 							if (0==inputState.guessing)
 							{
@@ -5946,7 +5847,7 @@ _loop224_breakloop:			;
 					queryExpression2=query_primary();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -5973,39 +5874,38 @@ _loop285_breakloop:			;
 		query_term_AST = currentAST.root;
 		returnAST = query_term_AST;
 		return queryExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void corresponding_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST corresponding_spec_AST = null;
 		
 		AST tmp241_AST = null;
 		tmp241_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp241_AST);
+		astFactory.addASTChild(ref currentAST, tmp241_AST);
 		match(SQL2RW_corresponding);
 		{
 			if ((LA(1)==SQL2RW_by))
 			{
 				AST tmp242_AST = null;
 				tmp242_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp242_AST);
+				astFactory.addASTChild(ref currentAST, tmp242_AST);
 				match(SQL2RW_by);
 				AST tmp243_AST = null;
 				tmp243_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp243_AST);
+				astFactory.addASTChild(ref currentAST, tmp243_AST);
 				match(LEFT_PAREN);
 				column_name_list();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				AST tmp244_AST = null;
 				tmp244_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp244_AST);
+				astFactory.addASTChild(ref currentAST, tmp244_AST);
 				match(RIGHT_PAREN);
 			}
 			else if ((tokenSet_3_.member(LA(1)))) {
@@ -6018,7 +5918,6 @@ _loop285_breakloop:			;
 		}
 		corresponding_spec_AST = currentAST.root;
 		returnAST = corresponding_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IQueryExpression  query_primary() //throws RecognitionException, TokenStreamException
@@ -6026,7 +5925,7 @@ _loop285_breakloop:			;
 		IQueryExpression queryExpression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST query_primary_AST = null;
 		
 		if ((LA(1)==SQL2RW_select||LA(1)==SQL2RW_table||LA(1)==SQL2RW_values))
@@ -6034,7 +5933,7 @@ _loop285_breakloop:			;
 			queryExpression=simple_table();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			query_primary_AST = currentAST.root;
 		}
@@ -6042,7 +5941,7 @@ _loop285_breakloop:			;
 			table_ref();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			query_primary_AST = currentAST.root;
 		}
@@ -6053,7 +5952,6 @@ _loop285_breakloop:			;
 		
 		returnAST = query_primary_AST;
 		return queryExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IQueryExpression  simple_table() //throws RecognitionException, TokenStreamException
@@ -6061,7 +5959,7 @@ _loop285_breakloop:			;
 		IQueryExpression queryExpression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST simple_table_AST = null;
 		
 		if ((LA(1)==SQL2RW_select))
@@ -6069,7 +5967,7 @@ _loop285_breakloop:			;
 			queryExpression=query_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			simple_table_AST = currentAST.root;
 		}
@@ -6077,7 +5975,7 @@ _loop285_breakloop:			;
 			table_value_constructor();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			simple_table_AST = currentAST.root;
 		}
@@ -6085,7 +5983,7 @@ _loop285_breakloop:			;
 			explicit_table();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			simple_table_AST = currentAST.root;
 		}
@@ -6096,7 +5994,6 @@ _loop285_breakloop:			;
 		
 		returnAST = simple_table_AST;
 		return queryExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IQueryExpression  table_ref() //throws RecognitionException, TokenStreamException
@@ -6104,13 +6001,13 @@ _loop285_breakloop:			;
 		IQueryExpression queryExpression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST table_ref_AST = null;
 		
 		queryExpression=table_ref_aux();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -6120,14 +6017,14 @@ _loop285_breakloop:			;
 					qualified_join();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else if ((LA(1)==SQL2RW_cross) && (LA(2)==SQL2RW_join)) {
 					cross_join();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -6141,7 +6038,6 @@ _loop309_breakloop:			;
 		table_ref_AST = currentAST.root;
 		returnAST = table_ref_AST;
 		return queryExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public ISelectExpression  query_spec() //throws RecognitionException, TokenStreamException
@@ -6149,7 +6045,7 @@ _loop309_breakloop:			;
 		ISelectExpression selectExpression;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST query_spec_AST = null;
 		
 			selectExpression = new SelectExpression();
@@ -6159,7 +6055,7 @@ _loop309_breakloop:			;
 		
 		AST tmp245_AST = null;
 		tmp245_AST = astFactory.create(LT(1));
-		astFactory.makeASTRoot(currentAST, tmp245_AST);
+		astFactory.makeASTRoot(ref currentAST, tmp245_AST);
 		match(SQL2RW_select);
 		{
 			if ((LA(1)==SQL2RW_all||LA(1)==SQL2RW_distinct))
@@ -6167,7 +6063,7 @@ _loop309_breakloop:			;
 				set_quantifier();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((tokenSet_31_.member(LA(1)))) {
@@ -6181,7 +6077,7 @@ _loop309_breakloop:			;
 		selectList=select_list();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -6193,7 +6089,7 @@ _loop309_breakloop:			;
 				into_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==SQL2RW_from)) {
@@ -6207,7 +6103,7 @@ _loop309_breakloop:			;
 		tableExpression=table_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -6216,49 +6112,46 @@ _loop309_breakloop:			;
 		query_spec_AST = currentAST.root;
 		returnAST = query_spec_AST;
 		return selectExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void table_value_constructor() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST table_value_constructor_AST = null;
 		
 		AST tmp246_AST = null;
 		tmp246_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp246_AST);
+		astFactory.addASTChild(ref currentAST, tmp246_AST);
 		match(SQL2RW_values);
 		table_value_const_list();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		table_value_constructor_AST = currentAST.root;
 		returnAST = table_value_constructor_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void explicit_table() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST explicit_table_AST = null;
 		
 		AST tmp247_AST = null;
 		tmp247_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp247_AST);
+		astFactory.addASTChild(ref currentAST, tmp247_AST);
 		match(SQL2RW_table);
 		table_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		explicit_table_AST = currentAST.root;
 		returnAST = explicit_table_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public ITableExpression  table_exp() //throws RecognitionException, TokenStreamException
@@ -6266,7 +6159,7 @@ _loop309_breakloop:			;
 		ITableExpression tableExpression;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST table_exp_AST = null;
 		
 			tableExpression = new TableExpression();
@@ -6277,7 +6170,7 @@ _loop309_breakloop:			;
 		from=from_clause();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -6289,7 +6182,7 @@ _loop309_breakloop:			;
 				where=where_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				if (0==inputState.guessing)
 				{
@@ -6310,7 +6203,7 @@ _loop309_breakloop:			;
 				group_by_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((tokenSet_33_.member(LA(1)))) {
@@ -6327,7 +6220,7 @@ _loop309_breakloop:			;
 				having_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((tokenSet_34_.member(LA(1)))) {
@@ -6341,20 +6234,19 @@ _loop309_breakloop:			;
 		table_exp_AST = currentAST.root;
 		returnAST = table_exp_AST;
 		return tableExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void table_value_const_list() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST table_value_const_list_AST = null;
 		
 		row_value_constructor();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -6363,12 +6255,12 @@ _loop309_breakloop:			;
 				{
 					AST tmp248_AST = null;
 					tmp248_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp248_AST);
+					astFactory.addASTChild(ref currentAST, tmp248_AST);
 					match(COMMA);
 					row_value_constructor();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -6381,7 +6273,6 @@ _loop296_breakloop:			;
 		}    // ( ... )*
 		table_value_const_list_AST = currentAST.root;
 		returnAST = table_value_const_list_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  row_value_constructor_elem() //throws RecognitionException, TokenStreamException
@@ -6389,7 +6280,7 @@ _loop296_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST row_value_constructor_elem_AST = null;
 		
 		if ((tokenSet_9_.member(LA(1))))
@@ -6397,14 +6288,14 @@ _loop296_breakloop:			;
 			expression=value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			row_value_constructor_elem_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_null)) {
 			AST tmp249_AST = null;
 			tmp249_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp249_AST);
+			astFactory.addASTChild(ref currentAST, tmp249_AST);
 			match(SQL2RW_null);
 			if (0==inputState.guessing)
 			{
@@ -6419,7 +6310,7 @@ _loop296_breakloop:			;
 		else if ((LA(1)==SQL2RW_default)) {
 			AST tmp250_AST = null;
 			tmp250_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp250_AST);
+			astFactory.addASTChild(ref currentAST, tmp250_AST);
 			match(SQL2RW_default);
 			row_value_constructor_elem_AST = currentAST.root;
 		}
@@ -6430,20 +6321,19 @@ _loop296_breakloop:			;
 		
 		returnAST = row_value_constructor_elem_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void row_value_const_list() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST row_value_const_list_AST = null;
 		
 		row_value_constructor_elem();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -6452,12 +6342,12 @@ _loop296_breakloop:			;
 				{
 					AST tmp251_AST = null;
 					tmp251_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp251_AST);
+					astFactory.addASTChild(ref currentAST, tmp251_AST);
 					match(COMMA);
 					row_value_constructor_elem();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -6470,20 +6360,19 @@ _loop303_breakloop:			;
 		}    // ( ... )*
 		row_value_const_list_AST = currentAST.root;
 		returnAST = row_value_const_list_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void joined_table() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST joined_table_AST = null;
 		
 		table_ref_aux();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{
 			if ((LA(1)==SQL2RW_full||LA(1)==SQL2RW_inner||LA(1)==SQL2RW_join||LA(1)==SQL2RW_left||LA(1)==SQL2RW_natural||LA(1)==SQL2RW_right||LA(1)==SQL2RW_union))
@@ -6491,14 +6380,14 @@ _loop303_breakloop:			;
 				qualified_join();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==SQL2RW_cross)) {
 				cross_join();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else
@@ -6509,7 +6398,6 @@ _loop303_breakloop:			;
 		}
 		joined_table_AST = currentAST.root;
 		returnAST = joined_table_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IQueryExpression  table_ref_aux() //throws RecognitionException, TokenStreamException
@@ -6517,7 +6405,7 @@ _loop303_breakloop:			;
 		IQueryExpression queryExpression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST table_ref_aux_AST = null;
 		
 			string tableName;
@@ -6529,7 +6417,7 @@ _loop303_breakloop:			;
 				tableName=table_name();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				if (0==inputState.guessing)
 				{
@@ -6544,7 +6432,7 @@ _loop303_breakloop:			;
 				table_subquery();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else
@@ -6561,7 +6449,7 @@ _loop303_breakloop:			;
 					{
 						AST tmp252_AST = null;
 						tmp252_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp252_AST);
+						astFactory.addASTChild(ref currentAST, tmp252_AST);
 						match(SQL2RW_as);
 					}
 					else if ((LA(1)==SQL2NRW_ada||LA(1)==REGULAR_ID||LA(1)==DELIMITED_ID||LA(1)==INTRODUCER)) {
@@ -6575,23 +6463,23 @@ _loop303_breakloop:			;
 				correlation_name();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				{
 					if ((LA(1)==LEFT_PAREN))
 					{
 						AST tmp253_AST = null;
 						tmp253_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp253_AST);
+						astFactory.addASTChild(ref currentAST, tmp253_AST);
 						match(LEFT_PAREN);
 						derived_column_list();
 						if (0 == inputState.guessing)
 						{
-							astFactory.addASTChild(currentAST, returnAST);
+							astFactory.addASTChild(ref currentAST, returnAST);
 						}
 						AST tmp254_AST = null;
 						tmp254_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp254_AST);
+						astFactory.addASTChild(ref currentAST, tmp254_AST);
 						match(RIGHT_PAREN);
 					}
 					else if ((tokenSet_35_.member(LA(1)))) {
@@ -6614,14 +6502,13 @@ _loop303_breakloop:			;
 		table_ref_aux_AST = currentAST.root;
 		returnAST = table_ref_aux_AST;
 		return queryExpression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void qualified_join() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST qualified_join_AST = null;
 		
 		if ((LA(1)==SQL2RW_full||LA(1)==SQL2RW_inner||LA(1)==SQL2RW_join||LA(1)==SQL2RW_left||LA(1)==SQL2RW_right))
@@ -6631,21 +6518,21 @@ _loop303_breakloop:			;
 				{
 					AST tmp255_AST = null;
 					tmp255_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp255_AST);
+					astFactory.addASTChild(ref currentAST, tmp255_AST);
 					match(SQL2RW_inner);
 				}
 				else if ((LA(1)==SQL2RW_full||LA(1)==SQL2RW_left||LA(1)==SQL2RW_right)) {
 					outer_join_type();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					{
 						if ((LA(1)==SQL2RW_outer))
 						{
 							AST tmp256_AST = null;
 							tmp256_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp256_AST);
+							astFactory.addASTChild(ref currentAST, tmp256_AST);
 							match(SQL2RW_outer);
 						}
 						else if ((LA(1)==SQL2RW_join)) {
@@ -6667,45 +6554,45 @@ _loop303_breakloop:			;
 			}
 			AST tmp257_AST = null;
 			tmp257_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp257_AST);
+			astFactory.addASTChild(ref currentAST, tmp257_AST);
 			match(SQL2RW_join);
 			table_ref();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			join_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			qualified_join_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_natural)) {
 			AST tmp258_AST = null;
 			tmp258_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp258_AST);
+			astFactory.addASTChild(ref currentAST, tmp258_AST);
 			match(SQL2RW_natural);
 			{
 				if ((LA(1)==SQL2RW_inner))
 				{
 					AST tmp259_AST = null;
 					tmp259_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp259_AST);
+					astFactory.addASTChild(ref currentAST, tmp259_AST);
 					match(SQL2RW_inner);
 				}
 				else if ((LA(1)==SQL2RW_full||LA(1)==SQL2RW_left||LA(1)==SQL2RW_right)) {
 					outer_join_type();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					{
 						if ((LA(1)==SQL2RW_outer))
 						{
 							AST tmp260_AST = null;
 							tmp260_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp260_AST);
+							astFactory.addASTChild(ref currentAST, tmp260_AST);
 							match(SQL2RW_outer);
 						}
 						else if ((LA(1)==SQL2RW_join)) {
@@ -6727,28 +6614,28 @@ _loop303_breakloop:			;
 			}
 			AST tmp261_AST = null;
 			tmp261_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp261_AST);
+			astFactory.addASTChild(ref currentAST, tmp261_AST);
 			match(SQL2RW_join);
 			table_ref();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			qualified_join_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_union)) {
 			AST tmp262_AST = null;
 			tmp262_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp262_AST);
+			astFactory.addASTChild(ref currentAST, tmp262_AST);
 			match(SQL2RW_union);
 			AST tmp263_AST = null;
 			tmp263_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp263_AST);
+			astFactory.addASTChild(ref currentAST, tmp263_AST);
 			match(SQL2RW_join);
 			table_ref();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			qualified_join_AST = currentAST.root;
 		}
@@ -6758,94 +6645,90 @@ _loop303_breakloop:			;
 		}
 		
 		returnAST = qualified_join_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void cross_join() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST cross_join_AST = null;
 		
 		AST tmp264_AST = null;
 		tmp264_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp264_AST);
+		astFactory.addASTChild(ref currentAST, tmp264_AST);
 		match(SQL2RW_cross);
 		AST tmp265_AST = null;
 		tmp265_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp265_AST);
+		astFactory.addASTChild(ref currentAST, tmp265_AST);
 		match(SQL2RW_join);
 		table_ref();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		cross_join_AST = currentAST.root;
 		returnAST = cross_join_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void correlation_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST correlation_name_AST = null;
 		
 		id();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		correlation_name_AST = currentAST.root;
 		returnAST = correlation_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void derived_column_list() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST derived_column_list_AST = null;
 		
 		column_name_list();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		derived_column_list_AST = currentAST.root;
 		returnAST = derived_column_list_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void outer_join_type() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST outer_join_type_AST = null;
 		
 		if ((LA(1)==SQL2RW_left))
 		{
 			AST tmp266_AST = null;
 			tmp266_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp266_AST);
+			astFactory.addASTChild(ref currentAST, tmp266_AST);
 			match(SQL2RW_left);
 			outer_join_type_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_right)) {
 			AST tmp267_AST = null;
 			tmp267_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp267_AST);
+			astFactory.addASTChild(ref currentAST, tmp267_AST);
 			match(SQL2RW_right);
 			outer_join_type_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_full)) {
 			AST tmp268_AST = null;
 			tmp268_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp268_AST);
+			astFactory.addASTChild(ref currentAST, tmp268_AST);
 			match(SQL2RW_full);
 			outer_join_type_AST = currentAST.root;
 		}
@@ -6855,14 +6738,13 @@ _loop303_breakloop:			;
 		}
 		
 		returnAST = outer_join_type_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void join_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST join_spec_AST = null;
 		
 		if ((LA(1)==SQL2RW_on))
@@ -6870,7 +6752,7 @@ _loop303_breakloop:			;
 			join_condition();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			join_spec_AST = currentAST.root;
 		}
@@ -6878,7 +6760,7 @@ _loop303_breakloop:			;
 			named_columns_join();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			join_spec_AST = currentAST.root;
 		}
@@ -6888,57 +6770,54 @@ _loop303_breakloop:			;
 		}
 		
 		returnAST = join_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void join_condition() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST join_condition_AST = null;
 		
 		AST tmp269_AST = null;
 		tmp269_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp269_AST);
+		astFactory.addASTChild(ref currentAST, tmp269_AST);
 		match(SQL2RW_on);
 		search_condition();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		join_condition_AST = currentAST.root;
 		returnAST = join_condition_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void named_columns_join() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST named_columns_join_AST = null;
 		
 		AST tmp270_AST = null;
 		tmp270_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp270_AST);
+		astFactory.addASTChild(ref currentAST, tmp270_AST);
 		match(SQL2RW_using);
 		AST tmp271_AST = null;
 		tmp271_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp271_AST);
+		astFactory.addASTChild(ref currentAST, tmp271_AST);
 		match(LEFT_PAREN);
 		column_name_list();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp272_AST = null;
 		tmp272_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp272_AST);
+		astFactory.addASTChild(ref currentAST, tmp272_AST);
 		match(RIGHT_PAREN);
 		named_columns_join_AST = currentAST.root;
 		returnAST = named_columns_join_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public QueryExpressionCollection  from_clause() //throws RecognitionException, TokenStreamException
@@ -6946,22 +6825,21 @@ _loop303_breakloop:			;
 		QueryExpressionCollection queryExpressionCollection;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST from_clause_AST = null;
 		
 		AST tmp273_AST = null;
 		tmp273_AST = astFactory.create(LT(1));
-		astFactory.makeASTRoot(currentAST, tmp273_AST);
+		astFactory.makeASTRoot(ref currentAST, tmp273_AST);
 		match(SQL2RW_from);
 		queryExpressionCollection=table_ref_list();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		from_clause_AST = currentAST.root;
 		returnAST = from_clause_AST;
 		return queryExpressionCollection;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  where_clause() //throws RecognitionException, TokenStreamException
@@ -6969,68 +6847,65 @@ _loop303_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST where_clause_AST = null;
 		
 		AST tmp274_AST = null;
 		tmp274_AST = astFactory.create(LT(1));
-		astFactory.makeASTRoot(currentAST, tmp274_AST);
+		astFactory.makeASTRoot(ref currentAST, tmp274_AST);
 		match(SQL2RW_where);
 		expression=search_condition();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		where_clause_AST = currentAST.root;
 		returnAST = where_clause_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void group_by_clause() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST group_by_clause_AST = null;
 		
 		AST tmp275_AST = null;
 		tmp275_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp275_AST);
+		astFactory.addASTChild(ref currentAST, tmp275_AST);
 		match(SQL2RW_group);
 		AST tmp276_AST = null;
 		tmp276_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp276_AST);
+		astFactory.addASTChild(ref currentAST, tmp276_AST);
 		match(SQL2RW_by);
 		grouping_column_ref_list();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		group_by_clause_AST = currentAST.root;
 		returnAST = group_by_clause_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void having_clause() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST having_clause_AST = null;
 		
 		AST tmp277_AST = null;
 		tmp277_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp277_AST);
+		astFactory.addASTChild(ref currentAST, tmp277_AST);
 		match(SQL2RW_having);
 		search_condition();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		having_clause_AST = currentAST.root;
 		returnAST = having_clause_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public QueryExpressionCollection  table_ref_list() //throws RecognitionException, TokenStreamException
@@ -7038,7 +6913,7 @@ _loop303_breakloop:			;
 		QueryExpressionCollection queryExpressionCollection;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST table_ref_list_AST = null;
 		
 			queryExpressionCollection = new QueryExpressionCollection();
@@ -7048,7 +6923,7 @@ _loop303_breakloop:			;
 		queryExpression=table_ref();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -7061,12 +6936,12 @@ _loop303_breakloop:			;
 				{
 					AST tmp278_AST = null;
 					tmp278_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp278_AST);
+					astFactory.addASTChild(ref currentAST, tmp278_AST);
 					match(COMMA);
 					queryExpression=table_ref();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -7084,20 +6959,19 @@ _loop334_breakloop:			;
 		table_ref_list_AST = currentAST.root;
 		returnAST = table_ref_list_AST;
 		return queryExpressionCollection;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void grouping_column_ref_list() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST grouping_column_ref_list_AST = null;
 		
 		grouping_column_ref();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -7106,12 +6980,12 @@ _loop334_breakloop:			;
 				{
 					AST tmp279_AST = null;
 					tmp279_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp279_AST);
+					astFactory.addASTChild(ref currentAST, tmp279_AST);
 					match(COMMA);
 					grouping_column_ref();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else
@@ -7124,20 +6998,19 @@ _loop341_breakloop:			;
 		}    // ( ... )*
 		grouping_column_ref_list_AST = currentAST.root;
 		returnAST = grouping_column_ref_list_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void grouping_column_ref() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST grouping_column_ref_AST = null;
 		
 		column_ref();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{
 			if ((LA(1)==SQL2RW_collate))
@@ -7145,7 +7018,7 @@ _loop341_breakloop:			;
 				collate_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((tokenSet_36_.member(LA(1)))) {
@@ -7158,7 +7031,6 @@ _loop341_breakloop:			;
 		}
 		grouping_column_ref_AST = currentAST.root;
 		returnAST = grouping_column_ref_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  unsigned_lit() //throws RecognitionException, TokenStreamException
@@ -7166,7 +7038,7 @@ _loop341_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST unsigned_lit_AST = null;
 		
 		if ((LA(1)==UNSIGNED_INTEGER||LA(1)==APPROXIMATE_NUM_LIT||LA(1)==EXACT_NUM_LIT))
@@ -7174,7 +7046,7 @@ _loop341_breakloop:			;
 			literal=unsigned_num_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			unsigned_lit_AST = currentAST.root;
 		}
@@ -7182,7 +7054,7 @@ _loop341_breakloop:			;
 			literal=general_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			unsigned_lit_AST = currentAST.root;
 		}
@@ -7193,7 +7065,6 @@ _loop341_breakloop:			;
 		
 		returnAST = unsigned_lit_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  general_value_spec() //throws RecognitionException, TokenStreamException
@@ -7201,7 +7072,7 @@ _loop341_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST general_value_spec_AST = null;
 		
 		switch ( LA(1) )
@@ -7211,7 +7082,7 @@ _loop341_breakloop:			;
 			parameter_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			general_value_spec_AST = currentAST.root;
 			break;
@@ -7221,7 +7092,7 @@ _loop341_breakloop:			;
 			dyn_parameter_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			general_value_spec_AST = currentAST.root;
 			break;
@@ -7231,7 +7102,7 @@ _loop341_breakloop:			;
 			variable_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			general_value_spec_AST = currentAST.root;
 			break;
@@ -7240,7 +7111,7 @@ _loop341_breakloop:			;
 		{
 			AST tmp280_AST = null;
 			tmp280_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp280_AST);
+			astFactory.addASTChild(ref currentAST, tmp280_AST);
 			match(SQL2RW_user);
 			if (0==inputState.guessing)
 			{
@@ -7253,7 +7124,7 @@ _loop341_breakloop:			;
 		{
 			AST tmp281_AST = null;
 			tmp281_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp281_AST);
+			astFactory.addASTChild(ref currentAST, tmp281_AST);
 			match(SQL2RW_current_user);
 			if (0==inputState.guessing)
 			{
@@ -7266,7 +7137,7 @@ _loop341_breakloop:			;
 		{
 			AST tmp282_AST = null;
 			tmp282_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp282_AST);
+			astFactory.addASTChild(ref currentAST, tmp282_AST);
 			match(SQL2RW_session_user);
 			if (0==inputState.guessing)
 			{
@@ -7279,7 +7150,7 @@ _loop341_breakloop:			;
 		{
 			AST tmp283_AST = null;
 			tmp283_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp283_AST);
+			astFactory.addASTChild(ref currentAST, tmp283_AST);
 			match(SQL2RW_system_user);
 			if (0==inputState.guessing)
 			{
@@ -7292,7 +7163,7 @@ _loop341_breakloop:			;
 		{
 			AST tmp284_AST = null;
 			tmp284_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp284_AST);
+			astFactory.addASTChild(ref currentAST, tmp284_AST);
 			match(SQL2RW_value);
 			if (0==inputState.guessing)
 			{
@@ -7308,20 +7179,19 @@ _loop341_breakloop:			;
 		 }
 		returnAST = general_value_spec_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void parameter_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST parameter_spec_AST = null;
 		
 		parameter_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{
 			if ((LA(1)==SQL2RW_indicator||LA(1)==COLON))
@@ -7331,7 +7201,7 @@ _loop341_breakloop:			;
 					{
 						AST tmp285_AST = null;
 						tmp285_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp285_AST);
+						astFactory.addASTChild(ref currentAST, tmp285_AST);
 						match(SQL2RW_indicator);
 					}
 					else if ((LA(1)==COLON)) {
@@ -7345,7 +7215,7 @@ _loop341_breakloop:			;
 				parameter_name();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((tokenSet_29_.member(LA(1)))) {
@@ -7358,35 +7228,33 @@ _loop341_breakloop:			;
 		}
 		parameter_spec_AST = currentAST.root;
 		returnAST = parameter_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void dyn_parameter_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST dyn_parameter_spec_AST = null;
 		
 		AST tmp286_AST = null;
 		tmp286_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp286_AST);
+		astFactory.addASTChild(ref currentAST, tmp286_AST);
 		match(QUESTION_MARK);
 		dyn_parameter_spec_AST = currentAST.root;
 		returnAST = dyn_parameter_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void variable_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST variable_spec_AST = null;
 		
 		AST tmp287_AST = null;
 		tmp287_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp287_AST);
+		astFactory.addASTChild(ref currentAST, tmp287_AST);
 		match(EMBDD_VARIABLE_NAME);
 		{
 			if ((LA(1)==SQL2RW_indicator||LA(1)==EMBDD_VARIABLE_NAME))
@@ -7396,7 +7264,7 @@ _loop341_breakloop:			;
 					{
 						AST tmp288_AST = null;
 						tmp288_AST = astFactory.create(LT(1));
-						astFactory.addASTChild(currentAST, tmp288_AST);
+						astFactory.addASTChild(ref currentAST, tmp288_AST);
 						match(SQL2RW_indicator);
 					}
 					else if ((LA(1)==EMBDD_VARIABLE_NAME)) {
@@ -7409,7 +7277,7 @@ _loop341_breakloop:			;
 				}
 				AST tmp289_AST = null;
 				tmp289_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp289_AST);
+				astFactory.addASTChild(ref currentAST, tmp289_AST);
 				match(EMBDD_VARIABLE_NAME);
 			}
 			else if ((tokenSet_29_.member(LA(1)))) {
@@ -7422,19 +7290,18 @@ _loop341_breakloop:			;
 		}
 		variable_spec_AST = currentAST.root;
 		returnAST = variable_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void parameter_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST parameter_name_AST = null;
 		
 		AST tmp290_AST = null;
 		tmp290_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp290_AST);
+		astFactory.addASTChild(ref currentAST, tmp290_AST);
 		match(COLON);
 		{
 			if ((LA(1)==SQL2NRW_ada||LA(1)==REGULAR_ID||LA(1)==DELIMITED_ID||LA(1)==INTRODUCER))
@@ -7442,7 +7309,7 @@ _loop341_breakloop:			;
 				id();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				{    // ( ... )*
 					for (;;)
@@ -7451,12 +7318,12 @@ _loop341_breakloop:			;
 						{
 							AST tmp291_AST = null;
 							tmp291_AST = astFactory.create(LT(1));
-							astFactory.addASTChild(currentAST, tmp291_AST);
+							astFactory.addASTChild(ref currentAST, tmp291_AST);
 							match(PERIOD);
 							id();
 							if (0 == inputState.guessing)
 							{
-								astFactory.addASTChild(currentAST, returnAST);
+								astFactory.addASTChild(ref currentAST, returnAST);
 							}
 						}
 						else
@@ -7471,7 +7338,7 @@ _loop425_breakloop:					;
 			else if ((LA(1)==UNSIGNED_INTEGER)) {
 				AST tmp292_AST = null;
 				tmp292_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp292_AST);
+				astFactory.addASTChild(ref currentAST, tmp292_AST);
 				match(UNSIGNED_INTEGER);
 			}
 			else
@@ -7482,7 +7349,6 @@ _loop425_breakloop:					;
 		}
 		parameter_name_AST = currentAST.root;
 		returnAST = parameter_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  num_value_exp() //throws RecognitionException, TokenStreamException
@@ -7490,18 +7356,17 @@ _loop425_breakloop:					;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST num_value_exp_AST = null;
 		
 		expression=value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		num_value_exp_AST = currentAST.root;
 		returnAST = num_value_exp_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  string_value_exp() //throws RecognitionException, TokenStreamException
@@ -7509,18 +7374,17 @@ _loop425_breakloop:					;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST string_value_exp_AST = null;
 		
 		expression=char_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		string_value_exp_AST = currentAST.root;
 		returnAST = string_value_exp_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  datetime_value_exp() //throws RecognitionException, TokenStreamException
@@ -7528,18 +7392,17 @@ _loop425_breakloop:					;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST datetime_value_exp_AST = null;
 		
 		expression=value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		datetime_value_exp_AST = currentAST.root;
 		returnAST = datetime_value_exp_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  interval_value_exp() //throws RecognitionException, TokenStreamException
@@ -7547,18 +7410,17 @@ _loop425_breakloop:					;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST interval_value_exp_AST = null;
 		
 		expression=value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		interval_value_exp_AST = currentAST.root;
 		returnAST = interval_value_exp_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  term() //throws RecognitionException, TokenStreamException
@@ -7566,7 +7428,7 @@ _loop425_breakloop:					;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST term_AST = null;
 		
 			IExpression expressionRhs = null;
@@ -7575,7 +7437,7 @@ _loop425_breakloop:					;
 		expression=factor();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{    // ( ... )*
 			for (;;)
@@ -7585,12 +7447,12 @@ _loop425_breakloop:					;
 					factor_op();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					expressionRhs=factor();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 					if (0==inputState.guessing)
 					{
@@ -7613,28 +7475,27 @@ _loop376_breakloop:			;
 		term_AST = currentAST.root;
 		returnAST = term_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void term_op() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST term_op_AST = null;
 		
 		if ((LA(1)==PLUS_SIGN))
 		{
 			AST tmp293_AST = null;
 			tmp293_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp293_AST);
+			astFactory.addASTChild(ref currentAST, tmp293_AST);
 			match(PLUS_SIGN);
 			term_op_AST = currentAST.root;
 		}
 		else if ((LA(1)==MINUS_SIGN)) {
 			AST tmp294_AST = null;
 			tmp294_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp294_AST);
+			astFactory.addASTChild(ref currentAST, tmp294_AST);
 			match(MINUS_SIGN);
 			term_op_AST = currentAST.root;
 		}
@@ -7644,31 +7505,29 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = term_op_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void string_value_fct() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST string_value_fct_AST = null;
 		
 		char_value_fct();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		string_value_fct_AST = currentAST.root;
 		returnAST = string_value_fct_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void char_value_fct() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST char_value_fct_AST = null;
 		
 		switch ( LA(1) )
@@ -7678,7 +7537,7 @@ _loop376_breakloop:			;
 			char_substring_fct();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			char_value_fct_AST = currentAST.root;
 			break;
@@ -7689,7 +7548,7 @@ _loop376_breakloop:			;
 			fold();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			char_value_fct_AST = currentAST.root;
 			break;
@@ -7699,7 +7558,7 @@ _loop376_breakloop:			;
 			form_conversion();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			char_value_fct_AST = currentAST.root;
 			break;
@@ -7709,7 +7568,7 @@ _loop376_breakloop:			;
 			char_translation();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			char_value_fct_AST = currentAST.root;
 			break;
@@ -7719,7 +7578,7 @@ _loop376_breakloop:			;
 			trim_fct();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			char_value_fct_AST = currentAST.root;
 			break;
@@ -7730,49 +7589,48 @@ _loop376_breakloop:			;
 		}
 		 }
 		returnAST = char_value_fct_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void char_substring_fct() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST char_substring_fct_AST = null;
 		
 		AST tmp295_AST = null;
 		tmp295_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp295_AST);
+		astFactory.addASTChild(ref currentAST, tmp295_AST);
 		match(SQL2RW_substring);
 		AST tmp296_AST = null;
 		tmp296_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp296_AST);
+		astFactory.addASTChild(ref currentAST, tmp296_AST);
 		match(LEFT_PAREN);
 		char_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp297_AST = null;
 		tmp297_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp297_AST);
+		astFactory.addASTChild(ref currentAST, tmp297_AST);
 		match(SQL2RW_from);
 		num_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{
 			if ((LA(1)==SQL2RW_for))
 			{
 				AST tmp298_AST = null;
 				tmp298_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp298_AST);
+				astFactory.addASTChild(ref currentAST, tmp298_AST);
 				match(SQL2RW_for);
 				num_value_exp();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==RIGHT_PAREN)) {
@@ -7785,18 +7643,17 @@ _loop376_breakloop:			;
 		}
 		AST tmp299_AST = null;
 		tmp299_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp299_AST);
+		astFactory.addASTChild(ref currentAST, tmp299_AST);
 		match(RIGHT_PAREN);
 		char_substring_fct_AST = currentAST.root;
 		returnAST = char_substring_fct_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void fold() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST fold_AST = null;
 		
 		{
@@ -7804,13 +7661,13 @@ _loop376_breakloop:			;
 			{
 				AST tmp300_AST = null;
 				tmp300_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp300_AST);
+				astFactory.addASTChild(ref currentAST, tmp300_AST);
 				match(SQL2RW_upper);
 			}
 			else if ((LA(1)==SQL2RW_lower)) {
 				AST tmp301_AST = null;
 				tmp301_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp301_AST);
+				astFactory.addASTChild(ref currentAST, tmp301_AST);
 				match(SQL2RW_lower);
 			}
 			else
@@ -7821,166 +7678,160 @@ _loop376_breakloop:			;
 		}
 		AST tmp302_AST = null;
 		tmp302_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp302_AST);
+		astFactory.addASTChild(ref currentAST, tmp302_AST);
 		match(LEFT_PAREN);
 		char_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp303_AST = null;
 		tmp303_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp303_AST);
+		astFactory.addASTChild(ref currentAST, tmp303_AST);
 		match(RIGHT_PAREN);
 		fold_AST = currentAST.root;
 		returnAST = fold_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void form_conversion() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST form_conversion_AST = null;
 		
 		AST tmp304_AST = null;
 		tmp304_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp304_AST);
+		astFactory.addASTChild(ref currentAST, tmp304_AST);
 		match(SQL2RW_convert);
 		AST tmp305_AST = null;
 		tmp305_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp305_AST);
+		astFactory.addASTChild(ref currentAST, tmp305_AST);
 		match(LEFT_PAREN);
 		char_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp306_AST = null;
 		tmp306_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp306_AST);
+		astFactory.addASTChild(ref currentAST, tmp306_AST);
 		match(SQL2RW_using);
 		form_conversion_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp307_AST = null;
 		tmp307_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp307_AST);
+		astFactory.addASTChild(ref currentAST, tmp307_AST);
 		match(RIGHT_PAREN);
 		form_conversion_AST = currentAST.root;
 		returnAST = form_conversion_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void char_translation() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST char_translation_AST = null;
 		
 		AST tmp308_AST = null;
 		tmp308_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp308_AST);
+		astFactory.addASTChild(ref currentAST, tmp308_AST);
 		match(SQL2RW_translate);
 		AST tmp309_AST = null;
 		tmp309_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp309_AST);
+		astFactory.addASTChild(ref currentAST, tmp309_AST);
 		match(LEFT_PAREN);
 		char_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp310_AST = null;
 		tmp310_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp310_AST);
+		astFactory.addASTChild(ref currentAST, tmp310_AST);
 		match(SQL2RW_using);
 		translation_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp311_AST = null;
 		tmp311_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp311_AST);
+		astFactory.addASTChild(ref currentAST, tmp311_AST);
 		match(RIGHT_PAREN);
 		char_translation_AST = currentAST.root;
 		returnAST = char_translation_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void trim_fct() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST trim_fct_AST = null;
 		
 		AST tmp312_AST = null;
 		tmp312_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp312_AST);
+		astFactory.addASTChild(ref currentAST, tmp312_AST);
 		match(SQL2RW_trim);
 		AST tmp313_AST = null;
 		tmp313_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp313_AST);
+		astFactory.addASTChild(ref currentAST, tmp313_AST);
 		match(LEFT_PAREN);
 		trim_operands();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp314_AST = null;
 		tmp314_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp314_AST);
+		astFactory.addASTChild(ref currentAST, tmp314_AST);
 		match(RIGHT_PAREN);
 		trim_fct_AST = currentAST.root;
 		returnAST = trim_fct_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void form_conversion_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST form_conversion_name_AST = null;
 		
 		qualified_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		form_conversion_name_AST = currentAST.root;
 		returnAST = form_conversion_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void translation_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST translation_name_AST = null;
 		
 		qualified_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		translation_name_AST = currentAST.root;
 		returnAST = translation_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void trim_operands() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST trim_operands_AST = null;
 		
 		if ((LA(1)==SQL2RW_both||LA(1)==SQL2RW_leading||LA(1)==SQL2RW_trailing) && (LA(2)==SQL2RW_from))
@@ -7988,16 +7839,16 @@ _loop376_breakloop:			;
 			trim_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp315_AST = null;
 			tmp315_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp315_AST);
+			astFactory.addASTChild(ref currentAST, tmp315_AST);
 			match(SQL2RW_from);
 			char_value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			trim_operands_AST = currentAST.root;
 		}
@@ -8005,33 +7856,33 @@ _loop376_breakloop:			;
 			trim_spec();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			char_value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			AST tmp316_AST = null;
 			tmp316_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp316_AST);
+			astFactory.addASTChild(ref currentAST, tmp316_AST);
 			match(SQL2RW_from);
 			char_value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			trim_operands_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_from)) {
 			AST tmp317_AST = null;
 			tmp317_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp317_AST);
+			astFactory.addASTChild(ref currentAST, tmp317_AST);
 			match(SQL2RW_from);
 			char_value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			trim_operands_AST = currentAST.root;
 		}
@@ -8039,19 +7890,19 @@ _loop376_breakloop:			;
 			char_value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			{
 				if ((LA(1)==SQL2RW_from))
 				{
 					AST tmp318_AST = null;
 					tmp318_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp318_AST);
+					astFactory.addASTChild(ref currentAST, tmp318_AST);
 					match(SQL2RW_from);
 					char_value_exp();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else if ((LA(1)==RIGHT_PAREN)) {
@@ -8070,35 +7921,34 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = trim_operands_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void trim_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST trim_spec_AST = null;
 		
 		if ((LA(1)==SQL2RW_leading))
 		{
 			AST tmp319_AST = null;
 			tmp319_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp319_AST);
+			astFactory.addASTChild(ref currentAST, tmp319_AST);
 			match(SQL2RW_leading);
 			trim_spec_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_trailing)) {
 			AST tmp320_AST = null;
 			tmp320_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp320_AST);
+			astFactory.addASTChild(ref currentAST, tmp320_AST);
 			match(SQL2RW_trailing);
 			trim_spec_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_both)) {
 			AST tmp321_AST = null;
 			tmp321_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp321_AST);
+			astFactory.addASTChild(ref currentAST, tmp321_AST);
 			match(SQL2RW_both);
 			trim_spec_AST = currentAST.root;
 		}
@@ -8108,7 +7958,6 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = trim_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  factor() //throws RecognitionException, TokenStreamException
@@ -8116,7 +7965,7 @@ _loop376_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST factor_AST = null;
 		
 		{
@@ -8125,7 +7974,7 @@ _loop376_breakloop:			;
 				sign();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((tokenSet_38_.member(LA(1)))) {
@@ -8139,26 +7988,26 @@ _loop376_breakloop:			;
 		expression=gen_primary();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{
 			if ((LA(1)==SQL2RW_at))
 			{
 				AST tmp322_AST = null;
 				tmp322_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp322_AST);
+				astFactory.addASTChild(ref currentAST, tmp322_AST);
 				match(SQL2RW_at);
 				time_zone_specifier();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==SQL2RW_collate)) {
 				collate_clause();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((tokenSet_39_.member(LA(1)))) {
@@ -8172,28 +8021,27 @@ _loop376_breakloop:			;
 		factor_AST = currentAST.root;
 		returnAST = factor_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void factor_op() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST factor_op_AST = null;
 		
 		if ((LA(1)==ASTERISK))
 		{
 			AST tmp323_AST = null;
 			tmp323_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp323_AST);
+			astFactory.addASTChild(ref currentAST, tmp323_AST);
 			match(ASTERISK);
 			factor_op_AST = currentAST.root;
 		}
 		else if ((LA(1)==SOLIDUS)) {
 			AST tmp324_AST = null;
 			tmp324_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp324_AST);
+			astFactory.addASTChild(ref currentAST, tmp324_AST);
 			match(SOLIDUS);
 			factor_op_AST = currentAST.root;
 		}
@@ -8203,7 +8051,6 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = factor_op_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  sign() //throws RecognitionException, TokenStreamException
@@ -8211,14 +8058,14 @@ _loop376_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST sign_AST = null;
 		
 		if ((LA(1)==PLUS_SIGN))
 		{
 			AST tmp325_AST = null;
 			tmp325_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp325_AST);
+			astFactory.addASTChild(ref currentAST, tmp325_AST);
 			match(PLUS_SIGN);
 			if (0==inputState.guessing)
 			{
@@ -8229,7 +8076,7 @@ _loop376_breakloop:			;
 		else if ((LA(1)==MINUS_SIGN)) {
 			AST tmp326_AST = null;
 			tmp326_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp326_AST);
+			astFactory.addASTChild(ref currentAST, tmp326_AST);
 			match(MINUS_SIGN);
 			if (0==inputState.guessing)
 			{
@@ -8244,7 +8091,6 @@ _loop376_breakloop:			;
 		
 		returnAST = sign_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public IExpression  gen_primary() //throws RecognitionException, TokenStreamException
@@ -8252,7 +8098,7 @@ _loop376_breakloop:			;
 		IExpression expression = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST gen_primary_AST = null;
 		
 		switch ( LA(1) )
@@ -8294,7 +8140,7 @@ _loop376_breakloop:			;
 			expression=value_exp_primary();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			{
 				if ((LA(1)==SQL2RW_day||LA(1)==SQL2RW_hour||LA(1)==SQL2RW_minute||LA(1)==SQL2RW_month||LA(1)==SQL2RW_second||LA(1)==SQL2RW_year))
@@ -8302,7 +8148,7 @@ _loop376_breakloop:			;
 					interval_qualifier();
 					if (0 == inputState.guessing)
 					{
-						astFactory.addASTChild(currentAST, returnAST);
+						astFactory.addASTChild(ref currentAST, returnAST);
 					}
 				}
 				else if ((tokenSet_40_.member(LA(1)))) {
@@ -8326,7 +8172,7 @@ _loop376_breakloop:			;
 			num_value_fct();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			gen_primary_AST = currentAST.root;
 			break;
@@ -8341,7 +8187,7 @@ _loop376_breakloop:			;
 			string_value_fct();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			gen_primary_AST = currentAST.root;
 			break;
@@ -8353,7 +8199,7 @@ _loop376_breakloop:			;
 			datetime_value_fct();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			gen_primary_AST = currentAST.root;
 			break;
@@ -8365,37 +8211,36 @@ _loop376_breakloop:			;
 		 }
 		returnAST = gen_primary_AST;
 		return expression;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void time_zone_specifier() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST time_zone_specifier_AST = null;
 		
 		if ((LA(1)==SQL2RW_local))
 		{
 			AST tmp327_AST = null;
 			tmp327_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp327_AST);
+			astFactory.addASTChild(ref currentAST, tmp327_AST);
 			match(SQL2RW_local);
 			time_zone_specifier_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_time)) {
 			AST tmp328_AST = null;
 			tmp328_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp328_AST);
+			astFactory.addASTChild(ref currentAST, tmp328_AST);
 			match(SQL2RW_time);
 			AST tmp329_AST = null;
 			tmp329_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp329_AST);
+			astFactory.addASTChild(ref currentAST, tmp329_AST);
 			match(SQL2RW_zone);
 			interval_value_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			time_zone_specifier_AST = currentAST.root;
 		}
@@ -8405,31 +8250,29 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = time_zone_specifier_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void collation_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST collation_name_AST = null;
 		
 		qualified_name();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		collation_name_AST = currentAST.root;
 		returnAST = collation_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void num_value_fct() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST num_value_fct_AST = null;
 		
 		if ((LA(1)==SQL2RW_position))
@@ -8437,7 +8280,7 @@ _loop376_breakloop:			;
 			position_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			num_value_fct_AST = currentAST.root;
 		}
@@ -8445,7 +8288,7 @@ _loop376_breakloop:			;
 			extract_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			num_value_fct_AST = currentAST.root;
 		}
@@ -8453,7 +8296,7 @@ _loop376_breakloop:			;
 			length_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			num_value_fct_AST = currentAST.root;
 		}
@@ -8463,14 +8306,13 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = num_value_fct_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void datetime_value_fct() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST datetime_value_fct_AST = null;
 		
 		if ((LA(1)==SQL2RW_current_date))
@@ -8478,7 +8320,7 @@ _loop376_breakloop:			;
 			current_date_value_fct();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			datetime_value_fct_AST = currentAST.root;
 		}
@@ -8486,7 +8328,7 @@ _loop376_breakloop:			;
 			current_time_value_fct();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			datetime_value_fct_AST = currentAST.root;
 		}
@@ -8494,7 +8336,7 @@ _loop376_breakloop:			;
 			currenttimestamp_value_fct();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			datetime_value_fct_AST = currentAST.root;
 		}
@@ -8504,90 +8346,87 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = datetime_value_fct_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void position_exp() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST position_exp_AST = null;
 		
 		AST tmp330_AST = null;
 		tmp330_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp330_AST);
+		astFactory.addASTChild(ref currentAST, tmp330_AST);
 		match(SQL2RW_position);
 		AST tmp331_AST = null;
 		tmp331_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp331_AST);
+		astFactory.addASTChild(ref currentAST, tmp331_AST);
 		match(LEFT_PAREN);
 		char_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp332_AST = null;
 		tmp332_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp332_AST);
+		astFactory.addASTChild(ref currentAST, tmp332_AST);
 		match(SQL2RW_in);
 		char_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp333_AST = null;
 		tmp333_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp333_AST);
+		astFactory.addASTChild(ref currentAST, tmp333_AST);
 		match(RIGHT_PAREN);
 		position_exp_AST = currentAST.root;
 		returnAST = position_exp_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void extract_exp() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST extract_exp_AST = null;
 		
 		AST tmp334_AST = null;
 		tmp334_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp334_AST);
+		astFactory.addASTChild(ref currentAST, tmp334_AST);
 		match(SQL2RW_extract);
 		AST tmp335_AST = null;
 		tmp335_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp335_AST);
+		astFactory.addASTChild(ref currentAST, tmp335_AST);
 		match(LEFT_PAREN);
 		extract_field();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp336_AST = null;
 		tmp336_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp336_AST);
+		astFactory.addASTChild(ref currentAST, tmp336_AST);
 		match(SQL2RW_from);
 		extract_source();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp337_AST = null;
 		tmp337_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp337_AST);
+		astFactory.addASTChild(ref currentAST, tmp337_AST);
 		match(RIGHT_PAREN);
 		extract_exp_AST = currentAST.root;
 		returnAST = extract_exp_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void length_exp() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST length_exp_AST = null;
 		
 		if ((LA(1)==SQL2RW_char_length||LA(1)==SQL2RW_character_length))
@@ -8595,7 +8434,7 @@ _loop376_breakloop:			;
 			char_length_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			length_exp_AST = currentAST.root;
 		}
@@ -8603,7 +8442,7 @@ _loop376_breakloop:			;
 			octet_length_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			length_exp_AST = currentAST.root;
 		}
@@ -8611,7 +8450,7 @@ _loop376_breakloop:			;
 			bit_length_exp();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			length_exp_AST = currentAST.root;
 		}
@@ -8621,14 +8460,13 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = length_exp_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void extract_field() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST extract_field_AST = null;
 		
 		if ((LA(1)==SQL2RW_day||LA(1)==SQL2RW_hour||LA(1)==SQL2RW_minute||LA(1)==SQL2RW_month||LA(1)==SQL2RW_second||LA(1)==SQL2RW_year))
@@ -8636,7 +8474,7 @@ _loop376_breakloop:			;
 			datetime_field();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			extract_field_AST = currentAST.root;
 		}
@@ -8644,7 +8482,7 @@ _loop376_breakloop:			;
 			time_zone_field();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			extract_field_AST = currentAST.root;
 		}
@@ -8654,31 +8492,29 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = extract_field_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void extract_source() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST extract_source_AST = null;
 		
 		datetime_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		extract_source_AST = currentAST.root;
 		returnAST = extract_source_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void datetime_field() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST datetime_field_AST = null;
 		
 		if ((LA(1)==SQL2RW_day||LA(1)==SQL2RW_hour||LA(1)==SQL2RW_minute||LA(1)==SQL2RW_month||LA(1)==SQL2RW_year))
@@ -8686,14 +8522,14 @@ _loop376_breakloop:			;
 			non_second_datetime_field();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			datetime_field_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_second)) {
 			AST tmp338_AST = null;
 			tmp338_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp338_AST);
+			astFactory.addASTChild(ref currentAST, tmp338_AST);
 			match(SQL2RW_second);
 			datetime_field_AST = currentAST.root;
 		}
@@ -8703,28 +8539,27 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = datetime_field_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void time_zone_field() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST time_zone_field_AST = null;
 		
 		if ((LA(1)==SQL2RW_timezone_hour))
 		{
 			AST tmp339_AST = null;
 			tmp339_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp339_AST);
+			astFactory.addASTChild(ref currentAST, tmp339_AST);
 			match(SQL2RW_timezone_hour);
 			time_zone_field_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_timezone_minute)) {
 			AST tmp340_AST = null;
 			tmp340_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp340_AST);
+			astFactory.addASTChild(ref currentAST, tmp340_AST);
 			match(SQL2RW_timezone_minute);
 			time_zone_field_AST = currentAST.root;
 		}
@@ -8734,14 +8569,13 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = time_zone_field_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void non_second_datetime_field() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST non_second_datetime_field_AST = null;
 		
 		switch ( LA(1) )
@@ -8750,7 +8584,7 @@ _loop376_breakloop:			;
 		{
 			AST tmp341_AST = null;
 			tmp341_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp341_AST);
+			astFactory.addASTChild(ref currentAST, tmp341_AST);
 			match(SQL2RW_year);
 			non_second_datetime_field_AST = currentAST.root;
 			break;
@@ -8759,7 +8593,7 @@ _loop376_breakloop:			;
 		{
 			AST tmp342_AST = null;
 			tmp342_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp342_AST);
+			astFactory.addASTChild(ref currentAST, tmp342_AST);
 			match(SQL2RW_month);
 			non_second_datetime_field_AST = currentAST.root;
 			break;
@@ -8768,7 +8602,7 @@ _loop376_breakloop:			;
 		{
 			AST tmp343_AST = null;
 			tmp343_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp343_AST);
+			astFactory.addASTChild(ref currentAST, tmp343_AST);
 			match(SQL2RW_day);
 			non_second_datetime_field_AST = currentAST.root;
 			break;
@@ -8777,7 +8611,7 @@ _loop376_breakloop:			;
 		{
 			AST tmp344_AST = null;
 			tmp344_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp344_AST);
+			astFactory.addASTChild(ref currentAST, tmp344_AST);
 			match(SQL2RW_hour);
 			non_second_datetime_field_AST = currentAST.root;
 			break;
@@ -8786,7 +8620,7 @@ _loop376_breakloop:			;
 		{
 			AST tmp345_AST = null;
 			tmp345_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp345_AST);
+			astFactory.addASTChild(ref currentAST, tmp345_AST);
 			match(SQL2RW_minute);
 			non_second_datetime_field_AST = currentAST.root;
 			break;
@@ -8797,14 +8631,13 @@ _loop376_breakloop:			;
 		}
 		 }
 		returnAST = non_second_datetime_field_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void char_length_exp() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST char_length_exp_AST = null;
 		
 		{
@@ -8812,13 +8645,13 @@ _loop376_breakloop:			;
 			{
 				AST tmp346_AST = null;
 				tmp346_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp346_AST);
+				astFactory.addASTChild(ref currentAST, tmp346_AST);
 				match(SQL2RW_char_length);
 			}
 			else if ((LA(1)==SQL2RW_character_length)) {
 				AST tmp347_AST = null;
 				tmp347_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp347_AST);
+				astFactory.addASTChild(ref currentAST, tmp347_AST);
 				match(SQL2RW_character_length);
 			}
 			else
@@ -8829,122 +8662,118 @@ _loop376_breakloop:			;
 		}
 		AST tmp348_AST = null;
 		tmp348_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp348_AST);
+		astFactory.addASTChild(ref currentAST, tmp348_AST);
 		match(LEFT_PAREN);
 		string_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp349_AST = null;
 		tmp349_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp349_AST);
+		astFactory.addASTChild(ref currentAST, tmp349_AST);
 		match(RIGHT_PAREN);
 		char_length_exp_AST = currentAST.root;
 		returnAST = char_length_exp_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void octet_length_exp() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST octet_length_exp_AST = null;
 		
 		AST tmp350_AST = null;
 		tmp350_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp350_AST);
+		astFactory.addASTChild(ref currentAST, tmp350_AST);
 		match(SQL2RW_octet_length);
 		AST tmp351_AST = null;
 		tmp351_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp351_AST);
+		astFactory.addASTChild(ref currentAST, tmp351_AST);
 		match(LEFT_PAREN);
 		string_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp352_AST = null;
 		tmp352_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp352_AST);
+		astFactory.addASTChild(ref currentAST, tmp352_AST);
 		match(RIGHT_PAREN);
 		octet_length_exp_AST = currentAST.root;
 		returnAST = octet_length_exp_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void bit_length_exp() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST bit_length_exp_AST = null;
 		
 		AST tmp353_AST = null;
 		tmp353_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp353_AST);
+		astFactory.addASTChild(ref currentAST, tmp353_AST);
 		match(SQL2RW_bit_length);
 		AST tmp354_AST = null;
 		tmp354_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp354_AST);
+		astFactory.addASTChild(ref currentAST, tmp354_AST);
 		match(LEFT_PAREN);
 		string_value_exp();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		AST tmp355_AST = null;
 		tmp355_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp355_AST);
+		astFactory.addASTChild(ref currentAST, tmp355_AST);
 		match(RIGHT_PAREN);
 		bit_length_exp_AST = currentAST.root;
 		returnAST = bit_length_exp_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void current_date_value_fct() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST current_date_value_fct_AST = null;
 		
 		AST tmp356_AST = null;
 		tmp356_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp356_AST);
+		astFactory.addASTChild(ref currentAST, tmp356_AST);
 		match(SQL2RW_current_date);
 		current_date_value_fct_AST = currentAST.root;
 		returnAST = current_date_value_fct_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void current_time_value_fct() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST current_time_value_fct_AST = null;
 		
 		AST tmp357_AST = null;
 		tmp357_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp357_AST);
+		astFactory.addASTChild(ref currentAST, tmp357_AST);
 		match(SQL2RW_current_time);
 		{
 			if ((LA(1)==LEFT_PAREN))
 			{
 				AST tmp358_AST = null;
 				tmp358_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp358_AST);
+				astFactory.addASTChild(ref currentAST, tmp358_AST);
 				match(LEFT_PAREN);
 				time_precision();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				AST tmp359_AST = null;
 				tmp359_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp359_AST);
+				astFactory.addASTChild(ref currentAST, tmp359_AST);
 				match(RIGHT_PAREN);
 			}
 			else if ((tokenSet_40_.member(LA(1)))) {
@@ -8957,35 +8786,34 @@ _loop376_breakloop:			;
 		}
 		current_time_value_fct_AST = currentAST.root;
 		returnAST = current_time_value_fct_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void currenttimestamp_value_fct() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST currenttimestamp_value_fct_AST = null;
 		
 		AST tmp360_AST = null;
 		tmp360_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp360_AST);
+		astFactory.addASTChild(ref currentAST, tmp360_AST);
 		match(SQL2RW_current_timestamp);
 		{
 			if ((LA(1)==LEFT_PAREN))
 			{
 				AST tmp361_AST = null;
 				tmp361_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp361_AST);
+				astFactory.addASTChild(ref currentAST, tmp361_AST);
 				match(LEFT_PAREN);
 				timestamp_precision();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				AST tmp362_AST = null;
 				tmp362_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp362_AST);
+				astFactory.addASTChild(ref currentAST, tmp362_AST);
 				match(RIGHT_PAREN);
 			}
 			else if ((tokenSet_40_.member(LA(1)))) {
@@ -8998,7 +8826,6 @@ _loop376_breakloop:			;
 		}
 		currenttimestamp_value_fct_AST = currentAST.root;
 		returnAST = currenttimestamp_value_fct_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  qualified_local_table_name() //throws RecognitionException, TokenStreamException
@@ -9006,7 +8833,7 @@ _loop376_breakloop:			;
 		 string tableName = null ;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST qualified_local_table_name_AST = null;
 		
 			string strId;
@@ -9014,16 +8841,16 @@ _loop376_breakloop:			;
 		
 		AST tmp363_AST = null;
 		tmp363_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp363_AST);
+		astFactory.addASTChild(ref currentAST, tmp363_AST);
 		match(SQL2RW_module);
 		AST tmp364_AST = null;
 		tmp364_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp364_AST);
+		astFactory.addASTChild(ref currentAST, tmp364_AST);
 		match(PERIOD);
 		strId=id();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -9032,14 +8859,13 @@ _loop376_breakloop:			;
 		qualified_local_table_name_AST = currentAST.root;
 		returnAST = qualified_local_table_name_AST;
 		return tableName;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void extended_cursor_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST extended_cursor_name_AST = null;
 		
 		{
@@ -9047,13 +8873,13 @@ _loop376_breakloop:			;
 			{
 				AST tmp365_AST = null;
 				tmp365_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp365_AST);
+				astFactory.addASTChild(ref currentAST, tmp365_AST);
 				match(SQL2RW_global);
 			}
 			else if ((LA(1)==SQL2RW_local)) {
 				AST tmp366_AST = null;
 				tmp366_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp366_AST);
+				astFactory.addASTChild(ref currentAST, tmp366_AST);
 				match(SQL2RW_local);
 			}
 			else if ((tokenSet_41_.member(LA(1)))) {
@@ -9067,18 +8893,17 @@ _loop376_breakloop:			;
 		simple_value_spec();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		extended_cursor_name_AST = currentAST.root;
 		returnAST = extended_cursor_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void simple_value_spec() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST simple_value_spec_AST = null;
 		
 		if ((LA(1)==COLON))
@@ -9086,14 +8911,14 @@ _loop376_breakloop:			;
 			parameter_name();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			simple_value_spec_AST = currentAST.root;
 		}
 		else if ((LA(1)==EMBDD_VARIABLE_NAME)) {
 			AST tmp367_AST = null;
 			tmp367_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp367_AST);
+			astFactory.addASTChild(ref currentAST, tmp367_AST);
 			match(EMBDD_VARIABLE_NAME);
 			simple_value_spec_AST = currentAST.root;
 		}
@@ -9101,7 +8926,7 @@ _loop376_breakloop:			;
 			lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			simple_value_spec_AST = currentAST.root;
 		}
@@ -9111,7 +8936,6 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = simple_value_spec_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  lit() //throws RecognitionException, TokenStreamException
@@ -9119,7 +8943,7 @@ _loop376_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST lit_AST = null;
 		
 		if ((LA(1)==UNSIGNED_INTEGER||LA(1)==APPROXIMATE_NUM_LIT||LA(1)==MINUS_SIGN||LA(1)==EXACT_NUM_LIT||LA(1)==PLUS_SIGN))
@@ -9127,7 +8951,7 @@ _loop376_breakloop:			;
 			literal=signed_num_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			lit_AST = currentAST.root;
 		}
@@ -9135,7 +8959,7 @@ _loop376_breakloop:			;
 			literal=general_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			lit_AST = currentAST.root;
 		}
@@ -9146,24 +8970,22 @@ _loop376_breakloop:			;
 		
 		returnAST = lit_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void stmt_name() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST stmt_name_AST = null;
 		
 		id();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		stmt_name_AST = currentAST.root;
 		returnAST = stmt_name_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  unsigned_num_lit() //throws RecognitionException, TokenStreamException
@@ -9171,7 +8993,7 @@ _loop376_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST unsigned_num_lit_AST = null;
 		IToken  num1 = null;
 		AST num1_AST = null;
@@ -9184,7 +9006,7 @@ _loop376_breakloop:			;
 		{
 			num1 = LT(1);
 			num1_AST = astFactory.create(num1);
-			astFactory.addASTChild(currentAST, num1_AST);
+			astFactory.addASTChild(ref currentAST, num1_AST);
 			match(UNSIGNED_INTEGER);
 			if (0==inputState.guessing)
 			{
@@ -9195,7 +9017,7 @@ _loop376_breakloop:			;
 		else if ((LA(1)==EXACT_NUM_LIT)) {
 			num2 = LT(1);
 			num2_AST = astFactory.create(num2);
-			astFactory.addASTChild(currentAST, num2_AST);
+			astFactory.addASTChild(ref currentAST, num2_AST);
 			match(EXACT_NUM_LIT);
 			if (0==inputState.guessing)
 			{
@@ -9206,7 +9028,7 @@ _loop376_breakloop:			;
 		else if ((LA(1)==APPROXIMATE_NUM_LIT)) {
 			num3 = LT(1);
 			num3_AST = astFactory.create(num3);
-			astFactory.addASTChild(currentAST, num3_AST);
+			astFactory.addASTChild(ref currentAST, num3_AST);
 			match(APPROXIMATE_NUM_LIT);
 			if (0==inputState.guessing)
 			{
@@ -9221,7 +9043,6 @@ _loop376_breakloop:			;
 		
 		returnAST = unsigned_num_lit_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  char_string_lit() //throws RecognitionException, TokenStreamException
@@ -9229,7 +9050,7 @@ _loop376_breakloop:			;
 		string strLiteral = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST char_string_lit_AST = null;
 		IToken  literal = null;
 		AST literal_AST = null;
@@ -9239,12 +9060,12 @@ _loop376_breakloop:			;
 			{
 				AST tmp368_AST = null;
 				tmp368_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp368_AST);
+				astFactory.addASTChild(ref currentAST, tmp368_AST);
 				match(INTRODUCER);
 				char_set_name();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==CHAR_STRING)) {
@@ -9257,7 +9078,7 @@ _loop376_breakloop:			;
 		}
 		literal = LT(1);
 		literal_AST = astFactory.create(literal);
-		astFactory.addASTChild(currentAST, literal_AST);
+		astFactory.addASTChild(ref currentAST, literal_AST);
 		match(CHAR_STRING);
 		if (0==inputState.guessing)
 		{
@@ -9266,7 +9087,6 @@ _loop376_breakloop:			;
 		char_string_lit_AST = currentAST.root;
 		returnAST = char_string_lit_AST;
 		return strLiteral;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  general_lit() //throws RecognitionException, TokenStreamException
@@ -9274,7 +9094,7 @@ _loop376_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST general_lit_AST = null;
 		IToken  charStringLiteral = null;
 		AST charStringLiteral_AST = null;
@@ -9291,7 +9111,7 @@ _loop376_breakloop:			;
 			literal=char_string_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			general_lit_AST = currentAST.root;
 			break;
@@ -9300,7 +9120,7 @@ _loop376_breakloop:			;
 		{
 			charStringLiteral = LT(1);
 			charStringLiteral_AST = astFactory.create(charStringLiteral);
-			astFactory.addASTChild(currentAST, charStringLiteral_AST);
+			astFactory.addASTChild(ref currentAST, charStringLiteral_AST);
 			match(NATIONAL_CHAR_STRING_LIT);
 			if (0==inputState.guessing)
 			{
@@ -9313,7 +9133,7 @@ _loop376_breakloop:			;
 		{
 			bitStringLiteral = LT(1);
 			bitStringLiteral_AST = astFactory.create(bitStringLiteral);
-			astFactory.addASTChild(currentAST, bitStringLiteral_AST);
+			astFactory.addASTChild(ref currentAST, bitStringLiteral_AST);
 			match(BIT_STRING_LIT);
 			if (0==inputState.guessing)
 			{
@@ -9326,7 +9146,7 @@ _loop376_breakloop:			;
 		{
 			hexStringLiteral = LT(1);
 			hexStringLiteral_AST = astFactory.create(hexStringLiteral);
-			astFactory.addASTChild(currentAST, hexStringLiteral_AST);
+			astFactory.addASTChild(ref currentAST, hexStringLiteral_AST);
 			match(HEX_STRING_LIT);
 			if (0==inputState.guessing)
 			{
@@ -9342,7 +9162,7 @@ _loop376_breakloop:			;
 			literal=datetime_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			general_lit_AST = currentAST.root;
 			break;
@@ -9352,7 +9172,7 @@ _loop376_breakloop:			;
 			literal=interval_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			general_lit_AST = currentAST.root;
 			break;
@@ -9364,7 +9184,6 @@ _loop376_breakloop:			;
 		 }
 		returnAST = general_lit_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  datetime_lit() //throws RecognitionException, TokenStreamException
@@ -9372,7 +9191,7 @@ _loop376_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST datetime_lit_AST = null;
 		
 		if ((LA(1)==SQL2RW_date))
@@ -9380,7 +9199,7 @@ _loop376_breakloop:			;
 			literal=date_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			datetime_lit_AST = currentAST.root;
 		}
@@ -9388,7 +9207,7 @@ _loop376_breakloop:			;
 			literal=time_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			datetime_lit_AST = currentAST.root;
 		}
@@ -9396,7 +9215,7 @@ _loop376_breakloop:			;
 			literal=timestamp_lit();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			datetime_lit_AST = currentAST.root;
 		}
@@ -9407,7 +9226,6 @@ _loop376_breakloop:			;
 		
 		returnAST = datetime_lit_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  interval_lit() //throws RecognitionException, TokenStreamException
@@ -9415,14 +9233,14 @@ _loop376_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST interval_lit_AST = null;
 		IToken  charString = null;
 		AST charString_AST = null;
 		
 		AST tmp369_AST = null;
 		tmp369_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp369_AST);
+		astFactory.addASTChild(ref currentAST, tmp369_AST);
 		match(SQL2RW_interval);
 		{
 			if ((LA(1)==MINUS_SIGN||LA(1)==PLUS_SIGN))
@@ -9430,7 +9248,7 @@ _loop376_breakloop:			;
 				sign();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 			}
 			else if ((LA(1)==CHAR_STRING)) {
@@ -9443,12 +9261,12 @@ _loop376_breakloop:			;
 		}
 		charString = LT(1);
 		charString_AST = astFactory.create(charString);
-		astFactory.addASTChild(currentAST, charString_AST);
+		astFactory.addASTChild(ref currentAST, charString_AST);
 		match(CHAR_STRING);
 		interval_qualifier();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -9457,7 +9275,6 @@ _loop376_breakloop:			;
 		interval_lit_AST = currentAST.root;
 		returnAST = interval_lit_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  date_lit() //throws RecognitionException, TokenStreamException
@@ -9465,18 +9282,18 @@ _loop376_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST date_lit_AST = null;
 		IToken  charString = null;
 		AST charString_AST = null;
 		
 		AST tmp370_AST = null;
 		tmp370_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp370_AST);
+		astFactory.addASTChild(ref currentAST, tmp370_AST);
 		match(SQL2RW_date);
 		charString = LT(1);
 		charString_AST = astFactory.create(charString);
-		astFactory.addASTChild(currentAST, charString_AST);
+		astFactory.addASTChild(ref currentAST, charString_AST);
 		match(CHAR_STRING);
 		if (0==inputState.guessing)
 		{
@@ -9485,7 +9302,6 @@ _loop376_breakloop:			;
 		date_lit_AST = currentAST.root;
 		returnAST = date_lit_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  time_lit() //throws RecognitionException, TokenStreamException
@@ -9493,18 +9309,18 @@ _loop376_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST time_lit_AST = null;
 		IToken  charString = null;
 		AST charString_AST = null;
 		
 		AST tmp371_AST = null;
 		tmp371_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp371_AST);
+		astFactory.addASTChild(ref currentAST, tmp371_AST);
 		match(SQL2RW_time);
 		charString = LT(1);
 		charString_AST = astFactory.create(charString);
-		astFactory.addASTChild(currentAST, charString_AST);
+		astFactory.addASTChild(ref currentAST, charString_AST);
 		match(CHAR_STRING);
 		if (0==inputState.guessing)
 		{
@@ -9513,7 +9329,6 @@ _loop376_breakloop:			;
 		time_lit_AST = currentAST.root;
 		returnAST = time_lit_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  timestamp_lit() //throws RecognitionException, TokenStreamException
@@ -9521,18 +9336,18 @@ _loop376_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST timestamp_lit_AST = null;
 		IToken  charString = null;
 		AST charString_AST = null;
 		
 		AST tmp372_AST = null;
 		tmp372_AST = astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp372_AST);
+		astFactory.addASTChild(ref currentAST, tmp372_AST);
 		match(SQL2RW_timestamp);
 		charString = LT(1);
 		charString_AST = astFactory.create(charString);
-		astFactory.addASTChild(currentAST, charString_AST);
+		astFactory.addASTChild(ref currentAST, charString_AST);
 		match(CHAR_STRING);
 		if (0==inputState.guessing)
 		{
@@ -9541,35 +9356,34 @@ _loop376_breakloop:			;
 		timestamp_lit_AST = currentAST.root;
 		returnAST = timestamp_lit_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void start_field() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST start_field_AST = null;
 		
 		non_second_datetime_field();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		{
 			if ((LA(1)==LEFT_PAREN))
 			{
 				AST tmp373_AST = null;
 				tmp373_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp373_AST);
+				astFactory.addASTChild(ref currentAST, tmp373_AST);
 				match(LEFT_PAREN);
 				AST tmp374_AST = null;
 				tmp374_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp374_AST);
+				astFactory.addASTChild(ref currentAST, tmp374_AST);
 				match(UNSIGNED_INTEGER);
 				AST tmp375_AST = null;
 				tmp375_AST = astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp375_AST);
+				astFactory.addASTChild(ref currentAST, tmp375_AST);
 				match(RIGHT_PAREN);
 			}
 			else if ((tokenSet_43_.member(LA(1)))) {
@@ -9582,14 +9396,13 @@ _loop376_breakloop:			;
 		}
 		start_field_AST = currentAST.root;
 		returnAST = start_field_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public void end_field() //throws RecognitionException, TokenStreamException
 {
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST end_field_AST = null;
 		
 		if ((LA(1)==SQL2RW_day||LA(1)==SQL2RW_hour||LA(1)==SQL2RW_minute||LA(1)==SQL2RW_month||LA(1)==SQL2RW_year))
@@ -9597,29 +9410,29 @@ _loop376_breakloop:			;
 			non_second_datetime_field();
 			if (0 == inputState.guessing)
 			{
-				astFactory.addASTChild(currentAST, returnAST);
+				astFactory.addASTChild(ref currentAST, returnAST);
 			}
 			end_field_AST = currentAST.root;
 		}
 		else if ((LA(1)==SQL2RW_second)) {
 			AST tmp376_AST = null;
 			tmp376_AST = astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp376_AST);
+			astFactory.addASTChild(ref currentAST, tmp376_AST);
 			match(SQL2RW_second);
 			{
 				if ((LA(1)==LEFT_PAREN))
 				{
 					AST tmp377_AST = null;
 					tmp377_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp377_AST);
+					astFactory.addASTChild(ref currentAST, tmp377_AST);
 					match(LEFT_PAREN);
 					AST tmp378_AST = null;
 					tmp378_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp378_AST);
+					astFactory.addASTChild(ref currentAST, tmp378_AST);
 					match(UNSIGNED_INTEGER);
 					AST tmp379_AST = null;
 					tmp379_AST = astFactory.create(LT(1));
-					astFactory.addASTChild(currentAST, tmp379_AST);
+					astFactory.addASTChild(ref currentAST, tmp379_AST);
 					match(RIGHT_PAREN);
 				}
 				else if ((tokenSet_29_.member(LA(1)))) {
@@ -9638,7 +9451,6 @@ _loop376_breakloop:			;
 		}
 		
 		returnAST = end_field_AST;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	public string  signed_num_lit() //throws RecognitionException, TokenStreamException
@@ -9646,7 +9458,7 @@ _loop376_breakloop:			;
 		string literal = null;
 		
 		returnAST = null;
-		ASTPair currentAST = ASTPair.GetInstance();
+		ASTPair currentAST = new ASTPair();
 		AST signed_num_lit_AST = null;
 		string tmp;
 		
@@ -9656,7 +9468,7 @@ _loop376_breakloop:			;
 				tmp=sign();
 				if (0 == inputState.guessing)
 				{
-					astFactory.addASTChild(currentAST, returnAST);
+					astFactory.addASTChild(ref currentAST, returnAST);
 				}
 				if (0==inputState.guessing)
 				{
@@ -9674,7 +9486,7 @@ _loop376_breakloop:			;
 		tmp=unsigned_num_lit();
 		if (0 == inputState.guessing)
 		{
-			astFactory.addASTChild(currentAST, returnAST);
+			astFactory.addASTChild(ref currentAST, returnAST);
 		}
 		if (0==inputState.guessing)
 		{
@@ -9683,7 +9495,6 @@ _loop376_breakloop:			;
 		signed_num_lit_AST = currentAST.root;
 		returnAST = signed_num_lit_AST;
 		return literal;
-		ASTPair.PutInstance(currentAST);
 	}
 	
 	private void initializeFactory()
