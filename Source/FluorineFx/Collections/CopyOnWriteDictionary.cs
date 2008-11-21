@@ -53,6 +53,7 @@ namespace FluorineFx.Collections
         {
             _dictionary = new Hashtable(d);
         }
+#if !(NET_1_1)
         /// <summary>
         /// Initializes a new, empty instance of the CopyOnWriteDictionary class using the default initial capacity and load factor, and the specified IEqualityComparer object.
         /// </summary>
@@ -61,7 +62,7 @@ namespace FluorineFx.Collections
         {
             _dictionary = new Hashtable(equalityComparer);
         }
-
+#endif
 
         #region IDictionary Members
         /// <summary>

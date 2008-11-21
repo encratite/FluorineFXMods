@@ -1,7 +1,7 @@
 <VisualStudioProject>
     <CSHARP
         ProjectType = "Local"
-        ProductVersion = "7.10.3077"
+        ProductVersion = "7.10.6030"
         SchemaVersion = "2.0"
         ProjectGuid = "{6A3F235D-76F9-4F99-BAC7-F981B029D370}"
     >
@@ -696,11 +696,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Expression\ExpressionParserTokenTypes.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Expression\FluorineAST.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -980,6 +975,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IO\IKeyFrameDataAnalyzer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IO\IOConstants.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -1005,6 +1005,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IO\KeyFrameMeta.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IO\MessageOutput.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -1016,6 +1021,11 @@
                 />
                 <File
                     RelPath = "IO\ResponseBody.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IO\Tag.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -1095,16 +1105,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "IO\IKeyFrameDataAnalyzer.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "IO\KeyFrameMeta.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "IO\FLV\MetaCue.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -1136,11 +1136,6 @@
                 />
                 <File
                     RelPath = "IO\Mp3\Mp3Reader.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "IO\Tag.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -3298,6 +3293,7 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
+
             </Include>
         </Files>
     </CSHARP>
