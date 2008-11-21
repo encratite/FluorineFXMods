@@ -12914,8 +12914,8 @@ namespace FluorineFx.Util
             if (value is Char[]) return ToXmlDocument((Char[])value);
             if (value is Byte[]) return ToXmlDocument((Byte[])value);
 #if !NET_1_1 && !NET_2_0
-            if (p is System.Xml.Linq.XDocument) return ToXmlDocument((System.Xml.Linq.XDocument)p);
-            if (p is System.Xml.Linq.XElement) return ToXmlDocument((System.Xml.Linq.XElement)p);
+            if (value is System.Xml.Linq.XDocument) return ToXmlDocument((System.Xml.Linq.XDocument)value);
+            if (value is System.Xml.Linq.XElement) return ToXmlDocument((System.Xml.Linq.XElement)value);
 #endif
             throw CreateInvalidCastException(value.GetType(), typeof(XmlDocument));
         }

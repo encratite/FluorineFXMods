@@ -131,7 +131,6 @@
     <Compile Include="Expression\ExpressionEvaluator.cs" />
     <Compile Include="Expression\ExpressionLexer.cs" />
     <Compile Include="Expression\ExpressionParser.cs" />
-    <Compile Include="Expression\ExpressionParserTokenTypes.cs" />
     <Compile Include="Expression\FluorineAST.cs" />
     <Compile Include="Expression\FunctionNode.cs" />
     <Compile Include="Expression\HexLiteralNode.cs" />
