@@ -63,17 +63,23 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             _audio.Close();
             _data.Close();
         }
-
+        /// <summary>
+        /// Gets the audio channel.
+        /// </summary>
         public RtmpChannel Audio
         {
             get{ return _audio; }
         }
-
+        /// <summary>
+        /// Gets the data channel.
+        /// </summary>
         public RtmpChannel Data
         {
             get{ return _data; }
         }
-
+        /// <summary>
+        /// Gets the video channel.
+        /// </summary>
         public RtmpChannel Video
         {
             get { return _video; }

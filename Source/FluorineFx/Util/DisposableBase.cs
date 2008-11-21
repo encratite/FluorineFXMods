@@ -70,7 +70,7 @@ namespace FluorineFx.Util
 		/// runtime from inside the finalizer and you should not reference 
 		/// other objects. Only unmanaged resources can be disposed.
 		/// </summary>
-		/// <param name="disposing"></param>
+        /// <param name="disposing">Indicates if this is a dispose call dispose.</param>
 		protected virtual void Dispose(bool disposing)
 		{
 			if(!_disposed)

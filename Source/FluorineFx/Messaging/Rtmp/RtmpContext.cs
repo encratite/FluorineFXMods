@@ -77,7 +77,9 @@ namespace FluorineFx.Messaging.Rtmp
 			_mode = mode;
 			_objectEncoding = ObjectEncoding.AMF0;
 		}
-
+        /// <summary>
+        /// Gets or sets object encoding.
+        /// </summary>
 		public ObjectEncoding ObjectEncoding
 		{
 			get{ return _objectEncoding; }
@@ -101,7 +103,9 @@ namespace FluorineFx.Messaging.Rtmp
 				}
 			}
 		}
-
+        /// <summary>
+        /// Gets current RTMP mode.
+        /// </summary>
 		public RtmpMode Mode
 		{
 			get{ return _mode; }
@@ -138,12 +142,16 @@ namespace FluorineFx.Messaging.Rtmp
 		}
 #endif
 
-		public void SetLastReadHeader(int channelId, RtmpHeader header) 
+		internal void SetLastReadHeader(int channelId, RtmpHeader header) 
 		{
 			_lastReadChannel = channelId;
 			_readHeaders[channelId] = header;
 		}
-
+        /// <summary>
+        /// Returns the last read header for channel.
+        /// </summary>
+        /// <param name="channelId">Channel id.</param>
+        /// <returns>Last read header.</returns>
 		public RtmpHeader GetLastReadHeader(int channelId) 
 		{
             if( _readHeaders.ContainsKey(channelId) )
@@ -151,12 +159,16 @@ namespace FluorineFx.Messaging.Rtmp
             return null;
 		}
 
-		public void SetLastWriteHeader(int channelId, RtmpHeader header) 
+        internal void SetLastWriteHeader(int channelId, RtmpHeader header) 
 		{
 			_lastWriteChannel = channelId;
 			_writeHeaders[channelId] = header;
 		}
-
+        /// <summary>
+        /// Returns the last written header for channel.
+        /// </summary>
+        /// <param name="channelId">Channel id.</param>
+        /// <returns>Last written header.</returns>
 		public RtmpHeader GetLastWriteHeader(int channelId) 
 		{
             if( _writeHeaders.ContainsKey(channelId) )
@@ -164,7 +176,7 @@ namespace FluorineFx.Messaging.Rtmp
             return null;
 		}
 
-		public void SetLastReadPacket(int channelId, RtmpPacket packet) 
+        internal void SetLastReadPacket(int channelId, RtmpPacket packet) 
 		{
             RtmpPacket prevPacket = null;
             if( _readPackets.ContainsKey(channelId) )
@@ -175,7 +187,11 @@ namespace FluorineFx.Messaging.Rtmp
 			}
 			_readPackets[channelId] = packet;
 		}
-
+        /// <summary>
+        /// Returns the last read packet for channel.
+        /// </summary>
+        /// <param name="channelId">Channel id.</param>
+        /// <returns>Last read packet for that channel.</returns>
 		public RtmpPacket GetLastReadPacket(int channelId) 
 		{
             if( _readPackets.ContainsKey(channelId) )
@@ -183,7 +199,7 @@ namespace FluorineFx.Messaging.Rtmp
             return null;
 		}
 
-		public void SetLastWritePacket(int channelId, RtmpPacket packet) 
+        internal void SetLastWritePacket(int channelId, RtmpPacket packet) 
 		{
             RtmpPacket prevPacket = null;
             if (_writePackets.ContainsKey(channelId))
@@ -194,40 +210,56 @@ namespace FluorineFx.Messaging.Rtmp
 			}
 			_writePackets[channelId] = packet;
 		}
-
+        /// <summary>
+        /// Returns the last written packet.
+        /// </summary>
+        /// <param name="channelId">Channel id.</param>
+        /// <returns>Last written packet.</returns>
 		public RtmpPacket GetLastWritePacket(int channelId) 
 		{
             if (_writePackets.ContainsKey(channelId))
                 return _writePackets[channelId] as RtmpPacket;
             return null;
 		}
-
+        /// <summary>
+        /// Returns channel being read last.
+        /// </summary>
+        /// <returns>Last read channel.</returns>
 		public int GetLastReadChannel() 
 		{
 			return _lastReadChannel;
 		}
-
+        /// <summary>
+        /// Returns channel being written last.
+        /// </summary>
+        /// <returns>Last write channel.</returns>
 		public int GetLastWriteChannel() 
 		{
 			return _lastWriteChannel;
 		}
-
+        /// <summary>
+        /// Returns read chunk size. Data is being read chunk-by-chunk.
+        /// </summary>
+        /// <returns>Read chunk size.</returns>
 		public int GetReadChunkSize() 
 		{
 			return _readChunkSize;
 		}
 
-		public void SetReadChunkSize(int readChunkSize) 
+		internal void SetReadChunkSize(int readChunkSize) 
 		{
 			_readChunkSize = readChunkSize;
 		}
-
+        /// <summary>
+        /// Returns write chunk size. Data is being written chunk-by-chunk.
+        /// </summary>
+        /// <returns>Write chunk size.</returns>
 		public int GetWriteChunkSize() 
 		{
 			return _writeChunkSize;
 		}
 
-		public void SetWriteChunkSize(int writeChunkSize) 
+        internal void SetWriteChunkSize(int writeChunkSize) 
 		{
 			_writeChunkSize = writeChunkSize;
 		}

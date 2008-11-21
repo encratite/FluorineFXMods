@@ -41,7 +41,7 @@ namespace FluorineFx.Collections.Generic
         IEnumerable<T>, IEnumerable
     {
         T[] _array;
-        private static object _objLock = new object();
+        private object _objLock = new object();
 
         /// <summary>
         /// Initializes a new instance of the CopyOnWriteArray class.
@@ -100,13 +100,22 @@ namespace FluorineFx.Collections.Generic
 
         #region IList<T> Members
 
+        /// <summary>
+        /// Determines the index of a specific item in the CopyOnWriteArray. 
+        /// </summary>
+        /// <param name="item">The Object to locate in the CopyOnWriteArray.</param>
+        /// <returns>The index of value if found in the CopyOnWriteArray; otherwise, -1.</returns>
         public int IndexOf(T item)
         {
             T[] elementData = _array;
             int length = elementData.Length;
             return IndexOf(item, elementData, length);
         }
-
+        /// <summary>
+        /// Inserts an element into the CopyOnWriteArray at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index at which value should be inserted.</param>
+        /// <param name="item">The Object to insert into the CopyOnWriteArray.</param>
         public void Insert(int index, T item)
         {
             lock (this.SyncRoot)
@@ -119,7 +128,10 @@ namespace FluorineFx.Collections.Generic
                 _array = newArray;
             }
         }
-
+        /// <summary>
+        /// Removes the element at the specified index of the CopyOnWriteArray.
+        /// </summary>
+        /// <param name="index">The zero-based index of the item to remove.</param>
         public void RemoveAt(int index)
         {
             lock (this.SyncRoot)
@@ -134,7 +146,11 @@ namespace FluorineFx.Collections.Generic
                 _array = newArray;
             }
         }
-
+        /// <summary>
+        /// Gets or sets the element at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get or set.</param>
+        /// <returns>The element at the specified index.</returns>
         public T this[int index]
         {
             get
@@ -161,7 +177,10 @@ namespace FluorineFx.Collections.Generic
         #endregion
 
         #region ICollection<T> Members
-
+        /// <summary>
+        /// Adds an object to the end of the CopyOnWriteArray. 
+        /// </summary>
+        /// <param name="item">The Object to add to the CopyOnWriteArray.</param>
         public void Add(T item)
         {
             lock (this.SyncRoot)
@@ -173,7 +192,9 @@ namespace FluorineFx.Collections.Generic
                 _array = newArray;
             }
         }
-
+        /// <summary>
+        /// Removes all elements from the CopyOnWriteArray.
+        /// </summary>
         public void Clear()
         {
             lock (this.SyncRoot)
@@ -181,27 +202,42 @@ namespace FluorineFx.Collections.Generic
                 _array = new T[0];
             }
         }
-
+        /// <summary>
+        /// Determines whether the CopyOnWriteArray contains a specific value.
+        /// </summary>
+        /// <param name="item">The Object to locate in the CopyOnWriteArray.</param>
+        /// <returns>true if the Object is found in the CopyOnWriteArray; otherwise, false.</returns>
         public bool Contains(T item)
         {
             return IndexOf(item) > -1;
         }
-
-        public void CopyTo(T[] array, int arrayIndex)
+        /// <summary>
+        /// Copies the elements of the CopyOnWriteArray to an Array, starting at a particular Array index.
+        /// </summary>
+        /// <param name="array">The one-dimensional Array that is the destination of the elements copied from CopyOnWriteArray. The Array must have zero-based indexing.</param>
+        /// <param name="index">The zero-based index in array at which copying begins.</param>
+        public void CopyTo(T[] array, int index)
         {
-            Array.Copy(_array, 0, array, arrayIndex, array.Length - arrayIndex);
+            Array.Copy(_array, 0, array, index, array.Length - index);
         }
-
+        /// <summary>
+        /// Gets the number of elements contained in the CopyOnWriteArray.
+        /// </summary>
         public int Count
         {
             get { return _array.Length; }
         }
-
+        /// <summary>
+        /// Gets a value indicating whether the CopyOnWriteArray is read-only.
+        /// </summary>
         public bool IsReadOnly
         {
             get { return false; }
         }
-
+        /// <summary>
+        /// Removes the first occurrence of a specific object from the CopyOnWriteArray.
+        /// </summary>
+        /// <param name="item">The Object to remove from the CopyOnWriteArray.</param>
         public bool Remove(T item)
         {
             lock (this.SyncRoot)
@@ -240,7 +276,7 @@ namespace FluorineFx.Collections.Generic
 
         #region IEnumerable<T> Members
 
-        public struct Enumerator : IEnumerator<T>, IDisposable, IEnumerator
+        internal struct Enumerator : IEnumerator<T>, IDisposable, IEnumerator
         {
             private T[] list;
             private int index;
@@ -295,7 +331,10 @@ namespace FluorineFx.Collections.Generic
                 current = default(T);
             }
         }
-
+        /// <summary>
+        /// Returns an enumerator that iterates through an CopyOnWriteArray.
+        /// </summary>
+        /// <returns>An IEnumerator object that can be used to iterate through the CopyOnWriteArray.</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return new Enumerator(_array);

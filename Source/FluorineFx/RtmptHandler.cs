@@ -38,11 +38,17 @@ namespace FluorineFx
 
         #region IHttpHandler Members
 
+        /// <summary>
+        /// Gets a value indicating whether another request can use the IHttpHandler instance.
+        /// </summary>
         public bool IsReusable
         {
             get { return true; }
         }
-
+        /// <summary>
+        /// Processing of RTMPT HTTP Web requests.
+        /// </summary>
+        /// <param name="context">An HttpContext object that provides references to the intrinsic server objects used to service HTTP requests.</param>
         public void ProcessRequest(HttpContext context)
         {
             HttpApplication httpApplication = context.ApplicationInstance;

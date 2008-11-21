@@ -62,13 +62,17 @@ namespace FluorineFx.Data.Messages
 			get{ return _sequenceSize; }
 			set{ _sequenceSize = value; }
 		}
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public DataMessage dataMessage
 		{
 			get{ return _dataMessage; }
 			set{ _dataMessage = value; }
 		}
-
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 		public object[] sequenceProxies
 		{
 			get{ return _sequenceProxies; }

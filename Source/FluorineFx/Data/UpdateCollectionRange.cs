@@ -43,6 +43,9 @@ namespace FluorineFx.Data
 		int _position;
 		int _updateType;
 
+        /// <summary>
+        /// Initializes a new instance of the UpdateCollectionRange class.
+        /// </summary>
 		public UpdateCollectionRange()
 		{
 		}

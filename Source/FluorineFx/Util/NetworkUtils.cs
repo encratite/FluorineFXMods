@@ -27,7 +27,7 @@ namespace FluorineFx.Util
     /// </summary>
     public abstract class NetworkUtils
     {
-        protected NetworkUtils() { }
+        private NetworkUtils() { }
 
         protected static bool SetSocketOption(Socket socket, SocketOptionLevel level, SocketOptionName name, bool value)
         {

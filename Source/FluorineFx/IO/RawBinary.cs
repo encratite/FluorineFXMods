@@ -30,7 +30,7 @@ namespace FluorineFx.IO
 		/// <summary>
 		/// Initializes a new instance of the RawBinary class.
 		/// </summary>
-		/// <param name="result"></param>
+        /// <param name="buffer"></param>
         public RawBinary(byte[] buffer)
 		{
             _buffer = buffer;

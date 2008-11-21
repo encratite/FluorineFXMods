@@ -174,11 +174,29 @@ namespace FluorineFx.Messaging.Rtmp
         /// Publishing has stopped.
         /// </summary>
 		public const string NS_UNPAUSE_NOTIFY = "NetStream.Unpause.Notify";
+        /// <summary>
+        /// Undocumented code.
+        /// </summary>
 		public const string NS_DATA_START = "NetStream.Data.Start";
+        /// <summary>
+        /// The ActionScript engine has encountered a runtime error.
+        /// </summary>
 		public const string APP_SCRIPT_ERROR = "Application.Script.Error";
+        /// <summary>
+        /// The ActionScript engine has encountered a runtime warning.
+        /// </summary>
 		public const string APP_SCRIPT_WARNING = "Application.Script.Warning";
+        /// <summary>
+        /// The ActionScript engine is low on runtime memory.
+        /// </summary>
 		public const string APP_RESOURCE_LOWMEMORY = "Application.Resource.LowMemory";
+        /// <summary>
+        /// This information object is passed to the onAppStop handler when the application is being shut down.
+        /// </summary>
 		public const string APP_SHUTDOWN = "Application.Shutdown";
+        /// <summary>
+        /// This information object is passed to the onAppStop event handler when the application instance is about to be destroyed by the server.
+        /// </summary>
 		public const string APP_GC = "Application.GC";
 
         /// <summary>
@@ -242,12 +260,16 @@ namespace FluorineFx.Messaging.Rtmp
             Add("code", code);
             Add("level", StatusASO.STATUS);
 	    }
-
+        /// <summary>
+        /// Sets the "application" property.
+        /// </summary>
 		public object Application
 		{
 			set{ this["application"] = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the "objectEncoding" property.
+        /// </summary>
 		public double objectEncoding
 		{
 			set{ this["objectEncoding"] = value; }
@@ -258,7 +280,9 @@ namespace FluorineFx.Messaging.Rtmp
                 return (double)ObjectEncoding.AMF0;
             }
 		}
-
+        /// <summary>
+        /// Gets or sets the "clientid" property.
+        /// </summary>
         public int clientid
         {
             set { this["clientid"] = value; }
@@ -269,7 +293,9 @@ namespace FluorineFx.Messaging.Rtmp
                 return 0;
             }
         }
-
+        /// <summary>
+        /// Gets or sets the "level" property.
+        /// </summary>
         public string level
         {
             set { this["level"] = value; }
@@ -280,7 +306,9 @@ namespace FluorineFx.Messaging.Rtmp
                 return null;
             }
         }
-
+        /// <summary>
+        /// Gets or sets the "code" property.
+        /// </summary>
         public string code
         {
             set { this["code"] = value; }
@@ -291,7 +319,9 @@ namespace FluorineFx.Messaging.Rtmp
                 return null;
             }
         }
-
+        /// <summary>
+        /// Gets or sets the "description" property.
+        /// </summary>
         public string description
         {
             set { this["description"] = value; }
@@ -302,7 +332,9 @@ namespace FluorineFx.Messaging.Rtmp
                 return null;
             }
         }
-
+        /// <summary>
+        /// Gets or sets the "details" property.
+        /// </summary>
         public string details
         {
             set { this["details"] = value; }
@@ -313,7 +345,12 @@ namespace FluorineFx.Messaging.Rtmp
                 return null;
             }
         }
-
+        /// <summary>
+        /// Gets a Status ActionScript Object with the specified status code.
+        /// </summary>
+        /// <param name="statusCode">Status code.</param>
+        /// <param name="objectEncoding">Encoding.</param>
+        /// <returns>A Status ActionScript Object.</returns>
 		public static StatusASO GetStatusObject(string statusCode, ObjectEncoding objectEncoding)
 		{
 			switch(statusCode)

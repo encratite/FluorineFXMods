@@ -29,7 +29,9 @@ namespace FluorineFx.Json
         {
             _name = name;
         }
-
+        /// <summary>
+        /// Get or sets the attribute name.
+        /// </summary>
         public string Name
         {
             get { return StringUtils.MaskNullString(_name); }
@@ -39,6 +41,14 @@ namespace FluorineFx.Json
 
         #region IInvocationResultHandler Members
 
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="invocationManager"></param>
+        /// <param name="methodInfo"></param>
+        /// <param name="obj"></param>
+        /// <param name="arguments"></param>
+        /// <param name="result"></param>
         public void HandleResult(IInvocationManager invocationManager, MethodInfo methodInfo, object obj, object[] arguments, object result)
         {
             if (invocationManager.Result is DataSet)

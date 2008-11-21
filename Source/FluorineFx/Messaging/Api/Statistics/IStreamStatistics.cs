@@ -20,6 +20,9 @@ using System;
 
 namespace FluorineFx.Messaging.Api.Statistics
 {
+    /// <summary>
+    /// Interface for all stream statistics.
+    /// </summary>
     public interface IStreamStatistics : IStatisticsBase
     {
         /// <summary>

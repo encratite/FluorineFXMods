@@ -28,6 +28,9 @@ namespace FluorineFx.Exceptions
 	{
 		object _reason;
 
+        /// <summary>
+        /// Gets the object representing the rejection reason.
+        /// </summary>
 		public object Reason{ get{ return _reason; } }
 
         /// <summary>

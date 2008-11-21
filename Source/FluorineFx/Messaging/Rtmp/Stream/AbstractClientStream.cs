@@ -98,6 +98,10 @@ namespace FluorineFx.Messaging.Rtmp.Stream
 
         #region IBWControllable Members
 
+        /// <summary>
+        /// Gets the parent IBWControllable object.
+        /// </summary>
+        /// <returns></returns>
         public IBWControllable GetParentBWControllable()
         {
             return this.Connection;

@@ -21,6 +21,9 @@ using FluorineFx.Messaging.Api.Statistics;
 
 namespace FluorineFx.Messaging.Api.Stream
 {
+    /// <summary>
+    /// IPlaylistSubscriberStream inherits ISubscriberStream and IPlaylist.
+    /// </summary>
     [CLSCompliant(false)]
     public interface IPlaylistSubscriberStream : ISubscriberStream, IPlaylist
     {

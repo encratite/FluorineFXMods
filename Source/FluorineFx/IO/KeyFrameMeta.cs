@@ -20,6 +20,9 @@ using System;
 
 namespace FluorineFx.IO
 {
+    /// <summary>
+    /// Keyframe metadata.
+    /// </summary>
     public class KeyFrameMeta
     {
         long _duration;

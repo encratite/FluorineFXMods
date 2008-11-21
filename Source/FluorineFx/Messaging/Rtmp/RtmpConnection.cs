@@ -602,8 +602,11 @@ namespace FluorineFx.Messaging.Rtmp
         /// Gets the total number of bytes written to the connection.
         /// </summary>
         public override long WrittenBytes { get { return 0; } }
-
-        public void ReceivedBytesRead(int bytes)
+        /// <summary>
+        /// Update the number of received bytes.
+        /// </summary>
+        /// <param name="bytes"></param>
+        internal void ReceivedBytesRead(int bytes)
         {
 #if !SILVERLIGHT
             log.Info("Client received " + bytes + " bytes, written " + this.WrittenBytes + " bytes, " + this.PendingMessages + " messages pending");

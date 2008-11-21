@@ -124,7 +124,6 @@
     <Compile Include="Expression\ExpressionEvaluator.cs" />
     <Compile Include="Expression\ExpressionLexer.cs" />
     <Compile Include="Expression\ExpressionParser.cs" />
-    <Compile Include="Expression\ExpressionParserTokenTypes.cs" />
     <Compile Include="Expression\FluorineAST.cs" />
     <Compile Include="Expression\FunctionNode.cs" />
     <Compile Include="Expression\HexLiteralNode.cs" />
@@ -684,8 +683,6 @@
     <Compile Include="Util\Layouter.cs" />
     <Compile Include="Util\MiscellaneousUtils.cs" />
     <Compile Include="Util\NetworkUtils.cs" />
-    <Compile Include="Util\Nullables\INullableType.cs" />
-    <Compile Include="Util\Nullables\NullableDateTime.cs" />
     <Compile Include="Util\NumberUtils.cs" />
     <Compile Include="Util\ObjectPool.cs" />
     <Compile Include="Collections\ReadOnlyList.cs" />

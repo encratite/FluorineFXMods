@@ -115,7 +115,9 @@ namespace FluorineFx.Silverlight
         {
             _endPoint = endPoint;
         }
-
+        /// <summary>
+        /// Gets the network address.
+        /// </summary>
         public EndPoint EndPoint { get { return _endPoint; } }
     }
     /// <summary>
@@ -129,7 +131,9 @@ namespace FluorineFx.Silverlight
         {
             _endPoint = endPoint;
         }
-
+        /// <summary>
+        /// Gets the network address.
+        /// </summary>
         public EndPoint EndPoint { get { return _endPoint; } }
     }
 

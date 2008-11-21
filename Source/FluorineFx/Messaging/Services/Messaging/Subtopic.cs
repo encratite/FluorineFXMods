@@ -33,7 +33,13 @@ namespace FluorineFx.Messaging.Services.Messaging
 	/// </summary>
 	public class Subtopic
 	{
+        /// <summary>
+        /// Subtopic wildcard character.
+        /// </summary>
 		public const string SubtopicWildcard = "*";
+        /// <summary>
+        /// Subtopic separator character.
+        /// </summary>
 		public const string SubtopicSeparator = ".";
 
 		private string _subtopic;

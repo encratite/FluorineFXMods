@@ -70,7 +70,7 @@ namespace FluorineFx.Messaging
     public class ClientManager : IClientRegistry
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(ClientManager));
-        static object _objLock = new object();
+        object _objLock = new object();
         private static Hashtable _sessionCreatedListeners = new Hashtable();
 
         MessageBroker _messageBroker;

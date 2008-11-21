@@ -35,6 +35,9 @@ namespace FluorineFx.AMF3
     public class ObjectProxy : Hashtable, IExternalizable
 #endif
 	{
+        /// <summary>
+        /// Initializes a new instance of the ObjectProxy class.
+        /// </summary>
 		public ObjectProxy()
 		{
 		}

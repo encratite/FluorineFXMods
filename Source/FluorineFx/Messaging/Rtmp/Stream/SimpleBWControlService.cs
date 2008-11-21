@@ -27,20 +27,19 @@ using FluorineFx.Configuration;
 namespace FluorineFx.Messaging.Rtmp.Stream
 {
     /// <summary>
-    /// A simple implementation of bandwidth controller. The initial burst,
-    /// if not specified by user, is half of the property "defaultCapacity".
-    /// <p>
-    /// Following is the reference information for the future optimization on threading:
-    /// The threads that may access this object concurrently are:
-    /// Thread A that makes token request.
-    /// Thread B that makes token request.
-    /// Thread C that distributes tokens and call the callbacks. (Timer)
-    /// Thread D that updates the bw config of a controllable.
-    /// Thread E that resets a bucket.
-    /// Thread F that unregisters a controllable.
-    /// 
-    /// The implementation now synchronizes on each context to make sure only one thread is accessing the context object at a time.
-    /// </p>
+    /// 	<para>A simple implementation of bandwidth controller. The initial burst, if not
+    ///     specified by user, is half of the property "defaultCapacity".</para>
+    /// 	<para>Following is the reference information for the future optimization on
+    ///     threading.</para>
+    /// 	<para>The threads that may access this object concurrently are:</para>
+    /// 	<para>Thread A that makes token request.</para>
+    /// 	<para>Thread B that makes token request.</para>
+    /// 	<para>Thread C that distributes tokens and call the callbacks. (Timer)</para>
+    /// 	<para>Thread D that updates the bw config of a controllable.</para>
+    /// 	<para>Thread E that resets a bucket.</para>
+    /// 	<para>Thread F that unregisters a controllable.</para>
+    /// 	<para>The implementation now synchronizes on each context to make sure only one
+    ///     thread is accessing the context object at a time.</para>
     /// </summary>
     class SimpleBWControlService : IBWControlService
     {
@@ -49,7 +48,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         object _syncLock = new object();
 
         /// <summary>
-        /// Map<IBWControllable, BWContext>
+        /// Map(IBWControllable, BWContext)
         /// </summary>
         protected SynchronizedHashtable _contextMap = new SynchronizedHashtable();
         System.Timers.Timer _tokenDistributor;
@@ -697,7 +696,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             public IBWControllable initialBC;
             public double requestToken;
             /// <summary>
-            /// Stack<TokenRequestContext>
+            /// Stack(TokenRequestContext)
             /// </summary>
             public Stack acquiredStack = new Stack();
         }
@@ -721,7 +720,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             public double[] tokenRc = new double[4];
             public ITokenBucket[] buckets = new ITokenBucket[3];
             /// <summary>
-            /// List<TokenRequest>[]
+            /// List(TokenRequest)
             /// </summary>
             public ArrayList pendingRequestArray;
             public long lastSchedule;

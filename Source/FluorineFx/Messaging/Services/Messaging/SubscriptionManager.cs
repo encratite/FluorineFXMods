@@ -43,7 +43,7 @@ namespace FluorineFx.Messaging.Services.Messaging
         private static readonly ILog log = LogManager.GetLogger(typeof(SubscriptionManager));
 
 		MessageDestination	_messageDestination;
-		static object _objLock = new object();
+		object _objLock = new object();
 
 		Hashtable			_subscribers;
 

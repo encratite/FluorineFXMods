@@ -57,7 +57,12 @@ namespace FluorineFx.Scheduling
         /// <param name="job">The job to trigger.</param>
         /// <returns>The name of the scheduled job.</returns>
         string AddScheduledOnceJob(DateTime date, IScheduledJob job);
-
+        /// <summary>
+        /// Schedule a job.
+        /// </summary>
+        /// <param name="job"></param>
+        /// <param name="trigger"></param>
+        /// <returns></returns>
         DateTime ScheduleJob(IScheduledJob job, Trigger trigger);
         /// <summary>
         /// Remove (delete) the <see cref="IScheduledJob" /> with the given and any <see cref="Trigger" /> s that reference it.

@@ -31,7 +31,7 @@ namespace FluorineFx.Messaging
     class Client : AttributeStore, IClient
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Client));
-        private static object _syncLock = new object();
+        private object _syncLock = new object();
 
         private string _id;
         private int _clientLeaseTime;

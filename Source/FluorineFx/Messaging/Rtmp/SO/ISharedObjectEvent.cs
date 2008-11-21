@@ -25,19 +25,58 @@ namespace FluorineFx.Messaging.Rtmp.SO
 	/// </summary>
 	public enum SharedObjectEventType 
 	{
-		Unknown = 0,
+		//Unknown = 0,
+        /// <summary>
+        /// Connect.
+        /// </summary>
 		SERVER_CONNECT,
+        /// <summary>
+        /// Disconnect.
+        /// </summary>
 		SERVER_DISCONNECT, 
-		SERVER_SET_ATTRIBUTE, 
+        /// <summary>
+        /// Set Attribute.
+        /// </summary>
+		SERVER_SET_ATTRIBUTE,
+        /// <summary>
+        /// Delete Attribute.
+        /// </summary>
 		SERVER_DELETE_ATTRIBUTE, 
+        /// <summary>
+        /// Send Message.
+        /// </summary>
 		SERVER_SEND_MESSAGE, 
+        /// <summary>
+        /// Clear Data.
+        /// </summary>
 		CLIENT_CLEAR_DATA, 
+        /// <summary>
+        /// Delete Attribute.
+        /// </summary>
 		CLIENT_DELETE_ATTRIBUTE, 
+        /// <summary>
+        /// Delete Data.
+        /// </summary>
 		CLIENT_DELETE_DATA, 
+        /// <summary>
+        /// Initial Data.
+        /// </summary>
 		CLIENT_INITIAL_DATA, 
+        /// <summary>
+        /// Status.
+        /// </summary>
 		CLIENT_STATUS, 
+        /// <summary>
+        /// Update Data.
+        /// </summary>
 		CLIENT_UPDATE_DATA, 
+        /// <summary>
+        /// Update Attribute.
+        /// </summary>
 		CLIENT_UPDATE_ATTRIBUTE, 
+        /// <summary>
+        /// Send Message.
+        /// </summary>
 		CLIENT_SEND_MESSAGE
 	};
 

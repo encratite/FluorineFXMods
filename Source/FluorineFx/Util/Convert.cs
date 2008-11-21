@@ -3295,7 +3295,19 @@ namespace FluorineFx.Util
         /// <param name="value">An Unsigned character.</param>
         /// <returns>The equivalent double-precision floating point number.</returns>
         public static Double ToDouble(Char value) { return checked((Double)value); }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A DateTime object.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        /// <remarks>This is the total days between the specified value and DateTime.MinValue.</remarks>
         public static Double ToDouble(DateTime value) { return (value - DateTime.MinValue).TotalDays; }
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A TimeSpan object.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        /// <remarks>This is the total days of the TimeSpan value.</remarks>
         public static Double ToDouble(TimeSpan value) { return value.TotalDays; }
 
 #if !(NET_1_1)
@@ -3383,7 +3395,19 @@ namespace FluorineFx.Util
         /// <param name="value">A nullable Boolean.</param>
         /// <returns>The equivalent double-precision floating point number.</returns>
         public static Double ToDouble(Boolean? value) { return (value.HasValue && value.Value) ? 1.0 : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable DateTime object.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        /// <remarks>This is the total days between the specified value and DateTime.MinValue.</remarks>
         public static Double ToDouble(DateTime? value) { return value.HasValue ? (value.Value - DateTime.MinValue).TotalDays : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan object.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
+        /// <remarks>This is the total days of the TimeSpan value.</remarks>
         public static Double ToDouble(TimeSpan? value) { return value.HasValue ? value.Value.TotalDays : 0.0; }
 
 #endif
@@ -4359,6 +4383,35 @@ namespace FluorineFx.Util
             if (value is Type) return ToGuid((Type)value);
 
             throw CreateInvalidCastException(value.GetType(), typeof(Guid));
+        }
+
+        /// <summary>
+        /// Checks whether the value of the specified Object can be converted to a Guid.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>Returns true if the specified Object can be converted to a Guid.</returns>
+        public static bool CanConvertToGuid(object value)
+        {
+            if (value == null || value is DBNull) return true;
+
+            if (value is Guid) return true;
+
+            // Scalar Types.
+            //
+            if (value is String) return true;
+
+            // SqlTypes.
+#if! SILVERLIGHT
+            if (value is SqlGuid) return true;
+            if (value is SqlString) return true;
+            if (value is SqlBinary) return true;
+#endif
+            // Other Types.
+            //
+            if (value is Byte[]) return true;
+            if (value is Type) return true;
+
+            return false;
         }
 
         #endregion
@@ -7271,7 +7324,19 @@ namespace FluorineFx.Util
         /// <param name="value">A Boolean.</param>
         /// <returns>The equivalent nullable double-precision floating point number.</returns>
         public static Double? ToNullableDouble(Boolean value) { return value ? 1.0 : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A DateTime object.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        /// <remarks>This is the total days between the specified value and DateTime.MinValue.</remarks>
         public static Double? ToNullableDouble(DateTime value) { return (value - DateTime.MinValue).TotalDays; }
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A TimeSpan object.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        /// <remarks>This is the total days of the TimeSpan value.</remarks>
         public static Double? ToNullableDouble(TimeSpan value) { return value.TotalDays; }
 
 #if !(NET_1_1)
@@ -7353,7 +7418,19 @@ namespace FluorineFx.Util
         /// <param name="value">A nullable Boolean.</param>
         /// <returns>The equivalent nullable double-precision floating point number.</returns>
         public static Double? ToNullableDouble(Boolean? value) { return value.HasValue ? (Double?)(value.Value ? 1.0 : 0.0) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable DateTime object.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        /// <remarks>This is the total days between the specified value and DateTime.MinValue.</remarks>
         public static Double? ToNullableDouble(DateTime? value) { return value.HasValue ? (Double?)(value.Value - DateTime.MinValue).TotalDays : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan object.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
+        /// <remarks>This is the total days of the TimeSpan value.</remarks>
         public static Double? ToNullableDouble(TimeSpan? value) { return value.HasValue ? (Double?)value.Value.TotalDays : null; }
 
 #endif
@@ -8299,6 +8376,32 @@ namespace FluorineFx.Util
 
             throw CreateInvalidCastException(value.GetType(), typeof(Guid?));
 		}
+
+        /// <summary>
+        /// Checks whether the value of the specified Object can be converted to a nullable Guid.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>Returns true if the specified Object can be converted to a nullable Guid.</returns>
+        public static bool CanConvertToNullableGuid(object value)
+        {
+            if (value == null || value is DBNull) return true;
+
+            // Scalar Types.
+            //
+            if (value is Guid) return true;
+            if (value is String) return true;
+            // SqlTypes.
+#if! SILVERLIGHT
+            if (value is SqlGuid) return true;
+            if (value is SqlString) return true;
+            if (value is SqlBinary) return true;
+#endif
+            // Other Types.
+            //
+            if (value is Type) return true;
+            if (value is Byte[]) return true;
+            return false;
+        }
 
         #endregion
 
@@ -10125,7 +10228,19 @@ namespace FluorineFx.Util
         /// <param name="value">A Boolean.</param>
         /// <returns>The equivalent SqlDouble.</returns>
         public static SqlDouble ToSqlDouble(Boolean value) { return value ? 1.0 : 0.0; }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A DateTime object.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        /// <remarks>This is the total days between the specified value and DateTime.MinValue.</remarks>
         public static SqlDouble ToSqlDouble(DateTime value) { return (value - DateTime.MinValue).TotalDays; }
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A TimeSpan object.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        /// <remarks>This is the total days of the TimeSpan value.</remarks>
         public static SqlDouble ToSqlDouble(TimeSpan value) { return value.TotalDays; }
 
 #if !(NET_1_1)
@@ -10207,7 +10322,19 @@ namespace FluorineFx.Util
         /// <param name="value">A nullable Decimal number.</param>
         /// <returns>The equivalent SqlDouble.</returns>
         public static SqlDouble ToSqlDouble(Decimal? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable DateTime object.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        /// <remarks>This is the total days between the specified value and DateTime.MinValue.</remarks>
         public static SqlDouble ToSqlDouble(DateTime? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent SqlDouble representation.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan object.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
+        /// <remarks>This is the total days of the TimeSpan value.</remarks>
         public static SqlDouble ToSqlDouble(TimeSpan? value) { return value.HasValue ? ToDouble(value.Value) : SqlDouble.Null; }
 
 #endif
@@ -11862,48 +11989,88 @@ namespace FluorineFx.Util
         #region Type
 
         // Scalar Types.
-        // 
-        public static Type ToType(String p) { return p == null ? null : Type.GetType(p); }
-        public static Type ToType(Char[] p) { return p == null ? null : Type.GetType(new string(p)); }
+
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent Type representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent Type.</returns>
+        public static Type ToType(String value) { return value == null ? null : Type.GetType(value); }
+        /// <summary>
+        /// Converts the specified character array to its equivalent Type representation.
+        /// </summary>
+        /// <param name="value">A character array.</param>
+        /// <returns>The equivalent Type.</returns>
+        public static Type ToType(Char[] value) { return value == null ? null : Type.GetType(new string(value)); }
 #if! SILVERLIGHT
-        public static Type ToType(Guid p) { return p == Guid.Empty ? null : Type.GetTypeFromCLSID(p); }
+        /// <summary>
+        /// Gets the type associated with the specified CLSID identifier.
+        /// </summary>
+        /// <param name="value">CLSID identifier.</param>
+        /// <returns>The associated Type.</returns>
+        public static Type ToType(Guid value) { return value == Guid.Empty ? null : Type.GetTypeFromCLSID(value); }
 #endif
 
 #if !(NET_1_1)
         // Nullable Types.
 #if! SILVERLIGHT
-		public static Type ToType(Guid? p)       { return p.HasValue? Type.GetTypeFromCLSID(p.Value): null; }
+        /// <summary>
+        /// Gets the type associated with the specified CLSID identifier.
+        /// </summary>
+        /// <param name="value">CLSID identifier.</param>
+        /// <returns>The associated Type.</returns>
+        public static Type ToType(Guid? value) { return value.HasValue ? Type.GetTypeFromCLSID(value.Value) : null; }
 #endif
 #endif
         // SqlTypes.
 #if! SILVERLIGHT
-        public static Type ToType(SqlString p) { return p.IsNull ? null : Type.GetType(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent Type representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent Type.</returns>
+        public static Type ToType(SqlString value) { return value.IsNull ? null : Type.GetType(value.Value); }
 #if !(NET_1_1)
-        public static Type ToType(SqlChars p)    { return p.IsNull       ? null: Type.GetType(new string(p.Value)); }
+        /// <summary>
+        /// Converts the value of the specified SqlChars to its equivalent Type representation.
+        /// </summary>
+        /// <param name="value">An SqlChars.</param>
+        /// <returns>The equivalent Type.</returns>
+        public static Type ToType(SqlChars value) { return value.IsNull ? null : Type.GetType(new string(value.Value)); }
 #endif
-        public static Type ToType(SqlGuid p) { return p.IsNull ? null : Type.GetTypeFromCLSID(p.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlGuid to its equivalent Type representation.
+        /// </summary>
+        /// <param name="value">An SqlGuid.</param>
+        /// <returns>The equivalent Type.</returns>
+        public static Type ToType(SqlGuid value) { return value.IsNull ? null : Type.GetTypeFromCLSID(value.Value); }
 #endif
-        public static Type ToType(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent Type representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent Type.</returns>
+        public static Type ToType(object value)
         {
-            if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
-            if (p is Type) return (Type)p;
+            if (value is Type) return (Type)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToType((String)p);
-            if (p is Char[]) return ToType((Char[])p);
-            if (p is Guid) return ToType((Guid)p);
+            if (value is String) return ToType((String)value);
+            if (value is Char[]) return ToType((Char[])value);
+            if (value is Guid) return ToType((Guid)value);
 
             // SqlTypes.
 #if! SILVERLIGHT
-            if (p is SqlString) return ToType((SqlString)p);
+            if (value is SqlString) return ToType((SqlString)value);
 #if !(NET_1_1)
-            if (p is SqlChars)    return ToType((SqlChars)p);
+            if (value is SqlChars) return ToType((SqlChars)value);
 #endif
-            if (p is SqlGuid) return ToType((SqlGuid)p);
+            if (value is SqlGuid) return ToType((SqlGuid)value);
 #endif
-            throw CreateInvalidCastException(p.GetType(), typeof(Type));
+            throw CreateInvalidCastException(value.GetType(), typeof(Type));
         }
 
         #endregion
@@ -11911,44 +12078,79 @@ namespace FluorineFx.Util
         #region Stream
 
         // Scalar Types.
-        // 
-        public static Stream ToStream(Guid p) { return p == Guid.Empty ? Stream.Null : new MemoryStream(p.ToByteArray()); }
-        public static Stream ToStream(Byte[] p) { return p == null ? Stream.Null : new MemoryStream(p); }
+
+        /// <summary>
+        /// Converts the value of the specified Guid to its equivalent Stream representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent Stream.</returns>
+        public static Stream ToStream(Guid value) { return value == Guid.Empty ? Stream.Null : new MemoryStream(value.ToByteArray()); }
+        /// <summary>
+        /// Converts the value of the specified byte array to its equivalent Stream representation.
+        /// </summary>
+        /// <param name="value">A byte array.</param>
+        /// <returns>The equivalent Stream.</returns>
+        public static Stream ToStream(Byte[] value) { return value == null ? Stream.Null : new MemoryStream(value); }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static Stream ToStream(Guid? p)       { return p.HasValue? new MemoryStream(p.Value.ToByteArray()): Stream.Null; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable Guid to its equivalent Stream representation.
+        /// </summary>
+        /// <param name="value">A nullable Guid.</param>
+        /// <returns>The equivalent Stream.</returns>
+        public static Stream ToStream(Guid? value) { return value.HasValue ? new MemoryStream(value.Value.ToByteArray()) : Stream.Null; }
 
 #endif
         // SqlTypes.
 #if! SILVERLIGHT
 #if !(NET_1_1)
-        public static Stream ToStream(SqlBytes p)    { return p.IsNull? Stream.Null: p.Stream;                  }
+        /// <summary>
+        /// Converts the value of the specified SqlBytes to its equivalent Type representation.
+        /// </summary>
+        /// <param name="value">An SqlBytes.</param>
+        /// <returns>The equivalent Type.</returns>
+        public static Stream ToStream(SqlBytes value) { return value.IsNull ? Stream.Null : value.Stream; }
 #endif
-        public static Stream ToStream(SqlBinary p) { return p.IsNull ? Stream.Null : new MemoryStream(p.Value); }
-        public static Stream ToStream(SqlGuid p) { return p.IsNull ? Stream.Null : new MemoryStream(p.Value.ToByteArray()); }
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent Type representation.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The equivalent Type.</returns>
+        public static Stream ToStream(SqlBinary value) { return value.IsNull ? Stream.Null : new MemoryStream(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlGuid to its equivalent Type representation.
+        /// </summary>
+        /// <param name="value">An SqlGuid.</param>
+        /// <returns>The equivalent Type.</returns>
+        public static Stream ToStream(SqlGuid value) { return value.IsNull ? Stream.Null : new MemoryStream(value.Value.ToByteArray()); }
 #endif
-        public static Stream ToStream(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent Stream representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent Stream.</returns>
+        public static Stream ToStream(object value)
         {
-            if (p == null || p is DBNull) return Stream.Null;
+            if (value == null || value is DBNull) return Stream.Null;
 
-            if (p is Stream) return (Stream)p;
+            if (value is Stream) return (Stream)value;
 
             // Scalar Types.
             //
-            if (p is Guid) return ToStream((Guid)p);
-            if (p is Byte[]) return ToStream((Byte[])p);
+            if (value is Guid) return ToStream((Guid)value);
+            if (value is Byte[]) return ToStream((Byte[])value);
 
             // SqlTypes.
 #if! SILVERLIGHT
 #if !(NET_1_1)
-            if (p is SqlBytes)    return ToStream((SqlBytes)p);
+            if (value is SqlBytes) return ToStream((SqlBytes)value);
 #endif
-            if (p is SqlBinary) return ToStream((SqlBinary)p);
-            if (p is SqlGuid) return ToStream((SqlGuid)p);
+            if (value is SqlBinary) return ToStream((SqlBinary)value);
+            if (value is SqlGuid) return ToStream((SqlGuid)value);
 #endif
-            throw CreateInvalidCastException(p.GetType(), typeof(Stream));
+            throw CreateInvalidCastException(value.GetType(), typeof(Stream));
         }
 
         #endregion
@@ -11956,37 +12158,121 @@ namespace FluorineFx.Util
         #region Byte[]
 
         // Scalar Types.
-        // 
-        public static Byte[] ToByteArray(string p) { return p == null ? null : System.Text.Encoding.UTF8.GetBytes(p); }
+
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent byte array.</returns>
+        public static Byte[] ToByteArray(string value) { return value == null ? null : System.Text.Encoding.UTF8.GetBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit signed integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An 8-bit signed integer.</param>
+        /// <returns>The byte array equivalent of the 8-bit signed integer value.</returns>
         [CLSCompliant(false)]
-        public static Byte[] ToByteArray(SByte p) { return new byte[] { checked((Byte)p) }; }
-        public static Byte[] ToByteArray(Int16 p) { return BitConverter.GetBytes(p); }
-        public static Byte[] ToByteArray(Int32 p) { return BitConverter.GetBytes(p); }
-        public static Byte[] ToByteArray(Int64 p) { return BitConverter.GetBytes(p); }
-        public static Byte[] ToByteArray(Byte p) { return new byte[] { p }; }
+        public static Byte[] ToByteArray(SByte value) { return new byte[] { checked((Byte)value) }; }
+        /// <summary>
+        /// Converts the value of the specified 16-bit signed integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A 16-bit signed integer.</param>
+        /// <returns>The byte array equivalent of the 16-bit signed integer value.</returns>
+        public static Byte[] ToByteArray(Int16 value) { return BitConverter.GetBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit signed integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
+        /// <returns>The byte array equivalent of the 32-bit signed integer value.</returns>
+        public static Byte[] ToByteArray(Int32 value) { return BitConverter.GetBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit signed integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A 64-bit signed integer.</param>
+        /// <returns>The byte array equivalent of the 64-bit signed integer value.</returns>
+        public static Byte[] ToByteArray(Int64 value) { return BitConverter.GetBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified 8-bit unsigned integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An 8-bit unsigned integer.</param>
+        /// <returns>The byte array equivalent of the 8-bit unsigned integer value.</returns>
+        public static Byte[] ToByteArray(Byte value) { return new byte[] { value }; }
+        /// <summary>
+        /// Converts the value of the specified 16-bit unsigned integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
+        /// <returns>The byte array equivalent of the 16-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
-        public static Byte[] ToByteArray(UInt16 p) { return BitConverter.GetBytes(p); }
+        public static Byte[] ToByteArray(UInt16 value) { return BitConverter.GetBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified 32-bit unsigned integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A 32-bit unsigned integer.</param>
+        /// <returns>The byte array equivalent of the 32-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
-        public static Byte[] ToByteArray(UInt32 p) { return BitConverter.GetBytes(p); }
+        public static Byte[] ToByteArray(UInt32 value) { return BitConverter.GetBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified 64-bit unsigned integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A 64-bit unsigned integer.</param>
+        /// <returns>The byte array equivalent of the 64-bit unsigned integer value.</returns>
         [CLSCompliant(false)]
-        public static Byte[] ToByteArray(UInt64 p) { return BitConverter.GetBytes(p); }
-        public static Byte[] ToByteArray(Char p) { return BitConverter.GetBytes(p); }
-        public static Byte[] ToByteArray(Single p) { return BitConverter.GetBytes(p); }
-        public static Byte[] ToByteArray(Double p) { return BitConverter.GetBytes(p); }
-        public static Byte[] ToByteArray(Boolean p) { return BitConverter.GetBytes(p); }
+        public static Byte[] ToByteArray(UInt64 value) { return BitConverter.GetBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified Unicode character to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A Unicode character.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(Char value) { return BitConverter.GetBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified single-precision floating point number to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A single-precision floating point number.</param>
+        /// <returns>The byte array equivalent of the single-precision floating point number.</returns>
+        public static Byte[] ToByteArray(Single value) { return BitConverter.GetBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified double-precision floating point number to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A double-precision floating point number.</param>
+        /// <returns>The byte array equivalent of the double-precision floating point number.</returns>
+        public static Byte[] ToByteArray(Double value) { return BitConverter.GetBytes(value); }
+        /// <summary>
+        /// Converts the value of the specified Boolean to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A Boolean.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(Boolean value) { return BitConverter.GetBytes(value); }
 #if !(NET_1_1)
 #if! SILVERLIGHT
-        public static Byte[] ToByteArray(DateTime p)    { return ToByteArray(p.ToBinary()); }
+        /// <summary>
+        /// Converts the value of the specified DateTime to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A DateTime.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(DateTime value) { return ToByteArray(value.ToBinary()); }
 #endif
 #else
-        public static Byte[] ToByteArray(DateTime p) { return ToByteArray(p.ToOADate()); }
+        public static Byte[] ToByteArray(DateTime value) { return ToByteArray(value.ToOADate()); }
 #endif
-        public static Byte[] ToByteArray(TimeSpan p) { return ToByteArray(p.Ticks); }
-        public static Byte[] ToByteArray(Guid p) { return p == Guid.Empty ? null : p.ToByteArray(); }
-
-        public static Byte[] ToByteArray(Decimal p)
+        /// <summary>
+        /// Converts the value of the specified TimeSpan to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A TimeSpan.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(TimeSpan value) { return ToByteArray(value.Ticks); }
+        /// <summary>
+        /// Converts the value of the specified Guid to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A Guid.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(Guid value) { return value == Guid.Empty ? null : value.ToByteArray(); }
+        /// <summary>
+        /// Converts the value of the specified Decimal to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A Decimal.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(Decimal value)
         {
-            int[] bits = Decimal.GetBits(p);
+            int[] bits = Decimal.GetBits(value);
             byte[] bytes = new byte[bits.Length << 2];
 
             for (int i = 0; i < bits.Length; ++i)
@@ -11994,135 +12280,295 @@ namespace FluorineFx.Util
 
             return bytes;
         }
-
-        public static Byte[] ToByteArray(Stream p)
+        /// <summary>
+        /// Converts the value of the specified Stream to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A Stream object.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(Stream value)
         {
-            if (p == null) return null;
-            if (p is MemoryStream) return ((MemoryStream)p).ToArray();
+            if (value == null) return null;
+            if (value is MemoryStream) return ((MemoryStream)value).ToArray();
 
-            long position = p.Seek(0, SeekOrigin.Begin);
-            Byte[] bytes = new Byte[p.Length];
-            p.Read(bytes, 0, bytes.Length);
-            p.Position = position;
+            long position = value.Seek(0, SeekOrigin.Begin);
+            Byte[] bytes = new Byte[value.Length];
+            value.Read(bytes, 0, bytes.Length);
+            value.Position = position;
 
             return bytes;
         }
+        /// <summary>
+        /// Converts the value of the specified ByteArray to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A ByteArray object.</param>
+        /// <returns>The equivalent byte array representation.</returns>
         [CLSCompliant(false)]
-        public static Byte[] ToByteArray(ByteArray p)
+        public static Byte[] ToByteArray(ByteArray value)
         {
-            if (p == null) return null;
+            if (value == null) return null;
 
-            return p.GetBuffer();
+            return value.GetBuffer();
         }
 
 #if !(NET_1_1)
         // Nullable Types.
-		// 
-		public static Byte[] ToByteArray(Guid? p)       { return p.HasValue? p.Value.ToByteArray(): null; }
-		[CLSCompliant(false)]
-		public static Byte[] ToByteArray(SByte?  p)     { return p.HasValue? new byte[]{checked((Byte)p.Value)}: null; }
-		public static Byte[] ToByteArray(Int16?  p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
-		public static Byte[] ToByteArray(Int32?  p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
-		public static Byte[] ToByteArray(Int64?  p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
-		public static Byte[] ToByteArray(Byte?   p)     { return p.HasValue? new byte[]{p.Value}: null; }
-		[CLSCompliant(false)]
-		public static Byte[] ToByteArray(UInt16? p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
-		[CLSCompliant(false)]
-		public static Byte[] ToByteArray(UInt32? p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
-		[CLSCompliant(false)]
-		public static Byte[] ToByteArray(UInt64? p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
-		public static Byte[] ToByteArray(Char?   p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
-		public static Byte[] ToByteArray(Single? p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
-		public static Byte[] ToByteArray(Double? p)     { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
-		public static Byte[] ToByteArray(Boolean? p)    { return p.HasValue? BitConverter.GetBytes(p.Value): null; }
+
+        /// <summary>
+        /// Converts the value of the specified nullable Guid to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable Guid.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(Guid? value) { return value.HasValue ? value.Value.ToByteArray() : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit signed integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit signed integer.</param>
+        /// <returns>The byte array equivalent of the nullable 8-bit signed integer value.</returns>
+        [CLSCompliant(false)]
+        public static Byte[] ToByteArray(SByte? value) { return value.HasValue ? new byte[] { checked((Byte)value.Value) } : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit signed integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit signed integer.</param>
+        /// <returns>The byte array equivalent of the nullable 16-bit signed integer value.</returns>
+        public static Byte[] ToByteArray(Int16? value) { return value.HasValue ? BitConverter.GetBytes(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit signed integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit signed integer.</param>
+        /// <returns>The byte array equivalent of the nullable 32-bit signed integer value.</returns>
+        public static Byte[] ToByteArray(Int32? value) { return value.HasValue ? BitConverter.GetBytes(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit signed integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit signed integer.</param>
+        /// <returns>The byte array equivalent of the nullable 64-bit signed integer value.</returns>
+        public static Byte[] ToByteArray(Int64? value) { return value.HasValue ? BitConverter.GetBytes(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 8-bit unsigned integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable 8-bit unsigned integer.</param>
+        /// <returns>The byte array equivalent of the nullable 8-bit unsigned integer value.</returns>
+        public static Byte[] ToByteArray(Byte? value) { return value.HasValue ? new byte[] { value.Value } : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 16-bit unsigned integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable 16-bit unsigned integer.</param>
+        /// <returns>The byte array equivalent of the nullable 16-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static Byte[] ToByteArray(UInt16? value) { return value.HasValue ? BitConverter.GetBytes(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 32-bit unsigned integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable 32-bit unsigned integer.</param>
+        /// <returns>The byte array equivalent of the nullable 32-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static Byte[] ToByteArray(UInt32? value) { return value.HasValue ? BitConverter.GetBytes(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable 64-bit unsigned integer to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable 64-bit unsigned integer.</param>
+        /// <returns>The byte array equivalent of the nullable 64-bit unsigned integer value.</returns>
+        [CLSCompliant(false)]
+        public static Byte[] ToByteArray(UInt64? value) { return value.HasValue ? BitConverter.GetBytes(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Unicode character to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable Unicode character.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(Char? value) { return value.HasValue ? BitConverter.GetBytes(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable single-precision floating point number to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable single-precision floating point number.</param>
+        /// <returns>The byte array equivalent of the nullable single-precision floating point number.</returns>
+        public static Byte[] ToByteArray(Single? value) { return value.HasValue ? BitConverter.GetBytes(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable double-precision floating point number to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable double-precision floating point number.</param>
+        /// <returns>The byte array equivalent of the nullable double-precision floating point number.</returns>
+        public static Byte[] ToByteArray(Double? value) { return value.HasValue ? BitConverter.GetBytes(value.Value) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Boolean to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable Boolean.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(Boolean? value) { return value.HasValue ? BitConverter.GetBytes(value.Value) : null; }
 #if! SILVERLIGHT
-		public static Byte[] ToByteArray(DateTime? p)   { return p.HasValue? ToByteArray(p.Value.ToBinary()): null; }
+        /// <summary>
+        /// Converts the value of the specified nullable DateTime to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable DateTime.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(DateTime? value) { return value.HasValue ? ToByteArray(value.Value.ToBinary()) : null; }
 #endif
-		public static Byte[] ToByteArray(TimeSpan? p)   { return p.HasValue? ToByteArray(p.Value.Ticks): null; }
-		public static Byte[] ToByteArray(Decimal? p)    { return p.HasValue? ToByteArray(p.Value): null; }
+        /// <summary>
+        /// Converts the value of the specified nullable TimeSpan to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable TimeSpan.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(TimeSpan? value) { return value.HasValue ? ToByteArray(value.Value.Ticks) : null; }
+        /// <summary>
+        /// Converts the value of the specified nullable Decimal to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A nullable Decimal.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(Decimal? value) { return value.HasValue ? ToByteArray(value.Value) : null; }
 
 #endif
         // SqlTypes.
 #if! SILVERLIGHT
-        public static Byte[] ToByteArray(SqlString p) { return p.IsNull ? null : ToByteArray(p.Value); }
-
-        public static Byte[] ToByteArray(SqlByte p) { return p.IsNull ? null : ToByteArray(p.Value); }
-        public static Byte[] ToByteArray(SqlInt16 p) { return p.IsNull ? null : ToByteArray(p.Value); }
-        public static Byte[] ToByteArray(SqlInt32 p) { return p.IsNull ? null : ToByteArray(p.Value); }
-        public static Byte[] ToByteArray(SqlInt64 p) { return p.IsNull ? null : ToByteArray(p.Value); }
-
-        public static Byte[] ToByteArray(SqlSingle p) { return p.IsNull ? null : ToByteArray(p.Value); }
-        public static Byte[] ToByteArray(SqlDouble p) { return p.IsNull ? null : ToByteArray(p.Value); }
-        public static Byte[] ToByteArray(SqlDecimal p) { return p.IsNull ? null : ToByteArray(p.Value); }
-        public static Byte[] ToByteArray(SqlMoney p) { return p.IsNull ? null : ToByteArray(p.Value); }
-
-        public static Byte[] ToByteArray(SqlBoolean p) { return p.IsNull ? null : ToByteArray(p.Value); }
-        public static Byte[] ToByteArray(SqlDateTime p) { return p.IsNull ? null : ToByteArray(p.Value); }
-
-        public static Byte[] ToByteArray(SqlBinary p) { return p.IsNull ? null : p.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlString value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlByte to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlByte.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlByte value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt16 to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlInt16.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlInt16 value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt32 to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlInt32.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlInt32 value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlInt64 to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlInt64.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlInt64 value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlSingle to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlSingle.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlSingle value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDouble to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlDouble.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlDouble value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDecimal to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlDecimal.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlDecimal value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlMoney to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlMoney.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlMoney value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBoolean to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlBoolean.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlBoolean value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlDateTime to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlDateTime.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlDateTime value) { return value.IsNull ? null : ToByteArray(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlBinary value) { return value.IsNull ? null : value.Value; }
 #if !(NET_1_1)
-        public static Byte[] ToByteArray(SqlBytes p)    { return p.IsNull? null: p.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlBytes to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlBytes.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlBytes value) { return value.IsNull ? null : value.Value; }
 #endif
-        public static Byte[] ToByteArray(SqlGuid p) { return p.IsNull ? null : p.ToByteArray(); }
+        /// <summary>
+        /// Converts the value of the specified SqlGuid to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">An SqlGuid.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(SqlGuid value) { return value.IsNull ? null : value.ToByteArray(); }
 #endif
-        public static Byte[] ToByteArray(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent byte array representation.
+        /// </summary>
+        /// <param name="value">A Object object.</param>
+        /// <returns>The equivalent byte array representation.</returns>
+        public static Byte[] ToByteArray(object value)
         {
-            if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
-            if (p is Byte[]) return (Byte[])p;
+            if (value is Byte[]) return (Byte[])value;
 
             // Scalar Types.
             //
-            if (p is String) return ToByteArray((String)p);
+            if (value is String) return ToByteArray((String)value);
 
-            if (p is SByte) return ToByteArray((SByte)p);
-            if (p is Int16) return ToByteArray((Int16)p);
-            if (p is Int32) return ToByteArray((Int32)p);
-            if (p is Int64) return ToByteArray((Int64)p);
+            if (value is SByte) return ToByteArray((SByte)value);
+            if (value is Int16) return ToByteArray((Int16)value);
+            if (value is Int32) return ToByteArray((Int32)value);
+            if (value is Int64) return ToByteArray((Int64)value);
 
-            if (p is Byte) return ToByteArray((Byte)p);
-            if (p is UInt16) return ToByteArray((UInt16)p);
-            if (p is UInt32) return ToByteArray((UInt32)p);
-            if (p is UInt64) return ToByteArray((UInt64)p);
+            if (value is Byte) return ToByteArray((Byte)value);
+            if (value is UInt16) return ToByteArray((UInt16)value);
+            if (value is UInt32) return ToByteArray((UInt32)value);
+            if (value is UInt64) return ToByteArray((UInt64)value);
 
-            if (p is Char) return ToByteArray((Char)p);
-            if (p is Single) return ToByteArray((Single)p);
-            if (p is Double) return ToByteArray((Double)p);
-            if (p is Boolean) return ToByteArray((Boolean)p);
-            if (p is Decimal) return ToByteArray((Decimal)p);
+            if (value is Char) return ToByteArray((Char)value);
+            if (value is Single) return ToByteArray((Single)value);
+            if (value is Double) return ToByteArray((Double)value);
+            if (value is Boolean) return ToByteArray((Boolean)value);
+            if (value is Decimal) return ToByteArray((Decimal)value);
 
-            if (p is DateTime) return ToByteArray((DateTime)p);
-            if (p is TimeSpan) return ToByteArray((TimeSpan)p);
+            if (value is DateTime) return ToByteArray((DateTime)value);
+            if (value is TimeSpan) return ToByteArray((TimeSpan)value);
 
-            if (p is Stream) return ToByteArray((Stream)p);
-            if (p is Guid) return ToByteArray((Guid)p);
+            if (value is Stream) return ToByteArray((Stream)value);
+            if (value is Guid) return ToByteArray((Guid)value);
 
             // SqlTypes.
 #if! SILVERLIGHT
-            if (p is SqlString) return ToByteArray((SqlString)p);
+            if (value is SqlString) return ToByteArray((SqlString)value);
 
-            if (p is SqlByte) return ToByteArray((SqlByte)p);
-            if (p is SqlInt16) return ToByteArray((SqlInt16)p);
-            if (p is SqlInt32) return ToByteArray((SqlInt32)p);
-            if (p is SqlInt64) return ToByteArray((SqlInt64)p);
+            if (value is SqlByte) return ToByteArray((SqlByte)value);
+            if (value is SqlInt16) return ToByteArray((SqlInt16)value);
+            if (value is SqlInt32) return ToByteArray((SqlInt32)value);
+            if (value is SqlInt64) return ToByteArray((SqlInt64)value);
 
-            if (p is SqlSingle) return ToByteArray((SqlSingle)p);
-            if (p is SqlDouble) return ToByteArray((SqlDouble)p);
-            if (p is SqlDecimal) return ToByteArray((SqlDecimal)p);
-            if (p is SqlMoney) return ToByteArray((SqlMoney)p);
+            if (value is SqlSingle) return ToByteArray((SqlSingle)value);
+            if (value is SqlDouble) return ToByteArray((SqlDouble)value);
+            if (value is SqlDecimal) return ToByteArray((SqlDecimal)value);
+            if (value is SqlMoney) return ToByteArray((SqlMoney)value);
 
-            if (p is SqlBoolean) return ToByteArray((SqlBoolean)p);
-            if (p is SqlDateTime) return ToByteArray((SqlDateTime)p);
+            if (value is SqlBoolean) return ToByteArray((SqlBoolean)value);
+            if (value is SqlDateTime) return ToByteArray((SqlDateTime)value);
 
-            if (p is SqlBinary) return ToByteArray((SqlBinary)p);
+            if (value is SqlBinary) return ToByteArray((SqlBinary)value);
 #if !(NET_1_1)
-            if (p is SqlBytes)    return ToByteArray((SqlBytes)p);
+            if (value is SqlBytes) return ToByteArray((SqlBytes)value);
 #endif
-            if (p is SqlGuid) return ToByteArray((SqlGuid)p);
+            if (value is SqlGuid) return ToByteArray((SqlGuid)value);
 #endif
-            if (p is ByteArray) return ToByteArray((ByteArray)p);
+            if (value is ByteArray) return ToByteArray((ByteArray)value);
 
-            throw CreateInvalidCastException(p.GetType(), typeof(Byte[]));
+            throw CreateInvalidCastException(value.GetType(), typeof(Byte[]));
         }
 
         #endregion
@@ -12130,34 +12576,54 @@ namespace FluorineFx.Util
         #region Char[]
 
         // Scalar Types.
-        // 
-        public static Char[] ToCharArray(String p) { return p == null ? null : p.ToCharArray(); }
+
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent byte character representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent character array.</returns>
+        public static Char[] ToCharArray(String value) { return value == null ? null : value.ToCharArray(); }
 
         // SqlTypes.
 #if! SILVERLIGHT
-        public static Char[] ToCharArray(SqlString p) { return p.IsNull ? null : p.Value.ToCharArray(); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent byte character representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent character array.</returns>
+        public static Char[] ToCharArray(SqlString value) { return value.IsNull ? null : value.Value.ToCharArray(); }
 #if !(NET_1_1)
-        public static Char[] ToCharArray(SqlChars p)    { return p.IsNull? null: p.Value; }
+        /// <summary>
+        /// Converts the value of the specified SqlChars to its equivalent byte character representation.
+        /// </summary>
+        /// <param name="value">An SqlChars.</param>
+        /// <returns>The equivalent character array.</returns>
+        public static Char[] ToCharArray(SqlChars value) { return value.IsNull ? null : value.Value; }
 #endif
 #endif
-        public static Char[] ToCharArray(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent byte character representation.
+        /// </summary>
+        /// <param name="value">A Object object.</param>
+        /// <returns>The equivalent character array representation.</returns>
+        public static Char[] ToCharArray(object value)
         {
-            if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
-            if (p is Char[]) return (Char[])p;
+            if (value is Char[]) return (Char[])value;
 
             // Scalar Types.
             //
-            if (p is String) return ToCharArray((String)p);
+            if (value is String) return ToCharArray((String)value);
 
             // SqlTypes.
 #if! SILVERLIGHT
-            if (p is SqlString) return ToCharArray((SqlString)p);
+            if (value is SqlString) return ToCharArray((SqlString)value);
 #if !(NET_1_1)
-            if (p is SqlChars)    return ToCharArray((SqlChars)p);
+            if (value is SqlChars) return ToCharArray((SqlChars)value);
 #endif
 #endif
-            return ToString(p).ToCharArray();
+            return ToString(value).ToCharArray();
         }
 
         #endregion
@@ -12166,55 +12632,109 @@ namespace FluorineFx.Util
 
 #if! SILVERLIGHT
         // Scalar Types.
-        // 
-        public static XmlReader ToXmlReader(String p) { return p == null ? null : new XmlTextReader(new StringReader(p)); }
+
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(String value) { return value == null ? null : new XmlTextReader(new StringReader(value)); }
 
         // SqlTypes.
-        public static XmlReader ToXmlReader(SqlString p) { return p.IsNull ? null : new XmlTextReader(new StringReader(p.Value)); }
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(SqlString value) { return value.IsNull ? null : new XmlTextReader(new StringReader(value.Value)); }
 #if !(NET_1_1)
-        public static XmlReader ToXmlReader(SqlXml p)      { return p.IsNull? null: p.CreateReader(); }
-		public static XmlReader ToXmlReader(SqlChars p)    { return p.IsNull? null: new XmlTextReader(new StringReader(p.ToSqlString().Value)); }
+        /// <summary>
+        /// Converts the value of the specified SqlXml to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">An SqlXml.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(SqlXml value) { return value.IsNull ? null : value.CreateReader(); }
+        /// <summary>
+        /// Converts the value of the specified SqlChars to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">An SqlChars.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(SqlChars value) { return value.IsNull ? null : new XmlTextReader(new StringReader(value.ToSqlString().Value)); }
 #endif
-        public static XmlReader ToXmlReader(SqlBinary p) { return p.IsNull ? null : new XmlTextReader(new MemoryStream(p.Value)); }
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(SqlBinary value) { return value.IsNull ? null : new XmlTextReader(new MemoryStream(value.Value)); }
         // Other Types.
-        // 
-        public static XmlReader ToXmlReader(Stream p) { return p == null ? null : new XmlTextReader(p); }
-        public static XmlReader ToXmlReader(TextReader p) { return p == null ? null : new XmlTextReader(p); }
+
+        /// <summary>
+        /// Converts the value of the specified Stream to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">A Stream object.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(Stream value) { return value == null ? null : new XmlTextReader(value); }
+        /// <summary>
+        /// Converts the value of the specified TextReader to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">A TextReader object.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(TextReader value) { return value == null ? null : new XmlTextReader(value); }
 #if! SILVERLIGHT
-        public static XmlReader ToXmlReader(XmlDocument p) { return p == null ? null : new XmlTextReader(new StringReader(p.InnerXml)); }
+        /// <summary>
+        /// Converts the value of the specified XmlDocument to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">An XmlDocument object.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(XmlDocument value) { return value == null ? null : new XmlTextReader(new StringReader(value.InnerXml)); }
 #endif
-        public static XmlReader ToXmlReader(Char[] p) { return p == null ? null : new XmlTextReader(new StringReader(new string(p))); }
-        public static XmlReader ToXmlReader(Byte[] p) { return p == null ? null : new XmlTextReader(new MemoryStream(p)); }
-
-        public static XmlReader ToXmlReader(object p)
+        /// <summary>
+        /// Converts the value of the specified character array to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">A character array.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(Char[] value) { return value == null ? null : new XmlTextReader(new StringReader(new string(value))); }
+        /// <summary>
+        /// Converts the value of the specified byte array to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">A byte array.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(Byte[] value) { return value == null ? null : new XmlTextReader(new MemoryStream(value)); }
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent XmlReader representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent XmlReader.</returns>
+        public static XmlReader ToXmlReader(object value)
         {
-            if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
-            if (p is XmlReader) return (XmlReader)p;
+            if (value is XmlReader) return (XmlReader)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToXmlReader((String)p);
+            if (value is String) return ToXmlReader((String)value);
 
             // SqlTypes.
             //
-            if (p is SqlString) return ToXmlReader((SqlString)p);
+            if (value is SqlString) return ToXmlReader((SqlString)value);
 #if !(NET_1_1)
-            if (p is SqlXml)      return ToXmlReader((SqlXml)p);
-			if (p is SqlChars)    return ToXmlReader((SqlChars)p);
+            if (value is SqlXml) return ToXmlReader((SqlXml)value);
+            if (value is SqlChars) return ToXmlReader((SqlChars)value);
 #endif
-            if (p is SqlBinary) return ToXmlReader((SqlBinary)p);
+            if (value is SqlBinary) return ToXmlReader((SqlBinary)value);
 
             // Other Types.
             //
-            if (p is Stream) return ToXmlReader((Stream)p);
-            if (p is TextReader) return ToXmlReader((TextReader)p);
-            if (p is XmlDocument) return ToXmlReader((XmlDocument)p);
+            if (value is Stream) return ToXmlReader((Stream)value);
+            if (value is TextReader) return ToXmlReader((TextReader)value);
+            if (value is XmlDocument) return ToXmlReader((XmlDocument)value);
 
-            if (p is Char[]) return ToXmlReader((Char[])p);
-            if (p is Byte[]) return ToXmlReader((Byte[])p);
+            if (value is Char[]) return ToXmlReader((Char[])value);
+            if (value is Byte[]) return ToXmlReader((Byte[])value);
 
-            throw CreateInvalidCastException(p.GetType(), typeof(XmlReader));
+            throw CreateInvalidCastException(value.GetType(), typeof(XmlReader));
         }
 #else
         public static XmlReader ToXmlReader(String p) { return p == null ? null : XmlReader.Create(new StringReader(p)); }
@@ -12243,41 +12763,76 @@ namespace FluorineFx.Util
 #if! SILVERLIGHT
 
         // Scalar Types.
-        public static XmlDocument ToXmlDocument(String p)
+
+        /// <summary>
+        /// Converts the value of the specified String to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">A String.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(String value)
         {
-            if (p == null) return null;
+            if (value == null) return null;
 
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml(p);
+            doc.LoadXml(value);
             return doc;
         }
 
         // SqlTypes.
-        // 
-        public static XmlDocument ToXmlDocument(SqlString p) { return p.IsNull ? null : ToXmlDocument(p.Value); }
+
+        /// <summary>
+        /// Converts the value of the specified SqlString to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">An SqlString.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(SqlString value) { return value.IsNull ? null : ToXmlDocument(value.Value); }
 #if !(NET_1_1)
-        public static XmlDocument ToXmlDocument(SqlXml p)      { return p.IsNull? null: ToXmlDocument(p.Value); }
-		public static XmlDocument ToXmlDocument(SqlChars p)    { return p.IsNull? null: ToXmlDocument(p.ToSqlString().Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlXml to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">An SqlXml.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(SqlXml value) { return value.IsNull ? null : ToXmlDocument(value.Value); }
+        /// <summary>
+        /// Converts the value of the specified SqlChars to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">An SqlChars.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(SqlChars value) { return value.IsNull ? null : ToXmlDocument(value.ToSqlString().Value); }
 #endif
-        public static XmlDocument ToXmlDocument(SqlBinary p) { return p.IsNull ? null : ToXmlDocument(new MemoryStream(p.Value)); }
+        /// <summary>
+        /// Converts the value of the specified SqlBinary to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">An SqlBinary.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(SqlBinary value) { return value.IsNull ? null : ToXmlDocument(new MemoryStream(value.Value)); }
 
         // Other Types.
-        // 
-        public static XmlDocument ToXmlDocument(Stream p)
+
+        /// <summary>
+        /// Converts the value of the specified Stream to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">A Stream object.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(Stream value)
         {
-            if (p == null) return null;
+            if (value == null) return null;
 
             XmlDocument doc = new XmlDocument();
-            doc.Load(p);
+            doc.Load(value);
             return doc;
         }
-
-        public static XmlDocument ToXmlDocument(TextReader p)
+        /// <summary>
+        /// Converts the value of the specified TextReader to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">A TextReader object.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(TextReader value)
         {
-            if (p == null) return null;
+            if (value == null) return null;
 
             XmlDocument doc = new XmlDocument();
-            doc.Load(p);
+            doc.Load(value);
             return doc;
         }
 
@@ -12301,51 +12856,68 @@ namespace FluorineFx.Util
         }
 #endif
 
-
-        public static XmlDocument ToXmlDocument(Char[] p) { return p == null ? null : ToXmlDocument(new string(p)); }
-        public static XmlDocument ToXmlDocument(Byte[] p) { return p == null ? null : ToXmlDocument(new MemoryStream(p)); }
-
-        public static XmlDocument ToXmlDocument(XmlReader p)
+        /// <summary>
+        /// Converts the value of the specified character array to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">A character array.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(Char[] value) { return value == null ? null : ToXmlDocument(new string(value)); }
+        /// <summary>
+        /// Converts the value of the specified byte array to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">A byte array.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(Byte[] value) { return value == null ? null : ToXmlDocument(new MemoryStream(value)); }
+        /// <summary>
+        /// Converts the value of the specified XmlReader to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">An XmlReader object.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(XmlReader value)
         {
-            if (p == null) return null;
+            if (value == null) return null;
 
             XmlDocument doc = new XmlDocument();
-            doc.Load(p);
+            doc.Load(value);
             return doc;
         }
-
-        public static XmlDocument ToXmlDocument(object p)
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent XmlDocument representation.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
+        public static XmlDocument ToXmlDocument(object value)
         {
-            if (p == null || p is DBNull) return null;
+            if (value == null || value is DBNull) return null;
 
-            if (p is XmlDocument) return (XmlDocument)p;
+            if (value is XmlDocument) return (XmlDocument)value;
 
             // Scalar Types.
             //
-            if (p is String) return ToXmlDocument((String)p);
+            if (value is String) return ToXmlDocument((String)value);
 
             // SqlTypes.
             //
-            if (p is SqlString) return ToXmlDocument((SqlString)p);
+            if (value is SqlString) return ToXmlDocument((SqlString)value);
 #if !(NET_1_1)
-            if (p is SqlXml)      return ToXmlDocument((SqlXml)p);
-			if (p is SqlChars)    return ToXmlDocument((SqlChars)p);
+            if (value is SqlXml) return ToXmlDocument((SqlXml)value);
+            if (value is SqlChars) return ToXmlDocument((SqlChars)value);
 #endif
-            if (p is SqlBinary) return ToXmlDocument((SqlBinary)p);
+            if (value is SqlBinary) return ToXmlDocument((SqlBinary)value);
 
             // Other Types.
             //
-            if (p is Stream) return ToXmlDocument((Stream)p);
-            if (p is TextReader) return ToXmlDocument((TextReader)p);
-            if (p is XmlReader) return ToXmlDocument((XmlReader)p);
+            if (value is Stream) return ToXmlDocument((Stream)value);
+            if (value is TextReader) return ToXmlDocument((TextReader)value);
+            if (value is XmlReader) return ToXmlDocument((XmlReader)value);
 
-            if (p is Char[]) return ToXmlDocument((Char[])p);
-            if (p is Byte[]) return ToXmlDocument((Byte[])p);
+            if (value is Char[]) return ToXmlDocument((Char[])value);
+            if (value is Byte[]) return ToXmlDocument((Byte[])value);
 #if !NET_1_1 && !NET_2_0
             if (p is System.Xml.Linq.XDocument) return ToXmlDocument((System.Xml.Linq.XDocument)p);
             if (p is System.Xml.Linq.XElement) return ToXmlDocument((System.Xml.Linq.XElement)p);
 #endif
-            throw CreateInvalidCastException(p.GetType(), typeof(XmlDocument));
+            throw CreateInvalidCastException(value.GetType(), typeof(XmlDocument));
         }
 #endif
         #endregion

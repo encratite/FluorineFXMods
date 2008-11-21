@@ -19,6 +19,9 @@
 using System;
 namespace FluorineFx.Messaging.Api.Statistics
 {
+    /// <summary>
+    /// Base interface for all statistics informations.
+    /// </summary>
     public interface IStatisticsBase
     {
         /// <summary>

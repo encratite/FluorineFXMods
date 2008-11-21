@@ -116,16 +116,25 @@ namespace FluorineFx.Collections
 
         #region ICollection Members
 
+        /// <summary>
+        /// Copies the elements of the CopyOnWriteArraySet to an Array, starting at a particular Array index.
+        /// </summary>
+        /// <param name="array">The one-dimensional Array that is the destination of the elements copied from CopyOnWriteArraySet. The Array must have zero-based indexing.</param>
+        /// <param name="index">The zero-based index in array at which copying begins.</param>
         public void CopyTo(Array array, int index)
         {
             _array.CopyTo(array, index);
         }
-
+        /// <summary>
+        /// Gets a value indicating whether access to the CopyOnWriteArraySet is synchronized (thread safe).
+        /// </summary>
         public bool IsSynchronized
         {
             get { return false; }
         }
-
+        /// <summary>
+        /// Gets an object that can be used to synchronize access to the CopyOnWriteArray.
+        /// </summary>
         public object SyncRoot
         {
             get { return _array.SyncRoot; }

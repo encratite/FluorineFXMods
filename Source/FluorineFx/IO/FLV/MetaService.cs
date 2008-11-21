@@ -25,52 +25,77 @@ using FluorineFx.IO;
 namespace FluorineFx.IO.FLV
 {
     /// <summary>
-    /// MetaData service.
+    /// Metadata service.
     /// </summary>
     [CLSCompliant(false)]
     public class MetaService
     {
+        /// <summary>
+        /// Source file.
+        /// </summary>
         private FileInfo _file;
+        /*
+        /// <summary>
+        /// File input stream
+        /// </summary>
         private Stream _input;
-
+        /// <summary>
+        /// Gets the file input stream.
+        /// </summary>
         public Stream Input
         {
             get { return _input; }
-            set { _input = value; }
+            //set { _input = value; }
         }
-
+        */
+        /// <summary>
+        /// File output stream.
+        /// </summary>
         private Stream _output;
-
+        /// <summary>
+        /// Gets or sets the file output stream.
+        /// </summary>
         public Stream Output
         {
             get { return _output; }
             set { _output = value; }
         }
-
         private AMFReader _deserializer;
-
+        /// <summary>
+        /// Gets or sets the deserializer.
+        /// </summary>
         public AMFReader Deserializer
         {
             get { return _deserializer; }
             set { _deserializer = value; }
         }
         private AMFWriter _serializer;
-
+        /// <summary>
+        /// Gets or sets the serializer.
+        /// </summary>
         public AMFWriter Serializer
         {
             get { return _serializer; }
             set { _serializer = value; }
         }
-
+        /// <summary>
+        /// Initializes a new instance of the MetaService class.
+        /// </summary>
         public MetaService()
         {
         }
-
+        /// <summary>
+        /// Initializes a new instance of the MetaService class.
+        /// </summary>
+        /// <param name="file">The soure file.</param>
         public MetaService(FileInfo file)
         {
             _file = file;
         }
-
+        /// <summary>
+        /// Initiates writing of the Metadata.
+        /// </summary>
+        /// <param name="meta">Metadata to write.</param>
         public void Write(MetaData meta)
         {
             // Get cue points, FLV reader and writer
@@ -154,8 +179,8 @@ namespace FluorineFx.IO.FLV
         /// <summary>
         /// Injects metadata (other than Cue points) into a tag.
         /// </summary>
-        /// <param name="meta"></param>
-        /// <param name="tag"></param>
+        /// <param name="meta">Metadata.</param>
+        /// <param name="tag">Tag.</param>
         /// <returns></returns>
         private ITag InjectMetaData(MetaData meta, ITag tag)
         {
@@ -170,8 +195,8 @@ namespace FluorineFx.IO.FLV
         /// <summary>
         /// Injects metadata (Cue Points) into a tag.
         /// </summary>
-        /// <param name="meta"></param>
-        /// <param name="tag"></param>
+        /// <param name="meta">Metadata.</param>
+        /// <param name="tag">Tag.</param>
         /// <returns></returns>
         private ITag InjectMetaCue(MetaCue meta, ITag tag)
         {
@@ -186,17 +211,24 @@ namespace FluorineFx.IO.FLV
         /// <summary>
         /// Returns a timestamp of cue point in milliseconds.
         /// </summary>
-        /// <param name="metaCue"></param>
-        /// <returns></returns>
+        /// <param name="metaCue">Cue point.</param>
+        /// <returns>Timestamp of given cue point (in milliseconds).</returns>
         private int GetTimeInMilliseconds(MetaCue metaCue)
         {
             return (int)(metaCue.Time * 1000.00);
         }
-
+        /// <summary>
+        /// Writes the Metadata.
+        /// </summary>
+        /// <param name="metaData">Metadata to write.</param>
         public void WriteMetaData(MetaData metaData)
         {
         }
-
+        /// <summary>
+        /// Reads the Metadata.
+        /// </summary>
+        /// <param name="buffer">Byte buffer source.</param>
+        /// <returns>Metadata.</returns>
 	    public MetaData ReadMetaData(byte[] buffer) 
         {
 		    MetaData retMeta = new MetaData();
@@ -207,7 +239,10 @@ namespace FluorineFx.IO.FLV
 		    retMeta.PutAll(data);
 		    return retMeta;
 	    }
-
+        /// <summary>
+        /// Reads the Meta cue points.
+        /// </summary>
+        /// <returns>Meta cue points.</returns>
         public MetaCue[] ReadMetaCue()
         {
             return null;

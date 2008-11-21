@@ -25,9 +25,21 @@ namespace FluorineFx.Messaging.Rtmp
 	/// </summary>
 	public enum HeaderType : byte
 	{
+        /// <summary>
+        /// New header marker.
+        /// </summary>
 		HeaderNew = 0,
+        /// <summary>
+        /// Same source marker.
+        /// </summary>
 		HeaderSameSource = 1,
+        /// <summary>
+        /// Timer change marker.
+        /// </summary>
 		HeaderTimerChange = 2,
+        /// <summary>
+        /// Continuation marker.
+        /// </summary>
 		HeaderContinue = 3
 	}
 

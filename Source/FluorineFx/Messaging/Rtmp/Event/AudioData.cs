@@ -32,22 +32,34 @@ namespace FluorineFx.Messaging.Rtmp.Event
 	{
 		protected ByteBuffer _data;
 
+        /// <summary>
+        /// Initializes a new instance of the AudioData class.
+        /// </summary>
+        /// <param name="data"></param>
 		public AudioData(ByteBuffer data):base(EventType.STREAM_DATA)
 		{
 			_dataType = Constants.TypeAudioData;
 			_data = data;
 		}
-
+        /// <summary>
+        /// Initializes a new instance of the AudioData class.
+        /// </summary>
 		public AudioData():this(ByteBuffer.Allocate(0))
 		{
 		}
-
+        /// <summary>
+        /// Initializes a new instance of the AudioData class.
+        /// </summary>
+        /// <param name="data"></param>
         public AudioData(byte[] data)
             : this(ByteBuffer.Wrap(data))
         {
         }
-		
-		public override string ToString()
+        /// <summary>
+        /// Returns a string that represents the current AudioData object.
+        /// </summary>
+        /// <returns>A string that represents the current AudioData object.</returns>
+        public override string ToString()
 		{
 			return "Audio  ts: " + this.Header.Timer;
 		}

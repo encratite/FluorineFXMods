@@ -27,7 +27,7 @@ namespace FluorineFx.Messaging.Rtmp.SO
 	{
 		private static SharedObjectEventType[] _typeMap = new SharedObjectEventType[] 
 			{
-				SharedObjectEventType.Unknown,
+				//SharedObjectEventType.Unknown,
 				SharedObjectEventType.SERVER_CONNECT, // 01
 				SharedObjectEventType.SERVER_DISCONNECT, // 02
 				SharedObjectEventType.SERVER_SET_ATTRIBUTE, // 03

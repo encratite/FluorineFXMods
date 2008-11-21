@@ -161,7 +161,7 @@ namespace FluorineFx
         public const byte ByteArray = 12;
 	}
 
-    public sealed class ContentType
+    internal sealed class ContentType
     {
         public const string RTMPT = "application/x-fcs";
         public const string AMF = "application/x-amf";

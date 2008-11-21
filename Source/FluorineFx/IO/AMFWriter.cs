@@ -1284,49 +1284,51 @@ namespace FluorineFx.IO
 
 		private ClassDefinition CreateClassDefinition(object obj)
 		{
-			ClassDefinition classDefinition = null;
-            Type type = obj.GetType();
-            bool externalizable = type.GetInterface(typeof(FluorineFx.AMF3.IExternalizable).FullName, true) != null;
-			bool dynamic = false;
-			string customClassName = null;
-			if( obj is IDictionary )//ASObject, ObjectProxy
-			{
-				if( obj is ASObject && (obj as ASObject).IsTypedObject)//ASObject
-				{
-					ASObject asObject = obj as ASObject;
-                    ClassMember[] classMemberList = new ClassMember[asObject.Count];
-					int i = 0;
+            lock ((classDefinitions as ICollection).SyncRoot)
+            {
+                ClassDefinition classDefinition = null;
+                Type type = obj.GetType();
+                bool externalizable = type.GetInterface(typeof(FluorineFx.AMF3.IExternalizable).FullName, true) != null;
+                bool dynamic = false;
+                string customClassName = null;
+                if (obj is IDictionary)//ASObject, ObjectProxy
+                {
+                    if (obj is ASObject && (obj as ASObject).IsTypedObject)//ASObject
+                    {
+                        ASObject asObject = obj as ASObject;
+                        ClassMember[] classMemberList = new ClassMember[asObject.Count];
+                        int i = 0;
 #if !(NET_1_1)
-                    foreach (KeyValuePair<string, object> entry in asObject)
+                        foreach (KeyValuePair<string, object> entry in asObject)
 #else
 					foreach(DictionaryEntry entry in asObject)
 #endif
+                        {
+                            ClassMember classMember = new ClassMember(entry.Key as string, BindingFlags.Default, MemberTypes.Custom);
+                            classMemberList[i] = classMember;
+                            i++;
+                        }
+                        customClassName = asObject.TypeName;
+                        classDefinition = new ClassDefinition(customClassName, classMemberList, externalizable, dynamic);
+                        classDefinitions[customClassName] = classDefinition;
+                    }
+                    else
                     {
-                        ClassMember classMember = new ClassMember(entry.Key as string, BindingFlags.Default, MemberTypes.Custom);
-                        classMemberList[i] = classMember;
-						i++;
-					}
-					customClassName = asObject.TypeName;
-                    classDefinition = new ClassDefinition(customClassName, classMemberList, externalizable, dynamic);
-                    classDefinitions[customClassName] = classDefinition;
+                        dynamic = true;
+                        customClassName = string.Empty;
+                        classDefinition = new ClassDefinition(customClassName, ClassDefinition.EmptyClassMembers, externalizable, dynamic);
+                    }
                 }
-				else
-				{
-					dynamic = true;
-					customClassName = string.Empty;
-                    classDefinition = new ClassDefinition(customClassName, ClassDefinition.EmptyClassMembers, externalizable, dynamic);
-				}
-			}			
-			else if( obj is IExternalizable )
-			{
-				customClassName = type.FullName;
-				customClassName = FluorineConfiguration.Instance.GetCustomClass(customClassName);
+                else if (obj is IExternalizable)
+                {
+                    customClassName = type.FullName;
+                    customClassName = FluorineConfiguration.Instance.GetCustomClass(customClassName);
 
-				classDefinition = new ClassDefinition(customClassName, ClassDefinition.EmptyClassMembers, true, false);
-                classDefinitions[type.FullName] = classDefinition;
-			}
-			else
-			{
+                    classDefinition = new ClassDefinition(customClassName, ClassDefinition.EmptyClassMembers, true, false);
+                    classDefinitions[type.FullName] = classDefinition;
+                }
+                else
+                {
 #if WCF
                 //Verify [DataContract] or [Serializable] on type
                 bool serializable = IsDataContract(type) || type.IsSerializable;
@@ -1407,70 +1409,71 @@ namespace FluorineFx.IO
                 classDefinitions[type.FullName] = classDefinition;
 #else
 #if !(NET_1_1)
-                List<string> memberNames = new List<string>();
-                List<ClassMember> classMemberList = new List<ClassMember>();
+                    List<string> memberNames = new List<string>();
+                    List<ClassMember> classMemberList = new List<ClassMember>();
 #else
                 ArrayList memberNames = new ArrayList();
                 ArrayList classMemberList = new ArrayList();
 #endif
-                PropertyInfo[] propertyInfos = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                for (int i = 0; i < propertyInfos.Length; i++)
-                {
-                    PropertyInfo propertyInfo = propertyInfos[i] as PropertyInfo;
-                    string name = propertyInfo.Name;
-                    if (propertyInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
-                        continue;
-                    if (propertyInfo.GetGetMethod() == null || propertyInfo.GetGetMethod().GetParameters().Length > 0)
+                    PropertyInfo[] propertyInfos = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                    for (int i = 0; i < propertyInfos.Length; i++)
                     {
-                        //The gateway will not be able to access this property
-                        string msg = __Res.GetString(__Res.Reflection_PropertyIndexFail, string.Format("{0}.{1}", type.FullName, propertyInfo.Name));
+                        PropertyInfo propertyInfo = propertyInfos[i] as PropertyInfo;
+                        string name = propertyInfo.Name;
+                        if (propertyInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
+                            continue;
+                        if (propertyInfo.GetGetMethod() == null || propertyInfo.GetGetMethod().GetParameters().Length > 0)
+                        {
+                            //The gateway will not be able to access this property
+                            string msg = __Res.GetString(__Res.Reflection_PropertyIndexFail, string.Format("{0}.{1}", type.FullName, propertyInfo.Name));
 #if !SILVERLIGHT
-                        if (log.IsWarnEnabled)
-                            log.Warn(msg);
+                            if (log.IsWarnEnabled)
+                                log.Warn(msg);
 #endif
-                        continue;
+                            continue;
+                        }
+                        if (memberNames.Contains(name))
+                            continue;
+                        memberNames.Add(name);
+                        BindingFlags bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
+                        try
+                        {
+                            PropertyInfo propertyInfoTmp = obj.GetType().GetProperty(name);
+                        }
+                        catch (AmbiguousMatchException)
+                        {
+                            bf = BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance;
+                        }
+                        ClassMember classMember = new ClassMember(name, bf, propertyInfo.MemberType);
+                        classMemberList.Add(classMember);
                     }
-                    if (memberNames.Contains(name))
-                        continue;
-                    memberNames.Add(name);
-                    BindingFlags bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
-                    try
+                    FieldInfo[] fieldInfos = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+                    for (int i = 0; i < fieldInfos.Length; i++)
                     {
-                        PropertyInfo propertyInfoTmp = obj.GetType().GetProperty(name);
-                    }
-                    catch (AmbiguousMatchException)
-                    {
-                        bf = BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance;
-                    }
-                    ClassMember classMember = new ClassMember(name, bf, propertyInfo.MemberType);
-                    classMemberList.Add(classMember);
-                }
-                FieldInfo[] fieldInfos = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-                for (int i = 0; i < fieldInfos.Length; i++)
-                {
-                    FieldInfo fieldInfo = fieldInfos[i] as FieldInfo;
+                        FieldInfo fieldInfo = fieldInfos[i] as FieldInfo;
 #if !SILVERLIGHT
-                    if (fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0)
-                        continue;
+                        if (fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0)
+                            continue;
 #endif
-                    if (fieldInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
-                        continue;
-                    string name = fieldInfo.Name;
-                    ClassMember classMember = new ClassMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType);
-                    classMemberList.Add(classMember);
-                }
+                        if (fieldInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
+                            continue;
+                        string name = fieldInfo.Name;
+                        ClassMember classMember = new ClassMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType);
+                        classMemberList.Add(classMember);
+                    }
 #if !(NET_1_1)
-                ClassMember[] classMembers = classMemberList.ToArray();
+                    ClassMember[] classMembers = classMemberList.ToArray();
 #else
                 ClassMember[] classMembers = classMemberList.ToArray(typeof(ClassMember)) as ClassMember[];
 #endif
-                customClassName = type.FullName;
-				customClassName = FluorineConfiguration.Instance.GetCustomClass(customClassName);
-                classDefinition = new ClassDefinition(customClassName, classMembers, externalizable, dynamic);
-				classDefinitions[type.FullName] = classDefinition;
+                    customClassName = type.FullName;
+                    customClassName = FluorineConfiguration.Instance.GetCustomClass(customClassName);
+                    classDefinition = new ClassDefinition(customClassName, classMembers, externalizable, dynamic);
+                    classDefinitions[type.FullName] = classDefinition;
 #endif
-			}
-			return classDefinition;
+                }
+                return classDefinition;
+            }
 		}
 
 		#endregion AMF3

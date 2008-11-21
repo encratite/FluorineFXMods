@@ -41,11 +41,11 @@ namespace FluorineFx.Data
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(SequenceManager));
 
-		static object _objLock = new object();
+		object _objLock = new object();
 		DataDestination _dataDestination;
 
         CopyOnWriteDictionary _sequenceIdToSequenceHash;
-		Hashtable		_parametersToSequenceIdHash;
+        Hashtable        _parametersToSequenceIdHash;
 		Hashtable		_itemIdToSequenceIdMapHash;
 		Hashtable		_itemIdToItemHash;
 		Hashtable		_clientIdToSequenceHash;

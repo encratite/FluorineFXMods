@@ -29,6 +29,9 @@ using FluorineFx.Exceptions;
 
 namespace FluorineFx.Messaging.Rtmp.Service
 {
+    /// <summary>
+    /// Basic service call (remote call) implementation.
+    /// </summary>
     [CLSCompliant(false)]
     public class Call : IServiceCall
     {
@@ -94,17 +97,30 @@ namespace FluorineFx.Messaging.Rtmp.Service
         /// </summary>
         protected Exception _exception;
 
+        /// <summary>
+        /// Initializes a new instance of the Call class.
+        /// </summary>
+        /// <param name="method">Method name.</param>
         public Call(string method)
         {
             _serviceMethodName = method;
         }
-
+        /// <summary>
+        /// Initializes a new instance of the Call class.
+        /// </summary>
+        /// <param name="method">Method name.</param>
+        /// <param name="args">Call parameters.</param>
         public Call(string method, object[] args)
         {
             _serviceMethodName = method;
             _arguments = args;
         }
-
+        /// <summary>
+        /// Initializes a new instance of the Call class.
+        /// </summary>
+        /// <param name="name">Service name</param>
+        /// <param name="method">Method name.</param>
+        /// <param name="args">Call parameters.</param>
         public Call(string name, string method, object[] args)
         {
             _serviceName = name;
@@ -114,6 +130,9 @@ namespace FluorineFx.Messaging.Rtmp.Service
 
         #region IServiceCall Members
 
+        /// <summary>
+        /// Gets a value indicating if the call was successful or not.
+        /// </summary>
         public bool IsSuccess
         {
             get
@@ -123,22 +142,30 @@ namespace FluorineFx.Messaging.Rtmp.Service
                     || (_status == STATUS_SUCCESS_VOID);
             }
         }
-
+        /// <summary>
+        /// Gets service method name.
+        /// </summary>
         public string ServiceMethodName
         {
             get { return _serviceMethodName; }
         }
-
+        /// <summary>
+        /// Gets service name.
+        /// </summary>
         public string ServiceName
         {
             get { return _serviceName; }
         }
-
+        /// <summary>
+        /// Gets array of service method arguments.
+        /// </summary>
         public object[] Arguments
         {
             get { return _arguments; }
         }
-
+        /// <summary>
+        /// Gets or sets service call status.
+        /// </summary>
         public byte Status
         {
             get
@@ -150,7 +177,9 @@ namespace FluorineFx.Messaging.Rtmp.Service
                 _status = value;
             }
         }
-
+        /// <summary>
+        /// Get or sets service call exception.
+        /// </summary>
         public Exception Exception
         {
             get

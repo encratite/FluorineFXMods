@@ -78,7 +78,7 @@ namespace FluorineFx.Messaging.Messages
 			return -1;
 		}
 
-		public void Update(IMessageClient messageClient)
+		internal void Update(IMessageClient messageClient)
 		{
 			byte[] binaryContent = this.body as byte[];
 			byte[] destClientBinaryId = messageClient.GetBinaryId();

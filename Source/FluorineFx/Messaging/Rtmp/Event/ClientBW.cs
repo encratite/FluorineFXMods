@@ -23,6 +23,7 @@ using FluorineFx.Messaging.Api.Event;
 namespace FluorineFx.Messaging.Rtmp.Event
 {
 	/// <summary>
+    /// Client bandwidth event.
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
     [CLSCompliant(false)]
@@ -31,13 +32,20 @@ namespace FluorineFx.Messaging.Rtmp.Event
 		private int _bandwidth;
 		private byte _value2;
 
+        /// <summary>
+        /// Initializes a new instance of the ClientBW class.
+        /// </summary>
+        /// <param name="bandwidth"></param>
+        /// <param name="value2"></param>
 		public ClientBW(int bandwidth, byte value2):base(EventType.STREAM_CONTROL)
 		{
 			_dataType = Constants.TypeClientBandwidth;
 			_bandwidth = bandwidth;
 			_value2 = value2;
 		}
-
+        /// <summary>
+        /// Gets or sets the bandwidth value.
+        /// </summary>
 		public int Bandwidth
 		{
 			get{ return _bandwidth; }
@@ -49,8 +57,11 @@ namespace FluorineFx.Messaging.Rtmp.Event
 			get{ return _value2; }
 			set{ _value2 = value; }
 		}
-
-		public override string ToString()
+        /// <summary>
+        /// Returns a string that represents the current ClientBW object.
+        /// </summary>
+        /// <returns>A string that represents the current ClientBW object.</returns>
+        public override string ToString()
 		{
 			return "ClientBW: " + _bandwidth + " value2: " + _value2;
 		}

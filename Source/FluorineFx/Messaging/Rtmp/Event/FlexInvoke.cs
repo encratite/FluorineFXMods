@@ -76,7 +76,7 @@ namespace FluorineFx.Messaging.Rtmp.Event
 			get{ return _cmdData; } 
 		}
 
-		public object	Response
+		public object Response
 		{
 			get{ return _response; } 
 			set{ _response = value; } 

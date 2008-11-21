@@ -3,6 +3,9 @@ using System.Collections;
 
 namespace FluorineFx.Collections
 {
+    /// <summary>
+    /// Represents a doubly linked list.
+    /// </summary>
     [Serializable]
     public class LinkedList : IList
     {
@@ -13,8 +16,7 @@ namespace FluorineFx.Collections
         #region Constructors
 
         /// <summary>
-        /// Creates a new instance of the
-        /// <see cref="Spring.Collections.LinkedList"/> class.
+        /// Initializes a new instance of the LinkedList class.
         /// </summary>
         public LinkedList()
         {
@@ -24,8 +26,7 @@ namespace FluorineFx.Collections
         }
 
         /// <summary>
-        /// Creates a new instance of the
-        /// <see cref="Spring.Collections.LinkedList"/> class that contains all
+        /// Initializes a new instance of the LinkedList class that contains all
         ///  elements of the specified list.
         /// </summary>
         /// <param name="list">
@@ -57,8 +58,7 @@ namespace FluorineFx.Collections
         /// </summary>
         /// <remarks>
         /// <p>
-        /// This is the indexer for the
-        /// <see cref="Spring.Collections.LinkedList"/> class.
+        /// This is the indexer for the LinkedList class.
         /// </p>
         /// </remarks>
         /// <seealso cref="GetNode(int)"/>
@@ -386,12 +386,10 @@ namespace FluorineFx.Collections
         }
 
         /// <summary>
-        /// An object that can be used to synchronize this
-        /// <see cref="Spring.Collections.LinkedList"/> to make it thread-safe.
+        /// An object that can be used to synchronize this LinkedList to make it thread-safe.
         /// </summary>
         /// <value>
-        /// An object that can be used to synchronize this
-        /// <see cref="Spring.Collections.LinkedList"/> to make it thread-safe.
+        /// An object that can be used to synchronize this LinkedList to make it thread-safe.
         /// </value>
         public object SyncRoot
         {
@@ -403,8 +401,7 @@ namespace FluorineFx.Collections
         #region IEnumerable Members
 
         /// <summary>
-        /// Gets an enumerator for the elements in the
-        /// <see cref="Spring.Collections.LinkedList"/>.
+        /// Gets an enumerator for the elements in the LinkedList.
         /// </summary>
         /// <remarks>
         /// <p>
@@ -412,8 +409,7 @@ namespace FluorineFx.Collections
         /// </p>
         /// </remarks>
         /// <returns>
-        /// An <see cref="System.Collections.IEnumerator"/> over the elements
-        /// in the <see cref="Spring.Collections.LinkedList"/>.
+        /// An <see cref="System.Collections.IEnumerator"/> over the elements in the LinkedList.
         /// </returns>
         public IEnumerator GetEnumerator()
         {

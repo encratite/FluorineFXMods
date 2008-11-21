@@ -34,13 +34,19 @@ namespace FluorineFx.Messaging.Rtmp.Event
 	{
 		private int _bytesRead = 0;
 
+        /// <summary>
+        /// Creates new event with given bytes number.
+        /// </summary>
+        /// <param name="bytesRead"></param>
         internal BytesRead(int bytesRead)
             : base(EventType.STREAM_CONTROL)
 		{
 			_dataType = Constants.TypeBytesRead;
 			_bytesRead = bytesRead;
 		}
-
+        /// <summary>
+        /// Gets the number of bytes read.
+        /// </summary>
 		public int Bytes
 		{
 			get{ return _bytesRead; }

@@ -46,7 +46,7 @@ namespace FluorineFx.Messaging.Endpoints
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(RtmpEndpoint));
 
-        static object _objLock = new object();
+        //static object _objLock = new object();
         public static string Slash = "/";
 
         RtmpServer _rtmpServer;

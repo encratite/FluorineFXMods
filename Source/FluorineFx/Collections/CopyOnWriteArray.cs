@@ -36,7 +36,7 @@ namespace FluorineFx.Collections
     public class CopyOnWriteArray : IList, ICollection, IEnumerable
     {
         object[] _array;
-        private static object _objLock = new object();
+        private object _objLock = new object();
 
         /// <summary>
         /// Initializes a new instance of the CopyOnWriteArray class.

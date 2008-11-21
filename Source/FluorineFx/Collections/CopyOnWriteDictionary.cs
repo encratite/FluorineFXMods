@@ -53,6 +53,15 @@ namespace FluorineFx.Collections
         {
             _dictionary = new Hashtable(d);
         }
+        /// <summary>
+        /// Initializes a new, empty instance of the CopyOnWriteDictionary class using the default initial capacity and load factor, and the specified IEqualityComparer object.
+        /// </summary>
+        /// <param name="equalityComparer">The IEqualityComparer object that defines the hash code provider and the comparer to use with the CopyOnWriteDictionary object.</param>
+        public CopyOnWriteDictionary(IEqualityComparer equalityComparer)
+        {
+            _dictionary = new Hashtable(equalityComparer);
+        }
+
 
         #region IDictionary Members
         /// <summary>

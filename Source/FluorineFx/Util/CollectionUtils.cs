@@ -32,7 +32,7 @@ namespace FluorineFx.Util
     /// </summary>
 	public abstract class CollectionUtils
 	{
-        protected CollectionUtils() { }
+        private CollectionUtils() { }
 
 		/// <summary>
 		/// Determines whether the collection is null or empty.
@@ -49,7 +49,11 @@ namespace FluorineFx.Util
 			}
 			return true;
 		}
-
+        /// <summary>
+        /// Creates an IList.
+        /// </summary>
+        /// <param name="listType">The list type.</param>
+        /// <returns>The newly created IList.</returns>
 		public static IList CreateList(Type listType)
 		{
 			ValidationUtils.ArgumentNotNull(listType, "listType");
@@ -128,7 +132,12 @@ namespace FluorineFx.Util
 
 			return list;
 		}
-
+        /// <summary>
+        /// Creates a new Array by copying the elements from the specified collection.
+        /// </summary>
+        /// <param name="type">Array element type.</param>
+        /// <param name="collection">The ICollection object to copy to a new Array.</param>
+        /// <returns>The newly created Array.</returns>
 		public static Array CreateArray(Type type, ICollection collection)
 		{
 			ValidationUtils.ArgumentNotNull(collection, "collection");
@@ -148,12 +157,23 @@ namespace FluorineFx.Util
 		}
 
 		#region GetSingleItem
-
+        /// <summary>
+        /// Gets an element from the list.
+        /// </summary>
+        /// <param name="list">A list object.</param>
+        /// <returns>The first element of the specified list.</returns>
+        /// <exception cref="System.Exception">Throw when the list has no elements.</exception>
 		public static object GetSingleItem(IList list)
         {
             return GetSingleItem(list, false);
         }
-
+        /// <summary>
+        /// Gets an element from the list.
+        /// </summary>
+        /// <param name="list">A list object.</param>
+        /// <param name="returnDefaultIfEmpty">Specifies that null is returned if the list has no elements.</param>
+        /// <returns>The first element of the specified list.</returns>
+        /// /// <exception cref="System.Exception">Throw when the list has no elements and returnDefaultIfEmpty is <b>false</b>.</exception>
         public static object GetSingleItem(IList list, bool returnDefaultIfEmpty)
         {
             if (list.Count == 1)
@@ -167,6 +187,12 @@ namespace FluorineFx.Util
 
 
 #if !(NET_1_1)
+        /// <summary>
+        /// Creates a generic List.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="values">The collection whose elements values are copied to the new list.</param>
+        /// <returns>The newly created List.</returns>
 		public static List<T> CreateList<T>(params T[] values)
 		{
 			return new List<T>(values);
@@ -281,7 +307,12 @@ namespace FluorineFx.Util
                 initial.Add(value);
             }
         }
-
+        /// <summary>
+        /// Return a list containing only the different (distinct) values of the specified collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">A generic List.</param>
+        /// <returns>A list containing only the different (distinct) values of the specified collection.</returns>
         public static List<T> Distinct<T>(List<T> collection)
         {
             List<T> distinctList = new List<T>();
@@ -295,42 +326,12 @@ namespace FluorineFx.Util
             return distinctList;
         }
 
-        public static List<List<T>> Flatten<T>(params IList<T>[] lists)
-        {
-            List<List<T>> flattened = new List<List<T>>();
-            Dictionary<int, T> currentList = new Dictionary<int, T>();
-
-            Recurse<T>(new List<IList<T>>(lists), 0, currentList, flattened);
-
-            return flattened;
-        }
-
-        private static void Recurse<T>(IList<IList<T>> global, int current, Dictionary<int, T> currentSet, List<List<T>> flattenedResult)
-        {
-            IList<T> currentArray = global[current];
-
-            for (int i = 0; i < currentArray.Count; i++)
-            {
-                currentSet[current] = currentArray[i];
-
-                if (current == global.Count - 1)
-                {
-                    List<T> items = new List<T>();
-
-                    for (int k = 0; k < currentSet.Count; k++)
-                    {
-                        items.Add(currentSet[k]);
-                    }
-
-                    flattenedResult.Add(items);
-                }
-                else
-                {
-                    Recurse(global, current + 1, currentSet, flattenedResult);
-                }
-            }
-        }
-
+        /// <summary>
+        /// Creates a new generic List by copying the elements from the specified collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">The ICollection object to copy to the generic List.</param>
+        /// <returns>The newly created generic Lis.</returns>
         public static List<T> CreateList<T>(ICollection collection)
         {
             if (collection == null)
@@ -341,7 +342,14 @@ namespace FluorineFx.Util
 
             return new List<T>(array);
         }
-
+        /// <summary>
+        /// Determines whether two generic Lists are equal.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="a">A List object.</param>
+        /// <param name="b">A List object.</param>
+        /// <returns><b>true</b> if the lists are equal, otherwise <b>false</b>.</returns>
+        /// <remarks>Two lists are considered equal if they have the same count and the default equality comparer for the generic argument determines that all elements are equal.</remarks>
         public static bool ListEquals<T>(IList<T> a, IList<T> b)
         {
             if (a == null || b == null)
@@ -360,30 +368,22 @@ namespace FluorineFx.Util
 
             return true;
         }
-
-
-        public static IList<T> Minus<T>(IList<T> list, IList<T> minus)
-        {
-            ValidationUtils.ArgumentNotNull(list, "list");
-
-            List<T> result = new List<T>(list.Count);
-            foreach (T t in list)
-            {
-                if (minus == null || !minus.Contains(t))
-                    result.Add(t);
-            }
-
-            return result;
-        }
-
-
+        /// <summary>
+        /// Creates a generic List.
+        /// </summary>
+        /// <param name="listType">The list type.</param>
+        /// <returns>The newly created generic List.</returns>
         public static object CreateGenericList(Type listType)
         {
             ValidationUtils.ArgumentNotNull(listType, "listType");
 
             return ReflectionUtils.CreateGeneric(typeof(List<>), listType);
         }
-
+        /// <summary>
+        /// Checks whether the specified type is a list type.
+        /// </summary>
+        /// <param name="type">A Type object.</param>
+        /// <returns><b>true</b> if the type is a list type (array, IList, or generic List), otherwise <b>false</b>.</returns>
         public static bool IsListType(Type type)
         {
             ValidationUtils.ArgumentNotNull(type, "listType");

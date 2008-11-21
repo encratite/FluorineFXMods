@@ -35,6 +35,10 @@ namespace FluorineFx.Util
 		private bool _autoExpand;
         private long _bookmark;
 
+        /// <summary>
+        /// Initializes a new instance of the ByteBuffer class.
+        /// </summary>
+        /// <param name="stream">Wraps the MemoryStream into a buffer.</param>
 		public ByteBuffer(MemoryStream stream)
 		{
 			_stream = stream;
@@ -64,8 +68,8 @@ namespace FluorineFx.Util
 		/// The new buffer's capacity will be array.length, its position will be offset, 
 		/// its limit will be offset + length, and its mark will be undefined.
 		/// </summary>
-		/// <param name="array"></param>
-		/// <param name="offset"></param>
+        /// <param name="array">Byte array to wrap.</param>
+        /// <param name="offset">Offset in the byte array.</param>
 		/// <param name="length"></param>
 		/// <returns></returns>
 		public static ByteBuffer Wrap(byte[] array, int offset, int length)
@@ -127,24 +131,35 @@ namespace FluorineFx.Util
 		{
 			get{ return this.Remaining > 0; }
 		}
-
+        /// <summary>
+        /// Gets the current bookmark value.
+        /// </summary>
         public long Bookmark
         {
             get { return _bookmark; }
         }
-
+        /// <summary>
+        /// Sets this buffer's bookmark at its position.
+        /// </summary>
+        /// <returns>Returns this bookmark value.</returns>
         public long SetBookmark()
         {
             _bookmark = this.Position;
             return _bookmark;
         }
-
+        /// <summary>
+        /// Clears the current bookmark.
+        /// </summary>
         public void ClearBookmark()
         {
             _bookmark = -1;
         }
 
 #if !(NET_1_1)
+        /// <summary>
+        /// Releases all resources used by this object.
+        /// </summary>
+        /// <param name="disposing">Indicates if this is a dispose call dispose.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -209,12 +224,20 @@ namespace FluorineFx.Util
 		{
 			Put(src, 0, src.Length);
 		}
-
+        /// <summary>
+        /// Appends a byte buffer to this ByteArray.
+        /// </summary>
+        /// <param name="src">The byte buffer to append.</param>
 		public void Append(byte[] src)
 		{
             Append(src, 0, src.Length);
 		}
-
+        /// <summary>
+        /// Appends a byte buffer to this ByteArray.
+        /// </summary>
+        /// <param name="src">The byte buffer to append.</param>
+        /// <param name="offset">Offset in the byte buffer.</param>
+        /// <param name="length">Number of bytes to append.</param>
         public void Append(byte[] src, int offset, int length)
         {
             long position = this.Position;
@@ -239,7 +262,11 @@ namespace FluorineFx.Util
 			while(src.HasRemaining)
 				Put(src.Get()); 
 		}
-
+        /// <summary>
+        /// Transfers the specified number of bytes from the given source buffer into this buffer.
+        /// </summary>
+        /// <param name="src">The source buffer from which bytes are to be read; must not be this buffer.</param>
+        /// <param name="count">Number of bytes to transfer.</param>
 		public void Put(ByteBuffer src, int count)
 		{
 			for(int i=0; i < count; i++)
@@ -247,13 +274,12 @@ namespace FluorineFx.Util
 				Put(src.Get());
 			}
 		}
-
 		/// <summary>
 		/// Absolute put method.
 		/// Writes the given byte into this buffer at the given index. 
 		/// </summary>
-		/// <param name="index"></param>
-		/// <param name="value"></param>
+		/// <param name="index">The index.</param>
+		/// <param name="value">The byte to write.</param>
 		public void Put(int index, byte value)
 		{
 			_stream.GetBuffer()[index] = value;
@@ -266,21 +292,26 @@ namespace FluorineFx.Util
 		{
 			return (byte)this.ReadByte();
 		}
-
+        /// <summary>
+        /// Reads a 4-byte signed integer using network byte order encoding.
+        /// </summary>
+        /// <returns>The 4-byte signed integer.</returns>
 		public int GetInt()
 		{
 			// Read the next 4 bytes, shift and add
 			byte[] bytes = this.ReadBytes(4);
 			return ((bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3]);
 		}
-
+        /// <summary>
+        /// Reads a 2-byte signed integer using network byte order encoding.
+        /// </summary>
+        /// <returns>The 2-byte signed integer.</returns>
 		public short GetShort()
 		{
 			//Read the next 2 bytes, shift and add.
 			byte[] bytes = this.ReadBytes(2);
 			return (short)((bytes[0] << 8) | bytes[1]);
 		}
-
 		/// <summary>
 		/// Absolute get method. Reads the byte at the given index.
 		/// </summary>
@@ -290,7 +321,13 @@ namespace FluorineFx.Util
 		{
 			return _stream.GetBuffer()[index];
 		}
-
+        /// <summary>
+        /// Writes the stream contents to a byte array, regardless of the Position property.
+        /// </summary>
+        /// <returns>A new byte array.</returns>
+        /// <remarks>
+        /// This method omits unused bytes in ByteBuffer from the array. To get the entire buffer, use the GetBuffer method. 
+        /// </remarks>
 		public byte[] ToArray()
 		{
 			return _stream.ToArray();
@@ -299,12 +336,13 @@ namespace FluorineFx.Util
 		/// <summary>
 		/// Returns the array of unsigned bytes from which this stream was created.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>
+        /// The byte array from which this ByteBuffer was created, or the underlying array if a byte array was not provided to the ByteBuffer constructor during construction of the current instance. 
+        /// </returns>
 		public byte[] GetBuffer()
 		{
 			return _stream.GetBuffer();
 		}
-
 		/// <summary>
 		/// Compacts this buffer
 		/// 
@@ -342,7 +380,11 @@ namespace FluorineFx.Util
 		{
 			this.Position += size;
 		}
-
+        /// <summary>
+        /// Fills this buffer with the specified value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="count"></param>
 		public void Fill(byte value, int count)
 		{
 			for(int i = 0; i < count; i++)
@@ -351,6 +393,9 @@ namespace FluorineFx.Util
 
 		#region Stream
 
+        /// <summary>
+        /// Gets a value indicating whether the current stream supports reading.
+        /// </summary>
 		public override bool CanRead
 		{
 			get
@@ -358,7 +403,9 @@ namespace FluorineFx.Util
 				return _stream.CanRead;
 			}
 		}
-
+        /// <summary>
+        /// Gets a value indicating whether the current stream supports seeking.
+        /// </summary>
 		public override bool CanSeek
 		{
 			get
@@ -366,7 +413,9 @@ namespace FluorineFx.Util
 				return _stream.CanSeek;
 			}
 		}
-
+        /// <summary>
+        /// Gets a value indicating whether the current stream supports writing.
+        /// </summary>
 		public override bool CanWrite
 		{
 			get
@@ -374,17 +423,23 @@ namespace FluorineFx.Util
 				return _stream.CanWrite;
 			}
 		}
-
+        /// <summary>
+        /// Closes the current stream and releases any resources associated with the current stream.
+        /// </summary>
 		public override void Close()
 		{
 			_stream.Close ();
 		}
-
+        /// <summary>
+        /// Clears all buffers for this stream and causes any buffered data to be written to the underlying device.
+        /// </summary>
 		public override void Flush()
 		{
 			_stream.Flush();
 		}
-
+        /// <summary>
+        /// Gets the length in bytes of the stream.
+        /// </summary>
 		public override long Length
 		{
 			get
@@ -392,7 +447,9 @@ namespace FluorineFx.Util
 				return _stream.Length;
 			}
 		}
-
+        /// <summary>
+        /// Gets or sets the position within the current stream.
+        /// </summary>
 		public override long Position
 		{
 			get
@@ -409,32 +466,57 @@ namespace FluorineFx.Util
                 }
 			}
 		}
-
+        /// <summary>
+        /// Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.
+        /// </summary>
+        /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between offset and (offset + count - 1) replaced by the bytes read from the current source.</param>
+        /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
+        /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
+        /// <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.</returns>
 		public override int Read(byte[] buffer, int offset, int count)
 		{
 			return _stream.Read(buffer, offset, count);
 		}
-
+        /// <summary>
+        /// Reads a byte from the stream and advances the position within the stream by one byte, or returns -1 if at the end of the stream.
+        /// </summary>
+        /// <returns>The unsigned byte cast to an Int32, or -1 if at the end of the stream.</returns>
 		public override int ReadByte()
 		{
 			return _stream.ReadByte();
 		}
-
+        /// <summary>
+        /// Sets the position within the current stream. 
+        /// </summary>
+        /// <param name="offset">A byte offset relative to the origin parameter.</param>
+        /// <param name="origin">A value of type SeekOrigin indicating the reference point used to obtain the new position.</param>
+        /// <returns>The new position within the current stream.</returns>
 		public override long Seek(long offset, SeekOrigin origin)
 		{
 			return _stream.Seek(offset, origin);
 		}
-
+        /// <summary>
+        /// Sets the length of the current stream.
+        /// </summary>
+        /// <param name="value">The desired length of the current stream in bytes.</param>
 		public override void SetLength(long value)
 		{
 			_stream.SetLength(value);
 		}
-
+        /// <summary>
+        /// Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
+        /// </summary>
+        /// <param name="buffer">An array of bytes. This method copies count bytes from buffer to the current stream.</param>
+        /// <param name="offset">The zero-based byte offset in buffer at which to begin copying bytes to the current stream.</param>
+        /// <param name="count">The number of bytes to be written to the current stream.</param>
 		public override void Write(byte[] buffer, int offset, int count)
 		{
 			_stream.Write(buffer, offset, count);
 		}
-
+        /// <summary>
+        /// Writes a byte to the current position in the stream and advances the position within the stream by one byte.
+        /// </summary>
+        /// <param name="value">The byte to write to the stream.</param>
 		public override void WriteByte(byte value)
 		{
 			_stream.WriteByte (value);
@@ -456,7 +538,10 @@ namespace FluorineFx.Util
 			}
 			return bytes;
 		}
-
+        /// <summary>
+        /// Writes a 32-bit signed integer to the current position using variable length unsigned 29-bit integer encoding.
+        /// </summary>
+        /// <param name="value">A 32-bit signed integer.</param>
 		public void WriteMediumInt(int value) 
 		{
 			byte[] bytes = new byte[3];
@@ -497,7 +582,10 @@ namespace FluorineFx.Util
                 this.Put(index + i, bytes[i]);
             }
 		}
-
+        /// <summary>
+        /// Writes a 16-bit unsigned integer to the current position.
+        /// </summary>
+        /// <param name="value">A 16-bit unsigned integer.</param>
         public void PutShort(short value)
         {
             byte[] bytes = BitConverter.GetBytes(value);
@@ -542,11 +630,13 @@ namespace FluorineFx.Util
             this.WriteBytes(index, bytes);
         }
 
+        /*
         public void Put(UInt16 value)
         {
             byte[] bytes = BitConverter.GetBytes(value);
             this.Put(bytes);
         }
+        */
 
         public void Put(int index, UInt16 value)
         {
@@ -560,72 +650,6 @@ namespace FluorineFx.Util
             int value = bytes[0] << 16 | bytes[1] << 8 | bytes[2];
             return value;
         }
-
-        /*
-		public int ReadUnsignedMediumInt()
-		{
-			byte[] bytes = this.ReadBytes(3);
-			int val = 0;
-			// Fix unsigned values
-			if(bytes[0] < 0) 
-			{
-				val += ((bytes[0] + 256) << 16);
-			} 
-			else 
-			{
-				val += (bytes[0] << 16);
-			}
-			if (bytes[1] < 0) 
-			{
-				val += ((bytes[1] + 256) << 8);
-			} 
-			else 
-			{
-				val += (bytes[1] << 8);
-			}
-			if (bytes[2] < 0) 
-			{
-				val += bytes[2] + 256;
-			} 
-			else 
-			{
-				val += bytes[2];
-			}
-			return val;
-		}
-
-		public int ReadMediumInt()
-		{
-			byte[] bytes = this.ReadBytes(3);
-			// Fix unsigned values
-			int val = 0;
-			if (bytes[0] < 0) 
-			{
-				val += ((bytes[0] + 256) << 16);
-			} 
-			else 
-			{
-				val += (bytes[0] << 16);
-			}
-			if (bytes[1] < 0) 
-			{
-				val += ((bytes[1] + 256) << 8);
-			} 
-			else 
-			{
-				val += (bytes[1] << 8);
-			}
-			if (bytes[2] < 0) 
-			{
-				val += bytes[2] + 256;
-			} 
-			else 
-			{
-				val += bytes[2];
-			}
-			return val;
-		}
-        */
 
 		public int ReadReverseInt()
 		{
@@ -656,7 +680,10 @@ namespace FluorineFx.Util
 			output.Put(input, numBytesRead);
 			return numBytesRead;
 		}
-
+        /// <summary>
+        /// Write the buffer content to a file.
+        /// </summary>
+        /// <param name="file"></param>
 		public void Dump(string file)
 		{
 			FileStream fs = new FileStream(file, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);

@@ -378,7 +378,9 @@ namespace FluorineFx
 			else
 				return Activator.CreateInstance(type);
 		}
-
+        /// <summary>
+        /// Detects the MONO runtime.
+        /// </summary>
 		public static bool IsMono
 		{
 			get
@@ -760,12 +762,14 @@ namespace FluorineFx
                     {
                         case TypeCode.Char: return CanConvertToNullableChar(obj);
                     }
+                    if (typeof(Guid) == targetType) return CanConvertToNullableGuid(obj);
                 }
 #endif
                 switch (Type.GetTypeCode(targetType))
                 {
                     case TypeCode.Char: return CanConvertToChar(obj);
                 }
+                if (typeof(Guid) == targetType) return CanConvertToGuid(obj);
             }
             catch (InvalidCastException)
             {
@@ -1056,6 +1060,11 @@ namespace FluorineFx
 #if !(NET_1_1)
         #region Nullable Types
 
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 8-bit signed integer.</returns>
         [CLSCompliant(false)]
         public static SByte? ConvertToNullableSByte(object value)
         {
@@ -1063,7 +1072,11 @@ namespace FluorineFx
             if (value == null)  return null;
             return FluorineFx.Util.Convert.ToNullableSByte(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 16-bit signed integer.</returns>
         public static Int16? ConvertToNullableInt16(object value)
         {
             if (value is Int16) return (Int16?)value;
@@ -1071,7 +1084,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableInt16(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 32-bit signed integer.</returns>
         public static Int32? ConvertToNullableInt32(object value)
         {
             if (value is Int32) return (Int32?)value;
@@ -1079,7 +1096,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableInt32(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 64-bit signed integer.</returns>
         public static Int64? ConvertToNullableInt64(object value)
         {
             if (value is Int64) return (Int64?)value;
@@ -1087,7 +1108,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableInt64(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 8-bit unsigned integer.</returns>
         public static Byte? ConvertToNullableByte(object value)
         {
             if (value is Byte) return (Byte?)value;
@@ -1095,7 +1120,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableByte(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 16-bit unsigned integer.</returns>
         [CLSCompliant(false)]
         public static UInt16? ConvertToNullableUInt16(object value)
         {
@@ -1104,7 +1133,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableUInt16(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 32-bit unsigned integer.</returns>
         [CLSCompliant(false)]
         public static UInt32? ConvertToNullableUInt32(object value)
         {
@@ -1113,7 +1146,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableUInt32(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable 64-bit unsigned integer.</returns>
         [CLSCompliant(false)]
         public static UInt64? ConvertToNullableUInt64(object value)
         {
@@ -1122,7 +1159,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableUInt64(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable Unicode character.</returns>
         public static Char? ConvertToNullableChar(object value)
         {
             if (value is Char) return (Char?)value;
@@ -1130,14 +1171,22 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableChar(value);
         }
-
+        /// <summary>
+        /// Checks whether the specified Object can be converted to a nullable Unicode character.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>true if the specified Object can be converted to a nullable Unicode character, false otherwise.</returns>
         public static bool CanConvertToNullableChar(object value)
         {
             if (value is Char) return true;
             if (value == null) return true;
             return FluorineFx.Util.Convert.CanConvertToNullableChar(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable double-precision floating point number.</returns>
         public static Double? ConvertToNullableDouble(object value)
         {
             if (value is Double) return (Double?)value;
@@ -1145,7 +1194,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableDouble(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable single-precision floating point number.</returns>
         public static Single? ConvertToNullableSingle(object value)
         {
             if (value is Single) return (Single?)value;
@@ -1153,7 +1206,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableSingle(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent to a nullable Boolean value.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable Boolean value.</returns>
         public static Boolean? ConvertToNullableBoolean(object value)
         {
             if (value is Boolean) return (Boolean?)value;
@@ -1161,7 +1218,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableBoolean(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable DateTime.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable DateTime.</returns>
         public static DateTime? ConvertToNullableDateTime(object value)
         {
             if (value is DateTime) return (DateTime?)value;
@@ -1169,7 +1230,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableDateTime(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable Decimal.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable Decimal.</returns>
         public static Decimal? ConvertToNullableDecimal(object value)
         {
             if (value is Decimal) return (Decimal?)value;
@@ -1177,7 +1242,11 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableDecimal(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent nullable Guid.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent nullable Guid.</returns>
         public static Guid? ConvertToNullableGuid(object value)
         {
             if (value is Guid) return (Guid?)value;
@@ -1185,13 +1254,28 @@ namespace FluorineFx
 
             return FluorineFx.Util.Convert.ToNullableGuid(value);
         }
-
+        /// <summary>
+        /// Checks whether the specified Object can be converted to a nullable Guid.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>true if the specified Object can be converted to a nullable Guid, false otherwise.</returns>
+        public static bool CanConvertToNullableGuid(object value)
+        {
+            if (value is Guid) return true;
+            if (value == null) return true;
+            return FluorineFx.Util.Convert.CanConvertToNullableGuid(value);
+        }
         #endregion
 #endif
 
         #region Primitive Types
 
         static SByte _defaultSByteNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent 8-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent 8-bit signed integer.</returns>
         [CLSCompliant(false)]
         public static SByte ConvertToSByte(object value)
         {
@@ -1201,6 +1285,11 @@ namespace FluorineFx
                     FluorineFx.Util.Convert.ToSByte(value);
         }
         static Int16 _defaultInt16NullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent 16-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent 16-bit signed integer.</returns>
         public static Int16 ConvertToInt16(object value)
         {
             return
@@ -1208,8 +1297,13 @@ namespace FluorineFx
                 value == null ? _defaultInt16NullValue :
                     FluorineFx.Util.Convert.ToInt16(value);
         }
-
+        
         static Int32 _defaultInt32NullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent 32-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent 32-bit signed integer.</returns>
         public static Int32 ConvertToInt32(object value)
         {
             return
@@ -1219,6 +1313,11 @@ namespace FluorineFx
         }
 
         static Int64 _defaultInt64NullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent 64-bit signed integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent 64-bit signed integer.</returns>
         public static Int64 ConvertToInt64(object value)
         {
             return
@@ -1228,6 +1327,11 @@ namespace FluorineFx
         }
 
         static Byte _defaultByteNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent 8-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent 8-bit unsigned integer.</returns>
         public static Byte ConvertToByte(object value)
         {
             return
@@ -1237,6 +1341,11 @@ namespace FluorineFx
         }
 
         static UInt16 _defaultUInt16NullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent 16-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent 16-bit unsigned integer.</returns>
         [CLSCompliant(false)]
         public static UInt16 ConvertToUInt16(object value)
         {
@@ -1246,6 +1355,11 @@ namespace FluorineFx
                     FluorineFx.Util.Convert.ToUInt16(value);
         }
         static UInt32 _defaultUInt32NullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent 32-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent 32-bit unsigned integer.</returns>
         [CLSCompliant(false)]
         public static UInt32 ConvertToUInt32(object value)
         {
@@ -1256,6 +1370,11 @@ namespace FluorineFx
         }
 
         static UInt64 _defaultUInt64NullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent 64-bit unsigned integer.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent 64-bit unsigned integer.</returns>
         [CLSCompliant(false)]
         public static UInt64 ConvertToUInt64(object value)
         {
@@ -1266,6 +1385,11 @@ namespace FluorineFx
         }
 
         static Char _defaultCharNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent Unicode character.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent Unicode character.</returns>
         public static Char ConvertToChar(object value)
         {
             return
@@ -1273,7 +1397,11 @@ namespace FluorineFx
                 value == null ? _defaultCharNullValue :
                     FluorineFx.Util.Convert.ToChar(value);
         }
-
+        /// <summary>
+        /// Checks whether the specified Object can be converted to a Unicode character.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>true if the specified Object can be converted to a Unicode character, false otherwise.</returns>
         public static bool CanConvertToChar(object value)
         {
             return
@@ -1283,6 +1411,11 @@ namespace FluorineFx
         }
 
         static Single _defaultSingleNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent single-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent single-precision floating point number.</returns>
         public static Single ConvertToSingle(object value)
         {
             return
@@ -1292,6 +1425,11 @@ namespace FluorineFx
         }
 
         static Double _defaultDoubleNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent double-precision floating point number.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent double-precision floating point number.</returns>
         public static Double ConvertToDouble(object value)
         {
             return
@@ -1301,6 +1439,11 @@ namespace FluorineFx
         }
 
         static Boolean _defaultBooleanNullValue;
+        /// <summary>
+        /// Checks whether the specified Object can be converted to a Boolean value.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent Boolean value.</returns>
         public static Boolean ConvertToBoolean(object value)
         {
             return
@@ -1314,6 +1457,11 @@ namespace FluorineFx
         #region Simple Types
 
         static string _defaultStringNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent String.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent String.</returns>
         public static String ConvertToString(object value)
         {
             return
@@ -1323,6 +1471,11 @@ namespace FluorineFx
         }
 
         static DateTime _defaultDateTimeNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent DateTime.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent DateTime.</returns>
         public static DateTime ConvertToDateTime(object value)
         {
             return
@@ -1332,6 +1485,11 @@ namespace FluorineFx
         }
 
         static decimal _defaultDecimalNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent Decimal.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent Decimal.</returns>
         public static Decimal ConvertToDecimal(object value)
         {
             return
@@ -1341,6 +1499,11 @@ namespace FluorineFx
         }
 
         static Guid _defaultGuidNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent Guid.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent Guid.</returns>
         public static Guid ConvertToGuid(object value)
         {
             return
@@ -1348,7 +1511,25 @@ namespace FluorineFx
                 value == null ? _defaultGuidNullValue :
                     FluorineFx.Util.Convert.ToGuid(value);
         }
+        /// <summary>
+        /// Checks whether the specified Object can be converted to a Guid.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>true if the specified Object can be converted to a Guid, false otherwise.</returns>
+        public static bool CanConvertToGuid(object value)
+        {
+            return
+                value is Guid ? true :
+                value == null ? true :
+                    FluorineFx.Util.Convert.CanConvertToGuid(value);
+        }
+
         static XmlReader _defaultXmlReaderNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent XmlReader.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent XmlReader.</returns>
         public static XmlReader ConvertToXmlReader(object value)
         {
             return
@@ -1358,6 +1539,11 @@ namespace FluorineFx
         }
 #if !SILVERLIGHT
         static XmlDocument _defaultXmlDocumentNullValue;
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent XmlDocument.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent XmlDocument.</returns>
         public static XmlDocument ConvertToXmlDocument(object value)
         {
             return
@@ -1386,6 +1572,11 @@ namespace FluorineFx
         }
 
 #endif
+        /// <summary>
+        /// Converts the value of the specified Object to a byte array.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The byte array.</returns>
         public static byte[] ConvertToByteArray(object value)
         {
             return
@@ -1393,7 +1584,11 @@ namespace FluorineFx
                 value == null ? null :
                     FluorineFx.Util.Convert.ToByteArray(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to a character array.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The character array.</returns>
         public static char[] ConvertToCharArray(object value)
         {
             return
@@ -1406,6 +1601,11 @@ namespace FluorineFx
 
         #region SqlTypes
 #if !SILVERLIGHT
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlByte.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlByte.</returns>
         public static SqlByte ConvertToSqlByte(object value)
         {
             return
@@ -1413,7 +1613,11 @@ namespace FluorineFx
                 value is SqlByte ? (SqlByte)value :
                     FluorineFx.Util.Convert.ToSqlByte(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlInt16.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlInt16.</returns>
         public static SqlInt16 ConvertToSqlInt16(object value)
         {
             return
@@ -1421,7 +1625,11 @@ namespace FluorineFx
                 value is SqlInt16 ? (SqlInt16)value :
                     FluorineFx.Util.Convert.ToSqlInt16(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlInt32.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlInt32.</returns>
         public static SqlInt32 ConvertToSqlInt32(object value)
         {
             return
@@ -1429,7 +1637,11 @@ namespace FluorineFx
                 value is SqlInt32 ? (SqlInt32)value :
                     FluorineFx.Util.Convert.ToSqlInt32(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlInt64.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlInt64.</returns>
         public static SqlInt64 ConvertToSqlInt64(object value)
         {
             return
@@ -1437,7 +1649,11 @@ namespace FluorineFx
                 value is SqlInt64 ? (SqlInt64)value :
                     FluorineFx.Util.Convert.ToSqlInt64(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlSingle.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlSingle.</returns>
         public static SqlSingle ConvertToSqlSingle(object value)
         {
             return
@@ -1445,7 +1661,11 @@ namespace FluorineFx
                 value is SqlSingle ? (SqlSingle)value :
                     FluorineFx.Util.Convert.ToSqlSingle(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlBoolean.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlBoolean.</returns>
         public static SqlBoolean ConvertToSqlBoolean(object value)
         {
             return
@@ -1453,7 +1673,11 @@ namespace FluorineFx
                 value is SqlBoolean ? (SqlBoolean)value :
                     FluorineFx.Util.Convert.ToSqlBoolean(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlDouble.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlDouble.</returns>
         public static SqlDouble ConvertToSqlDouble(object value)
         {
             return
@@ -1461,7 +1685,11 @@ namespace FluorineFx
                 value is SqlDouble ? (SqlDouble)value :
                     FluorineFx.Util.Convert.ToSqlDouble(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlDateTime.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlDateTime.</returns>
         public static SqlDateTime ConvertToSqlDateTime(object value)
         {
             return
@@ -1469,7 +1697,11 @@ namespace FluorineFx
                 value is SqlDateTime ? (SqlDateTime)value :
                     FluorineFx.Util.Convert.ToSqlDateTime(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlDecimal.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlDecimal.</returns>
         public static SqlDecimal ConvertToSqlDecimal(object value)
         {
             return
@@ -1478,7 +1710,11 @@ namespace FluorineFx
                 value is SqlMoney ? ((SqlMoney)value).ToSqlDecimal() :
                     FluorineFx.Util.Convert.ToSqlDecimal(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlMoney.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlMoney.</returns>
         public static SqlMoney ConvertToSqlMoney(object value)
         {
             return
@@ -1487,7 +1723,11 @@ namespace FluorineFx
                 value is SqlDecimal ? ((SqlDecimal)value).ToSqlMoney() :
                     FluorineFx.Util.Convert.ToSqlMoney(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlString.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlString.</returns>
         public static SqlString ConvertToSqlString(object value)
         {
             return
@@ -1495,7 +1735,11 @@ namespace FluorineFx
                 value is SqlString ? (SqlString)value :
                     FluorineFx.Util.Convert.ToSqlString(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlBinary.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlBinary.</returns>
         public static SqlBinary ConvertToSqlBinary(object value)
         {
             return
@@ -1503,7 +1747,11 @@ namespace FluorineFx
                 value is SqlBinary ? (SqlBinary)value :
                     FluorineFx.Util.Convert.ToSqlBinary(value);
         }
-
+        /// <summary>
+        /// Converts the value of the specified Object to its equivalent SqlGuid.
+        /// </summary>
+        /// <param name="value">An Object.</param>
+        /// <returns>The equivalent SqlGuid.</returns>
         public static SqlGuid ConvertToSqlGuid(object value)
         {
             return
@@ -1516,6 +1764,12 @@ namespace FluorineFx
 
         #region DataSet conversions
 #if !SILVERLIGHT
+        /// <summary>
+        /// Converts the specified DataTable to its equivalent ASObject.
+        /// </summary>
+        /// <param name="dataTable">A DataTable.</param>
+        /// <param name="stronglyTyped">Indicates whether the ASObject is strongly typed (AS2 Recordset class).</param>
+        /// <returns>The equivalent ASObject.</returns>
         public static ASObject ConvertDataTableToASO(DataTable dataTable, bool stronglyTyped)
         {
             if (dataTable.ExtendedProperties.Contains("DynamicPage"))
@@ -1556,7 +1810,12 @@ namespace FluorineFx
             recordset["serverInfo"] = asObject;
             return recordset;
         }
-
+        /// <summary>
+        /// Converts the specified DataTable to its equivalent ASObject (pageable RecordSet).
+        /// </summary>
+        /// <param name="dataTable">A DataTable.</param>
+        /// <param name="stronglyTyped">Indicates whether the ASObject is strongly typed (AS2 RecordSetPage class).</param>
+        /// <returns>The equivalent ASObject.</returns>
         public static ASObject ConvertPageableDataTableToASO(DataTable dataTable, bool stronglyTyped)
         {
             ASObject recordSetPage = new ASObject();
@@ -1572,7 +1831,12 @@ namespace FluorineFx
             recordSetPage["Page"] = rows; ;
             return recordSetPage;
         }
-
+        /// <summary>
+        /// Converts the specified DataSet to its equivalent ASObject.
+        /// </summary>
+        /// <param name="dataSet">A DataSet.</param>
+        /// <param name="stronglyTyped">Indicates whether the ASObject is strongly typed (property values of the root ASObject will be AS2 RecordSet objects).</param>
+        /// <returns>The equivalent ASObject.</returns>
         public static ASObject ConvertDataSetToASO(DataSet dataSet, bool stronglyTyped)
         {
             ASObject asDataSet = new ASObject();

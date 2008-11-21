@@ -20,6 +20,9 @@ using System;
 
 namespace FluorineFx.IO
 {
+    /// <summary>
+    /// Analyzes key frame data.
+    /// </summary>
     public interface IKeyFrameDataAnalyzer
     {
         /// <summary>

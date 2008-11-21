@@ -20,6 +20,7 @@ using System;
 using System.ComponentModel;
 using System.Collections;
 using System.Reflection;
+using System.Text;
 #if !(NET_1_1)
 using System.Collections.Generic;
 #endif
@@ -152,7 +153,76 @@ namespace FluorineFx
 #if !SILVERLIGHT
                     if (log.IsErrorEnabled)
                     {
+                        //Trace the issue
                         log.Error(msg);
+                        log.Error("Displaying verbose logging information");
+#if !(NET_1_1)
+                        List<MethodInfo> suitableMethodInfosTmp = new List<MethodInfo>();
+#else
+			            ArrayList suitableMethodInfosTmp = new ArrayList();
+#endif
+                        for (int i = 0; i < methodInfos.Length; i++)
+                        {
+                            MethodInfo methodInfo = methodInfos[i];
+                            if (methodInfo.Name == methodName)
+                            {
+                                if ((methodInfo.GetParameters().Length == 0 && arguments == null)
+                                    || (arguments != null && methodInfo.GetParameters().Length == arguments.Count))
+                                {
+                                    suitableMethodInfosTmp.Add(methodInfo);
+                                }
+                            }
+                        }
+                        for (int i = suitableMethodInfosTmp.Count - 1; i >= 0; i--)
+                        {
+                            MethodInfo methodInfo = suitableMethodInfosTmp[i] as MethodInfo;
+                            ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+                            StringBuilder signature = new StringBuilder();
+                            for (int j = 0; j < parameterInfos.Length; j++)
+                            {
+                                if (signature.Length != 0)
+                                    signature.Append(", ");
+                                signature.Append(parameterInfos[j].Name);
+                                signature.Append("(");
+                                signature.Append(parameterInfos[j].ParameterType.Name);
+                                signature.Append(")");
+                            }
+                            log.Error(string.Format("Checking {0}({1})", methodInfo.Name, signature.ToString()));
+                            bool match = true;
+                            //Matching method name and parameters number
+                            for (int j = 0; j < parameterInfos.Length; j++)
+                            {
+                                ParameterInfo parameterInfo = parameterInfos[j];
+                                object arg = arguments[j];
+                                if (!exactMatch)
+                                {
+                                    if (!TypeHelper.IsAssignable(arg, parameterInfo.ParameterType))
+                                    {
+                                        if (arg != null)
+                                            log.Error(string.Format("{0}({1}) did not match value \"{2}\" ({3})", parameterInfo.Name, parameterInfo.ParameterType.Name, arg, arg.GetType().Name));
+                                        else
+                                            log.Error(string.Format("{0}({1}) did not match null)", parameterInfo.Name, parameterInfo.ParameterType.Name));
+                                        match = false;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (arg == null || arg.GetType() != parameterInfo.ParameterType)
+                                    {
+                                        if (arg != null)
+                                            log.Error(string.Format("{0}({1}) did not match value \"{2}\" ({3})", parameterInfo.Name, parameterInfo.ParameterType.Name, arg, arg.GetType().Name));
+                                        else
+                                            log.Error(string.Format("{0}({1}) did not match null)", parameterInfo.Name, parameterInfo.ParameterType.Name));
+                                        match = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!match)
+                                suitableMethodInfosTmp.Remove(methodInfo);
+                        }
+                        /*
                         for (int j = 0; arguments != null && j < arguments.Count; j++)
                         {
                             object arg = arguments[j];
@@ -163,6 +233,7 @@ namespace FluorineFx
                                 trace = __Res.GetString(__Res.Invocation_ParameterType, j, "null");
                             log.Error(trace);
                         }
+                        */
                     }
 #endif
                 }

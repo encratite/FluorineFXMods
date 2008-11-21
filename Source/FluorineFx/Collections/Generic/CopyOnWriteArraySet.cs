@@ -58,8 +58,7 @@ namespace FluorineFx.Collections.Generic
         /// <summary>
         /// Adds the specified element to this set if it is not already present.
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="item">The Object to add.</param>
         public void Add(T item)
         {
             if (!_array.Contains(item))
@@ -83,12 +82,18 @@ namespace FluorineFx.Collections.Generic
         {
             return _array.Contains(item);
         }
-
-        public void CopyTo(T[] array, int arrayIndex)
+        /// <summary>
+        /// Copies the elements of the CopyOnWriteArraySet to an Array, starting at a particular Array index.
+        /// </summary>
+        /// <param name="array">The one-dimensional Array that is the destination of the elements copied from CopyOnWriteArraySet. The Array must have zero-based indexing.</param>
+        /// <param name="index">The zero-based index in array at which copying begins.</param>
+        public void CopyTo(T[] array, int index)
         {
-            _array.CopyTo(array, arrayIndex);
+            _array.CopyTo(array, index);
         }
-
+        /// <summary>
+        /// Gets a value indicating whether the CopyOnWriteArraySet is read-only.
+        /// </summary>
         public bool IsReadOnly
         {
             get { return false; }
@@ -96,7 +101,7 @@ namespace FluorineFx.Collections.Generic
         /// <summary>
         /// Removes the specified element from this set if it is present.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">Item to remove.</param>
         public bool Remove(T item)
         {
             return _array.Remove(item);
@@ -115,21 +120,32 @@ namespace FluorineFx.Collections.Generic
 
         #region ICollection Members
 
+        /// <summary>
+        /// Copies the elements of the CopyOnWriteArraySet to an Array, starting at a particular Array index.
+        /// </summary>
+        /// <param name="array">The one-dimensional Array that is the destination of the elements copied from CopyOnWriteArraySet. The Array must have zero-based indexing.</param>
+        /// <param name="index">The zero-based index in array at which copying begins.</param>
         public void CopyTo(Array array, int index)
         {
             _array.CopyTo(array, index);
         }
-
+        /// <summary>
+        /// Gets the number of elements contained in the CopyOnWriteArraySet.
+        /// </summary>
         public int Count
         {
             get { return _array.Count; }
         }
-
+        /// <summary>
+        /// Gets a value indicating whether access to the CopyOnWriteArraySet is synchronized (thread safe).
+        /// </summary>
         public bool IsSynchronized
         {
             get { return false; }
         }
-
+        /// <summary>
+        /// Gets an object that can be used to synchronize access to the CopyOnWriteArraySet.
+        /// </summary>
         public object SyncRoot
         {
             get { return _array.SyncRoot; }
@@ -139,6 +155,10 @@ namespace FluorineFx.Collections.Generic
 
         #region IEnumerable Members
 
+        /// <summary>
+        /// Returns an enumerator that iterates through an CopyOnWriteArraySet.
+        /// </summary>
+        /// <returns>An IEnumerator object that can be used to iterate through the collection.</returns>
         public IEnumerator GetEnumerator()
         {
             return _array.GetEnumerator();
