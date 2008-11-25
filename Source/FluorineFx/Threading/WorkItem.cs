@@ -19,6 +19,8 @@
 using System;
 using System.Threading;
 using System.Diagnostics;
+using System.Security;
+using System.Security.Principal;
 
 namespace FluorineFx.Threading
 {
@@ -188,7 +190,8 @@ namespace FluorineFx.Threading
 		private void ExecuteWorkItem()
 		{
 			Exception exception = null;
-			try
+            IPrincipal principal = Thread.CurrentPrincipal;
+            try
 			{
 				_callback(_state);
 			}
@@ -197,7 +200,11 @@ namespace FluorineFx.Threading
 				// Save the exception so we can rethrow it later
 				exception = e;
 			}
-			SetException(exception);
+            finally
+            {
+                Thread.CurrentPrincipal = principal;
+            }
+            SetException(exception);
 		}
 		/// <summary>
 		/// Sets the result of the work item.

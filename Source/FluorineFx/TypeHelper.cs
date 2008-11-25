@@ -452,11 +452,17 @@ namespace FluorineFx
                     {
                         log.Debug("Checking Request PhysicalApplicationPath");
                         string path = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "bin");
-                        lacLocations.Add(path);
-                        log.Debug(string.Format("Adding LAC location {0}", path));
+                        if (Directory.Exists(path))
+                        {
+                            lacLocations.Add(path);
+                            log.Debug(string.Format("Adding LAC location {0}", path));
+                        }
                         path = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "Bin");
-                        lacLocations.Add(path);
-                        log.Debug(string.Format("Adding LAC location {0}", path));
+                        if (Directory.Exists(path))
+                        {
+                            lacLocations.Add(path);
+                            log.Debug(string.Format("Adding LAC location {0}", path));
+                        }
                     }
                 }
                 catch (SecurityException)

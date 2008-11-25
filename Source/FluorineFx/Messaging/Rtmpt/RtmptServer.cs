@@ -302,6 +302,7 @@ namespace FluorineFx.Messaging.Rtmpt
                     {
                         FluorineWebContext webContext = FluorineContext.Current as FluorineWebContext;
                         webContext.SetConnection(connection);
+                        webContext.SetCurrentClient(connection.Client);
                         _rtmpHandler.MessageReceived(connection, message);
                     }
                 }
