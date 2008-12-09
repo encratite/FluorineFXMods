@@ -474,8 +474,11 @@ namespace FluorineFx.IO
 #endif								
 					//if(TimeZone.CurrentTimeZone.IsDaylightSavingTime(date))
 					//	date = date.AddMilliseconds(-3600000);
-					
-					break;
+                    break;
+                case TimezoneCompensation.Server:
+                    //Convert to local time
+                    date = date.ToLocalTime();
+                    break;
 			}
 
 			return date;
@@ -614,16 +617,19 @@ namespace FluorineFx.IO
 #if !(NET_1_1)
                 date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
 #endif
-                /*
 				switch(FluorineConfiguration.Instance.TimezoneCompensation)
 				{
 					case TimezoneCompensation.None:
+                        //No conversion by default
 						break;
 					case TimezoneCompensation.Auto:
-						date = date.ToLocalTime();
+						//Not applicable for AMF3
 						break;
-				}
-                */
+                    case TimezoneCompensation.Server:
+                        //Convert to local time
+                        date = date.ToLocalTime();
+                        break;
+                }
                 AddAMF3ObjectReference(date);
 				return date;
 			}

@@ -61,7 +61,11 @@ namespace FluorineFx.Configuration
 #if !SILVERLIGHT
 		[XmlEnum(Name = "auto")]
 #endif
-        Auto = 1
+        Auto = 1,
+#if !SILVERLIGHT
+        [XmlEnum(Name = "server")]
+#endif
+        Server = 2
 	}
 
 	/// <summary>

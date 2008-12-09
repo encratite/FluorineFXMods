@@ -985,12 +985,6 @@ namespace FluorineFx.IO
 #if !(NET_1_1)
                 value = value.ToUniversalTime();
 #endif
-                /*
-                if (FluorineConfiguration.Instance.TimezoneCompensation == TimezoneCompensation.Auto)
-				{
-					value = value.ToUniversalTime();
-				}
-                */
                 TimeSpan span = value.Subtract(timeStart);
 				long milliSeconds = (long)span.TotalMilliseconds;
 				//long date = BitConverter.DoubleToInt64Bits((double)milliSeconds);
