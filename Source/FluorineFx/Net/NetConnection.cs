@@ -352,8 +352,12 @@ namespace FluorineFx.Net
 
         private void Connect()
         {
-            if (_uri.Scheme == "http")
+            if (_uri.Scheme == "http" || _uri.Scheme == "https")
             {
+#if !(NET_1_1)
+                if( ServicePointManager.ServerCertificateValidationCallback == null )
+                    ServicePointManager.ServerCertificateValidationCallback = delegate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors) { return true; };
+#endif
                 _netConnectionClient = new RemotingClient(this);
                 _netConnectionClient.Connect(_uri.ToString(), _arguments);
                 return;
