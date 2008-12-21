@@ -217,5 +217,10 @@ namespace FluorineFx.Collections
         }
 
         #endregion
+
+        public bool ContainsKey(object key)
+        {
+            return _dictionary.ContainsKey(key);
+        }
     }
 }

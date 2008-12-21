@@ -64,20 +64,22 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// String, IBasicScope
         /// </summary>
-        private Dictionary<string, IBasicScope> _children = new Dictionary<string, IBasicScope>();
+        //private Dictionary<string, IBasicScope> _children = new Dictionary<string, IBasicScope>();
+        private CopyOnWriteDictionary _children = new CopyOnWriteDictionary();
         /// <summary>
-        /// IClient, Set(IConnection)
+        /// IClient, CopyOnWriteArraySet(IConnection)
         /// </summary>
-        private Dictionary<IClient, CopyOnWriteArraySet<IConnection>> _clients = new Dictionary<IClient, CopyOnWriteArraySet<IConnection>>();
+        //private Dictionary<IClient, CopyOnWriteArraySet<IConnection>> _clients = new Dictionary<IClient, CopyOnWriteArraySet<IConnection>>();
+        private CopyOnWriteDictionary _clients = new CopyOnWriteDictionary();
 #else
 		/// <summary>
 		/// String, IBasicScope
 		/// </summary>
-        private SynchronizedHashtable _children = new SynchronizedHashtable();
+        private CopyOnWriteDictionary _children = new CopyOnWriteDictionary();
 		/// <summary>
 		/// IClient, Set(IConnection)
 		/// </summary>
-        private SynchronizedHashtable _clients = new SynchronizedHashtable();
+        private CopyOnWriteDictionary _clients = new CopyOnWriteDictionary();
 #endif
 
         protected Scope():this(string.Empty)
@@ -317,7 +319,7 @@ namespace FluorineFx.Messaging
 #if !(NET_1_1)
             CopyOnWriteArraySet<IConnection> connections = null;
             if (_clients.ContainsKey(client))
-                connections = _clients[client];
+                connections = _clients[client] as CopyOnWriteArraySet<IConnection>;
             else
             {
                 connections = new CopyOnWriteArraySet<IConnection>();
@@ -347,7 +349,7 @@ namespace FluorineFx.Messaging
 			if(_clients.ContainsKey(client)) 
 			{
 #if !(NET_1_1)
-                CopyOnWriteArraySet<IConnection> connections = _clients[client];
+                CopyOnWriteArraySet<IConnection> connections = _clients[client] as CopyOnWriteArraySet<IConnection>;
 #else
                 CopyOnWriteArraySet connections = _clients[client] as CopyOnWriteArraySet;
 #endif
