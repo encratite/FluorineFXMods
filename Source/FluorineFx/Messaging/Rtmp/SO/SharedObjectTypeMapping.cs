@@ -25,25 +25,9 @@ namespace FluorineFx.Messaging.Rtmp.SO
 	/// </summary>
 	class SharedObjectTypeMapping
 	{
-		private static SharedObjectEventType[] _typeMap = new SharedObjectEventType[] 
-			{
-				//SharedObjectEventType.Unknown,
-				SharedObjectEventType.SERVER_CONNECT, // 01
-				SharedObjectEventType.SERVER_DISCONNECT, // 02
-				SharedObjectEventType.SERVER_SET_ATTRIBUTE, // 03
-				SharedObjectEventType.CLIENT_UPDATE_DATA, // 04 
-				SharedObjectEventType.CLIENT_UPDATE_ATTRIBUTE, // 05
-				SharedObjectEventType.SERVER_SEND_MESSAGE, // 06
-				SharedObjectEventType.CLIENT_STATUS, // 07
-				SharedObjectEventType.CLIENT_CLEAR_DATA, // 08
-				SharedObjectEventType.CLIENT_DELETE_DATA, // 09
-				SharedObjectEventType.SERVER_DELETE_ATTRIBUTE, // 0A
-				SharedObjectEventType.CLIENT_INITIAL_DATA, // 0B
-			};
-
 		public static SharedObjectEventType ToType(byte rtmpType) 
 		{
-			return _typeMap[rtmpType];
+            return (SharedObjectEventType)rtmpType;
 		}
 
 		public static byte ToByte(SharedObjectEventType type) 
@@ -77,40 +61,6 @@ namespace FluorineFx.Messaging.Rtmp.SO
 				default:
 					//log.error("Unknown type " + type);
 					return 0x00;
-			}
-		}
-
-		public static string ToString(SharedObjectEventType type) 
-		{
-			switch (type) 
-			{
-				case SharedObjectEventType.SERVER_CONNECT:
-					return "server connect";
-				case SharedObjectEventType.SERVER_DISCONNECT:
-					return "server disconnect";
-				case SharedObjectEventType.SERVER_SET_ATTRIBUTE:
-					return "server_set_attribute";
-				case SharedObjectEventType.CLIENT_UPDATE_DATA:
-					return "client_update_data";
-				case SharedObjectEventType.CLIENT_UPDATE_ATTRIBUTE:
-					return "client_update_attribute";
-				case SharedObjectEventType.SERVER_SEND_MESSAGE:
-					return "server_send_message";
-				case SharedObjectEventType.CLIENT_SEND_MESSAGE:
-					return "client_send_message";
-				case SharedObjectEventType.CLIENT_STATUS:
-					return "client_status";
-				case SharedObjectEventType.CLIENT_CLEAR_DATA:
-					return "client_clear_data";
-				case SharedObjectEventType.CLIENT_DELETE_DATA:
-					return "client_delete_data";
-				case SharedObjectEventType.SERVER_DELETE_ATTRIBUTE:
-					return "server_delete_attribute";
-				case SharedObjectEventType.CLIENT_INITIAL_DATA:
-					return "client_initial_data";
-				default:
-					//log.error("Unknown type " + type);
-					return "unknown";
 			}
 		}
 	}

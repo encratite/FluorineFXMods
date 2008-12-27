@@ -25,59 +25,58 @@ namespace FluorineFx.Messaging.Rtmp.SO
 	/// </summary>
 	public enum SharedObjectEventType 
 	{
-		//Unknown = 0,
         /// <summary>
         /// Connect.
         /// </summary>
-		SERVER_CONNECT,
+		SERVER_CONNECT = 1,
         /// <summary>
         /// Disconnect.
         /// </summary>
-		SERVER_DISCONNECT, 
+		SERVER_DISCONNECT = 2, 
         /// <summary>
         /// Set Attribute.
         /// </summary>
-		SERVER_SET_ATTRIBUTE,
-        /// <summary>
-        /// Delete Attribute.
-        /// </summary>
-		SERVER_DELETE_ATTRIBUTE, 
-        /// <summary>
-        /// Send Message.
-        /// </summary>
-		SERVER_SEND_MESSAGE, 
-        /// <summary>
-        /// Clear Data.
-        /// </summary>
-		CLIENT_CLEAR_DATA, 
-        /// <summary>
-        /// Delete Attribute.
-        /// </summary>
-		CLIENT_DELETE_ATTRIBUTE, 
-        /// <summary>
-        /// Delete Data.
-        /// </summary>
-		CLIENT_DELETE_DATA, 
-        /// <summary>
-        /// Initial Data.
-        /// </summary>
-		CLIENT_INITIAL_DATA, 
-        /// <summary>
-        /// Status.
-        /// </summary>
-		CLIENT_STATUS, 
+		SERVER_SET_ATTRIBUTE = 3,
         /// <summary>
         /// Update Data.
         /// </summary>
-		CLIENT_UPDATE_DATA, 
+        CLIENT_UPDATE_DATA = 4,
         /// <summary>
         /// Update Attribute.
         /// </summary>
-		CLIENT_UPDATE_ATTRIBUTE, 
+        CLIENT_UPDATE_ATTRIBUTE = 5,
         /// <summary>
         /// Send Message.
         /// </summary>
-		CLIENT_SEND_MESSAGE
+        SERVER_SEND_MESSAGE = 6,
+        /// <summary>
+        /// Status.
+        /// </summary>
+		CLIENT_STATUS = 7,
+        /// <summary>
+        /// Clear Data.
+        /// </summary>
+        CLIENT_CLEAR_DATA = 8,
+        /// <summary>
+        /// Delete Data.
+        /// </summary>
+        CLIENT_DELETE_DATA = 9,
+        /// <summary>
+        /// Delete Attribute.
+        /// </summary>
+		SERVER_DELETE_ATTRIBUTE = 0xa,
+        /// <summary>
+        /// Initial Data.
+        /// </summary>
+		CLIENT_INITIAL_DATA = 0xb,
+        /// <summary>
+        /// Send Message.
+        /// </summary>
+        CLIENT_SEND_MESSAGE,
+        /// <summary>
+        /// Delete Attribute.
+        /// </summary>
+		CLIENT_DELETE_ATTRIBUTE
 	};
 
 	/// <summary>
