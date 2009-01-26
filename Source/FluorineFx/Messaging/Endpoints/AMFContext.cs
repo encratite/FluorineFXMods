@@ -98,9 +98,6 @@ namespace FluorineFx.Messaging.Endpoints
             }
             set
             {
-                HttpContext ctx = HttpContext.Current;
-                if (ctx != null)
-                    ctx.Items[AMFContext.FluorineAMFContextKey] = value;
                 try
                 {
                     // See if we're running in full trust
@@ -109,6 +106,9 @@ namespace FluorineFx.Messaging.Endpoints
                 }
                 catch (SecurityException)
                 {
+                    HttpContext ctx = HttpContext.Current;
+                    if (ctx != null)
+                        ctx.Items[AMFContext.FluorineAMFContextKey] = value;
                 }
             }
         }        

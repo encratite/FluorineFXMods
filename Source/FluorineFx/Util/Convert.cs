@@ -2659,8 +2659,12 @@ namespace FluorineFx.Util
             Char result;
             if (Char.TryParse(value, out result))
                 return result;
+            if (value != null && value != string.Empty)
+                return value[0];
             return (Char)0;
 #else
+            if (value != null && value != string.Empty)
+                return value[0];
             return (value == null) ? (Char)0 : Char.Parse(value);
 #endif
         }
@@ -6688,8 +6692,12 @@ namespace FluorineFx.Util
             Char result;
             if (Char.TryParse(value, out result))
                 return result;
+            if (value != null && value != string.Empty)
+                return value[0];
             return (Char)0;
 #else
+            if (value != null && value != string.Empty)
+                return value[0];
             return value == null? null: (Char?)Char.Parse(value); 
 #endif
         }

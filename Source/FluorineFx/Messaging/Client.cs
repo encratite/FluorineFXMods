@@ -18,6 +18,8 @@
 */
 using System;
 using System.Collections;
+using System.Security;
+using System.Security.Permissions;
 using log4net;
 using FluorineFx.Util;
 using FluorineFx.Collections;
@@ -147,7 +149,19 @@ namespace FluorineFx.Messaging
                 if (FluorineContext.Current == null)
                 {
                     _TimeoutContext context = new _TimeoutContext(currentConnection, this);
-                    WebSafeCallContext.SetData(FluorineContext.FluorineContextKey, context);
+                    //WebSafeCallContext.SetData(FluorineContext.FluorineContextKey, context);
+                    try
+                    {
+                        // See if we're running in full trust
+                        new SecurityPermission(PermissionState.Unrestricted).Demand();
+                        WebSafeCallContext.SetData(FluorineContext.FluorineContextKey, context);
+                    }
+                    catch (SecurityException)
+                    {
+                        System.Web.HttpContext ctx = System.Web.HttpContext.Current;
+                        if (ctx != null)
+                            ctx.Items[FluorineContext.FluorineContextKey] = context;
+                    }
                 }
                 _clientManager.RemoveSubscriber(this);
                 if (_sessionDestroyedListeners != null)
