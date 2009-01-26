@@ -908,7 +908,7 @@ namespace FluorineFx
                     case TypeCode.UInt32:   return ConvertToNullableUInt32  (value);
                     case TypeCode.UInt64:   return ConvertToNullableUInt64  (value);
                 }
-                if (typeof(Guid) == targetType) return ConvertToNullableGuid(value);
+                if (typeof(Guid) == TypeHelper.GetUnderlyingType(targetType)) return ConvertToNullableGuid(value);
             }
 #endif
 
