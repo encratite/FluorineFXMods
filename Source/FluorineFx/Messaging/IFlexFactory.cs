@@ -29,7 +29,7 @@ namespace FluorineFx.Messaging
 		/// <summary>
 		/// This method is called when the definition of an instance that this factory looks up is initialized. 
 		/// </summary>
-		/// <param name="id">The factory identity.</param>
+		/// <param name="id">The Destination identity.</param>
 		/// <param name="properties">Configuration properties.</param>
         /// <returns>A FactoryInstance instance.</returns>
 		FactoryInstance CreateFactoryInstance(string id, Hashtable properties);
