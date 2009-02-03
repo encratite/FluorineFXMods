@@ -35,14 +35,17 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Initializes a new instance of the DotNetFactoryInstance class.
         /// </summary>
-        /// <param name="flexFactory"></param>
-        /// <param name="id"></param>
-        /// <param name="properties"></param>
+        /// <param name="flexFactory">The IFlexFactory this FactoryInstance is created from.</param>
+        /// <param name="id">The Destination identity.</param>
+        /// <param name="properties">The configuration properties for this destination.</param>
         public DotNetFactoryInstance(IFlexFactory flexFactory, string id, Hashtable properties)
             : base(flexFactory, id, properties)
 		{
 		}
-
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <returns>Instance of the given factory.</returns>
 		public object CreateInstance()
 		{
 			Type type = GetInstanceClass();
@@ -63,8 +66,10 @@ namespace FluorineFx.Messaging
 			}
 			return instance;
 		}
-
-		public override string Source
+        /// <summary>
+        /// Gets or sets the FactoryInstance source.
+        /// </summary>
+        public override string Source
 		{
 			get
 			{
@@ -79,15 +84,19 @@ namespace FluorineFx.Messaging
 				}
 			}
 		}
-
-
-		public override Type GetInstanceClass()
+        /// <summary>
+        /// Returns the class for the underlying configuration (used when the lookup method is called). 
+        /// </summary>
+        /// <returns>A Type instance.</returns>
+        public override Type GetInstanceClass()
 		{
 			if( _cachedType == null )
 				_cachedType = ObjectFactory.LocateInLac(this.Source);
 			return _cachedType;
 		}
-
+        /// <summary>
+        /// Gets the application-scoped instance.
+        /// </summary>
 		public object ApplicationInstance
 		{
 			get
@@ -98,7 +107,6 @@ namespace FluorineFx.Messaging
 					{
 						if( _applicationInstance == null )
 							_applicationInstance = CreateInstance();
-						FluorineContext.Current.ApplicationState[this.AttributeId] = _applicationInstance;
 					}
 				}
 				return _applicationInstance;
