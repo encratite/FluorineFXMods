@@ -40,9 +40,9 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Creates a FactoryInstance.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The Destination identity.</param>
         /// <param name="properties">Configuration properties for the destination.</param>
-        /// <returns></returns>
+        /// <returns>A FactoryInstance instance.</returns>
 		public FactoryInstance CreateFactoryInstance(string id, Hashtable properties)
 		{
 			DotNetFactoryInstance factoryInstance = new DotNetFactoryInstance(this, id, properties);
@@ -56,15 +56,20 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Return an instance as appropriate for this instance of the given factory.
         /// </summary>
-        /// <param name="factoryInstance"></param>
-        /// <returns></returns>
+        /// <param name="factoryInstance">FactoryInstance used to retrieve the object instance.</param>
+        /// <returns>The Object instance to use for the given operation for the current destination.</returns>
 		public object Lookup(FactoryInstance factoryInstance)
 		{
 			DotNetFactoryInstance dotNetFactoryInstance = factoryInstance as DotNetFactoryInstance;
 			switch(dotNetFactoryInstance.Scope)
 			{
-				case "application":
-					return dotNetFactoryInstance.ApplicationInstance;
+                case "application":
+                    {
+                        object instance = dotNetFactoryInstance.ApplicationInstance;
+                        if (FluorineContext.Current != null && FluorineContext.Current.ApplicationState != null && dotNetFactoryInstance.AttributeId != null)
+                            FluorineContext.Current.ApplicationState[dotNetFactoryInstance.AttributeId] = instance;
+                        return instance;
+                    }
 				case "session":
 					if( FluorineContext.Current.Session != null )
 					{
