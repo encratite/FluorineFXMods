@@ -46,63 +46,70 @@ namespace FluorineFx.Messaging
 			_id = id;
 			_properties = properties;
 		}
-
+        /// <summary>
+        /// Gets the Destination identity.
+        /// </summary>
 		public string Id
 		{
 			get{ return _id; }
 		}
-
+        /// <summary>
+        /// Gets or sets the FactoryInstance scope.
+        /// </summary>
 		public virtual string Scope
 		{
 			get{ return _scope; }
 			set{ _scope = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the FactoryInstance source.
+        /// </summary>
 		public virtual string Source
 		{
 			get{ return _source; }
 			set{ _source = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets the FactoryInstance attribute identity.
+        /// </summary>
+        /// <remarks>Which attribute the component is stored in.</remarks>
 		public string AttributeId
 		{
 			get{ return _attributeId; }
 			set{ _attributeId = value; }
 		}
-
-
+        /// <summary>
+        /// Gets the configuration properties for this destination.
+        /// </summary>
 		public Hashtable Properties
 		{
 			get{ return _properties; }
 		}
-
 		/// <summary>
 		/// If possible, returns the class for the underlying configuration. 
 		/// This method can return null if the class is not known until the lookup method is called. 
 		/// The goal is so the factories which know the class at startup time can provide earlier error detection. 
 		/// If the class is not known, this method can return null and validation will wait until the first lookup call.
 		/// </summary>
-		/// <returns></returns>
+        /// <returns>A Type instance.</returns>
 		public virtual Type GetInstanceClass()
 		{
 			return null;
 		}
-
 		/// <summary>
 		/// Return an instance as appropriate for this instance of the given factory. This just calls the lookup method on the factory 
 		/// that this instance was created on. You override this method to return the specific component for this destination. 
 		/// </summary>
-		/// <returns></returns>
+        /// <returns>Instance of the given factory.</returns>
 		public virtual object Lookup()
 		{
 			return _factory.Lookup(this);
 		}
-
 		/// <summary>
 		/// When the caller is done with the instance, this method is called. For session scoped components, this gives you the opportunity to 
 		/// update any state modified in the instance in a remote persistence store. 
 		/// </summary>
-		/// <param name="instance"></param>
+        /// <param name="instance">Instance of the given factory.</param>
 		public virtual void OnOperationComplete(object instance)
 		{
 		}
