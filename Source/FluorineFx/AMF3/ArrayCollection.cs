@@ -110,7 +110,7 @@ namespace FluorineFx.AMF3
 			if (typeGenericICollection != null)
 			{
 				object obj = TypeHelper.CreateInstance(destinationType);
-				MethodInfo miAddCollection = destinationType.GetMethod("Add");
+                MethodInfo miAddCollection = typeGenericICollection.GetMethod("Add");
 				if (miAddCollection != null)
 				{
 					ParameterInfo[] parameters = miAddCollection.GetParameters();
