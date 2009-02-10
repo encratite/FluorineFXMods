@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Apache.NMS;
 
 namespace FluorineFx.NMS
@@ -35,6 +33,7 @@ namespace FluorineFx.NMS
         public void stop()
         {
             consumer.Listener -= onMessage;
+            consumer.Close();
         }
     }
 }
