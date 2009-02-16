@@ -393,6 +393,9 @@ namespace FluorineFx.Messaging.Rtmp
 			ByteBuffer output = ByteBuffer.Allocate(1024);
 			output.AutoExpand = true;
 			RtmpWriter writer = new RtmpWriter(output);
+            //Set legacy collection flag from context
+            writer.UseLegacyCollection = context.UseLegacyCollection;
+            writer.UseLegacyThrowable = context.UseLegacyThrowable;
 
 			IServiceCall serviceCall = invoke.ServiceCall;
 			bool isPending = serviceCall.Status == Call.STATUS_PENDING;
@@ -442,6 +445,9 @@ namespace FluorineFx.Messaging.Rtmp
 			ByteBuffer output = ByteBuffer.Allocate(1024);
 			output.AutoExpand = true;
 			RtmpWriter writer = new RtmpWriter(output);
+            //Set legacy collection flag from context
+            writer.UseLegacyCollection = context.UseLegacyCollection;
+            writer.UseLegacyThrowable = context.UseLegacyThrowable;
 			
 			writer.WriteByte(0);
 			writer.WriteData(context.ObjectEncoding, invoke.Cmd);
@@ -473,6 +479,9 @@ namespace FluorineFx.Messaging.Rtmp
 		static void EncodeSharedObject(RtmpContext context, ISharedObjectMessage so, ByteBuffer output)
 		{
 			RtmpWriter writer = new RtmpWriter(output);
+            //Set legacy collection flag from context
+            writer.UseLegacyCollection = context.UseLegacyCollection;
+            writer.UseLegacyThrowable = context.UseLegacyThrowable;
 
 			writer.WriteUTF(so.Name);
 			// SO version

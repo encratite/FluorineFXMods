@@ -252,6 +252,20 @@ namespace FluorineFx.IO
             return value;
 		}
         /// <summary>
+        /// Reads a 4-byte signed integer from the current AMF stream.
+        /// </summary>
+        /// <returns>The 4-byte signed integer.</returns>
+        public int ReadReverseInt()
+        {
+            byte[] bytes = this.ReadBytes(4);
+            int val = 0;
+            val += bytes[3] << 24;
+            val += bytes[2] << 16;
+            val += bytes[1] << 8;
+            val += bytes[0];
+            return val;
+        }
+        /// <summary>
         /// Reads a 3-byte signed integer from the current AMF stream using network byte order encoding and advances the position of the stream by three bytes.
         /// </summary>
         /// <returns>The 3-byte signed integer.</returns>

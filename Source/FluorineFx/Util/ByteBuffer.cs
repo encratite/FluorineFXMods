@@ -650,7 +650,10 @@ namespace FluorineFx.Util
             int value = bytes[0] << 16 | bytes[1] << 8 | bytes[2];
             return value;
         }
-
+        /// <summary>
+        /// Reads a 4-byte signed integer.
+        /// </summary>
+        /// <returns>The 4-byte signed integer.</returns>
 		public int ReadReverseInt()
 		{
 			byte[] bytes = this.ReadBytes(4);

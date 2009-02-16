@@ -960,6 +960,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IO\ASObjectProxy.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IO\CacheableObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -970,12 +975,32 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IO\EntityObjectProxy.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IO\ExceptionProxy.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IO\ErrorResponseBody.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IO\ExternalizableProxy.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IO\IKeyFrameDataAnalyzer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IO\IObjectProxy.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -1015,6 +1040,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IO\ObjectProxy.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IO\ObjectProxyRegistry.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IO\RawBinary.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -1026,6 +1061,11 @@
                 />
                 <File
                     RelPath = "IO\Tag.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IO\WcfProxy.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -2195,6 +2235,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Messaging\Config\SerializationSettings.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Messaging\Config\DestinationSettings.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -3293,7 +3338,6 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
-
             </Include>
         </Files>
     </CSHARP>

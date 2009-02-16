@@ -30,7 +30,7 @@ namespace FluorineFx.AMF3
 	/// </summary>
     [CLSCompliant(false)]
 #if !(NET_1_1)
-    public class ObjectProxy : Dictionary<string, Object>
+    public class ObjectProxy : Dictionary<string, Object>, IExternalizable
 #else
     public class ObjectProxy : Hashtable, IExternalizable
 #endif

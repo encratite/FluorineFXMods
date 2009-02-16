@@ -653,6 +653,15 @@ namespace FluorineFx.Util
 #endif
         }
 
+        public static MemberInfo[] FindMembers(Type targetType, MemberTypes memberType, BindingFlags bindingAttr, Type customAttributeType)
+        {
+            return FindMembers(targetType, memberType, bindingAttr, new MemberFilter(AttributeFilter), customAttributeType);
+        }
+
+        public static bool AttributeFilter(MemberInfo candidate, Object part)
+        {
+            return GetAttribute(part as Type, candidate) != null;
+        }
 
 		public static object CreateGeneric(Type genericTypeDefinition, Type innerType, params object[] args)
 		{

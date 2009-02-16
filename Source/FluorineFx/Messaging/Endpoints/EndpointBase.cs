@@ -112,6 +112,20 @@ namespace FluorineFx.Messaging.Endpoints
 
 		#endregion
 
+        public bool IsLegacyCollection
+        {
+            get
+            {
+                return _channelSettings.Serialization.IsLegacyCollection;
+            }
+        }
 
+        public bool IsLegacyThrowable
+        {
+            get
+            {
+                return _channelSettings.Serialization.IsLegacyThrowable;
+            }
+        }
 	}
 }

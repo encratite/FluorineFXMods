@@ -159,6 +159,10 @@ namespace FluorineFx.Messaging.Rtmp
             _state = RtmpConnectionState.Active;
             SetIsTunneled(false);
             IsTunnelingDetected = false;
+
+            //Set the legacy collection flag from the endpoint channel settings
+            this.Context.UseLegacyCollection = (_endpoint as RtmpEndpoint).IsLegacyCollection;
+            this.Context.UseLegacyThrowable = (_endpoint as RtmpEndpoint).IsLegacyThrowable;
 		}
 
         public bool IsTunneled
@@ -343,6 +347,12 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 if (log.IsDebugEnabled)
                     log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionReset, _connectionId));
+                error = false;
+            }
+            if (socketException != null && socketException.ErrorCode == 10053)//WSAECONNABORTED
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionAborted, _connectionId));
                 error = false;
             }
 

@@ -678,4 +678,7 @@
   <data name="Silverlight_StartPS" xml:space="preserve">
     <value>Starting Silverlight policy server, policy file: {0}</value>
   </data>
+  <data name="Rtmp_SocketConnectionAborted" xml:space="preserve">
+    <value>An established connection was aborted {0}</value>
+  </data>
 </root>

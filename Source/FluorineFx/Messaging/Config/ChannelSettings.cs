@@ -35,11 +35,29 @@ namespace FluorineFx.Messaging.Config
         /// Context Root token.
         /// </summary>
         public const string ContextRoot = "{context.root}";
+        /// <summary>
+        /// Polling enabled configuration element name.
+        /// </summary>
         public const string PollingEnabledKey = "polling-enabled";
+        /// <summary>
+        /// Configuration element name for polling interval.
+        /// </summary>
         public const string PollingIntervalSecondsKey = "polling-interval-seconds";
+        /// <summary>
+        /// Configuration element name to bind the RTMP channel endpoint to a specific network interface.
+        /// </summary>
         public const string BindAddressKey = "bind-address";
+        /// <summary>
+        /// Configuration element name for polling interval.
+        /// </summary>
         public const string PollingIntervalMillisKey = "polling-interval-millis";
+        /// <summary>
+        /// Configuration element name for the number of milliseconds the server poll response thread will wait.
+        /// </summary>
         public const string WaitIntervalMillisKey = "wait-interval-millis";
+        /// <summary>
+        /// Configuration element name for the maximum number of server poll response threads that can be in wait state.
+        /// </summary>
         public const string MaxWaitingPollRequestsKey = "max-waiting-poll-requests";
 
         UriBase _uri;
@@ -48,13 +66,22 @@ namespace FluorineFx.Messaging.Config
         string _endpointUri;
         int _maxWaitingPollRequests;
         int _waitIntervalMillis;
+        SerializationSettings _serializationSettings;
 
+        /// <summary>
+        /// Initializes a new instance of the ChannelSettings class.
+        /// </summary>
         internal ChannelSettings()
         {
             _maxWaitingPollRequests = 0;
             _waitIntervalMillis = 0;
         }
-
+        /// <summary>
+        /// Initializes a new instance of the ChannelSettings class.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="endpointClass"></param>
+        /// <param name="endpointUri"></param>
         internal ChannelSettings(string id, string endpointClass, string endpointUri)
             : this()
         {
@@ -63,14 +90,21 @@ namespace FluorineFx.Messaging.Config
             _endpointUri = endpointUri;
             _uri = new UriBase(_endpointUri);
         }
-
+        /// <summary>
+        /// Initializes a new instance of the ChannelSettings class.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="endpointClass"></param>
         internal ChannelSettings(string id, string endpointClass)
             : this()
         {
             _id = id;
             _endpointClass = endpointClass;
         }
-
+        /// <summary>
+        /// Initializes a new instance of the ChannelSettings class.
+        /// </summary>
+        /// <param name="channelDefinitionNode"></param>
         internal ChannelSettings(XmlNode channelDefinitionNode)
         {
             _id = channelDefinitionNode.Attributes["id"].Value;
@@ -85,8 +119,12 @@ namespace FluorineFx.Messaging.Config
             {
                 foreach (XmlNode propertyNode in propertiesNode.SelectNodes("*"))
                 {
-                    this[propertyNode.Name] = propertyNode.InnerXml;
+                    if( propertyNode.Name != "serialization" )
+                        this[propertyNode.Name] = propertyNode.InnerXml;
                 }
+                XmlNode serializationNode = propertiesNode.SelectSingleNode("serialization");
+                if (serializationNode != null)
+                    _serializationSettings = new SerializationSettings(serializationNode);
             }
 
             if (this.ContainsKey(MaxWaitingPollRequestsKey))
@@ -120,6 +158,18 @@ namespace FluorineFx.Messaging.Config
             }
         }
         /// <summary>
+        /// Gets serialization properties.
+        /// </summary>
+        public SerializationSettings Serialization
+        {
+            get
+            {
+                if (_serializationSettings == null)
+                    _serializationSettings = new SerializationSettings();
+                return _serializationSettings;
+            }
+        }
+        /// <summary>
         /// Optional channel property. Default value is false.
         /// </summary>
         public bool IsPollingEnabled
@@ -131,7 +181,9 @@ namespace FluorineFx.Messaging.Config
                 return false;
             }
         }
-
+        /// <summary>
+        /// Gets the polling interval.
+        /// </summary>
         public int PollingIntervalSeconds
         {
             get
@@ -141,7 +193,9 @@ namespace FluorineFx.Messaging.Config
                 return 8;
             }
         }
-
+        /// <summary>
+        /// Gets the network interface address to bind the RTMP channel to.
+        /// </summary>
         public string BindAddress
         {
             get

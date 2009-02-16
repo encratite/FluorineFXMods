@@ -102,7 +102,11 @@ namespace FluorineFx.Messaging.Rtmp
 			get{ return _timerRelative; }
 			set{ _timerRelative = value; }
 		}
-
+        /// <summary>
+        /// Gets the header lenght.
+        /// </summary>
+        /// <param name="headerType"></param>
+        /// <returns></returns>
 		public static int GetHeaderLength(HeaderType headerType) 
 		{
 			switch (headerType) 

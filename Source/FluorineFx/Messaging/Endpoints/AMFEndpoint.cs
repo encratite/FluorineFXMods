@@ -39,7 +39,6 @@ namespace FluorineFx.Messaging.Endpoints
 	class AMFEndpoint : EndpointBase
 	{
 		FilterChain _filterChain;
-		const string LegacyCollectionKey = "legacy-collection";
         AtomicInteger _waitingPollRequests;
 
 		public AMFEndpoint(MessageBroker messageBroker, ChannelSettings channelSettings):base(messageBroker, channelSettings)
@@ -50,7 +49,7 @@ namespace FluorineFx.Messaging.Endpoints
 		public override void Start()
 		{
 			DeserializationFilter deserializationFilter = new DeserializationFilter();
-			deserializationFilter.UseLegacyCollection = GetIsLegacyCollection();
+			deserializationFilter.UseLegacyCollection = this.IsLegacyCollection;
 			ServiceMapFilter serviceMapFilter = new ServiceMapFilter(this);
 			WsdlFilter wsdlFilter = new WsdlFilter();
             AuthenticationFilter authenticationFilter = new AuthenticationFilter(this);
@@ -60,7 +59,8 @@ namespace FluorineFx.Messaging.Endpoints
 			MessageFilter messageFilter = new MessageFilter(this);
 			DebugFilter debugFilter = new DebugFilter();
 			SerializationFilter serializationFilter = new SerializationFilter();
-			serializationFilter.UseLegacyCollection = GetIsLegacyCollection();
+			serializationFilter.UseLegacyCollection = this.IsLegacyCollection;
+            serializationFilter.UseLegacyThrowable = this.IsLegacyThrowable;
 			
 			deserializationFilter.Next = serviceMapFilter;
 			serviceMapFilter.Next = wsdlFilter;
@@ -74,15 +74,6 @@ namespace FluorineFx.Messaging.Endpoints
 			messageFilter.Next = serializationFilter;
 
 			_filterChain = new FilterChain(deserializationFilter);
-		}
-
-		public bool GetIsLegacyCollection()
-		{
-			if( !_channelSettings.Contains(LegacyCollectionKey) )
-				return false;
-			string value = _channelSettings[LegacyCollectionKey] as string;
-			bool isLegacy = System.Convert.ToBoolean(value);
-			return isLegacy;
 		}
 
 		public override void Stop()

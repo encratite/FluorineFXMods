@@ -17,12 +17,15 @@
 		<optimizer provider="codedom" debug="true"/>
 		<wsdlGenerateProxyClasses>true</wsdlGenerateProxyClasses>
 		<wsdlProxyNamespace>FluorineFx.Proxy</wsdlProxyNamespace>
-		<!--  Time Zone Compensation ="none|auto" -->
+		<!--  Time Zone Compensation ="none|auto|server" -->
 		<timezoneCompensation>none</timezoneCompensation>
 		<!--  Any value-type that is not explicitly initialized with a value will contain the default value for that object type -->
 		<acceptNullValueTypes>false</acceptNullValueTypes>
 		<!-- value="browse|access" -->
 		<remotingServiceAttribute>browse</remotingServiceAttribute>
+		<!-- <customErrors mode="On|Off" stackTrace="false|true"/> -->
+		<!--  When mode is set to "Off" .NET exception details are provided to the client. -->
+		<customErrors mode="On" stackTrace="false"/>
 		<classMappings>
 			<classMapping>
 				<type>SampleClassNet</type>
@@ -83,7 +86,6 @@
 		</httpCompress>
 		<fluorineContextFactory type="FluorineFx.Context.FluorineRtmpContextFactory"/>
 		<rtmpServer>
-			<threadpool minWorkerThreads="0" maxWorkerThreads="25" idleTimeout="60000"/>
 			<!-- Ping clients every "pingInterval" ms. Set to 0 to disable ghost detection code. -->
 			<!-- Disconnect client after "maxInactivity" ms of not responding. -->
 			<!-- Max. time in milliseconds to wait for a valid handshake. -->

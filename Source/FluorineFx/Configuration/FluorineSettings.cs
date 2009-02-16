@@ -58,12 +58,13 @@ namespace FluorineFx.Configuration
         private PlaylistSubscriberStreamSettings _playlistSubscriberStreamSettings;
         private JSonSettings _jsonSettings;
         private SilverlightSettings _silverlightSettings;
+        private RuntimeSettings _runtimeSettings;
 #endif
+        private CustomErrors _customErrors;
         private bool _acceptNullValueTypes;
 		private RemotingServiceAttributeConstraint _remotingServiceAttributeConstraint;
 		private TimezoneCompensation _timezoneCompensation;
 		private OptimizerSettings _optimizerSettings;
-        private RuntimeSettings _runtimeSettings;
 
         /// <summary>
         /// Initializes a new instance of the FluorineSettings class.
@@ -79,9 +80,9 @@ namespace FluorineFx.Configuration
 			_rtmpServerSettings = new RtmpServerSettings();
 			//_optimizerSettings = new OptimizerSettings();
 			_swxSettings = new SwxSettings();
-#endif
             _runtimeSettings = new RuntimeSettings();
-		}
+#endif
+        }
 
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -308,6 +309,15 @@ namespace FluorineFx.Configuration
             }
             set { _silverlightSettings = value; }
         }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        [XmlElement(ElementName = "runtime")]
+        public RuntimeSettings Runtime
+        {
+            get { return _runtimeSettings; }
+            set { _runtimeSettings = value; }
+        }
 #endif
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -357,12 +367,17 @@ namespace FluorineFx.Configuration
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 #if !FXCLIENT
-        [XmlElement(ElementName = "runtime")]
+        [XmlElement(ElementName = "customErrors")]
 #endif
-        public RuntimeSettings Runtime
+        public CustomErrors CustomErrors
         {
-            get { return _runtimeSettings; }
-            set { _runtimeSettings = value; }
+            get
+            {
+                if (_customErrors == null)
+                    _customErrors = new CustomErrors();
+                return _customErrors;
+            }
+            set { _customErrors = value; }
         }
 
 	}
@@ -2243,7 +2258,6 @@ namespace FluorineFx.Configuration
     /// </summary>
     public sealed class RtmpServerSettings
 	{
-		private ThreadPoolSettings _threadPoolSettings;
         private RtmpConnectionSettings _rtmpConnectionSettings;
         private RtmptConnectionSettings _rtmptConnectionSettings;
         private RtmpTransportSettings _rtmpTransportSettings;
@@ -2253,21 +2267,11 @@ namespace FluorineFx.Configuration
         /// </summary>
 		public RtmpServerSettings()
 		{
-			_threadPoolSettings = new ThreadPoolSettings();
             _rtmpConnectionSettings = new RtmpConnectionSettings();
             _rtmptConnectionSettings = new RtmptConnectionSettings();
             _rtmpTransportSettings = new RtmpTransportSettings();
 		}
 
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        [XmlElement(ElementName = "threadpool")]
-		public ThreadPoolSettings ThreadPoolSettings
-		{
-			get{return _threadPoolSettings;}
-			set{_threadPoolSettings = value;}
-		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -2299,56 +2303,6 @@ namespace FluorineFx.Configuration
 #endif
 	#endregion RtmpServerSettings
 
-	#region ThreadPoolSettings
-#if !FXCLIENT
-    /// <summary>
-    /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
-    /// </summary>
-    public sealed class ThreadPoolSettings
-	{
-		private int _minWorkerThreads;
-		private int _maxWorkerThreads;
-		private int _idleTimeout;
-
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-		public ThreadPoolSettings()
-		{
-			_minWorkerThreads = FluorineFx.Threading.ThreadPoolEx.DefaultMinWorkerThreads;
-			_maxWorkerThreads = FluorineFx.Threading.ThreadPoolEx.DefaultMaxWorkerThreads;
-			_idleTimeout = FluorineFx.Threading.ThreadPoolEx.DefaultIdleTimeout;
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        [XmlAttribute(DataType = "int", AttributeName = "minWorkerThreads")]
-		public int MinWorkerThreads
-		{
-			get{return _minWorkerThreads;}
-			set{_minWorkerThreads = value;}
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        [XmlAttribute(DataType = "int", AttributeName = "maxWorkerThreads")]
-		public int MaxWorkerThreads
-		{
-			get{return _maxWorkerThreads;}
-			set{_maxWorkerThreads = value;}
-		}
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        [XmlAttribute(DataType = "int", AttributeName = "idleTimeout")]
-		public int IdleTimeout
-		{
-			get{return _idleTimeout;}
-			set{_idleTimeout = value;}
-		}
-	}
-#endif
-	#endregion ThreadPoolSettings
 
     #region RtmpConnectionSettings
 #if !FXCLIENT
@@ -2565,9 +2519,53 @@ namespace FluorineFx.Configuration
 
 	#endregion OptimizerSettings
 
-	#region SwxSettings
+    #region CustomErrors
+
+    /// <summary>
+    /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// </summary>
+    public sealed class CustomErrors
+    {
+        private string _mode;
+        private bool _stackTrace;
+
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public CustomErrors()
+        {
+            _mode = "On";
+            _stackTrace = false;
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
 #if !FXCLIENT
-	/// <summary>
+        [XmlAttribute(DataType = "string", AttributeName = "mode")]
+#endif
+        public string Mode
+        {
+            get { return _mode; }
+            set { _mode = value; }
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+#if !FXCLIENT
+        [XmlAttribute(DataType = "boolean", AttributeName = "stackTrace")]
+#endif
+        public bool StackTrace
+        {
+            get { return _stackTrace; }
+            set { _stackTrace = value; }
+        }
+    }
+
+    #endregion CustomErrors
+
+    #region SwxSettings
+#if !FXCLIENT
+    /// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
 	public sealed class SwxSettings
@@ -2811,6 +2809,7 @@ namespace FluorineFx.Configuration
 
     #region RuntimeSettings
 
+#if !FXCLIENT
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -2826,15 +2825,13 @@ namespace FluorineFx.Configuration
         public RuntimeSettings()
         {
             _asyncHandler = false;
-            _minWorkerThreads = 0;
-            _maxWorkerThreads = 0;
+            _minWorkerThreads = FluorineFx.Threading.ThreadPoolEx.DefaultMinWorkerThreads;
+            _maxWorkerThreads = FluorineFx.Threading.ThreadPoolEx.DefaultMaxWorkerThreads;
         }
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-#if !FXCLIENT
         [XmlAttribute(DataType = "int", AttributeName = "minWorkerThreads")]
-#endif
         public int MinWorkerThreads
         {
             get { return _minWorkerThreads; }
@@ -2843,9 +2840,7 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-#if !FXCLIENT
         [XmlAttribute(DataType = "int", AttributeName = "maxWorkerThreads")]
-#endif
         public int MaxWorkerThreads
         {
             get { return _maxWorkerThreads; }
@@ -2854,15 +2849,14 @@ namespace FluorineFx.Configuration
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-#if !FXCLIENT
         [XmlAttribute(DataType = "boolean", AttributeName = "asyncHandler")]
-#endif
         public bool AsyncHandler
         {
             get { return _asyncHandler; }
             set { _asyncHandler = value; }
         }
     }
+#endif
 
     #endregion RuntimeSettings
 

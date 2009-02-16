@@ -22,6 +22,7 @@ using System.Collections;
 using System.Net;
 using System.Security;
 using FluorineFx.Collections;
+using FluorineFx.Configuration;
 
 namespace FluorineFx.Threading
 {
@@ -605,7 +606,9 @@ namespace FluorineFx.Threading
                     lock (typeof(ThreadPoolEx))
                     {
                         if (GlobalThreadPool == null)
-                            GlobalThreadPool = new ThreadPoolEx();
+                        {
+                            GlobalThreadPool = new ThreadPoolEx(DefaultIdleTimeout, FluorineConfiguration.Instance.FluorineSettings.Runtime.MaxWorkerThreads, FluorineConfiguration.Instance.FluorineSettings.Runtime.MinWorkerThreads);
+                        }
                     }
                 }
                 return GlobalThreadPool;

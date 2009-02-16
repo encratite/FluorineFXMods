@@ -21,6 +21,7 @@ using System;
 
 using FluorineFx.Messaging.Messages;
 using FluorineFx.Exceptions;
+using FluorineFx.Configuration;
 
 namespace FluorineFx.Messaging
 {
@@ -74,6 +75,7 @@ namespace FluorineFx.Messaging
         public MessageException(string message, Exception inner): base(message, inner)																 
 		{																 
             _extendedData = new ASObject();
+            _rootCause = inner;
 		}
 		/// <summary>
 		/// Initializes a new instance of the MessageException class.
@@ -94,7 +96,19 @@ namespace FluorineFx.Messaging
 		{
 			_extendedData = extendedData;
 		}
-		/// <summary>
+        /// <summary>
+        /// Initializes a new instance of the MessageException class with a specified error message.
+        /// </summary>
+        /// <param name="extendedData">Additional information.</param>
+        /// <param name="faultCode">Fault code for the error.</param>
+        /// <param name="message">The error message that explains the reason for the exception.</param>			
+        public MessageException(ASObject extendedData, string faultCode, string message)
+            : base(message)
+        {
+            _extendedData = extendedData;
+            _faultCode = faultCode;
+        }
+        /// <summary>
 		/// Initializes a new instance of the MessageException class with a specified error message and a reference to the inner exception that is the cause of this exception.
 		/// </summary>
 		/// <param name="extendedData">Additional information.</param>
@@ -117,7 +131,19 @@ namespace FluorineFx.Messaging
             _faultCode = faultCode;
             _rootCause = inner;
         }
-		/// <summary>
+        /// <summary>
+        /// Initializes a new instance of the MessageException class.
+        /// </summary>
+        /// <param name="inner">Reference to the inner exception that is the cause of this exception.</param>
+        /// <param name="faultCode">Fault code for the error.</param>
+        /// <param name="message">The error message that explains the reason for the exception.</param>		
+        public MessageException(Exception inner, string faultCode, string message)
+            : base(message, inner)
+        {
+            _faultCode = faultCode;
+            _rootCause = inner;
+        }
+        /// <summary>
 		/// Gets or sets the fault code for the error.
 		/// </summary>
 		public string FaultCode
@@ -147,19 +173,24 @@ namespace FluorineFx.Messaging
 			ErrorMessage errorMessage = new ErrorMessage();
 			errorMessage.faultCode = this.FaultCode;
 			errorMessage.faultString = this.Message;
-#if DEBUG
-            if (this.InnerException != null)
-			{
-                errorMessage.faultDetail = this.InnerException.StackTrace;
-				if( this.ExtendedData != null )
-					this.ExtendedData["FluorineStackTrace"] = this.StackTrace;
-			}
-			else
-				errorMessage.faultDetail = this.StackTrace;
-
-            if (this.RootCause != null)
-                errorMessage.rootCause = this.RootCause;
-#endif
+//#if DEBUG
+            if (FluorineConfiguration.Instance.FluorineSettings.CustomErrors.Mode == "Off")
+            {
+                if (FluorineConfiguration.Instance.FluorineSettings.CustomErrors.StackTrace)
+                {
+                    if (this.InnerException != null)
+                    {
+                        errorMessage.faultDetail = this.InnerException.StackTrace;
+                        if (this.ExtendedData != null)
+                            this.ExtendedData["FluorineStackTrace"] = this.StackTrace;
+                    }
+                    else
+                        errorMessage.faultDetail = this.StackTrace;
+                }
+                if (this.RootCause != null)
+                    errorMessage.rootCause = this.RootCause;
+            }
+//#endif
             errorMessage.extendedData = this.ExtendedData;
 			return errorMessage;
 		}

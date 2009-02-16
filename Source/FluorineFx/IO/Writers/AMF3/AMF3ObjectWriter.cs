@@ -18,6 +18,10 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
+using System.Collections.Generic;
+#endif
+using System.ComponentModel;
 using FluorineFx.AMF3;
 
 namespace FluorineFx.IO.Writers
@@ -36,34 +40,64 @@ namespace FluorineFx.IO.Writers
 
 		public void WriteData(AMFWriter writer, object data)
 		{
-			if( data is IList )
+            if (data is ArrayCollection)
+            {
+                writer.WriteByte(AMF3TypeCode.Object);
+                writer.WriteAMF3Object(data);
+                return;
+            }
+            IList list = data as IList;
+            if (list != null )
 			{
 				//http://livedocs.macromedia.com/flex/2/docs/wwhelp/wwhimpl/common/html/wwhelp.htm?context=LiveDocs_Parts&file=00001104.html#270405
 				//http://livedocs.macromedia.com/flex/2/docs/wwhelp/wwhimpl/common/html/wwhelp.htm?context=LiveDocs_Parts&file=00001105.html#268711
-
 				if( writer.UseLegacyCollection )
 				{
 					writer.WriteByte(AMF3TypeCode.Array);
-					writer.WriteAMF3Array(data as IList);
+                    writer.WriteAMF3Array(list);
 				}
 				else
 				{
 					writer.WriteByte(AMF3TypeCode.Object);
-					object value = new ArrayCollection(data as IList);
+                    object value = new ArrayCollection(list);
 					writer.WriteAMF3Object(value);
 				}
 				return;
 			}
-			if(data is IDictionary)
+#if !(SILVERLIGHT)
+            IListSource listSource = data as IListSource;
+            if (listSource != null)
+            {
+                if (writer.UseLegacyCollection)
+                {
+                    writer.WriteByte(AMF3TypeCode.Array);
+                    writer.WriteAMF3Array(listSource.GetList());
+                }
+                else
+                {
+                    writer.WriteByte(AMF3TypeCode.Object);
+                    object value = new ArrayCollection(listSource.GetList());
+                    writer.WriteAMF3Object(value);
+                }
+                return;
+            }
+#endif
+            IDictionary dictionary = data as IDictionary;
+            if (dictionary != null)
 			{
-				writer.WriteByte(AMF3TypeCode.Object);
-				writer.WriteAMF3Object(data);
+				//writer.WriteByte(AMF3TypeCode.Object);
+				//writer.WriteAMF3Object(data);
+                writer.WriteByte(AMF3TypeCode.Array);
+                writer.WriteAMF3AssociativeArray(dictionary);
 				return;
 			}
 			if(data is Exception)
 			{
 				writer.WriteByte(AMF3TypeCode.Object);
-				writer.WriteAMF3Object(new ExceptionASO(data as Exception) );
+                if (writer.UseLegacyThrowable)
+				    writer.WriteAMF3Object(new ExceptionASO(data as Exception) );
+                else
+                    writer.WriteAMF3Object(data);
 				return;
 			}
 			if( data is IExternalizable )
@@ -72,7 +106,31 @@ namespace FluorineFx.IO.Writers
 				writer.WriteAMF3Object(data);
 				return;
 			}
-
+            if (data is IEnumerable)
+			{
+                IEnumerator enumerator = (data as IEnumerable).GetEnumerator();
+#if !(NET_1_1)
+                List<object> tmp = new List<object>();
+#else
+                ArrayList tmp = new ArrayList();
+#endif
+                foreach (object element in (data as IEnumerable))
+                {
+                    tmp.Add(element);
+                }
+                if (writer.UseLegacyCollection)
+                {
+                    writer.WriteByte(AMF3TypeCode.Array);
+                    writer.WriteAMF3Array(tmp);
+                }
+                else
+                {
+                    writer.WriteByte(AMF3TypeCode.Object);
+                    object value = new ArrayCollection(tmp);
+                    writer.WriteAMF3Object(value);
+                }
+                return;
+			}
 			writer.WriteByte(AMF3TypeCode.Object);
 			writer.WriteAMF3Object(data);
 		}

@@ -76,6 +76,7 @@ namespace FluorineFx
         internal const string Rtmp_SocketBeginSend = "Rtmp_SocketBeginSend";
         internal const string Rtmp_SocketSendProcessing = "Rtmp_SocketSendProcessing";
         internal const string Rtmp_SocketConnectionReset = "Rtmp_SocketConnectionReset";
+        internal const string Rtmp_SocketConnectionAborted = "Rtmp_SocketConnectionAborted";
         internal const string Rtmp_SocketDisconnectProcessing = "Rtmp_SocketDisconnectProcessing";
         internal const string Rtmp_ConnectionClose = "Rtmp_ConnectionClose";
         internal const string Rtmp_CouldNotProcessMessage = "Rtmp_CouldNotProcessMessage";

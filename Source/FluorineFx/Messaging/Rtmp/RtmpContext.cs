@@ -52,6 +52,13 @@ namespace FluorineFx.Messaging.Rtmp
 		DecoderState _decoderState = DecoderState.Ok;
 		ObjectEncoding _objectEncoding;
 
+        /// <summary>
+        /// State bit field.
+        /// 1 UseLegacyCollection
+        /// 2 UseLegacyThrowable
+        /// </summary>
+        byte __fields;
+
 		RtmpMode _mode;
 		RtmpState _state;
 
@@ -85,7 +92,22 @@ namespace FluorineFx.Messaging.Rtmp
 			get{ return _objectEncoding; }
 			set{ _objectEncoding = value; }
 		}
-
+        /// <summary>
+        /// Gets or sets whether legacy collection serialization is used for AMF3.
+        /// </summary>
+        public bool UseLegacyCollection
+        {
+            get { return (__fields & 1) == 1; }
+            set { __fields = (value) ? (byte)(__fields | 1) : (byte)(__fields & ~1); }
+        }
+        /// <summary>
+        /// Gets or sets whether legacy exception serialization is used for AMF3.
+        /// </summary>
+        public bool UseLegacyThrowable
+        {
+            get { return (__fields & 2) == 2; }
+            set { __fields = (value) ? (byte)(__fields | 2) : (byte)(__fields & ~2); }
+        }
 		/// <summary>
 		/// Current state of protocol.
 		/// </summary>
