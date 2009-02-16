@@ -90,11 +90,6 @@
                     HintPath = "..\mysql\MySql.Data.dll"
                 />
                 <Reference
-                    Name = "FluorineFx-1.1"
-                    Project = "{6A3F235D-76F9-4F99-BAC7-F981B029D370}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
                     Name = "System.Runtime.Serialization.Formatters.Soap"
                     AssemblyName = "System.Runtime.Serialization.Formatters.Soap"
                     HintPath = "F:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Runtime.Serialization.Formatters.Soap.dll"
@@ -113,6 +108,11 @@
                     Name = "log4net"
                     AssemblyName = "log4net"
                     HintPath = "..\log4net\net\1.1\log4net.dll"
+                />
+                <Reference
+                    Name = "FluorineFx-1.1"
+                    Project = "{6A3F235D-76F9-4F99-BAC7-F981B029D370}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
         </Build>

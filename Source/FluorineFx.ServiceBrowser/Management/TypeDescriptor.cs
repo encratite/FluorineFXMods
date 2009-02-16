@@ -163,7 +163,8 @@ namespace FluorineFx.Management
                     if (attribute is System.ComponentModel.DescriptionAttribute)
                         continue;
                     AttributeDescriptor attributeDescriptor = new AttributeDescriptor(attribute.GetType().Name);
-                    _attributeCollection.Add(attributeDescriptor);
+                    if( !_attributeCollection.Contains(attributeDescriptor.Name) )
+                        _attributeCollection.Add(attributeDescriptor);
                 }
             }
 		}

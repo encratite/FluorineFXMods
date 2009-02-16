@@ -143,10 +143,10 @@ namespace FluorineFx.Management
                     //do not check accesibility with TypeHelper as the input custom attributes will filter
                     //if( !TypeHelper.GetTypeIsAccessible(type) )
                     //	continue;
-                    //do not reflect servicebrowser classes
-                    if (type.FullName.StartsWith("FluorineFx."))
+                    //do not reflect servicebrowser classes                    
+                    if (type.FullName.StartsWith("FluorineFx.") && !type.FullName.StartsWith(FluorineFx.Configuration.FluorineConfiguration.Instance.FluorineSettings.WsdlProxyNamespace))
                         continue;
-                    bool match = false;
+                    bool match = attributes != null && attributes.Length > 0 ? false : true;
                     foreach (Type attributeType in attributes)
                     {
                         object[] attrs = type.GetCustomAttributes(attributeType, true);
