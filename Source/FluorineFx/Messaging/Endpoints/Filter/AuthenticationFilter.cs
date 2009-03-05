@@ -101,7 +101,7 @@ namespace FluorineFx.Messaging.Endpoints.Filter
                     {
                         string key = amfHeader.Content as string;
                         if (key != null)
-                            FluorineContext.Current.RestorePrincipal(messageBroker.LoginCommand, key);
+                            principal = FluorineContext.Current.RestorePrincipal(messageBroker.LoginCommand, key);
                     }
                     else
                     {
@@ -129,8 +129,11 @@ namespace FluorineFx.Messaging.Endpoints.Filter
                     context.MessageOutput.AddBody(errorResponseBody);
                 }
             }
-            FluorineContext.Current.User = principal;
-            Thread.CurrentPrincipal = principal;
+            if (principal != null)
+            {
+                FluorineContext.Current.User = principal;
+                Thread.CurrentPrincipal = principal;
+            }
 		}
 
 		#endregion
