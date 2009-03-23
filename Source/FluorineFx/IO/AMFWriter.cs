@@ -185,7 +185,7 @@ namespace FluorineFx.IO
 			amf3Writers.Add(typeof(Array), new AMF3ArrayWriter());
 			amf3Writers.Add(typeof(ASObject), new AMF3ASObjectWriter());
 			amf3Writers.Add(typeof(ByteArray), new AMF3ByteArrayWriter());
-			//amf3Writers.Add(typeof(byte[]), new AMF3ByteArrayWriter());
+			amf3Writers.Add(typeof(byte[]), new AMF3ByteArrayWriter());
 
 #if !(NET_1_1)
             AmfWriterTable = new Dictionary<Type, IAMFWriter>[4] { amf0Writers, null, null, amf3Writers };
