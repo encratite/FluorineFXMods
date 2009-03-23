@@ -170,6 +170,19 @@ namespace FluorineFx.AMF3
             return _memoryStream.GetBuffer();
         }
         /// <summary>
+        /// Writes the ByteArray contents to a byte array, regardless of the Position property.
+        /// </summary>
+        /// <returns>A new byte array.</returns>
+        /// <remarks>
+        /// This method omits unused bytes in the underlying MemoryStream from the ByteArray.
+        /// This method returns a copy of the contents of the underlying MemoryStream as a byte array. 
+        /// </remarks>
+        public byte[] ToArray()
+        {
+            return _memoryStream.ToArray();
+        }
+
+        /// <summary>
         /// Gets the MemoryStream from which this ByteArray was created.
         /// </summary>
 		internal MemoryStream MemoryStream{ get{ return _memoryStream; } }
