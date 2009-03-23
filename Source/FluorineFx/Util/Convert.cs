@@ -12315,7 +12315,7 @@ namespace FluorineFx.Util
         {
             if (value == null) return null;
 
-            return value.GetBuffer();
+            return value.ToArray();
         }
 
 #if !(NET_1_1)
