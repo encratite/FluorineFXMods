@@ -90,6 +90,9 @@
     <Compile Include="..\FluorineFx\Collections\Generic\CopyOnWriteArraySet.cs">
       <Link>Collections\Generic\CopyOnWriteArraySet.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Collections\Generic\CopyOnWriteDictionary.cs">
+      <Link>Collections\Generic\CopyOnWriteDictionary.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Configuration\FluorineConfiguration.cs">
       <Link>Configuration\FluorineConfiguration.cs</Link>
     </Compile>
@@ -102,11 +105,11 @@
     <Compile Include="..\FluorineFx\Context\IResource.cs">
       <Link>Context\IResource.cs</Link>
     </Compile>
-    <Compile Include="..\FluorineFx\Context\ISessionListener.cs">
-      <Link>Context\ISessionListener.cs</Link>
-    </Compile>
     <Compile Include="..\FluorineFx\ExceptionASO.cs">
       <Link>ExceptionASO.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Exceptions\ClientRejectedException.cs">
+      <Link>Exceptions\ClientRejectedException.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Exceptions\FluorineException.cs">
       <Link>Exceptions\FluorineException.cs</Link>
@@ -405,6 +408,9 @@
     <Compile Include="..\FluorineFx\Messaging\Api\IClient.cs">
       <Link>Messaging\Api\IClient.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\IClientListener.cs">
+      <Link>Messaging\Api\IClientListener.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\IClientRegistry.cs">
       <Link>Messaging\Api\IClientRegistry.cs</Link>
     </Compile>
@@ -417,14 +423,17 @@
     <Compile Include="..\FluorineFx\Messaging\Api\ICoreObject.cs">
       <Link>Messaging\Api\ICoreObject.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\IEndpointPushHandler.cs">
+      <Link>Messaging\Api\IEndpointPushHandler.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\IGlobalScope.cs">
       <Link>Messaging\Api\IGlobalScope.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\IMessageClient.cs">
       <Link>Messaging\Api\IMessageClient.cs</Link>
     </Compile>
-    <Compile Include="..\FluorineFx\Messaging\Api\IMessageConnection.cs">
-      <Link>Messaging\Api\IMessageConnection.cs</Link>
+    <Compile Include="..\FluorineFx\Messaging\Api\IMessageClientListener.cs">
+      <Link>Messaging\Api\IMessageClientListener.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\IScope.cs">
       <Link>Messaging\Api\IScope.cs</Link>
@@ -438,11 +447,20 @@
     <Compile Include="..\FluorineFx\Messaging\Api\IScopeResolver.cs">
       <Link>Messaging\Api\IScopeResolver.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\IService.cs">
+      <Link>Messaging\Api\IService.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\IServiceCapableConnection.cs">
       <Link>Messaging\Api\IServiceCapableConnection.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\IServiceContainer.cs">
       <Link>Messaging\Api\IServiceContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\ISession.cs">
+      <Link>Messaging\Api\ISession.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\ISessionListener.cs">
+      <Link>Messaging\Api\ISessionListener.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\Messaging\IConsumer.cs">
       <Link>Messaging\Api\Messaging\IConsumer.cs</Link>
@@ -546,6 +564,9 @@
     <Compile Include="..\FluorineFx\Messaging\BaseConnection.cs">
       <Link>Messaging\BaseConnection.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Endpoints\IEndpoint.cs">
+      <Link>Messaging\Endpoints\IEndpoint.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\MessageException.cs">
       <Link>Messaging\MessageException.cs</Link>
     </Compile>
@@ -624,6 +645,9 @@
     <Compile Include="..\FluorineFx\Messaging\Rtmp\Event\VideoData.cs">
       <Link>Messaging\Rtmp\Event\VideoData.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Rtmp\HandshakeFailedException.cs">
+      <Link>Messaging\Rtmp\HandshakeFailedException.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Rtmp\IRtmpHandler.cs">
       <Link>Messaging\Rtmp\IRtmpHandler.cs</Link>
     </Compile>
@@ -638,6 +662,9 @@
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Rtmp\RtmpContext.cs">
       <Link>Messaging\Rtmp\RtmpContext.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Rtmp\RtmpHandshake.cs">
+      <Link>Messaging\Rtmp\RtmpHandshake.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Rtmp\RtmpHeader.cs">
       <Link>Messaging\Rtmp\RtmpHeader.cs</Link>
@@ -693,8 +720,14 @@
     <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\IBWControlContext.cs">
       <Link>Messaging\Rtmp\Stream\IBWControlContext.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\IBWControlService.cs">
+      <Link>Messaging\Rtmp\Stream\IBWControlService.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\IStreamData.cs">
       <Link>Messaging\Rtmp\Stream\IStreamData.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\ITokenBucket.cs">
+      <Link>Messaging\Api\Stream\ITokenBucket.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\OutputStream.cs">
       <Link>Messaging\Rtmp\Stream\OutputStream.cs</Link>
@@ -723,11 +756,17 @@
     <Compile Include="..\FluorineFx\Net\RtmpClientConnection.cs">
       <Link>Net\RtmpClientConnection.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Net\SendMessageEventArgs.cs">
+      <Link>Net\SendMessageEventArgs.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Net\SyncEvent.cs">
       <Link>Net\SyncEvent.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\ObjectFactory.cs">
       <Link>ObjectFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Threading\FastReaderWriterLock.cs">
+      <Link>Threading\FastReaderWriterLock.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\TypeHelper.cs">
       <Link>TypeHelper.cs</Link>
@@ -740,6 +779,9 @@
     </Compile>
     <Compile Include="..\FluorineFx\Util\AtomicInteger.cs">
       <Link>Util\AtomicInteger.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Util\AtomicLong.cs">
+      <Link>Util\AtomicLong.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Util\BufferPool.cs">
       <Link>Util\BufferPool.cs</Link>

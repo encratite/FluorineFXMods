@@ -468,4 +468,7 @@
   <data name="TypeHelper_ConversionFail" xml:space="preserve">
     <value>Type conversion failed</value>
   </data>
+  <data name="Fluorine_Fatal" xml:space="preserve">
+    <value>Fatal problem detected {0}</value>
+  </data>
 </root>

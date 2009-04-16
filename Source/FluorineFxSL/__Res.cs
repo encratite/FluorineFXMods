@@ -28,6 +28,8 @@ namespace FluorineFx
 	{
 		private static ResourceManager _resMgr;
 
+        internal const string Fluorine_Fatal = "Fluorine_Fatal";
+
         internal const string Amf_Begin = "Amf_Begin";
         internal const string Amf_End = "Amf_End";
         internal const string Amf_Fatal = "Amf_Fatal";
