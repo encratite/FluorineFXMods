@@ -46,7 +46,7 @@ namespace FluorineFx.NMS
             _producers = new LinkedList<IMessageProducer>();
             _consumers = new Hashtable();
 
-            XmlNode nmsNode = this.DestinationSettings.PropertiesNode.SelectSingleNode("nms");
+            XmlNode nmsNode = this.DestinationDefinition.PropertiesXml.SelectSingleNode("nms");
             _nmsSettings = new NMSSettings(nmsNode);
             if (_nmsSettings != null)
             {
@@ -192,7 +192,7 @@ namespace FluorineFx.NMS
 
             try
             {
-                asyncMessage.destination = DestinationSettings.Id;
+                asyncMessage.destination = this.DestinationDefinition.Id;
                 asyncMessage.clientId = clientId;
                 asyncMessage.messageId = message.NMSMessageId;
                 asyncMessage.timestamp = message.NMSTimestamp.Ticks;
