@@ -77,6 +77,7 @@ namespace FluorineFx
             //CallContext.SetData("HttpContext", _httpApplication.Context);
             HttpContext.Current = _httpApplication.Context;
             _gateway.HandleXAmfEx(_httpApplication);
+            _gateway.HandleStreamingAmf(_httpApplication);
             _gateway.HandleSWX(_httpApplication);
             _gateway.HandleJSONRPC(_httpApplication);
             _gateway.HandleRtmpt(_httpApplication);

@@ -25,6 +25,7 @@ using System.Net.Sockets;
 using System.Threading;
 #if !(NET_1_1)
 using System.Collections.Generic;
+using FluorineFx.Collections.Generic;
 #endif
 #if !SILVERLIGHT
 using log4net;
@@ -41,6 +42,11 @@ using FluorineFx.Util;
 using FluorineFx.Context;
 using FluorineFx.Collections;
 using FluorineFx.Configuration;
+using FluorineFx.Threading;
+using FluorineFx.Exceptions;
+#if !FXCLIENT
+using FluorineFx.Scheduling;
+#endif
 
 namespace FluorineFx.Messaging.Rtmp
 {
@@ -58,23 +64,45 @@ namespace FluorineFx.Messaging.Rtmp
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
     [CLSCompliant(false)]
-    public abstract class RtmpConnection : BaseConnection, IServiceCapableConnection, IMessageConnection//, IStreamCapableConnection
+    public abstract class RtmpConnection : BaseConnection, IServiceCapableConnection, IStreamCapableConnection
 	{
 #if !SILVERLIGHT
         private static ILog log = LogManager.GetLogger(typeof(RtmpConnection));
 #endif
         RtmpContext	_context;
+
+        private BitArray _reservedStreams;
+
+        /// <summary>
+        /// Name of job that keeps connection alive.
+        /// </summary>
+        protected string _keepAliveJobName;
+
 #if !(NET_1_1)
         /// <summary>
         /// Connection channels.
         /// Integer, Channel
         /// </summary>
-        private Dictionary<int, RtmpChannel> _channels = new Dictionary<int, RtmpChannel>();
-        private Dictionary<string, IMessageClient> _clients = new Dictionary<string, IMessageClient>();
+        CopyOnWriteDictionary<int, RtmpChannel> _channels;
+        /// <summary>
+        /// Client streams.
+        /// Map(Integer, IClientStream)
+        /// </summary>
+        CopyOnWriteDictionary<int, IClientStream> _streams;
+        /// <summary>
+        /// Map for pending video packets and stream IDs
+        /// Map(Integer, AtomicInteger)
+        /// </summary>
+        CopyOnWriteDictionary<int, AtomicInteger> _pendingVideos;
+        /// <summary>
+        /// Remembers stream buffer durations
+        /// Map(Integer, Integer)
+        /// </summary>
+        CopyOnWriteDictionary<int, int> _streamBuffers;
         /// <summary>
         /// Stores pending calls and ids as pairs.
         /// </summary>
-        protected Dictionary<int, IServiceCall> _pendingCalls = new Dictionary<int, IServiceCall>();
+        CopyOnWriteDictionary<int, IServiceCall> _pendingCalls;
         /// <summary>
         /// Deferred results set.
         /// </summary>
@@ -84,12 +112,26 @@ namespace FluorineFx.Messaging.Rtmp
         /// Connection channels.
         /// Integer, Channel
         /// </summary>
-        private Hashtable _channels = new Hashtable();
-        private Hashtable _clients = new Hashtable();
+        CopyOnWriteDictionary _channels;
+        /// <summary>
+        /// Client streams.
+        /// Map(Integer, IClientStream)
+        /// </summary>
+        CopyOnWriteDictionary _streams;
+        /// <summary>
+        /// Map for pending video packets and stream IDs
+        /// Map(Integer, AtomicInteger)
+        /// </summary>
+        CopyOnWriteDictionary _pendingVideos;
+        /// <summary>
+        /// Remembers stream buffer durations
+        /// Map(Integer, Integer)
+        /// </summary>
+        CopyOnWriteDictionary _streamBuffers;
         /// <summary>
         /// Stores pending calls and ids as pairs.
         /// </summary>
-        protected Hashtable _pendingCalls = new Hashtable();
+        CopyOnWriteDictionary _pendingCalls;
         /// <summary>
         /// Deferred results set.
         /// </summary>
@@ -124,14 +166,44 @@ namespace FluorineFx.Messaging.Rtmp
         /// Number of bytes to read next.
         /// </summary>
         protected int _nextBytesRead = 120 * 1024;
-        /// <summary>
-        /// Previously number of bytes read from connection.
-        /// </summary>
-        protected long _lastBytesRead = 0;
 
-        internal RtmpConnection(string path, IDictionary parameters)
+        protected IRtmpHandler _handler;
+
+        /// <summary>
+        /// Bandwidth configure.
+        /// </summary>
+        private IConnectionBWConfig _bwConfig;
+        /// <summary>
+        /// Bandwidth context used by bandwidth controller.
+        /// </summary>
+        private IBWControlContext _bwContext;
+
+        /// <summary>
+        /// Number of streams used.
+        /// </summary>
+        private AtomicInteger _streamCount;
+
+        internal RtmpConnection(IRtmpHandler handler, string path, IDictionary parameters)
             : base(path, parameters)
 		{
+            _handler = handler;
+#if !(NET_1_1)
+            _channels = new CopyOnWriteDictionary<int,RtmpChannel>(4);
+            _streams = new CopyOnWriteDictionary<int,IClientStream>();
+            _pendingVideos = new CopyOnWriteDictionary<int,AtomicInteger>();
+            _streamCount = new AtomicInteger();
+            _streamBuffers = new CopyOnWriteDictionary<int,int>();
+            _reservedStreams = new BitArray(0);
+            _pendingCalls = new CopyOnWriteDictionary<int, IServiceCall>();
+#else
+            _channels = new CopyOnWriteDictionary(4);
+            _streams = new CopyOnWriteDictionary();
+            _pendingVideos = new CopyOnWriteDictionary();
+            _streamCount = new AtomicInteger();
+            _streamBuffers = new CopyOnWriteDictionary();
+            _reservedStreams = new BitArray(0);
+            _pendingCalls = new CopyOnWriteDictionary();
+#endif
 			// We start with an anonymous connection without a scope.
 			// These parameters will be set during the call of "connect" later.
 			_context = new RtmpContext(RtmpMode.Server);
@@ -144,34 +216,65 @@ namespace FluorineFx.Messaging.Rtmp
         /// <returns></returns>
 	    public override bool Connect(IScope newScope, object[] parameters) 
         {
-		    bool success = base.Connect(newScope, parameters);
-		    return success;
-	    }
+            try
+            {
+                bool success = base.Connect(newScope, parameters);
+                if (success)
+                {
+                    try
+                    {
+                        ReaderWriterLock.AcquireWriterLock();
+                        // XXX Bandwidth control service should not be bound to
+                        // a specific scope because it's designed to control
+                        // the bandwidth system-wide.
+                        if (this.Scope != null && this.Scope.Context != null)
+                        {
+                            IBWControlService bwController = this.Scope.GetService(typeof(IBWControlService)) as IBWControlService;
+                            _bwContext = bwController.RegisterBWControllable(this);
+                        }
+                        /*
+                        if (_waitForHandshakeJob != null)
+                        {
+                            ISchedulingService service = this.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
+                            service.RemoveScheduledJob(_waitForHandshakeJob);
+                            _waitForHandshakeJob = null;
+                        }
+                        */
+                    }
+                    finally
+                    {
+                        ReaderWriterLock.ReleaseWriterLock();
+                    }
+                }
+                return success;
+            }
+            catch (ClientRejectedException)
+            {
+                throw;
+            }
+        }
 
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         public override void Timeout()
         {
-            lock (this.SyncRoot)
+            if (!IsClosed)
             {
-                if (!IsDisposed)
+                if (this.IsFlexClient)
                 {
-                    if (this.IsFlexClient)
-                    {
-                        FlexInvoke flexInvoke = new FlexInvoke();
-                        flexInvoke.Cmd = "onstatus";
-                        StatusASO statusASO = new StatusASO(StatusASO.NC_CONNECT_CLOSED, StatusASO.STATUS, "Connection Timed Out", null, this.ObjectEncoding);
-                        flexInvoke.Parameters = new object[] { statusASO };
-                        RtmpChannel channel = this.GetChannel(3);
-                        channel.Write(flexInvoke);
-                    }
-                    else
-                    {
-                        StatusASO statusASO = new StatusASO(StatusASO.NC_CONNECT_CLOSED, StatusASO.ERROR, "Connection Timed Out", null, this.ObjectEncoding);
-                        RtmpChannel channel = this.GetChannel(3);
-                        channel.SendStatus(statusASO);
-                    }
+                    FlexInvoke flexInvoke = new FlexInvoke();
+                    flexInvoke.Cmd = "onstatus";
+                    StatusASO statusASO = new StatusASO(StatusASO.NC_CONNECT_CLOSED, StatusASO.STATUS, "Connection Timed Out", null, this.ObjectEncoding);
+                    flexInvoke.Parameters = new object[] { statusASO };
+                    RtmpChannel channel = this.GetChannel(3);
+                    channel.Write(flexInvoke);
+                }
+                else
+                {
+                    StatusASO statusASO = new StatusASO(StatusASO.NC_CONNECT_CLOSED, StatusASO.ERROR, "Connection Timed Out", null, this.ObjectEncoding);
+                    RtmpChannel channel = this.GetChannel(3);
+                    channel.SendStatus(statusASO);
                 }
             }
         }
@@ -185,19 +288,58 @@ namespace FluorineFx.Messaging.Rtmp
             if (log.IsDebugEnabled)
                 log.Debug(__Res.GetString(__Res.Rtmp_ConnectionClose, _connectionId));
 #endif
-            lock (this.SyncRoot)
+
+#if !FXCLIENT
+            try
             {
-                if (!IsDisposed)
+                ReaderWriterLock.AcquireWriterLock();
+                if (_keepAliveJobName != null)
                 {
-                    lock (((ICollection)_channels).SyncRoot)
-                    {
-                        _channels.Clear();
-                    }
-                    //DisconnectMessageClients();
-                    base.Close();
-                    _context.State = RtmpState.Disconnected;
+                    ISchedulingService service = this.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
+                    service.RemoveScheduledJob(_keepAliveJobName);
+                    _keepAliveJobName = null;
                 }
             }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+
+            IStreamService streamService = ScopeUtils.GetScopeService(this.Scope, typeof(IStreamService)) as IStreamService;
+            if (streamService != null)
+            {
+                foreach (IClientStream stream in _streams.Values)
+                {
+                    if (stream != null)
+                    {
+#if !SILVERLIGHT
+                        if (log.IsDebugEnabled)
+                            log.Debug("Closing stream: " + stream.StreamId);
+#endif
+                        streamService.deleteStream(this, stream.StreamId);
+                        _streamCount.Decrement();
+                    }
+                }
+                _streams.Clear();
+            }
+#endif
+            _channels.Clear();
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
+                if (_bwContext != null && this.Scope != null && this.Scope.Context != null)
+                {
+                    IBWControlService bwController = this.Scope.GetService(typeof(IBWControlService)) as IBWControlService;
+                    bwController.UnregisterBWControllable(_bwContext);
+                    _bwContext = null;
+                }
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+            base.Close();
+            _context.State = RtmpState.Disconnected;
         }
         
 
@@ -223,30 +365,19 @@ namespace FluorineFx.Messaging.Rtmp
 			get{ return _context; }
 		}
         /// <summary>
-        /// Checks whether a channel is used.
-        /// </summary>
-        /// <param name="channelId">Channel id.</param>
-        /// <returns><code>true</code> if channel is in use, <code>false</code> otherwise</returns>
-		public bool IsChannelUsed(int channelId) 
-		{
-            lock (((ICollection)_channels).SyncRoot)
-            {
-                return _channels.ContainsKey(channelId) && _channels[channelId] != null;
-            }
-		}
-        /// <summary>
         /// Returns channel by id.
         /// </summary>
         /// <param name="channelId">The channel id.</param>
         /// <returns>Channel object by id.</returns>
 		public RtmpChannel GetChannel(int channelId) 
 		{
-            lock (((ICollection)_channels).SyncRoot)
-			{
-				if(!IsChannelUsed(channelId))
-					_channels[channelId] = new RtmpChannel(this, channelId);
-				return _channels[channelId] as RtmpChannel;
-			}
+            RtmpChannel channel;
+            if (!_channels.TryGetValue(channelId, out channel))
+            {
+                channel = new RtmpChannel(this, channelId);
+                _channels[channelId] = channel;
+            }
+            return channel;
 		}
         /// <summary>
         /// Closes channel.
@@ -254,10 +385,7 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="channelId">Channel id</param>
 		public void CloseChannel(int channelId) 
 		{
-            lock (((ICollection)_channels).SyncRoot)
-			{
-				_channels[channelId] = null;
-			}
+            _channels[channelId] = null;
 		}
         /// <summary>
         /// Gets identifier for remote calls.
@@ -284,39 +412,37 @@ namespace FluorineFx.Messaging.Rtmp
         /// <returns>Pending call service object.</returns>
 		public IPendingServiceCall GetPendingCall(int invokeId)
 		{
-			IPendingServiceCall result = null;
-            lock (((ICollection)_pendingCalls).SyncRoot)
-            {
-                if( _pendingCalls.ContainsKey(invokeId) )
-                    result = _pendingCalls[invokeId] as IPendingServiceCall;
-                if (result != null)
-                {
-                    _pendingCalls.Remove(invokeId);
-                }
-                else
-                {
-#if !SILVERLIGHT
-                    //Do not warn as users may not pass IPendingServiceCall
-                    //log.Warn(string.Format("Could not find PendingServiceCall for InvokeId {0}", invokeId));
-                    log.Debug(string.Format("Could not find PendingServiceCall for InvokeId {0}", invokeId));
-#endif
-                }
-            }
-			return result;
+            IServiceCall pendingCall;
+            _pendingCalls.TryGetValue(invokeId, out pendingCall);
+            return pendingCall as IPendingServiceCall;
 		}
-
+        /// <summary>
+        /// Retrieve pending call service by id. The call will be removed afterwards.
+        /// </summary>
+        /// <param name="invokeId">Pending call service id.</param>
+        /// <returns>Pending call service object.</returns>
+        public IPendingServiceCall RetrievePendingCall(int invokeId)
+        {
+            return _pendingCalls.RemoveAndGet(invokeId) as IPendingServiceCall;
+        }
+        /// <summary>
+        /// Register pending call (remote function call that is yet to finish).
+        /// </summary>
+        /// <param name="invokeId">Deferred operation id.</param>
+        /// <param name="call">Call service.</param>
         internal void RegisterPendingCall(int invokeId, IPendingServiceCall call)
         {
-            lock (((ICollection)_pendingCalls).SyncRoot)
-            {
-                _pendingCalls[invokeId] = call;
-            }
+            _pendingCalls[invokeId] = call;
         }
         /// <summary>
         /// Write a RTMP packet.
         /// </summary>
         /// <param name="packet">The RTMP packet.</param>
 		public abstract void Write(RtmpPacket packet);
+
+        public abstract void Write(ByteBuffer buffer);
+
+        public abstract void Write(byte[] buffer);
 
 
         #region IConnection Members
@@ -327,6 +453,15 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="packet">The RTMP packet</param>
         protected virtual void WritingMessage(RtmpPacket packet)
         {
+            if (packet.Message is VideoData)
+            {
+                int streamId = packet.Header.StreamId;
+                AtomicInteger value = new AtomicInteger();
+                AtomicInteger old = _pendingVideos.AddIfAbsent(streamId, value) as AtomicInteger;
+                if (old == null)
+                    old = value;
+                old.Increment();
+            }
         }
 
         /// <summary>
@@ -347,6 +482,361 @@ namespace FluorineFx.Messaging.Rtmp
         }
 
         #endregion
+
+        #region IStreamCapableConnection Members
+
+        /// <summary>
+        /// Total number of video messages that are pending to be sent to a stream.
+        /// </summary>
+        /// <param name="streamId">Stream id.</param>
+        /// <returns>Number of pending video messages.</returns>
+        public override long GetPendingVideoMessages(int streamId)
+        {
+            AtomicInteger count;
+            _pendingVideos.TryGetValue(streamId, out count);
+            long result = count != null ? count.Value - this.StreamCount : 0;
+            return result > 0 ? result : 0;
+        }
+        /// <summary>
+        /// Get a stream by its id.
+        /// </summary>
+        /// <param name="streamId">Stream id.</param>
+        /// <returns>Stream with given id.</returns>
+        public IClientStream GetStreamById(int id)
+        {
+            if (id <= 0)
+                return null;
+            IClientStream stream;
+            _streams.TryGetValue(id - 1, out stream);
+            return stream;
+        }
+        /// <summary>
+        /// Returns a reserved stream id for use.
+        /// According to FCS/FMS regulation, the base is 1.
+        /// </summary>
+        /// <returns>Reserved stream id.</returns>
+        public int ReserveStreamId()
+        {
+		    int result = -1;
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
+                for (int i = 0; i < _reservedStreams.Count; i++)
+                {
+                    if (!_reservedStreams[i])
+                    {
+                        _reservedStreams[i] = true;
+                        result = i;
+                        break;
+                    }
+                }
+                if (result == -1)
+                {
+                    _reservedStreams.Length += 1;
+                    result = _reservedStreams.Length - 1;
+                    _reservedStreams[result] = true;
+                }
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+		    return result + 1;
+        }
+        /// <summary>
+        /// Unreserve this id for future use.
+        /// </summary>
+        /// <param name="streamId">ID of stream to unreserve.</param>
+        public void UnreserveStreamId(int streamId)
+        {
+            ReaderWriterLock.AcquireWriterLock();
+            try
+            {
+                DeleteStreamById(streamId);
+                if (streamId > 0)
+                    _reservedStreams[streamId - 1] = false;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+        }
+        /// <summary>
+        /// Deletes the stream with the given id.
+        /// </summary>
+        /// <param name="streamId">Id of stream to delete.</param>
+        public void DeleteStreamById(int streamId)
+        {
+            if (streamId > 0)
+            {
+                if (_streams.ContainsKey(streamId - 1))
+                {
+                    _pendingVideos.Remove(streamId);
+                    _streamCount.Decrement();
+                    _streams.Remove(streamId - 1);
+                    _streamBuffers.Remove(streamId - 1);
+                }
+            }
+        }
+        /// <summary>
+        /// Creates a stream that can play only one item.
+        /// </summary>
+        /// <param name="streamId">Stream id.</param>
+        /// <returns>New subscriber stream that can play only one item.</returns>
+        public ISingleItemSubscriberStream NewSingleItemSubscriberStream(int streamId)
+        {
+            return null;
+        }
+        /// <summary>
+        /// Creates a stream that can play a list.
+        /// </summary>
+        /// <param name="streamId">Stream id.</param>
+        /// <returns>New stream that can play sequence of items.</returns>
+        public IPlaylistSubscriberStream NewPlaylistSubscriberStream(int streamId)
+        {
+#if !FXCLIENT
+            try
+            {
+                ReaderWriterLock.AcquireReaderLock();
+                if (_reservedStreams.Length <= streamId - 1 || !_reservedStreams[streamId - 1])
+                {
+                    // StreamId has not been reserved before
+                    return null;
+                }
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseReaderLock();
+            }
+
+            IClientStream stream;
+            if (_streams.TryGetValue(streamId - 1, out stream) && stream != null)
+            {
+                // Another stream already exists with this id
+                return null;
+            }
+            //TODO
+            PlaylistSubscriberStream pss = new PlaylistSubscriberStream();
+            int buffer;
+            if( _streamBuffers.TryGetValue(streamId - 1, out buffer) )
+                pss.SetClientBufferDuration((int)buffer);
+            pss.Name = CreateStreamName();
+            pss.Connection = this;
+            pss.Scope = this.Scope;
+            pss.StreamId = streamId;
+            RegisterStream(pss);
+            _streamCount.Increment();
+            return pss;
+#else
+            return null;
+#endif
+        }
+        /// <summary>
+        /// Generates new stream name.
+        /// </summary>
+        /// <returns>New stream name.</returns>
+        protected string CreateStreamName()
+        {
+            return Guid.NewGuid().ToString();
+        }
+        /// <summary>
+        /// Creates a broadcast stream.
+        /// </summary>
+        /// <param name="streamId">Stream id.</param>
+        /// <returns>New broadcast stream.</returns>
+        public IClientBroadcastStream NewBroadcastStream(int streamId)
+        {
+#if !FXCLIENT
+            try
+            {
+                ReaderWriterLock.AcquireReaderLock();
+                if (_reservedStreams.Length <= streamId - 1 || !_reservedStreams[streamId - 1])
+                {
+                    // StreamId has not been reserved before
+                    return null;
+                }
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseReaderLock();
+            }
+            IClientStream stream;
+            if (_streams.TryGetValue(streamId - 1, out stream) && stream != null)
+            {
+                // Another stream already exists with this id
+                return null;
+            }
+            //TODO
+            ClientBroadcastStream cbs = new ClientBroadcastStream();
+            int buffer;
+            if( _streamBuffers.TryGetValue(streamId - 1, out buffer))
+                cbs.SetClientBufferDuration((int)buffer);
+            cbs.StreamId = streamId;
+            cbs.Connection = this;
+            cbs.Name = CreateStreamName();
+            cbs.Scope = this.Scope;
+
+            RegisterStream(cbs);
+            _streamCount.Increment();
+            return cbs;
+#else
+            return null;
+#endif
+        }
+        /// <summary>
+        /// Store a stream in the connection.
+        /// </summary>
+        /// <param name="stream"></param>
+        protected void RegisterStream(IClientStream stream)
+        {
+            _streams[stream.StreamId - 1] = stream;
+        }
+        /// <summary>
+        /// Remove a stream from the connection.
+        /// </summary>
+        /// <param name="stream"></param>
+        private void UnregisterStream(IClientStream stream)
+        {
+            _streams.Remove(stream.StreamId);
+        }
+
+        public void AddClientStream(IClientStream stream)
+        {
+            int streamId = stream.StreamId;
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
+                if (_reservedStreams.Length <= streamId - 1 || _reservedStreams[streamId - 1])
+                {
+                    return;
+                }
+                _reservedStreams[streamId - 1] = true;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+            _streams[streamId - 1] = stream;
+            _streamCount.Increment();
+        }
+
+        public void RemoveClientStream(int streamId)
+        {
+            UnreserveStreamId(streamId);
+        }
+
+        /// <summary>
+        /// Return stream by given channel id.
+        /// </summary>
+        /// <param name="channelId"></param>
+        /// <returns></returns>
+        public IClientStream GetStreamByChannelId(int channelId)
+        {
+            if (channelId < 4)
+                return null;
+            IClientStream stream;
+            _streams.TryGetValue(GetStreamIdForChannel(channelId) - 1, out stream);
+            return stream;
+        }
+
+        protected int StreamCount
+        {
+            get { return _streamCount.Value; }
+        }
+
+        internal void RememberStreamBufferDuration(int streamId, int bufferDuration)
+        {
+            _streamBuffers.Add(streamId - 1, bufferDuration);
+        }
+
+        /// <summary>
+        /// Gets collection of IClientStream.
+        /// </summary>
+        /// <returns></returns>
+        public ICollection GetStreams()
+        {
+            return _streams.Values as ICollection;
+        }
+
+        #endregion
+
+        #region IBWControllable Members
+
+        /// <summary>
+        /// Returns parent IBWControllable object.
+        /// </summary>
+        /// <returns>Parent IBWControllable.</returns>
+        public IBWControllable GetParentBWControllable()
+        {
+            // TODO return the client object
+            return null;
+        }
+        /// <summary>
+        /// Gets or sets bandwidth configuration object.
+        /// Bandwidth configuration allows you to set bandwidth size for audio, video and total amount.
+        /// </summary>
+        public IBandwidthConfigure BandwidthConfiguration
+        {
+            get
+            {
+                try
+                {
+                    ReaderWriterLock.AcquireReaderLock();
+                    return _bwConfig;
+                }
+                finally
+                {
+                    ReaderWriterLock.ReleaseReaderLock();
+                }
+            }
+            set
+            {
+                if (!(value is IConnectionBWConfig))
+                    return;
+
+                IConnectionBWConfig connectionBWConfig = value as IConnectionBWConfig;
+                // Notify client about new bandwidth settings (in bytes per second)
+                if (connectionBWConfig.DownstreamBandwidth > 0)
+                {
+                    ServerBW serverBW = new ServerBW((int)_bwConfig.DownstreamBandwidth / 8);
+                    GetChannel((byte)2).Write(serverBW);
+                }
+                if (connectionBWConfig.UpstreamBandwidth > 0)
+                {
+                    ClientBW clientBW = new ClientBW((int)_bwConfig.UpstreamBandwidth / 8, (byte)0);
+                    GetChannel((byte)2).Write(clientBW);
+                    // Update generation of BytesRead messages
+                    // TODO: what are the correct values here?
+                    _bytesReadInterval = (int)_bwConfig.UpstreamBandwidth / 8;
+                    _nextBytesRead = (int)this.WrittenBytes;
+                }
+
+                try
+                {
+                    ReaderWriterLock.AcquireWriterLock();
+                    _bwConfig = connectionBWConfig;
+                    if (_bwConfig.UpstreamBandwidth > 0)
+                    {
+                        // Update generation of BytesRead messages
+                        // TODO: what are the correct values here?
+                        _bytesReadInterval = (int)connectionBWConfig.UpstreamBandwidth / 8;
+                        _nextBytesRead = (int)this.WrittenBytes;
+                    }
+                    if (_bwContext != null)
+                    {
+                        IBWControlService bwController = this.Scope.GetService(typeof(IBWControlService)) as IBWControlService;
+                        bwController.UpdateBWConfigure(_bwContext);
+                    }
+                }
+                finally
+                {
+                    ReaderWriterLock.ReleaseWriterLock();
+                }
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Start measuring the roundtrip time for a packet on the connection.
         /// </summary>
@@ -395,10 +885,7 @@ namespace FluorineFx.Messaging.Rtmp
 			invoke.InvokeId = this.InvokeId;
 			if(serviceCall is IPendingServiceCall)
 			{
-                lock (((ICollection)_pendingCalls).SyncRoot)
-                {
-                    _pendingCalls[invoke.InvokeId] = serviceCall;
-                }
+                _pendingCalls[invoke.InvokeId] = serviceCall;
 			}
 			GetChannel(channel).Write(invoke);
 		}
@@ -490,95 +977,27 @@ namespace FluorineFx.Messaging.Rtmp
 			return "RtmpConnection " + _connectionId;
 		}
 
-
-		#region IMessageConnection Members
-
-        /// <summary>
-        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="client"></param>
-		public void RegisterMessageClient(IMessageClient client)
-		{
-            lock (((ICollection)_clients).SyncRoot)
-			{
-				if(!_clients.ContainsKey(client.ClientId))
-				{
-					_clients.Add(client.ClientId, client);
-				}
-			}
-		}
-        /// <summary>
-        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="clientId"></param>
-		public void RemoveMessageClient(string clientId)
-		{
-            lock (((ICollection)_clients).SyncRoot)
-			{
-				if(_clients.ContainsKey(clientId))
-				{
-					//MessageClient client = _clients[clientId] as MessageClient;
-					_clients.Remove(clientId);
-				}
-			}
-		}
-        /// <summary>
-        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-		public void RemoveMessageClients()
-		{
-            lock (((ICollection)_clients).SyncRoot)
-			{
-				_clients.Clear();
-			}
-		}
-        /// <summary>
-        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="clientId"></param>
-        /// <returns></returns>
-		public bool IsClientRegistered(string clientId)
-		{
-            lock (((ICollection)_clients).SyncRoot)
-			{
-				return _clients.ContainsKey(clientId);
-			}
-		}
-        /// <summary>
-        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-		public int ClientCount
-		{
-			get
-			{
-                lock (((ICollection)_clients).SyncRoot)
-				{
-					return _clients.Count; 
-				}
-			}
-		}
-        /// <summary>
-        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="messageClient"></param>
-		public abstract void Push(IMessage message, IMessageClient messageClient);
-
-		#endregion
-
         /// <summary>
         /// Increases number of read messages by one. Updates number of bytes read.
         /// </summary>
         internal void MessageReceived()
         {
-            _readMessages++;
+            _readMessages.Increment();
             // Trigger generation of BytesRead messages            
             UpdateBytesRead();
         }
 
 	    internal virtual void MessageSent(RtmpPacket packet) 
         {
-		    _writtenMessages++;
+            if (packet.Message is VideoData)
+            {
+                int streamId = packet.Header.StreamId;
+                AtomicInteger pending = null;
+                _pendingVideos.TryGetValue(streamId, out pending);
+                if (pending != null)
+                    pending.Decrement();
+            }
+		    _writtenMessages.Increment();
 	    }
 
         /// <summary>
@@ -586,13 +1005,24 @@ namespace FluorineFx.Messaging.Rtmp
         /// </summary>
         protected void UpdateBytesRead()
         {
-            long bytesRead = this.ReadBytes;
-            if (bytesRead >= _nextBytesRead)
+            BytesRead sbr = null;
+            try
             {
-                BytesRead sbr = new BytesRead((int)bytesRead);
-                GetChannel((byte)2).Write(sbr);
-                _nextBytesRead += _bytesReadInterval;
+                ReaderWriterLock.AcquireWriterLock();
+                long bytesRead = this.ReadBytes;
+                if (bytesRead >= _nextBytesRead)
+                {
+                    sbr = new BytesRead((int)bytesRead);
+                    //GetChannel((byte)2).Write(sbr);
+                    _nextBytesRead += _bytesReadInterval;
+                }
             }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+            if( sbr != null )
+                GetChannel((byte)2).Write(sbr);
         }
         /// <summary>
         /// Gets the total number of bytes read from the connection.
@@ -608,17 +1038,36 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="bytes"></param>
         internal void ReceivedBytesRead(int bytes)
         {
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
 #if !SILVERLIGHT
-            log.Info("Client received " + bytes + " bytes, written " + this.WrittenBytes + " bytes, " + this.PendingMessages + " messages pending");
+                log.Info("Client received " + bytes + " bytes, written " + this.WrittenBytes + " bytes, " + this.PendingMessages + " messages pending");
 #endif
-            _clientBytesRead = bytes;
+                _clientBytesRead = bytes;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
         }
         /// <summary>
         /// Gets the number of bytes the client reported to have received.
         /// </summary>
         public override long ClientBytesRead
         {
-            get { return _clientBytesRead; }
+            get
+            {
+                try
+                {
+                    ReaderWriterLock.AcquireReaderLock();
+                    return _clientBytesRead;
+                }
+                finally
+                {
+                    ReaderWriterLock.ReleaseReaderLock();
+                }
+            }
         }
 
         /// <summary>
@@ -641,9 +1090,14 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="result">Result to register.</param>
         internal void RegisterDeferredResult(DeferredResult result)
         {
-            lock (((ICollection)_deferredResults).SyncRoot)
+            ReaderWriterLock.AcquireWriterLock();
+            try
             {
                 _deferredResults.Add(result, null);
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
             }
         }
         /// <summary>
@@ -652,9 +1106,14 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="result">Result to unregister.</param>
         internal void UnregisterDeferredResult(DeferredResult result)
         {
-            lock (((ICollection)_deferredResults).SyncRoot)
+            ReaderWriterLock.AcquireWriterLock();
+            try
             {
                 _deferredResults.Remove(result);
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
             }
         }
 
@@ -662,8 +1121,36 @@ namespace FluorineFx.Messaging.Rtmp
         {
         }
 
+        /// <summary>
+        /// Starts measurement.
+        /// </summary>
         internal virtual void StartRoundTripMeasurement()
         {
+#if !FXCLIENT
+            if (FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.PingInterval <= 0)
+            {
+                // Ghost detection code disabled
+                return;
+            }
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
+                if (_keepAliveJobName == null)
+                {
+                    ISchedulingService service = this.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
+                    if (service != null)
+                    {
+                        _keepAliveJobName = service.AddScheduledJob(FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.PingInterval, new KeepAliveJob(this));
+                        if (log.IsDebugEnabled)
+                            log.Debug("Keep alive job name " + _keepAliveJobName);
+                    }
+                }
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+#endif
         }
 
         /// <summary>
@@ -671,6 +1158,65 @@ namespace FluorineFx.Messaging.Rtmp
         /// </summary>
         protected abstract void OnInactive();
 
+        public abstract void Push(IMessage message, IMessageClient messageClient);
 
+#if !FXCLIENT
+        private class KeepAliveJob : ScheduledJobBase
+        {
+		    private AtomicLong _lastBytesRead = new AtomicLong(0);
+		    private long _lastBytesReadTime = 0;
+
+            RtmpConnection _connection;
+
+            public KeepAliveJob(RtmpConnection connection)
+            {
+                _connection = connection;
+            }
+
+            public override void Execute(ScheduledJobContext context)
+            {
+                if (!_connection.IsConnected)
+                    return;
+                long thisRead = _connection.ReadBytes;
+                long previousReadBytes = _lastBytesRead.Value;
+                if (thisRead > previousReadBytes)
+                {
+                    // Client sent data since last check and thus is not dead. No need to ping.
+                    _lastBytesRead.CompareExchange(thisRead, previousReadBytes);
+                    _lastBytesReadTime = System.Environment.TickCount;
+                    return;
+                }
+                FluorineRtmpContext.Initialize(_connection);
+                if (_connection._lastPongReceived > 0 && 
+                    _connection._lastPingSent - _connection._lastPongReceived > FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.MaxInactivity
+                    && !(System.Environment.TickCount - _lastBytesReadTime < FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.MaxInactivity))
+                {
+                    try
+                    {
+                        _connection.ReaderWriterLock.AcquireWriterLock();
+                        // Client didn't send response to ping command for too long, disconnect
+                        if (_connection._keepAliveJobName != null)
+                        {
+                            if (log.IsDebugEnabled)
+                                log.Debug("Keep alive job name " + _connection._keepAliveJobName);
+
+                            ISchedulingService service = _connection.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
+                            service.RemoveScheduledJob(_connection._keepAliveJobName);
+                            _connection._keepAliveJobName = null;
+                        }
+                    }
+                    finally
+                    {
+                        _connection.ReaderWriterLock.ReleaseWriterLock();
+                    }
+                    log.Warn(string.Format("Closing {0} due to too much inactivity ({1}).", _connection, (_connection._lastPingSent - _connection._lastPongReceived)));
+                    _connection.OnInactive();
+                    return;
+                }
+                // Send ping command to client to trigger sending of data.
+                _connection.Ping();
+            }
+        }
+#endif
     }
 }

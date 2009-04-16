@@ -46,19 +46,20 @@ namespace FluorineFx.Messaging.Services
         /// Initializes a new instance of the MessageService class.
 		/// </summary>
 		/// <param name="messageBroker"></param>
-		/// <param name="serviceSettings"></param>
-		public MessageService(MessageBroker messageBroker, ServiceSettings serviceSettings) : base(messageBroker, serviceSettings)
+        /// <param name="serviceDefinition"></param>
+        public MessageService(MessageBroker messageBroker, ServiceDefinition serviceDefinition)
+            : base(messageBroker, serviceDefinition)
 		{
 		}
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        /// <param name="destinationSettings"></param>
+        /// <param name="destinationDefinition"></param>
         /// <returns></returns>
         [CLSCompliant(false)]
-        protected override Destination NewDestination(DestinationSettings destinationSettings)
+        protected override Destination NewDestination(DestinationDefinition destinationDefinition)
 		{
-			return new MessageDestination(this, destinationSettings);
+            return new MessageDestination(this, destinationDefinition);
 		}
         /// <summary>
         /// Handles a message routed to the service by the MessageBroker.
@@ -73,11 +74,10 @@ namespace FluorineFx.Messaging.Services
 			{
 				string clientId = commandMessage.clientId as string;
                 MessageClient messageClient = messageDestination.SubscriptionManager.GetSubscriber(clientId);
-
+                AcknowledgeMessage acknowledgeMessage = null;
 				switch(commandMessage.operation)
 				{
 					case CommandMessage.SubscribeOperation:
-						AcknowledgeMessage acknowledgeMessage = null;
                         if (messageClient == null)
 						{
 							if( clientId == null )
@@ -87,6 +87,12 @@ namespace FluorineFx.Messaging.Services
 								log.Debug(__Res.GetString(__Res.MessageServiceSubscribe, messageDestination.Id, clientId));
 
                             string endpointId = commandMessage.GetHeader(MessageBase.EndpointHeader) as string;
+                            if (_messageBroker.GetEndpoint(endpointId) == null)
+                            {
+                                ServiceException serviceException = new ServiceException("Endpoint was not specified");
+                                serviceException.FaultCode = "Server.Processing.MissingEndpoint";
+                                throw serviceException;
+                            }
 							commandMessage.clientId = clientId;
 
                             if (messageDestination.ServiceAdapter != null && messageDestination.ServiceAdapter.HandlesSubscriptions)
@@ -109,7 +115,7 @@ namespace FluorineFx.Messaging.Services
                             }
                             IClient client = FluorineContext.Current.Client;
                             client.Renew();
-                            messageClient = messageDestination.SubscriptionManager.AddSubscriber(client, clientId, endpointId, messageDestination, subtopic, selector);
+                            messageClient = messageDestination.SubscriptionManager.AddSubscriber(clientId, endpointId, subtopic, selector);
                             //client.RegisterMessageClient(client);
 							acknowledgeMessage = new AcknowledgeMessage();
 							acknowledgeMessage.clientId = clientId;
@@ -126,8 +132,9 @@ namespace FluorineFx.Messaging.Services
 
                         if (messageDestination.ServiceAdapter != null && messageDestination.ServiceAdapter.HandlesSubscriptions)
                         {
-                            messageDestination.ServiceAdapter.Manage(commandMessage);
+                            acknowledgeMessage = messageDestination.ServiceAdapter.Manage(commandMessage) as AcknowledgeMessage;
                         }
+                        /*
                         if (messageClient != null)
 						{
                             //IClient flexClient = this.GetMessageBroker().GetCurrentFlexClient();
@@ -135,7 +142,11 @@ namespace FluorineFx.Messaging.Services
                             //    flexClient.UnregisterMessageClient(client);
                             messageClient.Unsubscribe();
 						}
-						return new AcknowledgeMessage();
+                        */
+                        messageDestination.SubscriptionManager.RemoveSubscriber(messageClient);
+                        if( acknowledgeMessage == null )
+                            acknowledgeMessage = new AcknowledgeMessage();
+                        return acknowledgeMessage;
                     case CommandMessage.PollOperation:
                         {
                             if (messageClient == null)
@@ -272,8 +283,15 @@ namespace FluorineFx.Messaging.Services
                             log.Debug(__Res.GetString(__Res.MessageServicePush, message.GetType().Name, clientId));
 					}
 
-					IEndpoint endpoint = _messageBroker.GetEndpoint(client.Endpoint);
-					endpoint.Push(messageClone, client);
+					IEndpoint endpoint = _messageBroker.GetEndpoint(client.EndpointId);
+                    if (endpoint != null)
+                        endpoint.Push(messageClone, client);
+                    else
+                    {
+                        //We should never get here
+                        if( log.IsErrorEnabled)
+                            log.Error(string.Format("Missing endpoint for message client {0}", client.ClientId));
+                    }
 				}
 			}
 		}

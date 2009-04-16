@@ -72,82 +72,37 @@ namespace FluorineFx.Messaging.Rtmp
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
-    class RtmpServerConnection : RtmpConnection, IStreamCapableConnection
+    class RtmpServerConnection : RtmpConnection//, IStreamCapableConnection
     {
         private static ILog log = LogManager.GetLogger(typeof(RtmpServerConnection));
-
-#if !(NET_1_1)
-        /// <summary>
-        /// Client streams.
-        /// Map(Integer, IClientStream)
-        /// </summary>
-        private Dictionary<int, IClientStream> _streams = new Dictionary<int, IClientStream>();
-        /// <summary>
-        /// Remembers stream buffer durations
-        /// Map(Integer, Integer)
-        /// </summary>
-        protected Dictionary<int, int> _streamBuffers = new Dictionary<int, int>();
-        /// <summary>
-        /// Map for pending video packets and stream IDs
-        /// Map(Integer, AtomicInteger)
-        /// </summary>
-        private Dictionary<int, AtomicInteger> _pendingVideos = new Dictionary<int, AtomicInteger>();
-#else
-        /// <summary>
-        /// Client streams.
-        /// Map(Integer, IClientStream)
-        /// </summary>
-        private Hashtable _streams = new Hashtable();
-        /// <summary>
-        /// Remembers stream buffer durations
-        /// Map(Integer, Integer)
-        /// </summary>
-        protected Hashtable _streamBuffers = new Hashtable();
-        /// <summary>
-        /// Map for pending video packets and stream IDs
-        /// Map(Integer, AtomicInteger)
-        /// </summary>
-        private Hashtable _pendingVideos = new Hashtable();
-#endif
-
-        static int StreamId = 0;
-        /// <summary>
-        /// Number of streams used.
-        /// </summary>
-        private int _streamCount;
-        /// <summary>
-        /// Bandwidth configure.
-        /// </summary>
-        private IConnectionBWConfig _bwConfig;
-        /// <summary>
-        /// Bandwidth context used by bandwidth controller.
-        /// </summary>
-        private IBWControlContext _bwContext;
-
 
         RtmpServer _rtmpServer;
         ByteBuffer _readBuffer;
         RtmpNetworkStream _rtmpNetworkStream;
         DateTime _lastAction;
-        volatile RtmpConnectionState _state;
-        FluorineFx.Messaging.Endpoints.IEndpoint _endpoint;
+        //volatile RtmpConnectionState _state;
+        IEndpoint _endpoint;
+
+        /// <summary>
+        /// Number of read bytes
+        /// </summary>
+        protected AtomicLong _readBytes;
+        /// <summary>
+        /// Number of written bytes
+        /// </summary>
+        protected AtomicLong _writtenBytes;
+
+        FastReaderWriterLock _lock;
+
         // <summary>
         // Name of job that is waiting for a valid handshake.
         // </summary>
         //private string _waitForHandshakeJob;
-        /// <summary>
-        /// Name of job that keeps connection alive.
-        /// </summary>
-        protected string _keepAliveJobName;
         
-        RtmptRequest _rtmptRequest;
-        
-        private long _readBytes;
-        private long _writtenBytes;
-
-        public RtmpServerConnection(RtmpServer rtmpServer, Socket socket)
-            : base(null, null)
+        public RtmpServerConnection(RtmpServer rtmpServer, RtmpNetworkStream stream)
+            : base(rtmpServer.RtmpHandler, null, null)
 		{
+            _lock = new FastReaderWriterLock();
             _endpoint = rtmpServer.Endpoint;
             _readBuffer = ByteBuffer.Allocate(4096);
             _readBuffer.Flip();
@@ -155,10 +110,13 @@ namespace FluorineFx.Messaging.Rtmp
 			// We start with an anonymous connection without a scope.
 			// These parameters will be set during the call of "connect" later.
             _rtmpServer = rtmpServer;
-            _rtmpNetworkStream = new RtmpNetworkStream(socket);
-            _state = RtmpConnectionState.Active;
+            _rtmpNetworkStream = stream;
+            //_state = RtmpConnectionState.Active;
             SetIsTunneled(false);
             IsTunnelingDetected = false;
+
+            _readBytes = new AtomicLong();
+            _writtenBytes = new AtomicLong();
 
             //Set the legacy collection flag from the endpoint channel settings
             this.Context.UseLegacyCollection = (_endpoint as RtmpEndpoint).IsLegacyCollection;
@@ -181,6 +139,7 @@ namespace FluorineFx.Messaging.Rtmp
             set { __fields = (value) ? (byte)(__fields | 16) : (byte)(__fields & ~16); }
         }
 
+        /*
         public bool IsActive
         {
             get { return _state == RtmpConnectionState.Active; }
@@ -195,6 +154,7 @@ namespace FluorineFx.Messaging.Rtmp
         {
             get { return _state == RtmpConnectionState.Inactive; }
         }
+        */
 
         public DateTime LastAction
         {
@@ -207,7 +167,7 @@ namespace FluorineFx.Messaging.Rtmp
             get { return _rtmpNetworkStream.Socket.RemoteEndPoint as IPEndPoint; }
         }
 
-        public FluorineFx.Messaging.Endpoints.IEndpoint Endpoint { get { return _endpoint; } }
+        public IEndpoint Endpoint { get { return _endpoint; } }
 
 
         #region Network IO
@@ -217,64 +177,80 @@ namespace FluorineFx.Messaging.Rtmp
                 log.Debug(__Res.GetString(__Res.Rtmp_SocketBeginReceive, _connectionId, IOCPThread));
 
             if (!IOCPThread)
-                ThreadPool.QueueUserWorkItem(new WaitCallback(BeginReceiveCallbackProcessing), null);
+                //ThreadPool.QueueUserWorkItem(new WaitCallback(BeginReceiveCallbackProcessing), null);
+                ThreadPoolEx.Global.QueueUserWorkItem(new WaitCallback(BeginReceiveCallbackProcessing), null);
             else
                 BeginReceiveCallbackProcessing(null);
         }
 
         public void BeginReceiveCallbackProcessing(object state)
         {
+            _lock.AcquireReaderLock();
+            try
+            {
+                if (IsClosed || IsClosing)
+                    return; // Already shutting down.
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
             if (log.IsDebugEnabled)
                 log.Debug(__Res.GetString(__Res.Rtmp_SocketReceiveProcessing, _connectionId));
-            if (!IsDisposed && IsActive)
+
+            byte[] buffer = null;
+            try
             {
-                byte[] buffer = null;
-                try
-                {
-                    buffer = SocketBufferPool.Pool.CheckOut();
-                    _rtmpNetworkStream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginReadCallbackProcessing), buffer);
-                }
-                catch (Exception ex)
-                {
-                    SocketBufferPool.Pool.CheckIn(buffer);
-                    HandleError(ex);
-                }
+                buffer = SocketBufferPool.Pool.CheckOut();
+                _rtmpNetworkStream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginReadCallbackProcessing), buffer);
+            }
+            catch (Exception ex)
+            {
+                SocketBufferPool.Pool.CheckIn(buffer);
+                HandleError(ex);
             }
         }
 
         private void BeginReadCallbackProcessing(IAsyncResult ar)
         {
+            byte[] buffer = ar.AsyncState as byte[];
+            _lock.AcquireReaderLock();
+            try
+            {
+                if (IsClosed || IsClosing)
+                {
+                    SocketBufferPool.Pool.CheckIn(buffer);
+                    return; // Already shutting down.
+                }
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
             if (log.IsDebugEnabled)
                 log.Debug(__Res.GetString(__Res.Rtmp_SocketBeginRead, _connectionId));
 
-            byte[] buffer = ar.AsyncState as byte[];
-            if (!IsDisposed && IsActive)
+            try
             {
-                try
+                _lastAction = DateTime.Now;
+                int readBytes = _rtmpNetworkStream.EndRead(ar);
+                _readBytes.Increment(readBytes);
+                if (readBytes > 0)
                 {
-                    _lastAction = DateTime.Now;
-                    int readBytes = _rtmpNetworkStream.EndRead(ar);
-                    _readBytes += readBytes;
-                    if (readBytes > 0)
-                    {
-                        _readBuffer.Append(buffer, 0, readBytes);
-                        //Leave IOCP thread
-                        ThreadPoolEx.Global.QueueUserWorkItem(new WaitCallback(OnReceivedCallback), null);
-                    }
-                    else
-                        // No data to read
-                        Close();
+                    _readBuffer.Append(buffer, 0, readBytes);
+                    //Leave IOCP thread
+                    ThreadPoolEx.Global.QueueUserWorkItem(new WaitCallback(OnReceivedCallback), null);
                 }
-                catch (Exception ex)
-                {
-                    HandleError(ex);
-                }
-                finally
-                {
-                    SocketBufferPool.Pool.CheckIn(buffer);
-                }
+                else
+                    // No data to read
+                    //Close();
+                    BeginDisconnect();
             }
-            else
+            catch (Exception ex)
+            {
+                HandleError(ex);
+            }
+            finally
             {
                 SocketBufferPool.Pool.CheckIn(buffer);
             }
@@ -282,27 +258,72 @@ namespace FluorineFx.Messaging.Rtmp
 
         private void OnReceivedCallback(object state)
         {
+            _lock.AcquireReaderLock();
+            try
+            {
+                if (IsClosed || IsClosing)
+                    return; // Already shutting down.
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
             if (log.IsDebugEnabled)
+            {
                 log.Debug(__Res.GetString(__Res.Rtmp_SocketReadProcessing, _connectionId));
-
-            if (log.IsDebugEnabled)
-                log.Debug("Begin handling packet " + this.ToString());
-
+                log.Debug(__Res.GetString(__Res.Rtmp_BeginHandlePacket, _connectionId));
+            }
             if (!IsTunnelingDetected)
             {
                 IsTunnelingDetected = true;
                 byte rtmpDetect = _readBuffer.Get(0);
                 SetIsTunneled(rtmpDetect != 0x3);
+
+                if (!IsTunneled)
+                {
+                    //For tunneled connections we do not really need a session for this connection
+                    _session = _endpoint.GetMessageBroker().SessionManager.CreateSession(this);
+                }
             }
             try
             {
                 if (!IsTunneled)
                 {
+                    FluorineRtmpContext.Initialize(this);
+
 #if !(NET_1_1)
-                    List<object> result = RtmpProtocolDecoder.DecodeBuffer(this.Context, _readBuffer);
+                    List<object> result = null;
 #else
-                    ArrayList result = RtmpProtocolDecoder.DecodeBuffer(this.Context, _readBuffer);
+                    ArrayList result = null;
 #endif
+                    try
+                    {
+                        result = RtmpProtocolDecoder.DecodeBuffer(this.Context, _readBuffer);
+                    }
+                    catch (HandshakeFailedException hfe)
+                    {
+#if !SILVERLIGHT
+                        if (log.IsDebugEnabled)
+                            log.Debug(string.Format("Handshake failed: {0}", hfe.Message));
+#endif
+                        // Clear buffer if something is wrong in protocol decoding.
+                        _readBuffer.Clear();
+                        this.Close();
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Catch any exception in the decoding then clear the buffer to eliminate memory leaks when we can't parse protocol
+                        // Also close Connection because we can't parse data from it
+#if !SILVERLIGHT
+                        log.Error("Error decoding buffer", ex);
+#endif
+                        // Clear buffer if something is wrong in protocol decoding.
+                        _readBuffer.Clear();
+                        this.Close();
+                        return;
+                    }
+
                     if (result != null && result.Count > 0)
                     {
                         foreach (object obj in result)
@@ -310,11 +331,14 @@ namespace FluorineFx.Messaging.Rtmp
                             if (obj is ByteBuffer)
                             {
                                 ByteBuffer buf = obj as ByteBuffer;
-                                Send(buf);
+                                Write(buf);
+                            }
+                            else if (obj is byte[])
+                            {
+                                Write(obj as byte[]);
                             }
                             else
                             {
-                                FluorineRtmpContext.Initialize(this);
                                 _rtmpServer.RtmpHandler.MessageReceived(this, obj);
                             }
                         }
@@ -322,8 +346,10 @@ namespace FluorineFx.Messaging.Rtmp
                 }
                 else
                 {
-                    //Reset buffer position
-                    HandleRtmpt();
+                    //FluorineRtmpContext.Initialize(this);
+                    RtmptRequest rtmptRequest = RtmptProtocolDecoder.DecodeBuffer(this, _readBuffer);
+                    if( rtmptRequest != null )
+                        HandleRtmpt(rtmptRequest);
                 }
             }
             catch (Exception ex)
@@ -331,7 +357,7 @@ namespace FluorineFx.Messaging.Rtmp
                 HandleError(ex);
             }
             if (log.IsDebugEnabled)
-                log.Debug("End handling packet " + this.ToString());
+                log.Debug(__Res.GetString(__Res.Rtmp_EndHandlePacket, _connectionId));
             //Ready to receive again
             BeginReceive(false);
         }
@@ -355,171 +381,185 @@ namespace FluorineFx.Messaging.Rtmp
                     log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionAborted, _connectionId));
                 error = false;
             }
+            if (socketException != null && socketException.ErrorCode == 995)
+            {
+                //The I/O operation has been aborted because of either a thread exit or an application request
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionAborted, _connectionId));
+                error = false;
+            }
 
             if (error && log.IsErrorEnabled)
-                log.Error("Error " + this.ToString(), exception);
+            {
+                if (socketException != null)
+                    log.Error(string.Format("{0} socket exception, error code {1}", this.ConnectionId.ToString(), socketException.ErrorCode), exception);
+                else
+                    log.Error(this.ConnectionId.ToString(), exception);
+            }
             BeginDisconnect();
         }
 
         internal void BeginDisconnect()
         {
-            if (!IsDisposed && !IsDisconnecting)
+            _lock.AcquireReaderLock();
+            try
             {
-                try
-                {
-                    //Leave IOCP thread
-                    _state = RtmpConnectionState.Disconnectig;
-                    ThreadPoolEx.Global.QueueUserWorkItem(new WaitCallback(OnDisconnectCallback), null);
-                }
-                catch (Exception ex)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error("BeginDisconnect " + this.ToString(), ex);
-                }
+                if (IsClosed || IsClosing)
+                    return; // Already shutting down.
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
+            if (log.IsDebugEnabled)
+                log.Debug(__Res.GetString(__Res.Rtmp_BeginDisconnect, _connectionId));
+            try
+            {
+                //Leave IOCP thread
+                //_state = RtmpConnectionState.Disconnectig;
+                ThreadPoolEx.Global.QueueUserWorkItem(new WaitCallback(OnDisconnectCallback), null);
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error(this.ConnectionId.ToString(), ex);
             }
         }
 
         private void OnDisconnectCallback(object state)
         {
+            _lock.AcquireReaderLock();
+            try
+            {
+                if (IsClosed || IsClosing)
+                    return; // Already shutting down.
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
             if (log.IsDebugEnabled)
                 log.Debug(__Res.GetString(__Res.Rtmp_SocketDisconnectProcessing, _connectionId));
-
-            lock (this.SyncRoot)
+            try
             {
-                try
-                {
-                    _rtmpServer.RtmpHandler.ConnectionClosed(this);
-                }
-                catch (Exception ex)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error("OnDisconnectCallback " + this.ToString(), ex);
-                }
+                FluorineRtmpContext.Initialize(this);
+                _rtmpServer.RtmpHandler.ConnectionClosed(this);
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error(this.ConnectionId.ToString(), ex);
             }
             //Close(); -> IRtmpHandler
         }
 
-        internal void Send(ByteBuffer buf)
+        public override void Write(ByteBuffer buffer)
         {
-            lock (this.SyncRoot)
-            {
-                if (!IsDisposed && IsActive)
-                {
-                    byte[] buffer = buf.ToArray();
-                    try
-                    {
-                        _rtmpNetworkStream.Write(buffer, 0, buffer.Length);
-                        _writtenBytes += buffer.Length;
-                    }
-                    catch (Exception ex)
-                    {
-                        HandleError(ex);
-                    }
-                    _lastAction = DateTime.Now;
-                }
-            }
+            byte[] buf = buffer.ToArray();
+            Write(buf);
         }
 
+        public override void Write(byte[] buffer)
+        {
+            _lock.AcquireReaderLock();
+            try
+            {
+                if (IsClosed || IsClosing)
+                    return; // Already shutting down.
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
+            if (log.IsDebugEnabled)
+                log.Debug(__Res.GetString(__Res.Rtmp_SocketSend, _connectionId));
+            try
+            {
+                //No need to lock, RtmpNetworkStream will handle Write locking
+                _rtmpNetworkStream.Write(buffer, 0, buffer.Length);
+                _writtenBytes.Increment(buffer.Length);
+            }
+            catch (Exception ex)
+            {
+                HandleError(ex);
+            }
+            _lastAction = DateTime.Now;
+        }
 
         #endregion Network IO
 
         public override void Close()
         {
-            lock (this.SyncRoot)
+            _lock.AcquireWriterLock();
+            try
             {
-                if (!IsDisposed && !IsDisconnected)
-                {
-                    if (!this.IsTunneled)
-                    {
-                        DeferredClose();
-                    }
-                    else
-                    {
-                        // Defer actual closing so we can send back pending messages to the client.
-                        SetIsClosing(true);
-                    }
-                }
+                if (IsClosed || IsClosing)
+                    return; // Already shutting down.
+                SetIsClosing(true);
             }
-        }
-
-        public void DeferredClose()
-        {
-            lock (this.SyncRoot)
+            finally
             {
-                if (_keepAliveJobName != null)
-                {
-                    ISchedulingService service = this.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
-                    service.RemoveScheduledJob(_keepAliveJobName);
-                    _keepAliveJobName = null;
-                }
-                if (!IsDisposed && !IsDisconnected)
-                {
-                    _state = RtmpConnectionState.Inactive;
-
-                    IStreamService streamService = ScopeUtils.GetScopeService(this.Scope, typeof(IStreamService)) as IStreamService;
-                    if (streamService != null)
-                    {
-                        lock (((ICollection)_streams).SyncRoot)
-                        {
-                            IClientStream[] streams = new IClientStream[_streams.Count];
-                            _streams.Values.CopyTo(streams, 0);
-                            foreach (IClientStream stream in streams)
-                            {
-                                if (stream != null)
-                                {
-#if !SILVERLIGHT
-                                    if (log.IsDebugEnabled)
-                                        log.Debug("Closing stream: " + stream.StreamId);
-#endif
-                                    streamService.deleteStream(this, stream.StreamId);
-                                    _streamCount--;
-                                }
-                            }
-                            _streams.Clear();
-                        }
-                    }
-                    if (_bwContext != null && this.Scope != null && this.Scope.Context != null)
-                    {
-                        IBWControlService bwController = this.Scope.GetService(typeof(IBWControlService)) as IBWControlService;
-                        bwController.UnregisterBWControllable(_bwContext);
-                        _bwContext = null;
-                    }
-                    base.Close();
-                    _rtmpServer.OnConnectionClose(this);
-                    _rtmpNetworkStream.Close();
-                }
+                _lock.ReleaseWriterLock();
+            }
+            FluorineRtmpContext.Initialize(this);
+            base.Close();
+            _rtmpServer.OnConnectionClose(this);
+            _rtmpNetworkStream.Close();
+            _lock.AcquireWriterLock();
+            try
+            {
+                SetIsClosed(true);
+                SetIsClosing(false);
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
             }
         }
 
 		public override void Write(RtmpPacket packet)
 		{
-            if (!IsDisposed && IsActive)
+            _lock.AcquireReaderLock();
+            try
             {
-                if (log.IsDebugEnabled)
-                    log.Debug("Write " + packet.Header);
+                if (IsClosed || IsClosing)
+                    return; // Already shutting down.
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
+            if (log.IsDebugEnabled)
+                log.Debug(__Res.GetString(__Res.Rtmp_WritePacket, _connectionId, packet.Header));
 
-                if (!this.IsTunneled)
-                {
-                    //encode
-                    WritingMessage(packet);
-                    ByteBuffer outputStream = RtmpProtocolEncoder.Encode(this.Context, packet);
-                    Send(outputStream);
-                    _rtmpServer.RtmpHandler.MessageSent(this, packet);
-                }
-                else
-                {
-                    //We should never get here
-                    Debug.Assert(false);
-                }
+            if (!this.IsTunneled)
+            {
+                //encode
+                WritingMessage(packet);
+                ByteBuffer outputStream = RtmpProtocolEncoder.Encode(this.Context, packet);
+                Write(outputStream);
+                _rtmpServer.RtmpHandler.MessageSent(this, packet);
+            }
+            else
+            {
+                //We should never get here
+                Debug.Assert(false);
             }
 		}
 
         public override void Push(IMessage message, IMessageClient messageClient)
         {
-            if (IsActive)
+            _lock.AcquireReaderLock();
+            try
             {
-                RtmpHandler.Push(this, message, messageClient);
+                if (IsClosed || IsClosing)
+                    return; // Already shutting down.
             }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
+            RtmpHandler.Push(this, message, messageClient);
         }
 
         protected override void OnInactive()
@@ -528,33 +568,22 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 this.Timeout();
                 this.Close();
-                this.DeferredClose();
             }
         }
 
+        /// <summary>
+        /// Gets the total number of bytes read from the connection.
+        /// </summary>
         public override long WrittenBytes
         {
-            get
-            {
-                return _writtenBytes;
-            }
+            get{ return _writtenBytes.Value; }
         }
-
+        /// <summary>
+        /// Gets the total number of bytes written to the connection.
+        /// </summary>
         public override long ReadBytes
         {
-            get
-            {
-                return _readBytes;
-            }
-        }
-
-        public override int ClientLeaseTime
-        {
-            get
-            {
-                int timeout = this.Endpoint.GetMessageBroker().FlexClientSettings.TimeoutMinutes;
-                return timeout;
-            }
+            get{ return _readBytes.Value; }
         }
 
         internal override void StartWaitForHandshake()
@@ -586,454 +615,21 @@ namespace FluorineFx.Messaging.Rtmp
         }
         */
 
-        /// <summary>
-        /// Starts measurement.
-        /// </summary>
-        internal override void StartRoundTripMeasurement()
+
+
+        #region RTMPT Handling
+
+        private void HandleRtmpt(RtmptRequest rtmptRequest)
         {
-            if (FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.PingInterval <= 0)
+            IEndpoint endpoint = this.Endpoint.GetMessageBroker().GetEndpoint(RtmptEndpoint.FluorineRtmptEndpointId);
+            RtmptEndpoint rtmptEndpoint = endpoint as RtmptEndpoint;
+            if (rtmptEndpoint != null)
             {
-                // Ghost detection code disabled
-                return;
-            }
-            if (_keepAliveJobName == null)
-            {
-                ISchedulingService service = this.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
-                _keepAliveJobName = service.AddScheduledJob(FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.PingInterval, new KeepAliveJob(this));
-            }
-            log.Debug("Keep alive job name " + _keepAliveJobName);
-        }
-
-        private class KeepAliveJob : ScheduledJobBase
-        {
-            RtmpServerConnection _connection;
-
-            public KeepAliveJob(RtmpServerConnection connection)
-            {
-                _connection = connection;
-            }
-
-            public override void Execute(ScheduledJobContext context)
-            {
-                if (!_connection.IsConnected)
-                    return;
-                long thisRead = _connection.ReadBytes;
-                if (thisRead > _connection._lastBytesRead)
-                {
-                    // Client sent data since last check and thus is not dead. No need to ping.
-                    _connection._lastBytesRead = thisRead;
-                    return;
-                }
-                FluorineRtmpContext.Initialize(_connection);
-
-                if (_connection._lastPongReceived > 0 && _connection._lastPingSent - _connection._lastPongReceived > FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.MaxInactivity)
-                {
-                    // Client didn't send response to ping command for too long, disconnect
-                    log.Debug("Keep alive job name " + _connection._keepAliveJobName);
-
-                    ISchedulingService service = _connection.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
-                    service.RemoveScheduledJob(_connection._keepAliveJobName);
-                    _connection._keepAliveJobName = null;
-                    log.Warn(string.Format("Closing {0} due to too much inactivity ({0}).", _connection, (_connection._lastPingSent - _connection._lastPongReceived)));
-                    _connection.OnInactive();
-                    return;
-                }
-                // Send ping command to client to trigger sending of data.
-                _connection.Ping();
+                rtmptEndpoint.Service(rtmptRequest);
             }
         }
 
-        private void HandleRtmpt()
-        {
-            if (_rtmptRequest == null)
-            {
-                BufferStreamReader sr = new BufferStreamReader(_readBuffer);
-                string request = sr.ReadLine();
-                string[] tokens = request.Split(new char[] { ' ' });
-                string method = tokens[0];
-                string url = tokens[1];
-                // Decode all encoded parts of the URL using the built in URI processing class
-                int i = 0;
-                while ((i = url.IndexOf("%", i)) != -1)
-                {
-                    url = url.Substring(0, i) + Uri.HexUnescape(url, ref i) + url.Substring(i);
-                }
-                // Lets just make sure we are using HTTP, thats about all I care about
-                string protocol = tokens[2];// "HTTP/"
-                //Read headers
-                Hashtable headers = new Hashtable();
-                string line;
-                string name = null;
-                while ((line = sr.ReadLine()) != null && line != string.Empty)
-                {
-                    // If the value begins with a space or a hard tab then this
-                    // is an extension of the value of the previous header and
-                    // should be appended
-                    if (name != null && Char.IsWhiteSpace(line[0]))
-                    {
-                        headers[name] += line;
-                        continue;
-                    }
-                    // Headers consist of [NAME]: [VALUE] + possible extension lines
-                    int firstColon = line.IndexOf(":");
-                    if (firstColon != -1)
-                    {
-                        name = line.Substring(0, firstColon);
-                        string value = line.Substring(firstColon + 1).Trim();
-                        headers[name] = value;
-                    }
-                    else
-                    {
-                        //400, "Bad header: " + line
-                        break;
-                    }
-                }
-                _rtmptRequest = new RtmptRequest(this, url, protocol, method, headers);
-            }
-            if (_readBuffer.Remaining == _rtmptRequest.ContentLength)
-            {
-                IEndpoint endpoint = this.Endpoint.GetMessageBroker().GetEndpoint(RtmptEndpoint.FluorineRtmptEndpointId);
-                RtmptEndpoint rtmptEndpoint = endpoint as RtmptEndpoint;
-                if (rtmptEndpoint != null)
-                {
-                    _readBuffer.Compact();
-                    _rtmptRequest.Data = _readBuffer;
-                    _readBuffer = ByteBuffer.Allocate(4096);
-                    _readBuffer.Flip();
-                    rtmptEndpoint.Service(_rtmptRequest);
-                    _rtmptRequest = null;
-                }
-            }
-        }
+        #endregion RTMPT Handling
 
-        #region IStreamCapableConnection Members
-
-        /// <summary>
-        /// Total number of video messages that are pending to be sent to a stream.
-        /// </summary>
-        /// <param name="streamId">Stream id.</param>
-        /// <returns>Number of pending video messages.</returns>
-        public override long GetPendingVideoMessages(int streamId)
-        {
-            AtomicInteger count = null;
-            lock (((ICollection)_pendingVideos).SyncRoot)
-            {
-                if (_pendingVideos.ContainsKey(streamId))
-                    count = _pendingVideos[streamId] as AtomicInteger;
-            }
-            long result = (count != null ? count.Value - this.StreamCount : 0);
-            return result > 0 ? result : 0;
-            //return 0;
-        }
-        /// <summary>
-        /// Get a stream by its id.
-        /// </summary>
-        /// <param name="streamId">Stream id.</param>
-        /// <returns>Stream with given id.</returns>
-        public IClientStream GetStreamById(int id)
-        {
-            if (id <= 0)
-                return null;
-            lock (((ICollection)_streams).SyncRoot)
-            {
-                if( _streams.ContainsKey(id - 1) )
-                    return _streams[id - 1] as IClientStream;
-                return null;
-            }
-        }
-        /// <summary>
-        /// Returns a reserved stream id for use.
-        /// According to FCS/FMS regulation, the base is 1.
-        /// </summary>
-        /// <returns>Reserved stream id.</returns>
-        public int ReserveStreamId()
-        {
-            int result = Interlocked.Increment(ref StreamId);
-            return result;
-        }
-        /// <summary>
-        /// Unreserve this id for future use.
-        /// </summary>
-        /// <param name="streamId">ID of stream to unreserve.</param>
-        public void UnreserveStreamId(int streamId)
-        {
-            DeleteStreamById(streamId);
-        }
-        /// <summary>
-        /// Deletes the stream with the given id.
-        /// </summary>
-        /// <param name="streamId">Id of stream to delete.</param>
-        public void DeleteStreamById(int streamId)
-        {
-            if (streamId > 0)
-            {
-                lock (((ICollection)_streams).SyncRoot)
-                {
-                    if (_streams.ContainsKey(streamId - 1))
-                    {
-                        lock (((ICollection)_pendingVideos).SyncRoot)
-                        {
-                            if (_pendingVideos.ContainsKey(streamId))
-                                _pendingVideos.Remove(streamId);
-                        }
-                        _streamCount--;
-                        if (_pendingVideos.ContainsKey(streamId - 1))
-                            _streams.Remove(streamId - 1);
-                        lock (((ICollection)_streamBuffers).SyncRoot)
-                        {
-                            if (_streamBuffers.ContainsKey(streamId - 1))
-                                _streamBuffers.Remove(streamId - 1);
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Creates a stream that can play only one item.
-        /// </summary>
-        /// <param name="streamId">Stream id.</param>
-        /// <returns>New subscriber stream that can play only one item.</returns>
-        public ISingleItemSubscriberStream NewSingleItemSubscriberStream(int streamId)
-        {
-            return null;
-        }
-        /// <summary>
-        /// Creates a stream that can play a list.
-        /// </summary>
-        /// <param name="streamId">Stream id.</param>
-        /// <returns>New stream that can play sequence of items.</returns>
-        public IPlaylistSubscriberStream NewPlaylistSubscriberStream(int streamId)
-        {
-            lock (this.SyncRoot)
-            {
-                if (streamId < StreamId)
-                    return null;
-                //TODO
-                PlaylistSubscriberStream pss = new PlaylistSubscriberStream();
-                lock (((ICollection)_streamBuffers).SyncRoot)
-                {
-                    if (_streamBuffers.ContainsKey(streamId - 1))
-                    {
-                        int buffer = (int)_streamBuffers[streamId - 1];
-                        pss.SetClientBufferDuration(buffer);
-                    }
-                }
-                pss.Name = CreateStreamName();
-                pss.Connection = this;
-                pss.Scope = this.Scope;
-                pss.StreamId = streamId;
-                RegisterStream(pss);
-                _streamCount++;
-                return pss;
-            }
-        }
-        /// <summary>
-        /// Generates new stream name.
-        /// </summary>
-        /// <returns>New stream name.</returns>
-        protected string CreateStreamName()
-        {
-            return Guid.NewGuid().ToString();
-        }
-        /// <summary>
-        /// Creates a broadcast stream.
-        /// </summary>
-        /// <param name="streamId">Stream id.</param>
-        /// <returns>New broadcast stream.</returns>
-        public IClientBroadcastStream NewBroadcastStream(int streamId)
-        {
-            lock (this.SyncRoot)
-            {
-                if (streamId < StreamId)
-                    return null;
-                //TODO
-                ClientBroadcastStream cbs = new ClientBroadcastStream();
-                lock (((ICollection)_streamBuffers).SyncRoot)
-                {
-                    if (_streamBuffers.ContainsKey(streamId - 1))
-                    {
-                        int buffer = (int)_streamBuffers[streamId - 1];
-                        cbs.SetClientBufferDuration(buffer);
-                    }
-                }
-                cbs.StreamId = streamId;
-                cbs.Connection = this;
-                cbs.Name = CreateStreamName();
-                cbs.Scope = this.Scope;
-
-                RegisterStream(cbs);
-                _streamCount++;
-                return cbs;
-            }
-        }
-        /// <summary>
-        /// Store a stream in the connection.
-        /// </summary>
-        /// <param name="stream"></param>
-        protected void RegisterStream(IClientStream stream)
-        {
-            lock (((ICollection)_streams).SyncRoot)
-            {
-                _streams[stream.StreamId - 1] = stream;
-            }
-        }
-
-        #endregion
-
-        #region IBWControllable Members
-
-        /// <summary>
-        /// Returns parent IBWControllable object.
-        /// </summary>
-        /// <returns>Parent IBWControllable.</returns>
-        public IBWControllable GetParentBWControllable()
-        {
-            // TODO return the client object
-            return null;
-        }
-        /// <summary>
-        /// Gets or sets bandwidth configuration object.
-        /// Bandwidth configuration allows you to set bandwidth size for audio, video and total amount.
-        /// </summary>
-        public IBandwidthConfigure BandwidthConfiguration
-        {
-            get
-            {
-                return _bwConfig;
-            }
-            set
-            {
-                if (!(value is IConnectionBWConfig))
-                    return;
-
-                _bwConfig = value as IConnectionBWConfig;
-                // Notify client about new bandwidth settings (in bytes per second)
-                if (_bwConfig.DownstreamBandwidth > 0)
-                {
-                    ServerBW serverBW = new ServerBW((int)_bwConfig.DownstreamBandwidth / 8);
-                    GetChannel((byte)2).Write(serverBW);
-                }
-                if (_bwConfig.UpstreamBandwidth > 0)
-                {
-                    ClientBW clientBW = new ClientBW((int)_bwConfig.UpstreamBandwidth / 8, (byte)0);
-                    GetChannel((byte)2).Write(clientBW);
-                    // Update generation of BytesRead messages
-                    // TODO: what are the correct values here?
-                    _bytesReadInterval = (int)_bwConfig.UpstreamBandwidth / 8;
-                    _nextBytesRead = (int)this.WrittenBytes;
-                }
-                if (_bwContext != null)
-                {
-                    IBWControlService bwController = this.Scope.GetService(typeof(IBWControlService)) as IBWControlService;
-                    bwController.UpdateBWConfigure(_bwContext);
-                }
-            }
-        }
-
-        #endregion
-
-        public override bool Connect(IScope newScope, object[] parameters)
-        {
-            bool success = base.Connect(newScope, parameters);
-            if (success)
-            {
-                // XXX Bandwidth control service should not be bound to
-                // a specific scope because it's designed to control
-                // the bandwidth system-wide.
-                if (this.Scope != null && this.Scope.Context != null)
-                {
-                    IBWControlService bwController = this.Scope.GetService(typeof(IBWControlService)) as IBWControlService;
-                    _bwContext = bwController.RegisterBWControllable(this);
-                }
-                /*
-                if (_waitForHandshakeJob != null)
-                {
-                    ISchedulingService service = this.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
-                    service.RemoveScheduledJob(_waitForHandshakeJob);
-                    _waitForHandshakeJob = null;
-                }
-                */
-            }
-            return success;
-        }
-
-        public IClientStream GetStreamByChannelId(int channelId)
-        {
-            if (channelId < 4)
-                return null;
-            lock (((ICollection)_streams).SyncRoot)
-            {
-                int streamId = GetStreamIdForChannel(channelId);
-                if (_streams.ContainsKey(streamId - 1))
-                    return _streams[streamId - 1] as IClientStream;
-            }
-            return null;
-        }
-
-        protected int StreamCount
-        {
-            get { return _streamCount; }
-        }
-
-        internal void RememberStreamBufferDuration(int streamId, int bufferDuration)
-        {
-            lock (((ICollection)_streamBuffers).SyncRoot)
-            {
-                _streamBuffers.Add(streamId - 1, bufferDuration);
-            }
-        }
-
-        /// <summary>
-        /// Gets collection of IClientStream.
-        /// </summary>
-        /// <returns></returns>
-        public ICollection GetStreams()
-        {
-            lock (((ICollection)_streams).SyncRoot)
-            {
-                return _streams.Values;
-            }
-        }
-
-        protected override void WritingMessage(RtmpPacket packet)
-        {
-            base.WritingMessage(packet);
-            if (packet.Message is VideoData)
-            {
-                int streamId = packet.Header.StreamId;
-                AtomicInteger value = new AtomicInteger();
-                AtomicInteger old = null;
-                lock (((ICollection)_pendingVideos).SyncRoot)
-                {
-                    if (!_pendingVideos.ContainsKey(streamId))
-                    {
-                        _pendingVideos.Add(streamId, value);
-                        old = value;
-                    }
-                    else
-                        old = _pendingVideos[streamId] as AtomicInteger;
-                }
-                if (old == null)
-                    old = value;
-                old.Increment();
-            }
-        }
-
-        internal override void MessageSent(RtmpPacket packet)
-        {
-            if (packet.Message is VideoData)
-            {
-                int streamId = packet.Header.StreamId;
-                lock (((ICollection)_pendingVideos).SyncRoot)
-                {
-                    if (_pendingVideos.ContainsKey(streamId))
-                    {
-                        AtomicInteger pending = _pendingVideos[streamId] as AtomicInteger;
-                        pending.Decrement();
-                    }
-                }
-            }
-            base.MessageSent(packet);
-        }
     }
 }

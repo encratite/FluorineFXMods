@@ -24,6 +24,7 @@ namespace FluorineFx.Messaging.Api.SO
     /// <summary>
     /// Service that supports protecting access to shared objects.
     /// </summary>
+	[CLSCompliant(false)]
     public interface ISharedObjectSecurityService : IService
     {
         /// <summary>

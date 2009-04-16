@@ -78,16 +78,14 @@ namespace FluorineFx.Net
 #if !SILVERLIGHT
         private static ILog log = LogManager.GetLogger(typeof(RtmpClientConnection));
 #endif
-        IRtmpHandler _handler;
         ByteBuffer _readBuffer;
         RtmpNetworkStream _rtmpNetworkStream;
         DateTime _lastAction;
-        volatile RtmpConnectionState _state;
         private long _readBytes;
         private long _writtenBytes;
 
         public RtmpClientConnection(IRtmpHandler handler, Socket socket)
-            : base(null, null)
+            : base(handler, null, null)
 		{
 #if NET_1_1
 			try
@@ -120,33 +118,16 @@ namespace FluorineFx.Net
             _readBuffer = ByteBuffer.Allocate(4096);
             _readBuffer.Flip();
             _rtmpNetworkStream = new RtmpNetworkStream(socket);
-            _state = RtmpConnectionState.Active;
             this.Context.SetMode(RtmpMode.Client);
 		}
-
-        public bool IsActive
-        {
-            get { return _state == RtmpConnectionState.Active; }
-        }
-
-        public bool IsDisconnecting
-        {
-            get { return _state == RtmpConnectionState.Disconnectig; }
-        }
-
-        public bool IsDisconnected
-        {
-            get { return _state == RtmpConnectionState.Inactive; }
-        }
 
         public override bool IsConnected
         {
             get
             {
-                return this.Context.State == RtmpState.Connected;
+                return this.State == RtmpState.Connected;
             }
         }
-
         public DateTime LastAction
         {
             get { return _lastAction; }
@@ -179,7 +160,7 @@ namespace FluorineFx.Net
                 tick = (0xB8CD75 * tick + 1) % 256;
                 buffer.Put(i + 1, (byte)(tick & 0xff));
             }
-            Send(buffer);
+            Write(buffer);
             BeginReceive(false);
         }
 
@@ -202,7 +183,7 @@ namespace FluorineFx.Net
             if (log.IsDebugEnabled)
                 log.Debug(__Res.GetString(__Res.Rtmp_SocketReceiveProcessing, _connectionId));
 #endif
-            if (!IsDisposed && IsActive)
+            if (!IsClosed)
             {
                 byte[] buffer = null;
                 try
@@ -226,7 +207,7 @@ namespace FluorineFx.Net
 #endif
 
             byte[] buffer = ar.AsyncState as byte[];
-            if (!IsDisposed && IsActive)
+            if (!IsClosed)
             {
                 try
                 {
@@ -275,10 +256,38 @@ namespace FluorineFx.Net
             try
             {
 #if !(NET_1_1)
-                List<object> result = RtmpProtocolDecoder.DecodeBuffer(this.Context, _readBuffer);
+                List<object> result = null;
 #else
-                ArrayList result = RtmpProtocolDecoder.DecodeBuffer(this.Context, _readBuffer);
+                ArrayList result = null;
 #endif
+                try
+                {
+                    result = RtmpProtocolDecoder.DecodeBuffer(this.Context, _readBuffer);
+                }
+                catch (HandshakeFailedException hfe)
+                {
+#if !SILVERLIGHT
+                    if (log.IsDebugEnabled)
+                        log.Debug(string.Format("Handshake failed: {0}", hfe.Message));
+#endif
+                    // Clear buffer if something is wrong in protocol decoding.
+                    _readBuffer.Clear();
+                    this.Close();
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // Catch any exception in the decoding then clear the buffer to eliminate memory leaks when we can't parse protocol
+                    // Also close Connection because we can't parse data from it
+#if !SILVERLIGHT
+                    log.Error("Error decoding buffer", ex);
+#endif
+                    // Clear buffer if something is wrong in protocol decoding.
+                    _readBuffer.Clear();
+                    this.Close();
+                    return;
+                }
+
                 if (Context.State == RtmpState.Handshake)
                 {
                     ByteBuffer resultBuffer = result[0] as ByteBuffer;
@@ -287,8 +296,8 @@ namespace FluorineFx.Net
                     resultBuffer.Compact();
                     resultBuffer.Limit = RtmpProtocolDecoder.HandshakeSize;
                     ByteBuffer buffer = ByteBuffer.Allocate(RtmpProtocolDecoder.HandshakeSize);
-                    buffer.Put(resultBuffer); 
-                    Send(buffer);
+                    buffer.Put(resultBuffer);
+                    Write(buffer);
                     Context.State = RtmpState.Connected;
                     _handler.ConnectionOpened(this);
                 }
@@ -301,7 +310,7 @@ namespace FluorineFx.Net
                             if (obj is ByteBuffer)
                             {
                                 ByteBuffer buf = obj as ByteBuffer;
-                                Send(buf);
+                                Write(buf);
                             }
                             else
                             {
@@ -351,12 +360,11 @@ namespace FluorineFx.Net
 
         internal void BeginDisconnect()
         {
-            if (!IsDisposed && !IsDisconnecting)
+            if (!IsClosed)
             {
                 try
                 {
                     //Leave IOCP thread
-                    _state = RtmpConnectionState.Disconnectig;
 #if !SILVERLIGHT
                     ThreadPoolEx.Global.QueueUserWorkItem(new WaitCallback(OnDisconnectCallback), null);
 #else
@@ -379,31 +387,34 @@ namespace FluorineFx.Net
             if (log.IsDebugEnabled)
                 log.Debug(__Res.GetString(__Res.Rtmp_SocketDisconnectProcessing, _connectionId));
 #endif
-            lock (this.SyncRoot)
+            try
             {
-                try
-                {
-                    //_handler.ConnectionClosed(this);
-                    Close();
-                }
-                catch (Exception ex)
-                {
+                //_handler.ConnectionClosed(this);
+                Close();
+            }
+            catch (Exception ex)
+            {
 #if !SILVERLIGHT
-                    if (log.IsErrorEnabled)
-                        log.Error("OnDisconnectCallback " + this.ToString(), ex);
+                if (log.IsErrorEnabled)
+                    log.Error("OnDisconnectCallback " + this.ToString(), ex);
 #endif
-                }
             }
             //Close(); -> IRtmpHandler
         }
 
-        internal void Send(ByteBuffer buf)
+        public override void Write(ByteBuffer buffer)
         {
-            lock (this.SyncRoot)
+            byte[] buf = buffer.ToArray();
+            Write(buf);
+        }
+
+        public override void Write(byte[] buffer)
+        {
+            ReaderWriterLock.AcquireWriterLock();
+            try
             {
-                if (!IsDisposed && IsActive)
+                if (!IsClosed)
                 {
-                    byte[] buffer = buf.ToArray();
                     try
                     {
                         _rtmpNetworkStream.Write(buffer, 0, buffer.Length);
@@ -416,6 +427,10 @@ namespace FluorineFx.Net
                     _lastAction = DateTime.Now;
                 }
             }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
         }
 
 
@@ -423,21 +438,25 @@ namespace FluorineFx.Net
 
         public override void Close()
         {
-            lock (this.SyncRoot)
+            ReaderWriterLock.AcquireWriterLock();
+            try
             {
-                if (!IsDisposed && !IsDisconnected)
+                if (!IsClosing && !IsClosed)
                 {
-                    _state = RtmpConnectionState.Inactive;
                     base.Close();
                     _handler.ConnectionClosed(this);
                     _rtmpNetworkStream.Close();
                 }
             }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
         }
 
         public override void Write(RtmpPacket packet)
         {
-            if (!IsDisposed && IsActive)
+            if (!IsClosed)
             {
 #if !SILVERLIGHT
                 if (log.IsDebugEnabled)
@@ -446,14 +465,14 @@ namespace FluorineFx.Net
                 //encode
                 WritingMessage(packet);
                 ByteBuffer outputStream = RtmpProtocolEncoder.Encode(this.Context, packet);
-                Send(outputStream);
+                Write(outputStream);
                 _handler.MessageSent(this, packet);
             }
         }
 
         public override void Push(IMessage message, IMessageClient messageClient)
         {
-            if (IsActive)
+            if (IsClosed)
             {
                 BaseRtmpHandler.Push(this, message, messageClient);
             }

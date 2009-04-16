@@ -43,6 +43,7 @@ namespace FluorineFx.Messaging.Api.SO
     /// All changes between BeginUpdate and EndUpdate will be sent to the clients.
 	/// using one notification event.
 	/// </summary>
+    [CLSCompliant(false)]
     public interface ISharedObject : IBasicScope, ISharedObjectSecurityService
 	{
 		/// <summary>

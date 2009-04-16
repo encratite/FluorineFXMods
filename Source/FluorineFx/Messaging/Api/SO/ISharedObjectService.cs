@@ -25,6 +25,7 @@ namespace FluorineFx.Messaging.Api.SO
 	/// <summary>
 	/// Service that manages shared objects.
 	/// </summary>
+	[CLSCompliant(false)]
     public interface ISharedObjectService : IScopeService
 	{
         /// <summary>

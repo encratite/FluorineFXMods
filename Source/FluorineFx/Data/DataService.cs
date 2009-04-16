@@ -40,7 +40,8 @@ namespace FluorineFx.Data
         private static readonly ILog log = LogManager.GetLogger(typeof(DataService));
 		//private ILog _coreDumpLog = null;
 
-		public DataService(MessageBroker messageBroker, ServiceSettings serviceSettings) : base(messageBroker, serviceSettings)
+        public DataService(MessageBroker messageBroker, ServiceDefinition serviceDefinition)
+            : base(messageBroker, serviceDefinition)
 		{
             /*
 			try
@@ -51,9 +52,9 @@ namespace FluorineFx.Data
             */
 		}
 
-		protected override Destination NewDestination(DestinationSettings destinationSettings)
+        protected override Destination NewDestination(DestinationDefinition destinationDefinition)
 		{
-			return new DataDestination(this, destinationSettings);
+            return new DataDestination(this, destinationDefinition);
 		}
 
 		public override object ServiceMessage(IMessage message)

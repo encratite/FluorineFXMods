@@ -16,6 +16,9 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+#if !MONO	
+
 using System;
 using System.Collections;
 using System.Reflection;
@@ -33,7 +36,7 @@ namespace FluorineFx.Messaging.Services.Messaging
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(MsmqAdapter));
 
-        MsmqSettings _msmqSettings;
+        MsmqProperties _msmqSettings;
         MessageQueue _messageQueue;
         IMessageFormatter _messageFormatter;
         Hashtable _producers;
@@ -44,22 +47,22 @@ namespace FluorineFx.Messaging.Services.Messaging
             base.Init();
             _producers = new Hashtable();
             _consumers = new Hashtable();
-            _msmqSettings = this.DestinationSettings.MsmqSettings;
+            _msmqSettings = this.DestinationDefinition.Properties.Msmq;
             if (_msmqSettings != null)
             {
                 MessageQueue.EnableConnectionCache = false;
                 log.Debug(__Res.GetString(__Res.Msmq_StartQueue, _msmqSettings.Name));
                 _messageQueue = new MessageQueue(_msmqSettings.Name);
-                string messageFormatterName = MsmqSettings.BinaryMessageFormatter;
+                string messageFormatterName = MsmqProperties.BinaryMessageFormatter;
                 if (_msmqSettings.Formatter != null && _msmqSettings.Formatter != string.Empty)
                     messageFormatterName = _msmqSettings.Formatter;
                 log.Debug(__Res.GetString(__Res.Msmq_InitFormatter, messageFormatterName));
-                if (messageFormatterName == MsmqSettings.BinaryMessageFormatter)
+                if (messageFormatterName == MsmqProperties.BinaryMessageFormatter)
                 {
                     _messageFormatter = new BinaryMessageFormatter();
                     _messageQueue.Formatter = _messageFormatter;
                 }
-                else if (messageFormatterName.StartsWith(MsmqSettings.XmlMessageFormatter))
+                else if (messageFormatterName.StartsWith(MsmqProperties.XmlMessageFormatter))
                 {
                     string[] formatterParts = messageFormatterName.Split(new char[]{';'});
                     Type[] types = null;
@@ -183,7 +186,7 @@ namespace FluorineFx.Messaging.Services.Messaging
             AsyncMessage asyncMessage = null;
             asyncMessage = new AsyncMessage();
             asyncMessage.body = message.Body;
-            asyncMessage.destination = this.DestinationSettings.Id;
+            asyncMessage.destination = this.DestinationDefinition.Id;
             asyncMessage.clientId = Guid.NewGuid().ToString("D");
             asyncMessage.messageId = Guid.NewGuid().ToString("D");
             asyncMessage.timestamp = Environment.TickCount;
@@ -227,3 +230,5 @@ namespace FluorineFx.Messaging.Services.Messaging
         }
     }
 }
+
+#endif

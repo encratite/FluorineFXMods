@@ -20,6 +20,9 @@ using System;
 using System.Collections;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.Security;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using log4net;
 using FluorineFx.Context;
@@ -62,12 +65,54 @@ namespace FluorineFx.Messaging.Rtmp
         RtmpHandler _rtmpHandler;
         IEndpoint _endpoint;
 
+        X509Certificate _serverCertificate;
+
         public RtmpServer(RtmpEndpoint endpoint)
 		{
 			_connections = new Hashtable();
 			_socketListeners = new ArrayList();
             _endpoint = endpoint;
             _rtmpHandler = new RtmpHandler(endpoint);
+
+            try
+            {
+                if (endpoint.ChannelDefinition.Properties.KeystoreFile != null)
+                {
+
+                    FileSystemResource fsr = new FileSystemResource(endpoint.ChannelDefinition.Properties.KeystoreFile);
+                    if (fsr.Exists)
+                    {
+                        _serverCertificate = X509Certificate.CreateFromCertFile(fsr.File.FullName);
+                        log.Info(string.Format("Certificate issued to {0} and is valid from {1} until {2}.", _serverCertificate.Subject, _serverCertificate.GetEffectiveDateString(), _serverCertificate.GetExpirationDateString()));
+                    }
+                    else
+                        log.Error("Certificate file not found");
+                }
+                else
+                {
+                    if (endpoint.ChannelDefinition.Properties.ServerCertificate != null)
+                    {
+                        StoreName storeName = (StoreName)Enum.Parse(typeof(StoreName), endpoint.ChannelDefinition.Properties.ServerCertificate.StoreName, false);
+                        StoreLocation storeLocation = (StoreLocation)Enum.Parse(typeof(StoreLocation), endpoint.ChannelDefinition.Properties.ServerCertificate.StoreLocation, false);
+                        X509FindType x509FindType = (X509FindType)Enum.Parse(typeof(X509FindType), endpoint.ChannelDefinition.Properties.ServerCertificate.X509FindType, false);
+                        X509Store store = new X509Store(storeName, storeLocation);
+                        store.Open(OpenFlags.ReadOnly);
+                        X509Certificate2Collection certificateCollection = store.Certificates.Find(x509FindType, endpoint.ChannelDefinition.Properties.ServerCertificate.FindValue, false);
+                        X509Certificate2Enumerator enumerator = certificateCollection.GetEnumerator();
+                        if (enumerator.MoveNext())
+                        {
+                            _serverCertificate = enumerator.Current;
+                            log.Info(string.Format("Certificate issued to {0} and is valid from {1} until {2}.", _serverCertificate.Subject, _serverCertificate.GetEffectiveDateString(), _serverCertificate.GetExpirationDateString()));
+                        }
+                        else
+                            log.Error("Certificate not found");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error loading certificate.", ex);
+            }
 		}
         /*
 		internal ThreadPoolEx ThreadPoolEx
@@ -328,11 +373,35 @@ namespace FluorineFx.Messaging.Rtmp
 		{
 			if(!IsDisposed)
 			{
-                RtmpServerConnection connection = new RtmpServerConnection(this, socket);
-                if (log.IsDebugEnabled)
-                    log.Debug(__Res.GetString(__Res.Rtmp_SocketListenerAccept, connection.ConnectionId));
+                RtmpServerConnection connection = null;
+                if (_serverCertificate == null)
+                {
+                    connection = new RtmpServerConnection(this, new RtmpNetworkStream(socket));
+                    if (log.IsDebugEnabled)
+                        log.Debug(__Res.GetString(__Res.Rtmp_SocketListenerAccept, connection.ConnectionId));
+                }
+                else
+                {
+                    SslStream sslStream = new SslStream(new NetworkStream(socket, false), false);
+                    //sslStream.AuthenticateAsServer(_serverCertificate, false, SslProtocols.Tls, true);
+                    sslStream.AuthenticateAsServer(_serverCertificate, false, SslProtocols.Default, false);
+                    connection = new RtmpServerConnection(this, new RtmpNetworkStream(socket, sslStream));
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug(__Res.GetString(__Res.Rtmp_SocketListenerAccept, connection.ConnectionId));
+
+                        string msg = string.Format("Cipher: {0} strength {1} Hash: {2} strength {3} Key exchange: {4} strength {5} Protocol: {6} Signed: {7} Encrypted: {8}",
+                            sslStream.CipherAlgorithm, sslStream.CipherStrength,
+                            sslStream.HashAlgorithm, sslStream.HashStrength,
+                            sslStream.KeyExchangeAlgorithm, sslStream.KeyExchangeStrength,
+                            sslStream.SslProtocol, sslStream.IsSigned, sslStream.IsEncrypted);
+                        log.Debug(msg);
+                    }
+                }
+
                 //We are still in an IOCP thread 
                 this.AddConnection(connection);
+                //FluorineRtmpContext.Initialize(connection);
                 _rtmpHandler.ConnectionOpened(connection);
                 connection.BeginReceive(true);
 			}

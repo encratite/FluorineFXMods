@@ -21,6 +21,7 @@ using System.Collections;
 #if !(NET_1_1)
 using System.Collections.Generic;
 #endif
+using FluorineFx.Util;
 
 namespace FluorineFx.Messaging.Rtmp
 {
@@ -46,7 +47,7 @@ namespace FluorineFx.Messaging.Rtmp
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
     [CLSCompliant(false)]
-    public sealed class RtmpContext
+    public sealed class RtmpContext : IDisposable
 	{
 		long _decoderBufferAmount = 0;
 		DecoderState _decoderState = DecoderState.Ok;
@@ -78,6 +79,11 @@ namespace FluorineFx.Messaging.Rtmp
 		const int DefaultChunkSize = 128;
 		int _readChunkSize = DefaultChunkSize;
 		int _writeChunkSize = DefaultChunkSize;
+
+        /// <summary>
+        /// Handshake as sent to the client
+        /// </summary>
+        byte[] _handshake; 
 
         internal RtmpContext(RtmpMode mode)
 		{
@@ -344,5 +350,47 @@ namespace FluorineFx.Messaging.Rtmp
 			get{ return _decoderState != DecoderState.Buffer; }
 		}
 
-	}
+        /// <summary>
+        /// Store the handshake sent to the client.
+        /// </summary>
+        /// <param name="data">Handshake data.</param>
+        public void SetHandshake(byte[] data)
+        {
+            _handshake = data;
+        }
+        /// <summary>
+        /// Validate handshake.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="start"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public bool ValidateHandshakeReply(ByteBuffer data, int start, int length)
+        {
+            try
+            {
+                if (_handshake == null )
+                    return false;
+                for (int i = start, j = 0; i < length; i++, j++)
+                {
+                    if (data[i] != _handshake[9 + j])
+                        return false;
+                }
+                return true;
+            }
+            finally
+            {
+                _handshake = null;
+            }
+        } 
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            _handshake = null;
+        }
+
+        #endregion
+    }
 }

@@ -34,6 +34,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Security;
 using System.Security.Permissions;
+using System.Web.Hosting;
 using log4net;
 using log4net.Config;
 using FluorineFx.Browser;
@@ -61,9 +62,15 @@ namespace FluorineFx
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
 	public class FluorineGateway : IHttpModule, IRequiresSessionState
+#if !(NET_1_1)
+        , IRegisteredObject
+#endif
 	{
+        private static readonly ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+
 		internal const string FluorineHttpCompressKey = "__@fluorinehttpcompress";
         internal const string FluorineMessageServerKey = "__@fluorinemessageserver";
+
 
 		static int _unhandledExceptionCount = 0;
 		static string _sourceName = null;
@@ -113,20 +120,32 @@ namespace FluorineFx
 				lock (_objLock) 
 				{
 					if (!_initialized) 
-					{ 
-						try
-						{
-							// See if we're running in full trust
-							new PermissionSet(PermissionState.Unrestricted).Demand();
-							//LinkDemands and InheritenceDemands Occur at JIT Time
-							//http://blogs.msdn.com/shawnfa/archive/2006/01/11/511716.aspx
-							WireAppDomain();
-						}
-						catch(SecurityException)
-						{
-						}
-
-						_initialized = true;
+					{
+                        try
+                        {
+                            if (log.IsInfoEnabled)
+                            {
+                                log.Info("************************************");
+                                log.Info(__Res.GetString(__Res.Fluorine_Start));
+                                log.Info(__Res.GetString(__Res.Fluorine_Version, Assembly.GetExecutingAssembly().GetName().Version));
+                                log.Info("************************************");
+                                log.Info(__Res.GetString(__Res.MessageServer_Create));
+                            }
+                        }
+                        catch { }
+                        try
+                        {
+                            // See if we're running in full trust
+                            new PermissionSet(PermissionState.Unrestricted).Demand();
+                            //LinkDemands and InheritenceDemands Occur at JIT Time
+                            //http://blogs.msdn.com/shawnfa/archive/2006/01/11/511716.aspx
+                            WireAppDomain();
+                            RegisterObject();
+                        }
+                        catch (SecurityException)
+                        {
+                        }
+                        _initialized = true;
 					}
 				}
 			}
@@ -158,7 +177,7 @@ namespace FluorineFx
             }
 
 			application.AuthenticateRequest += new EventHandler(application_AuthenticateRequest);
-			
+
 			//This implementation hooks the ReleaseRequestState and PreSendRequestHeaders events to 
 			//figure out as late as possible if we should install the filter.
 			//The Post Release Request State is the event most fitted for the task of adding a filter
@@ -180,7 +199,7 @@ namespace FluorineFx
                     {
                         try
                         {
-                            ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+                            //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
                             log.Info(__Res.GetString(__Res.ServiceBrowser_Aquire));
                         }
                         catch { }
@@ -195,7 +214,7 @@ namespace FluorineFx
                                 {
                                     try
                                     {
-                                        ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+                                        //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
                                         log.Info(__Res.GetString(__Res.ServiceBrowser_Aquired));
                                     }
                                     catch { }
@@ -206,7 +225,7 @@ namespace FluorineFx
                         {
                             try
                             {
-                                ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+                                //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
                                 log.Fatal(__Res.GetString(__Res.ServiceBrowser_AquireFail), ex);
                             }
                             catch { }
@@ -220,18 +239,6 @@ namespace FluorineFx
                 {
                     if (messageServer == null)
                     {
-                        try
-                        {
-                            ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-                            //log.Info("");
-                            log.Info("************************************");
-                            log.Info(__Res.GetString(__Res.Fluorine_Start));
-                            log.Info(__Res.GetString(__Res.Fluorine_Version, Assembly.GetExecutingAssembly().GetName().Version));
-                            log.Info("************************************");
-                            log.Info(__Res.GetString(__Res.MessageServer_Create));
-                        }
-                        catch { }
-
                         messageServer = new MessageServer();
                         try
                         {
@@ -242,7 +249,7 @@ namespace FluorineFx
 
                             try
                             {
-                                ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+                                //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
                                 log.Info(__Res.GetString(__Res.MessageServer_Started));
                             }
                             catch { }
@@ -252,7 +259,7 @@ namespace FluorineFx
                         {
                             try
                             {
-                                ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+                                //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
                                 log.Fatal(__Res.GetString(__Res.MessageServer_StartError), ex);
                             }
                             catch { }
@@ -267,6 +274,8 @@ namespace FluorineFx
 		/// </summary>
 		public void Dispose()
 		{
+            //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+            //log.Info("Disposing FluorineFx Gateway");
 		}
 
 		#endregion
@@ -275,14 +284,7 @@ namespace FluorineFx
         {
             try
             {
-                lock (_objLock)
-                {
-                    if (messageServer != null)
-                        messageServer.Stop();
-                    messageServer = null;
-                }
-                ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-                log.Info("Stopped FluorineFx Gateway");
+                Stop();
             }
             catch (Exception)
             { }
@@ -317,6 +319,18 @@ namespace FluorineFx
 			{
 				httpApplication.Context.SkipAuthorization = true;
 			}
+
+            if (httpApplication.Request.ContentType == ContentType.XForm)
+            {
+                HttpCookie cookie = HttpContext.Current.Request.Cookies["ASP.NET_SessionId"];
+                string command = HttpContext.Current.Request.Params[FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint.CommandParameterName];
+                if (cookie != null && FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint.OpenCommand.Equals(command))
+                {
+                    HttpContext.Current.Request.Cookies.Remove("ASP.NET_SessionId");
+                    httpApplication.Context.Items[Session.FxASPNET_SessionId] = cookie;
+                }
+            }
+
 			//sessionState cookieless="true" requires to handle here an HTTP POST but Session is not available here
 			//HandleXAmfEx(httpApplication);
 		}
@@ -479,6 +493,60 @@ namespace FluorineFx
 			}
 		}
 
+        internal void HandleStreamingAmf(HttpApplication httpApplication)
+        {
+            //"HTTP_REFERER"
+
+            if (httpApplication.Request.ContentType == ContentType.XForm 
+                /* && httpApplication.Request.Params["HTTP_CONTENT_TYPE"] == ContentType.AMF*/ )
+            {
+                //CompressContent(httpApplication);
+                httpApplication.Response.Clear();
+                //httpApplication.Response.BufferOutput = false;
+                //httpApplication.Response.ContentType = ContentType.AMF;
+
+                ILog log = null;
+                try
+                {
+                    log = LogManager.GetLogger(typeof(FluorineGateway));
+                    log4net.GlobalContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
+                }
+                catch { }
+                if (log != null && log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.Amf_Begin));
+
+                try
+                {
+                    FluorineWebContext.Initialize();
+
+                    if (messageServer != null)
+                        messageServer.Service();
+                    else
+                    {
+                        if (log != null)
+                            log.Fatal(__Res.GetString(__Res.MessageServer_AccessFail));
+                    }
+
+                    if (log != null && log.IsDebugEnabled)
+                        log.Debug(__Res.GetString(__Res.Amf_End));
+
+
+                    //http://support.microsoft.com/default.aspx?scid=kb;en-us;312629
+                    //httpApplication.Response.End();
+                    httpApplication.CompleteRequest();
+                }
+                catch (Exception ex)
+                {
+                    if (log != null)
+                        log.Fatal(__Res.GetString(__Res.Amf_Fatal), ex);
+                    httpApplication.Response.Clear();
+                    httpApplication.Response.ClearHeaders();//FluorineHttpApplicationContext modifies headers
+                    httpApplication.Response.Status = __Res.GetString(__Res.Amf_Fatal404) + " " + ex.Message;
+                    httpApplication.CompleteRequest();
+                }
+            }
+        }
+
         internal void HandleRtmpt(HttpApplication httpApplication)
         {
             if (httpApplication.Request.ContentType == ContentType.RTMPT)
@@ -554,6 +622,12 @@ namespace FluorineFx
 		private void application_PreSendRequestHeaders(object sender, EventArgs e)
 		{
 			HttpApplication httpApplication = (HttpApplication)sender;
+            if (httpApplication.Context.Items.Contains(Session.FxASPNET_SessionId))
+            {
+                httpApplication.Response.Cookies.Remove("ASP.NET_SessionId");
+                HttpCookie cookie = httpApplication.Context.Items[Session.FxASPNET_SessionId] as HttpCookie;
+                httpApplication.Response.Cookies.Add(cookie);
+            }
 			CompressContent(httpApplication);
 		}
 
@@ -826,6 +900,15 @@ namespace FluorineFx
             //If we do not have permission to handle DomainUnload but in this case the socket server will not start either
 		}
 
+        private void RegisterObject()
+        {
+#if !(NET_1_1) && !MONO
+            HostingEnvironment.RegisterObject(this);
+            ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+            log.Info("FluorineFx registered in the hosting environment");
+#endif
+        }
+
 		void OnUnhandledException(object o, UnhandledExceptionEventArgs e) 
 		{
 			// Let this occur one time for each AppDomain.
@@ -855,5 +938,34 @@ namespace FluorineFx
         }
 
 		#endregion kb911816
-	}
+
+#if !(NET_1_1)
+        #region IRegisteredObject Members
+
+        public void Stop(bool immediate)
+        {
+            try
+            {
+                Stop();
+            }
+            catch (Exception)
+            { }
+            HostingEnvironment.UnregisterObject(this);
+        }
+
+        #endregion
+#endif
+
+        private void Stop()
+        {
+            lock (_objLock)
+            {
+                if (messageServer != null)
+                    messageServer.Stop();
+                messageServer = null;
+                ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+                log.Info("Stopped FluorineFx Gateway");
+            }
+        }
+    }
 }

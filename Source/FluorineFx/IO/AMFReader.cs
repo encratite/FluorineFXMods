@@ -858,7 +858,7 @@ namespace FluorineFx.IO
 				for (int i = 0; i < handle; i++)
 				{
                     string name = ReadAMF3String();
-                    ClassMember classMember = new ClassMember(name, BindingFlags.Default, MemberTypes.Custom);
+                    ClassMember classMember = new ClassMember(name, BindingFlags.Default, MemberTypes.Custom, null);
                     members[i] = classMember;
 				}
 				classDefinition = new ClassDefinition(typeIdentifier, members, externalizable, dynamic);
@@ -979,7 +979,7 @@ namespace FluorineFx.IO
                 try
                 {
                     value = TypeHelper.ChangeType(value, propertyInfo.PropertyType);
-                    if (propertyInfo.CanWrite)
+                    if (propertyInfo.CanWrite && propertyInfo.GetSetMethod() != null)
                     {
                         if (propertyInfo.GetIndexParameters() == null || propertyInfo.GetIndexParameters().Length == 0)
                             propertyInfo.SetValue(instance, value, null);

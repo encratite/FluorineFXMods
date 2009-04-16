@@ -250,9 +250,6 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="connection">Connection object.</param>
         public virtual void ConnectionClosed(RtmpConnection connection)
         {
-#if !SILVERLIGHT
-            FluorineRtmpContext.Initialize(connection);
-#endif
             connection.Close();
         }
 
@@ -334,7 +331,7 @@ namespace FluorineFx.Messaging.Rtmp
         protected void HandlePendingCallResult(RtmpConnection connection, Notify invoke)
         {
             IServiceCall call = invoke.ServiceCall;
-            IPendingServiceCall pendingCall = connection.GetPendingCall(invoke.InvokeId);
+            IPendingServiceCall pendingCall = connection.RetrievePendingCall(invoke.InvokeId);
             if (pendingCall != null)
             {
                 pendingCall.Status = call.Status;

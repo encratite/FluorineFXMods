@@ -574,7 +574,7 @@ namespace FluorineFx.Util
 				case MemberTypes.Field:
 					return true;
 				case MemberTypes.Property:
-					return ((PropertyInfo)member).CanWrite;
+                    return ((PropertyInfo)member).CanWrite && ((PropertyInfo)member).GetSetMethod() != null;
 				default:
 					return false;
 			}

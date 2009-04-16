@@ -31,6 +31,8 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("FluorineFx for .NET Framework 2.0")]
 #elif (NET_3_5)
 [assembly: AssemblyTitle("FluorineFx for .NET Framework 3.5")]
+#elif (MONO)
+[assembly: AssemblyTitle("FluorineFx for MONO 2.0")]
 #else
 [assembly: AssemblyTitle("FluorineFx")]
 #endif
@@ -68,7 +70,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.0.0.16")]
+[assembly: AssemblyVersion("1.0.0.17")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
@@ -97,6 +99,10 @@ using System.Runtime.CompilerServices;
 //
 #if STRONG
 [assembly: AssemblyDelaySign(false)]
+#if MONO
+[assembly: AssemblyKeyFile("../../../snk/fluorine.snk")]
+#else
 [assembly: AssemblyKeyFile("..\\..\\..\\..\\snk\\fluorine.snk")]
+#endif
 [assembly: AssemblyKeyName("")]
 #endif

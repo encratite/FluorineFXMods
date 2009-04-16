@@ -19,7 +19,7 @@
 using System;
 using FluorineFx.Messaging.Api;
 
-namespace FluorineFx.Context
+namespace FluorineFx.Messaging.Api
 {
     /// <summary>
     /// Interface to be notified when a session is created or destroyed.
@@ -48,17 +48,18 @@ namespace FluorineFx.Context
     ///     }
     /// </code>
     /// </example>
+	[CLSCompliant(false)]
 	public interface ISessionListener
 	{
         /// <summary>
-        /// Notification that a client session was created.
+        /// Notification that a session was created.
         /// </summary>
-        /// <param name="client">The client that was created.</param>
-        void SessionCreated(IClient client);
+        /// <param name="client">The session that was created.</param>
+        void SessionCreated(ISession session);
         /// <summary>
         /// Notification that a session is about to be destroyed.
         /// </summary>
-        /// <param name="client">The client that will be destroyed.</param>
-        void SessionDestroyed(IClient client);
+        /// <param name="client">The session that will be destroyed.</param>
+        void SessionDestroyed(ISession session);
 	}
 }

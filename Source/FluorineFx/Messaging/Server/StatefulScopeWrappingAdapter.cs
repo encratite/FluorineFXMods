@@ -31,6 +31,7 @@ namespace FluorineFx.Messaging.Adapter
 	/// is, it has attributes that you can work with, subscopes, associated resources
 	/// and connections.
 	/// </summary>
+	[CLSCompliant(false)]
 	public class StatefulScopeWrappingAdapter : AbstractScopeAdapter, IScopeAware, IAttributeStore
 	{
 		private IScope _scope;

@@ -28,6 +28,7 @@ namespace FluorineFx.Messaging.Adapter
 	/// will use. This interface defines the methods that are called by the gateway through
 	/// an applications life.
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IApplication
 	{
 		/// <summary>

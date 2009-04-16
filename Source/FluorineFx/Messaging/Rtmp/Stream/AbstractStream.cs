@@ -26,6 +26,14 @@ using FluorineFx.Messaging.Messages;
 namespace FluorineFx.Messaging.Rtmp.Stream
 {
     /// <summary>
+    /// Possible states enumeration
+    /// </summary>
+    enum State
+    {
+        UNINIT, STOPPED, PLAYING, PAUSED, CLOSED
+    }
+
+    /// <summary>
     /// Abstract base implementation of IStream. Contains codec information, stream name, scope, event handling
     /// and provides stream start and stop operations.
     /// </summary>
@@ -45,6 +53,16 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// Stream audio and video codecs information.
         /// </summary>
         private IStreamCodecInfo _codecInfo;
+        /// <summary>
+        /// Current state.
+        /// </summary>
+        private State _state = State.UNINIT;
+
+        internal State State
+        {
+            get { return _state; }
+            set { _state = value; }
+        }
 
         /// <summary>
         /// Gets or sets codec information.

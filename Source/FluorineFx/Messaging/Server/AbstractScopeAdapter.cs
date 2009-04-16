@@ -24,6 +24,7 @@ namespace FluorineFx.Messaging.Adapter
 	/// <summary>
     /// Base scope handler implementation.
 	/// </summary>
+	[CLSCompliant(false)]
 	public abstract class AbstractScopeAdapter : IScopeHandler
 	{
 		private bool _canStart = true;

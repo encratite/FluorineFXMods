@@ -314,7 +314,7 @@ namespace FluorineFx.Util
         /// <param name="value">An SqlGuid.</param>
         /// <returns>The String equivalent of the SqlGuid.</returns>        
         public static String ToString(SqlGuid value) { return value.ToString(); }
-#if !(NET_1_1)
+#if !(NET_1_1) && !MONO
         /// <summary>
         /// Converts the value of the specified SqlChars to its equivalent String representation.
         /// </summary>
@@ -8696,7 +8696,7 @@ namespace FluorineFx.Util
         /// <param name="value">An SqlBoolean.</param>
         /// <returns>The SqlString equivalent of the SqlBoolean.</returns>        
         public static SqlString ToSqlString(SqlBoolean value) { return value.ToSqlString(); }
-#if !(NET_1_1)
+#if !(NET_1_1) && !MONO
         /// <summary>
         /// Converts the value of the specified SqlChars to its equivalent SqlString representation.
         /// </summary>
@@ -12794,7 +12794,7 @@ namespace FluorineFx.Util
         /// <param name="value">An SqlString.</param>
         /// <returns>The equivalent XmlDocument.</returns>
         public static XmlDocument ToXmlDocument(SqlString value) { return value.IsNull ? null : ToXmlDocument(value.Value); }
-#if !(NET_1_1)
+#if !(NET_1_1) && !MONO
         /// <summary>
         /// Converts the value of the specified SqlXml to its equivalent XmlDocument representation.
         /// </summary>

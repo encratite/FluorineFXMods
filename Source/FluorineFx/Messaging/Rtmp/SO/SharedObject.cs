@@ -355,13 +355,14 @@ namespace FluorineFx.Messaging.Rtmp.SO
 				// The client sent at least one update -> increase version of SO
 				UpdateVersion();
 				_lastModified = System.Environment.TickCount;
+
+                if (_storage != null)
+                {
+                    if (!_storage.Save(this))
+                        log.Error(__Res.GetString(__Res.SharedObject_StoreError));
+                }
 			}
 
-			if(_modified && _storage != null) 
-			{
-				if(!_storage.Save(this)) 
-					log.Error(__Res.GetString(__Res.SharedObject_StoreError));
-			}
 			SendUpdates();
 		}
 

@@ -63,7 +63,7 @@ namespace FluorineFx
 
                 try
                 {
-                    FluorineWebContext.Initialize();
+                    //FluorineWebContext.Initialize();
 
                     MessageServer messageServer = GetMessageServer(context);
                     if (messageServer != null)

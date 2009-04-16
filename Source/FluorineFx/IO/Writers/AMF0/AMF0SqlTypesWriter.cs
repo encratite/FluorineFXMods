@@ -103,7 +103,7 @@ namespace FluorineFx.IO.Writers
 			}
 			if( data is SqlGuid )
 			{
-				writer.WriteData(ObjectEncoding.AMF0, ((SqlGuid)data).Value.ToString("N"));
+				writer.WriteData(ObjectEncoding.AMF0, ((SqlGuid)data).Value.ToString("D"));
 				return;
 			}
 			if( data is SqlBoolean )

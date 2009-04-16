@@ -65,7 +65,11 @@ namespace FluorineFx.Configuration
 #if !SILVERLIGHT
         [XmlEnum(Name = "server")]
 #endif
-        Server = 2
+        Server = 2,
+#if !SILVERLIGHT
+        [XmlEnum(Name = "ignoreUTCKind")]
+#endif
+        IgnoreUTCKind = 3
 	}
 
 	/// <summary>

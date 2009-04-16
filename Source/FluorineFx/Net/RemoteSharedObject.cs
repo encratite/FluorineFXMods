@@ -42,6 +42,12 @@ namespace FluorineFx.Net
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">A SyncEventArgs object that contains the event data.</param>
     public delegate void SyncHandler(object sender, SyncEventArgs e);
+    /// <summary>
+    /// Represents the method that will handle messages sent from the server (when a custom RemoteSharedObject type does not declare the corresponding client side methods).
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">A SendMessageEventArgs object that contains the event data.</param>
+    public delegate void SendMessageHandler(object sender, SendMessageEventArgs e);
 
     /// <summary>
     /// The SharedObject class is used to access, read and store data on remote shared objects, 
@@ -82,6 +88,7 @@ namespace FluorineFx.Net
         event DisconnectHandler _disconnectHandler;
         event NetStatusHandler _netStatusHandler;
         event SyncHandler _syncHandler;
+        event SendMessageHandler _sendMessageHandler;
         
 #if !(NET_1_1)
         static Dictionary<string, RemoteSharedObject> SharedObjects;
@@ -140,6 +147,14 @@ namespace FluorineFx.Net
         {
             add { _syncHandler += value; }
             remove { _syncHandler -= value; }
+        }
+        /// <summary>
+        /// Dispatched when a SharedObject instance receives a message from the server.
+        /// </summary>
+        public event SendMessageHandler SendMessage
+        {
+            add { _sendMessageHandler += value; }
+            remove { _sendMessageHandler -= value; }
         }
         /// <summary>
         /// Dispatched when a SharedObject instance is connected.
@@ -367,9 +382,11 @@ namespace FluorineFx.Net
 #if !(NET_1_1)
             List<ASObject> changeList = null;
             List<ASObject> notifications = null;
+            List<SendMessageEventArgs> messages = null;
 #else
             ArrayList changeList = null;
             ArrayList notifications = null;
+            ArrayList messages = null;
 #endif
             foreach (ISharedObjectEvent sharedObjectEvent in message.Events)
             {
@@ -467,6 +484,16 @@ namespace FluorineFx.Net
 #endif
                                 }
                             }
+                            else
+                            {
+                                if (messages == null)
+#if !(NET_1_1)
+                                    messages = new List<SendMessageEventArgs>();
+#else
+                                    messages = new ArrayList();
+#endif
+                                messages.Add(new SendMessageEventArgs(handler, arguments));
+                            }
                         }
                         break;
                     default:
@@ -485,6 +512,11 @@ namespace FluorineFx.Net
             {
                 foreach (ASObject infoObject in notifications)
                     RaiseNetStatus(infoObject);
+            }
+            if (messages != null)
+            {
+                foreach (SendMessageEventArgs e in messages)
+                    RaiseSendMessage(e);
             }
         }
 
@@ -540,6 +572,15 @@ namespace FluorineFx.Net
                 _netStatusHandler(this, new NetStatusEventArgs(exception));
             }
         }
+
+        internal void RaiseSendMessage(SendMessageEventArgs e)
+        {
+            if (_sendMessageHandler != null)
+            {
+                _sendMessageHandler(this, e);
+            }
+        }
+
         /// <summary>
         /// Sets an attribute on this object.
         /// </summary>

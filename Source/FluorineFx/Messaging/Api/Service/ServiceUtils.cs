@@ -23,6 +23,7 @@ namespace FluorineFx.Messaging.Api.Service
     /// <summary>
     /// Utility functions to invoke methods on connections.
     /// </summary>
+	[CLSCompliant(false)]
     public class ServiceUtils
     {
         /// <summary>

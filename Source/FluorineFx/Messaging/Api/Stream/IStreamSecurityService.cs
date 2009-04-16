@@ -24,6 +24,7 @@ namespace FluorineFx.Messaging.Api.Stream
     /// <summary>
     /// Service that supports protected access to streams.
     /// </summary>
+	[CLSCompliant(false)]
     public interface IStreamSecurityService : IScopeService
     {
         /// <summary>

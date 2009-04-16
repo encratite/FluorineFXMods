@@ -76,6 +76,10 @@ namespace FluorineFx.Messaging.Messages
 		/// This operation is used to indicate that the client's session with a remote destination has timed out.
 		/// </summary>
 		public const int SessionInvalidateOperation = 10;
+        /// <summary>
+        /// This operation is used to indicate that a channel has disconnected.
+        /// </summary>
+        public const int DisconnectOperation = 12;
 
 		/// <summary>
 		/// The name for the selector header in subscribe messages.
@@ -136,5 +140,36 @@ namespace FluorineFx.Messaging.Messages
 			get{ return _operation; }
 			set{ _operation = value; }
 		}
+
+        static string[] OperationNames = { "subscribe", "unsubscribe", "poll", "unused3", "client_sync", "client_ping", "unused6", "cluster_request", "login", "logout", "subscription_invalidate", "multi_subscribe", "disconnect", "trigger_connect" };
+
+        public static string OperationToString(int operation)
+        {
+            if (operation < 0 || operation >= OperationNames.Length)
+                return "invalid operation " + operation;
+            return OperationNames[operation];
+        }
+
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = sep + "operation = " + OperationToString(operation);
+            if (operation == SubscribeOperation)
+                value += sep + "selector = " + GetHeader(SelectorHeader);
+            if (operation != LoginOperation)
+            {
+                value += base.ToStringFields(indentLevel);
+            }
+            else
+            {
+                value += sep + "clientId =  " + clientId;
+                value += sep + "destination =  " + destination;
+                value += sep + "messageId =  " + messageId;
+                value += sep + "timestamp =  " + timestamp;
+                value += sep + "timeToLive =  " + timeToLive;
+                value += sep + "***not printing credentials***";
+            }
+            return value;
+        }
 	}
 }

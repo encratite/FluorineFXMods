@@ -70,7 +70,7 @@ namespace FluorineFx.Messaging.Services.Messaging
 			}
 		}
 
-		public MessageClient AddSubscriber(IClient client, string messageClientId, string endpointId, MessageDestination messageDestination, Subtopic subtopic, Selector selector)
+        public MessageClient AddSubscriber(string clientId, string endpointId, Subtopic subtopic, Selector selector)
 		{
 			lock(_objLock)
 			{
@@ -87,18 +87,28 @@ namespace FluorineFx.Messaging.Services.Messaging
                         }
                     }
                 }
-                if (!_subscribers.Contains(messageClientId))
-				{
-					//Set in RtmpService
-                    MessageClient messageClient = new MessageClient(client, messageDestination.SubscriptionManager, messageClientId, endpointId, messageDestination);
+                if (!_subscribers.Contains(clientId))
+                {
+                    //Set in RtmpService
+                    MessageClient messageClient = new MessageClient(clientId, _messageDestination, endpointId);
                     messageClient.Subtopic = subtopic;
                     messageClient.Selector = selector;
-                    client.RegisterMessageClient(messageClient);
-					AddSubscriber(messageClient);
-					return messageClient;
-				}
-				else
-                    return _subscribers[messageClientId] as MessageClient;
+                    AddSubscriber(messageClient);
+                    messageClient.NotifyCreatedListeners();
+                    return messageClient;
+                }
+                else
+                {
+                    MessageClient messageClient = _subscribers[clientId] as MessageClient;
+                    IClient client = FluorineContext.Current.Client;
+                    if (client != null && !client.Id.Equals(messageClient.Client.Id))
+                    {
+                        throw new MessageException("Duplicate subscriptions from multiple Flex Clients");
+                    }
+                    //Reset the endpoint push state for the subscription to make sure its current because a resubscribe could be arriving over a new endpoint or a new session.
+                    messageClient.ResetEndpoint(endpointId);
+                    return messageClient;
+                }
 			}
 		}
 
@@ -111,8 +121,8 @@ namespace FluorineFx.Messaging.Services.Messaging
                     _subscribers[messageClient.ClientId] = messageClient;
                     // Add the MessageClient to the Cache with the expiration item
                     int timeOutMinutes = 20;
-                    if (_messageDestination.DestinationSettings.NetworkSettings != null)
-                        timeOutMinutes = _messageDestination.DestinationSettings.NetworkSettings.SessionTimeout;
+                    if (_messageDestination.DestinationDefinition.Properties.Network != null)
+                        timeOutMinutes = _messageDestination.DestinationDefinition.Properties.Network.SessionTimeout;
 
 
                     HttpRuntime.Cache.Insert(messageClient.ClientId, messageClient, null,
@@ -152,6 +162,14 @@ namespace FluorineFx.Messaging.Services.Messaging
 				return messageClient;
 			}
 		}
+
+        public void CancelTimeout(MessageClient messageClient)
+        {
+            lock (_objLock)
+            {
+                HttpRuntime.Cache.Remove(messageClient.ClientId);
+            }
+        }
 
 		public IList GetSubscribers()
 		{
@@ -225,10 +243,9 @@ namespace FluorineFx.Messaging.Services.Messaging
                                     log.Debug(__Res.GetString(__Res.SubscriptionManager_CacheExpired, messageClient.ClientId));
                                 if (_messageDestination != null)
                                 {
-                                    MessageBroker messageBroker = _messageDestination.Service.GetMessageBroker();
-                                    //TODO
-                                    //FluorineContext.CreateConnectionContext(messageClient.MessageConnection as IConnection);
-
+                                    //MessageBroker messageBroker = _messageDestination.Service.GetMessageBroker();
+                                    _TimeoutContext context = new _TimeoutContext(messageClient);
+                                    FluorineWebSafeCallContext.SetData(FluorineContext.FluorineContextKey, context);
                                     messageClient.Timeout();
                                 }
                             }

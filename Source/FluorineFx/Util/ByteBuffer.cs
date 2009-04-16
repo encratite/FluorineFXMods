@@ -142,7 +142,7 @@ namespace FluorineFx.Util
         /// Sets this buffer's bookmark at its position.
         /// </summary>
         /// <returns>Returns this bookmark value.</returns>
-        public long SetBookmark()
+        public long Mark()
         {
             _bookmark = this.Position;
             return _bookmark;
@@ -153,6 +153,23 @@ namespace FluorineFx.Util
         public void ClearBookmark()
         {
             _bookmark = -1;
+        }
+        /// <summary>
+        /// Resets this buffer's position to the previously-marked position. 
+        /// Invoking this method neither changes nor discards the mark's value. 
+        /// </summary>
+        public void Reset()
+        {
+            if( _bookmark != -1 )
+                this.Position = _bookmark;
+        }
+        /// <summary>
+        /// Clears this buffer. The position is set to zero, the limit is set to the capacity, and the mark is discarded.
+        /// </summary>
+        public void Clear()
+        {
+            ClearBookmark();
+            this.Position = 0;
         }
 
 #if !(NET_1_1)
@@ -178,6 +195,7 @@ namespace FluorineFx.Util
 		/// </summary>
 		public void Flip()
 		{
+            ClearBookmark();
 			this.Limit = (int)this.Position;
 			this.Position = 0;
 		}
@@ -186,6 +204,7 @@ namespace FluorineFx.Util
 		/// </summary>
 		public void Rewind()
 		{
+            ClearBookmark();
 			this.Position = 0;
 		}
 		/// <summary>
@@ -321,6 +340,13 @@ namespace FluorineFx.Util
 		{
 			return _stream.GetBuffer()[index];
 		}
+
+        public byte this[int index]
+        {
+            get { return Get(index); }
+            set { Put(index, value); }
+        }
+
         /// <summary>
         /// Writes the stream contents to a byte array, regardless of the Position property.
         /// </summary>
@@ -477,6 +503,18 @@ namespace FluorineFx.Util
 		{
 			return _stream.Read(buffer, offset, count);
 		}
+        /// <summary>
+        /// Relative bulk get method. 
+        /// This method transfers bytes from this buffer into the given destination array. 
+        /// An invocation of this method behaves in exactly the same way as the invocation buffer.Get(a, 0, a.Length)
+        /// </summary>
+        /// <param name="buffer">An array of bytes.</param>
+        /// <returns>The total number of bytes read into the buffer.</returns>
+        public int Read(byte[] buffer)
+        {
+            return _stream.Read(buffer, 0, buffer.Length);
+        }
+
         /// <summary>
         /// Reads a byte from the stream and advances the position within the stream by one byte, or returns -1 if at the end of the stream.
         /// </summary>

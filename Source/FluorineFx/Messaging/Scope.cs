@@ -29,6 +29,7 @@ using FluorineFx.Context;
 using FluorineFx.Collections;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Persistence;
+using FluorineFx.Messaging.Endpoints;
 
 namespace FluorineFx.Messaging
 {
@@ -118,6 +119,11 @@ namespace FluorineFx.Messaging
 		{
 			get{ return _context != null; }
 		}
+
+        /// <summary>
+        /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public virtual IEndpoint Endpoint { get { return null; } }
 
 		public void Init()
 		{

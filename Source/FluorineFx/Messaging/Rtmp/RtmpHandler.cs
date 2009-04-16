@@ -39,6 +39,7 @@ using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Messaging.Rtmp.Stream;
 using FluorineFx.Messaging.Rtmp.Service;
 using FluorineFx.Scheduling;
+using FluorineFx.Threading;
 
 namespace FluorineFx.Messaging.Rtmp
 {
@@ -68,7 +69,6 @@ namespace FluorineFx.Messaging.Rtmp
             base.ConnectionOpened(connection);
             if (connection.Context.Mode == RtmpMode.Server)
             {
-                FluorineRtmpContext.Initialize(connection);
                 connection.StartWaitForHandshake();
             }
         }
@@ -85,8 +85,10 @@ namespace FluorineFx.Messaging.Rtmp
             if (stream != null && (stream is PlaylistSubscriberStream))
             {
                 (stream as PlaylistSubscriberStream).Written(sent.Message);
+                
             }
         }
+
 /*
 FlexInvoke flexInvoke = new FlexInvoke();
 flexInvoke.Cmd = "onstatus";
@@ -149,10 +151,7 @@ channel.Write(flexInvoke);
                         else
                         {
                             // Remember buffer time to set until stream will be created
-                            if (connection is RtmpServerConnection)
-                            {
-                                (connection as RtmpServerConnection).RememberStreamBufferDuration(ping.Value2, buffer);
-                            }
+                            connection.RememberStreamBufferDuration(ping.Value2, buffer);
                             if (log.IsInfoEnabled)
                                 log.Info("Remembering client buffer on stream: " + buffer);
                         }
@@ -290,20 +289,26 @@ channel.Write(flexInvoke);
                                                     okayToConnect = connection.Connect(scope, serviceCall.Arguments);
                                                     if (okayToConnect)
                                                     {
-                                                        if (serviceCall.Arguments != null && serviceCall.Arguments.Length == 3)
+                                                        if (serviceCall.Arguments != null && serviceCall.Arguments.Length >= 3)
                                                         {
                                                             string credentials = serviceCall.Arguments[2] as string;
-                                                            MessageBroker messageBroker = this.Endpoint.GetMessageBroker();
-                                                            AuthenticationService authenticationService = messageBroker.GetService(AuthenticationService.ServiceId) as AuthenticationService;
-                                                            authenticationService.Authenticate(credentials);
+                                                            if (credentials != null && credentials != string.Empty)
+                                                            {
+                                                                MessageBroker messageBroker = this.Endpoint.GetMessageBroker();
+                                                                AuthenticationService authenticationService = messageBroker.GetService(AuthenticationService.ServiceId) as AuthenticationService;
+                                                                authenticationService.Authenticate(credentials);
+                                                            }
                                                         }
                                                         //FDS 2.0.1 fds.swc
                                                         if (serviceCall.Arguments != null && serviceCall.Arguments.Length == 1)
                                                         {
                                                             string credentials = serviceCall.Arguments[0] as string;
-                                                            MessageBroker messageBroker = this.Endpoint.GetMessageBroker();
-                                                            AuthenticationService authenticationService = messageBroker.GetService(AuthenticationService.ServiceId) as AuthenticationService;
-                                                            authenticationService.Authenticate(credentials);
+                                                            if (credentials != null && credentials != string.Empty)
+                                                            {
+                                                                MessageBroker messageBroker = this.Endpoint.GetMessageBroker();
+                                                                AuthenticationService authenticationService = messageBroker.GetService(AuthenticationService.ServiceId) as AuthenticationService;
+                                                                authenticationService.Authenticate(credentials);
+                                                            }
                                                         }
                                                     }
                                                 }

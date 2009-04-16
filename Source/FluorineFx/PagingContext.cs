@@ -18,6 +18,8 @@
 */
 using System;
 using FluorineFx.Context;
+using System.Security;
+using System.Security.Permissions;
 
 namespace FluorineFx
 {
@@ -61,14 +63,13 @@ namespace FluorineFx
         {
             get
             {
-                PagingContext context = FluorineContext.Current.Items[FluorinePagingContextKey] as PagingContext;
-                return context;
+                return FluorineWebSafeCallContext.GetData(FluorinePagingContextKey) as PagingContext;
             }
         }
 
         internal static void SetPagingContext(PagingContext current)
         {
-            FluorineContext.Current.Items[FluorinePagingContextKey] = current;
+            FluorineWebSafeCallContext.SetData(FluorinePagingContextKey, current);
         }
     }
 }

@@ -20,7 +20,7 @@
 using System;
 using System.Collections;
 using System.Reflection;
-
+using FluorineFx.Messaging.Config;
 using FluorineFx.Exceptions;
 
 namespace FluorineFx.Data
@@ -57,10 +57,11 @@ namespace FluorineFx.Data
 
 		public static Identity GetIdentity(object item, DataDestination destination)
 		{
-			string[] keys = destination.GetIdentityKeys();
+            IdentityConfiguration[] keys = destination.GetIdentityKeys();
 			Identity identity = new Identity(item);
-			foreach(string key in keys)
+			foreach(IdentityConfiguration ic in keys)
 			{
+                string key = ic.Property;
 				PropertyInfo pi = item.GetType().GetProperty(key);
 				if( pi != null )
 				{

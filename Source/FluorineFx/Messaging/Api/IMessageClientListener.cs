@@ -23,6 +23,7 @@ namespace FluorineFx.Messaging.Api
     /// <summary>
     /// Interface to be notified when a MessageClient is created or destroyed.
     /// </summary>
+	[CLSCompliant(false)]
     public interface IMessageClientListener
     {
         /// <summary>

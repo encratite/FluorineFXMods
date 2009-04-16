@@ -120,7 +120,17 @@ namespace FluorineFx.Messaging.Endpoints.Filter
                         continue;
                     }
 
-                    remotingService.CheckSecurity(destination);
+                    try
+                    {
+                        remotingService.CheckSecurity(destination);
+                    }
+                    catch (UnauthorizedAccessException exception)
+                    {
+                        responseBody = new ErrorResponseBody(amfBody, exception);
+                        if (log.IsDebugEnabled)
+                            log.Debug(exception.Message);
+                        continue;
+                    }
 
                     //Cache check
                     string source = amfBody.TypeName + "." + amfBody.Method;
@@ -176,7 +186,7 @@ namespace FluorineFx.Messaging.Endpoints.Filter
                                 RoleAttribute roleAttribute = roleAttributes[0] as RoleAttribute;
                                 string[] roles = roleAttribute.Roles.Split(',');
 
-                                bool authorized = remotingService.DoAuthorization(roles);
+                                bool authorized = messageBroker.LoginManager.DoAuthorization(roles);
                                 if (!authorized)
                                     throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AccessNotAllowed));
                             }
@@ -308,6 +318,8 @@ namespace FluorineFx.Messaging.Endpoints.Filter
                             catch (UnauthorizedAccessException exception)
                             {
                                 responseBody = new ErrorResponseBody(amfBody, exception);
+                                if (log.IsDebugEnabled)
+                                    log.Debug(exception.Message);
                             }
                             catch (Exception exception)
                             {
@@ -315,8 +327,8 @@ namespace FluorineFx.Messaging.Endpoints.Filter
                                     responseBody = new ErrorResponseBody(amfBody, exception.InnerException);
                                 else
                                     responseBody = new ErrorResponseBody(amfBody, exception);
-                                if (log != null && log.IsErrorEnabled)
-                                    log.Error(exception.Message, exception);
+                                if (log.IsDebugEnabled)
+                                    log.Debug(__Res.GetString(__Res.Invocation_Failed, mi.Name, exception.Message));
                             }
                             #endregion Invocation handling
                         }

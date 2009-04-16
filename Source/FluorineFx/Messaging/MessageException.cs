@@ -144,6 +144,16 @@ namespace FluorineFx.Messaging
             _rootCause = inner;
         }
         /// <summary>
+        /// Initializes a new instance of the MessageException class.
+        /// </summary>
+        /// <param name="faultCode">Fault code for the error.</param>
+        /// <param name="message">The error message that explains the reason for the exception.</param>		
+        public MessageException(string faultCode, string message)
+            : base(message)
+        {
+            _faultCode = faultCode;
+        }
+        /// <summary>
 		/// Gets or sets the fault code for the error.
 		/// </summary>
 		public string FaultCode

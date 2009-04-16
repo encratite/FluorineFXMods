@@ -51,8 +51,8 @@ namespace FluorineFx.Messaging.Endpoints
         //static object _objLock = new object();
         RtmptServer _rtmptServer;
 
-        public RtmptEndpoint(MessageBroker messageBroker, ChannelSettings channelSettings)
-            : base(messageBroker, channelSettings)
+        public RtmptEndpoint(MessageBroker messageBroker, ChannelDefinition channelDefinition)
+            : base(messageBroker, channelDefinition)
 		{
         }
 
@@ -77,6 +77,16 @@ namespace FluorineFx.Messaging.Endpoints
         public void Service(RtmptRequest rtmptRequest)
         {
             _rtmptServer.Service(rtmptRequest);
+        }
+
+        public override int ClientLeaseTime
+        {
+            get 
+            {
+                int timeout = this.GetMessageBroker().FlexClientSettings.TimeoutMinutes;
+                timeout = Math.Max(timeout, 1);//start with 1 minute timeout at least
+                return timeout;
+            }
         }
     }
 }

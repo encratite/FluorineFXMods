@@ -45,7 +45,8 @@ namespace FluorineFx.IO
             for (int i = 0; i < memberInfos.Length; i++)
             {
                 MemberInfo memberInfo = memberInfos[i];
-                ClassMember classMember = new ClassMember(memberInfo.Name, flags, memberInfo.MemberType);
+                object[] attributes = memberInfo.GetCustomAttributes(false);
+                ClassMember classMember = new ClassMember(memberInfo.Name, flags, memberInfo.MemberType, attributes);
                 classMemberList.Add(classMember);               
             }
             string customClassName = type.FullName;

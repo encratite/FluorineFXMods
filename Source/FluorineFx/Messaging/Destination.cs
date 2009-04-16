@@ -43,7 +43,7 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Destination settings.
         /// </summary>
-		protected DestinationSettings	_settings;
+		protected DestinationDefinition _destinationDefinition;
         /// <summary>
         /// ServiceAdapter for the Destination.
         /// </summary>
@@ -53,18 +53,18 @@ namespace FluorineFx.Messaging
         private Destination()
         {
         }
-        
-		internal Destination(IService service, DestinationSettings settings)
+
+        internal Destination(IService service, DestinationDefinition destinationDefinition)
 		{
 			_service = service;
-			_settings = settings;
+            _destinationDefinition = destinationDefinition;
 		}
         /// <summary>
         /// Gets the Destination identity.
         /// </summary>
 		public string Id
 		{
-			get{ return _settings.Id; }
+            get { return _destinationDefinition.Id; }
 		}
         /// <summary>
         /// Gets the Destination's factory property.
@@ -73,8 +73,8 @@ namespace FluorineFx.Messaging
 		{
 			get
 			{
-				if( _settings.Properties.Contains("factory") )
-					return _settings.Properties["factory"] as string;
+                if (_destinationDefinition.Properties.Factory != null)
+                    return _destinationDefinition.Properties.Factory;
 				return "dotnet";
 			}
 		}
@@ -83,23 +83,23 @@ namespace FluorineFx.Messaging
         /// </summary>
 		public IService Service{ get{ return _service; } }
 
-		internal void Init(AdapterSettings adapterSettings)
+        internal void Init(AdapterDefinition adapterDefinition)
 		{
-			if( adapterSettings != null )
+            if (adapterDefinition != null)
 			{
-				string typeName = adapterSettings.Class;
+                string typeName = adapterDefinition.Class;
 				Type type = ObjectFactory.Locate(typeName);
 				if( type != null )
 				{
                     _adapter = ObjectFactory.CreateInstance(type) as ServiceAdapter;
 					_adapter.SetDestination(this);
-                    _adapter.SetAdapterSettings(adapterSettings);
-                    _adapter.SetDestinationSettings(_settings);
+                    _adapter.SetAdapterSettings(adapterDefinition);
+                    _adapter.SetDestinationSettings(_destinationDefinition);
 					_adapter.Init();
 
 				}
                 else
-                    log.Error(__Res.GetString(__Res.Type_InitError, adapterSettings.Class));
+                    log.Error(__Res.GetString(__Res.Type_InitError, adapterDefinition.Class));
 			}
             MessageBroker messageBroker = this.Service.GetMessageBroker();
             messageBroker.RegisterDestination(this, _service);
@@ -118,7 +118,7 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Gets the Destination settings.
         /// </summary>
-		public DestinationSettings DestinationSettings{ get{ return _settings; } }
+        public DestinationDefinition DestinationDefinition { get { return _destinationDefinition; } }
 
         /// <summary>
         /// Gets the source property where applicable.
@@ -127,11 +127,7 @@ namespace FluorineFx.Messaging
         {
             get
             {
-                if (_settings != null && _settings.Properties != null )
-                {
-                    return _settings.Properties["source"] as string;
-                }
-                return null;
+                return _destinationDefinition.Properties.Source;
             }
         }
         /// <summary>
@@ -141,11 +137,8 @@ namespace FluorineFx.Messaging
         {
             get
             {
-                if (_settings != null && _settings.Properties != null )
-                {
-                    return _settings.Properties["scope"] as string;
-                }
-                return "request";
+                return _destinationDefinition.Properties.Source;
+                //return "request";
             }
         }
 
@@ -164,8 +157,7 @@ namespace FluorineFx.Messaging
 
 			MessageBroker messageBroker = this.Service.GetMessageBroker();
 			IFlexFactory factory = messageBroker.GetFactory(this.FactoryId);
-			Hashtable properties = _settings.Properties;
-			_factoryInstance = factory.CreateFactoryInstance(this.Id, properties);
+			_factoryInstance = factory.CreateFactoryInstance(this.Id, _destinationDefinition.Properties);
 			return _factoryInstance;
 		}
 

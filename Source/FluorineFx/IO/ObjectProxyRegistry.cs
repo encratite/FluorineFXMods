@@ -93,6 +93,12 @@ namespace FluorineFx.IO
         {
             if( type.GetInterface(typeof(IExternalizable).FullName, true) != null )
                 return _registeredProxies[typeof(IExternalizable)] as IObjectProxy;
+            if (type.GetInterface("INHibernateProxy", false) != null)
+            {
+                //TODO
+                //Quick fix for INHibernateProxy
+                type = type.BaseType;
+            }
             if (_registeredProxies.ContainsKey(type))
                 return _registeredProxies[type] as IObjectProxy;
             foreach(DictionaryEntry entry in (IDictionary)_registeredProxies)

@@ -36,7 +36,8 @@ namespace FluorineFx.Messaging
         private static readonly ILog log = LogManager.GetLogger(typeof(MessageDestination));
         SubscriptionManager _subscriptionManager;
 
-		public MessageDestination(IService service, DestinationSettings destinationSettings) : base(service, destinationSettings)
+        public MessageDestination(IService service, DestinationDefinition destinationDefinition)
+            : base(service, destinationDefinition)
 		{
 			_subscriptionManager = new SubscriptionManager(this);
 		}

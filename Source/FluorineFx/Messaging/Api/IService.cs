@@ -26,11 +26,13 @@ namespace FluorineFx.Messaging.Api
     /// </summary>
     public interface IService
     {
+#if !FXCLIENT
         /// <summary>
         /// Start service.
         /// </summary>
         /// <param name="configuration">Application configuration.</param>
         void Start(ConfigurationSection configuration);
+#endif
         /// <summary>
         /// Shutdown service.
         /// </summary>

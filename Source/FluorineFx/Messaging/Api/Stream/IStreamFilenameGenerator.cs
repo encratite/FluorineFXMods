@@ -23,6 +23,7 @@ namespace FluorineFx.Messaging.Api.Stream
     /// <summary>
     /// Interface for generating filenames for streams.
     /// </summary>
+	[CLSCompliant(false)]
     public interface IStreamFilenameGenerator : IScopeService
     {
         /// <summary>

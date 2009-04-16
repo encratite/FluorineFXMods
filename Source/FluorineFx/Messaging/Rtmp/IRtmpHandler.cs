@@ -23,7 +23,8 @@ namespace FluorineFx.Messaging.Rtmp
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
-    interface IRtmpHandler
+    [CLSCompliant(false)]
+    public interface IRtmpHandler
     {
         /// <summary>
         /// Connection open event.

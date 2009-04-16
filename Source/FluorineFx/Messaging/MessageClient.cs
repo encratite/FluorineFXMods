@@ -24,6 +24,7 @@ using System.Diagnostics;
 using log4net;
 using FluorineFx.Util;
 using FluorineFx.Context;
+using FluorineFx.Collections;
 using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Messaging.Messages;
 using FluorineFx.Messaging.Services;
@@ -51,50 +52,114 @@ namespace FluorineFx.Messaging
     ///     subscriptions should be shut down opportunistically to preserve server
     ///     resources.</para>
     /// </remarks>
+    [CLSCompliant(false)]
     public sealed class MessageClient : IMessageClient
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(MessageClient));
-        private static object _syncLock = new object();
+        private object _syncLock = new object();
 
-		string				_messageClientId;
+		string				_clientId;
 		byte[]				_binaryId;
 
 		MessageDestination	_messageDestination;
-		string				_endpoint;
-		SubscriptionManager _subscriptionManager;
-        IMessageConnection _connection;
+		string				_endpointId;
         IClient _client;
+        Session _session;
 
 		Subtopic			_subtopic;
 		Selector			_selector;
 
-        static Hashtable    _messageClientCreatedListeners;
-        Hashtable           _messageClientDestroyedListeners;
-        bool _isDisconnecting;
-        ArrayList _messageQueue;
+        static CopyOnWriteDictionary _messageClientCreatedListeners = new CopyOnWriteDictionary();
+        CopyOnWriteDictionary _messageClientDestroyedListeners;
+        /// <summary>
+        /// A set of all of the subscriptions managed by this message client.
+        /// </summary>
+        CopyOnWriteArraySet _subscriptions = new CopyOnWriteArraySet();
+
+        /// <summary>
+        /// State bit field.
+        /// 1 IsValid
+        /// 2 IsInvalidating
+        /// 4 IsTimingOut
+        /// 8 
+        /// 16 
+        /// 32
+        /// 64
+        /// </summary>
+        byte __fields;
 
         private MessageClient()
         {
         }
 
-		internal MessageClient(IClient client, SubscriptionManager subscriptionManager, string messageClientId, string endpoint, MessageDestination messageDestination)
+        internal MessageClient(string clientId, MessageDestination destination, string endpointId)
+            : this(clientId, destination, endpointId, true)
+        {
+        }
+
+        internal MessageClient(string clientId, MessageDestination messageDestination, string endpointId, bool useSession)
 		{
-            _client = client;
-            _subscriptionManager = subscriptionManager;
-            _messageClientId = messageClientId;
+            SetIsValid(true);
+            _clientId = clientId;
             Debug.Assert(messageDestination != null);
             _messageDestination = messageDestination;
-            _endpoint = endpoint;
-            _connection = FluorineContext.Current.Connection as IMessageConnection;
-            if (_connection != null)
-                _connection.RegisterMessageClient(this);
-
-            if (_messageClientCreatedListeners != null)
+            _endpointId = endpointId;
+            if (useSession)
             {
-                foreach (IMessageClientListener listener in _messageClientCreatedListeners.Keys)
-                    listener.MessageClientCreated(this);
+                _session = FluorineContext.Current.Session as Session;
+                if (_session != null)
+                    _session.RegisterMessageClient(this);
+                _client = FluorineContext.Current.Client;
+                Debug.Assert(_client != null);
+                _client.RegisterMessageClient(this);
+            }
+            else
+            {
+                _session = null;
+                _client = null;
+            }
+            if (log.IsDebugEnabled)
+            {
+                string msg = string.Format("MessageClient created with clientId {0} for destination {1}", _clientId, _messageDestination.Id);
+                log.Debug(msg);
             }
 		}
+
+        /// <summary>
+        /// Gets whether the MessageClient is valid.
+        /// </summary>
+        public bool IsValid
+        {
+            get { return (__fields & 1) == 1; }
+        }
+
+        internal void SetIsValid(bool value)
+        {
+            __fields = (value) ? (byte)(__fields | 1) : (byte)(__fields & ~1);
+        }
+
+        /// <summary>
+        /// Gets whether the MessageClient is being invalidated.
+        /// </summary>
+        public bool IsInvalidating
+        {
+            get { return (__fields & 2) == 2; }
+        }
+
+        internal void SetIsInvalidating(bool value)
+        {
+            __fields = (value) ? (byte)(__fields | 2) : (byte)(__fields & ~2);
+        }
+
+        public bool IsTimingOut
+        {
+            get { return (__fields & 4) == 4; }
+        }
+
+        internal void SetIsTimingOut(bool value)
+        {
+            __fields = (value) ? (byte)(__fields | 4) : (byte)(__fields & ~4);
+        }
 
         /// <summary>
         /// Gets an object that can be used to synchronize access. 
@@ -108,12 +173,13 @@ namespace FluorineFx.Messaging
         /// </summary>
         public string DestinationId { get { return _messageDestination.Id; } }
 
-        internal IMessageConnection MessageConnection { get { return _connection; } }
-
+        //internal IMessageConnection MessageConnection { get { return _connection; } }
+        
         /// <summary>
         /// Gets the endpoint identity the MessageClient is subscribed to.
         /// </summary>
-        public string Endpoint { get { return _endpoint; } }
+        public string EndpointId { get { return _endpointId; } }
+
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -123,34 +189,34 @@ namespace FluorineFx.Messaging
 			if( _binaryId == null )
 			{
 				UTF8Encoding utf8Encoding = new UTF8Encoding();
-				_binaryId = utf8Encoding.GetBytes(_messageClientId);
+				_binaryId = utf8Encoding.GetBytes(_clientId);
 			}
 			return _binaryId;
 		}
         /// <summary>
-        /// Gets the client identity.
+        /// Gets the message client identity.
         /// </summary>
-        /// <value>The client identity.</value>
+        /// <value>The message client identity.</value>
 		public string ClientId
 		{
 			get
 			{
-				return _messageClientId;
+				return _clientId;
 			}
 		}
         /// <summary>
-        /// Gets whether the connection is being disconnected.
+        /// Gets the Client associated with this MessageClient.
         /// </summary>
-        public bool IsDisconnecting
+        public IClient Client 
         {
-            get{ return _isDisconnecting; }
+            get { return _client; }
         }
 
-        internal void SetIsDisconnecting(bool value)
-        {
-            _isDisconnecting = value;
-        }
-
+        /// <summary>
+        /// Gets the Session associated with this MessageClient.
+        /// </summary>
+        public ISession Session { get { return _session; } }
+        
 		internal Selector Selector
 		{
 			get{ return _selector; }
@@ -166,33 +232,13 @@ namespace FluorineFx.Messaging
 			set{ _subtopic = value; }
 		}
 
-        internal ArrayList MessageQueue
-        {
-            get
-            {
-                if (_messageQueue == null)
-                {
-                    lock (this.SyncRoot)
-                    {
-                        if (_messageQueue == null)
-                            _messageQueue = new ArrayList();
-                    }
-                }
-                return _messageQueue;
-            }
-        }
         /// <summary>
         /// Adds a MessageClient created listener.
         /// </summary>
         /// <param name="listener">The listener to add.</param>
         public static void AddMessageClientCreatedListener(IMessageClientListener listener)
         {
-            lock(typeof(MessageClient))
-            {
-                if (_messageClientCreatedListeners == null)
-                    _messageClientCreatedListeners = new Hashtable(1);
-                _messageClientCreatedListeners[listener] = null;
-            }
+            _messageClientCreatedListeners[listener] = null;
         }
         /// <summary>
         /// Removes a MessageClient created listener.
@@ -200,14 +246,8 @@ namespace FluorineFx.Messaging
         /// <param name="listener">The listener to remove.</param>
         public static void RemoveMessageClientCreatedListener(IMessageClientListener listener)
         {
-            lock (typeof(MessageClient))
-            {
-                if (_messageClientCreatedListeners != null)
-                {
-                    if (_messageClientCreatedListeners.Contains(listener))
-                        _messageClientCreatedListeners.Remove(listener);
-                }
-            }
+            if (_messageClientCreatedListeners.Contains(listener))
+                _messageClientCreatedListeners.Remove(listener);
         }
         /// <summary>
         /// Adds a MessageClient destroy listener.
@@ -216,7 +256,13 @@ namespace FluorineFx.Messaging
         public void AddMessageClientDestroyedListener(IMessageClientListener listener)
         {
             if (_messageClientDestroyedListeners == null)
-                _messageClientDestroyedListeners = new Hashtable(1);
+            {
+                lock (this.SyncRoot)
+                {
+                    if (_messageClientDestroyedListeners == null)
+                        _messageClientDestroyedListeners = new CopyOnWriteDictionary(1);
+                }
+            }
             _messageClientDestroyedListeners[listener] = null;
         }
         /// <summary>
@@ -232,13 +278,64 @@ namespace FluorineFx.Messaging
             }
         }
 
+        internal void NotifyCreatedListeners()
+        {
+            foreach (IMessageClientListener listener in _messageClientCreatedListeners.Keys)
+                listener.MessageClientCreated(this);
+        }
+
+        internal void ResetEndpoint(string endpointId)
+        {
+            string oldEndpointId = null;
+            Session oldSession = null;
+            Session newSession = FluorineContext.Current.Session as Session;
+            lock (this.SyncRoot)
+            {
+                // If anything is null, or nothing has changed, no need for a reset.
+                if (_endpointId == null || endpointId == null || _session == null || newSession == null || (_endpointId.Equals(endpointId) && _session.Equals(newSession)))
+                    return;
+
+                oldEndpointId = _endpointId;
+                _endpointId = endpointId;
+
+                oldSession = _session;
+                _session = newSession;
+            }
+            // Unregister in order to reset the proper push settings in the re-registration below once the session association has been patched.
+            if (_client != null)
+                _client.UnregisterMessageClient(this);
+            // Clear out any reference to this subscription that the previously associated session has.
+            if (oldSession != null)
+                oldSession.UnregisterMessageClient(this);
+            // Associate the current session with this subscription.
+            if (_session != null)
+                _session.RegisterMessageClient(this);
+            // Reset proper push settings.
+            if (_client != null)
+                _client.RegisterMessageClient(this);
+
+            if (log.IsDebugEnabled)
+            {
+                string msg = string.Format("MessageClient created with clientId {0} for destination {1} has been reset as a result of a resubscribe.", _clientId, _messageDestination.Id);
+                if (oldEndpointId != null && !oldEndpointId.Equals(endpointId))
+                    msg += " Endpoint changed from " + oldEndpointId + " to " + endpointId;
+                if ((oldSession != null) && (newSession != null) && (oldSession != newSession))
+                    msg += " Session changed from " + oldSession.Id + " to " + newSession.Id;
+                log.Debug(msg);
+            }    
+        }
+
+        /*
         //Rtmpconnection.Close -> Disconnect -> Unsubscribe
         internal void Disconnect()
 		{
 			if( log.IsDebugEnabled )
 				log.Debug(__Res.GetString(__Res.MessageClient_Disconnect, this.ClientId));
-            this.SetIsDisconnecting(true);
-            Unsubscribe(false);
+            lock (this.SyncRoot)
+            {
+                this.SetIsDisconnecting(true);
+                Unsubscribe(false);
+            }
 		}
 
 		/// <summary>
@@ -266,23 +363,26 @@ namespace FluorineFx.Messaging
 		{
 			try
 			{
-                if (this.IsDisconnecting || _messageDestination == null )
-					return;
-				if( log.IsDebugEnabled )
-                    log.Debug(__Res.GetString(__Res.MessageClient_Timeout, this.ClientId));
+                lock (this.SyncRoot)
+                {
+                    if (this.IsValid || _messageDestination == null)
+                        return;
+                    if (log.IsDebugEnabled)
+                        log.Debug(__Res.GetString(__Res.MessageClient_Timeout, this.ClientId));
 
-				//Timeout
-				CommandMessage commandMessage = new CommandMessage();
-				commandMessage.destination = this.Destination.Id;
-				commandMessage.clientId = this.ClientId;
-				//Indicate that the client's session with a remote destination has timed out
-				commandMessage.operation = CommandMessage.SessionInvalidateOperation;
-                commandMessage.headers[MessageBase.FlexClientIdHeader] = _client.Id;
+                    //Timeout
+                    CommandMessage commandMessage = new CommandMessage();
+                    commandMessage.destination = this.Destination.Id;
+                    commandMessage.clientId = this.ClientId;
+                    //Indicate that the client's session with a remote destination has timed out
+                    commandMessage.operation = CommandMessage.SessionInvalidateOperation;
+                    commandMessage.headers[MessageBase.FlexClientIdHeader] = _client.Id;
 
-				MessageService messageService = _messageDestination.Service as MessageService;
-				object[] subscribers = new object[]{commandMessage.clientId};
-				messageService.PushMessageToClients(subscribers, commandMessage);
-                Unsubscribe(true);
+                    MessageService messageService = _messageDestination.Service as MessageService;
+                    object[] subscribers = new object[] { commandMessage.clientId };
+                    messageService.PushMessageToClients(subscribers, commandMessage);
+                    Unsubscribe(true);
+                }
 			}
 			catch(Exception ex)
 			{
@@ -306,24 +406,106 @@ namespace FluorineFx.Messaging
             }
             messageService.ServiceMessage(commandMessageUnsubscribe);
         }
+        */
 
-        internal void AddMessage(IMessage message)
+        public void Timeout()
+        {
+            Invalidate(true /* notify client */);
+        }
+
+        public void Invalidate()
+        {
+            Invalidate(false /* don't attempt to notify the client */);
+        }
+
+        public void Invalidate(bool notifyClient)
         {
             lock (this.SyncRoot)
             {
-                this.MessageQueue.Add(message);
-            }
-        }
+                if (!IsValid || IsInvalidating)
+                    return; // Already shutting down.
 
-        internal IMessage[] GetPendingMessages()
-        {
+                SetIsInvalidating(true);
+                _messageDestination.SubscriptionManager.CancelTimeout(this);
+            }
+
+            // Build a subscription invalidation message and push to the client if it is still valid.
+            if (notifyClient && _client != null && _client.IsValid)
+            {
+                CommandMessage commandMessage = new CommandMessage();
+                commandMessage.destination= _messageDestination.Id;
+                commandMessage.clientId = _clientId;
+                commandMessage.operation = CommandMessage.SessionInvalidateOperation;
+
+                MessageService messageService = _messageDestination.Service as MessageService;
+                object[] subscribers = new object[] { commandMessage.clientId };
+                try
+                {
+                    messageService.PushMessageToClients(subscribers, commandMessage);
+                }
+                catch (MessageException) 
+                { }
+            }
+
+            // Notify listeners that we're being invalidated.
+            if (_messageClientDestroyedListeners != null && _messageClientDestroyedListeners.Count != 0)
+            {
+                foreach (IMessageClientListener listener in _messageClientDestroyedListeners.Keys )
+                {
+                    listener.MessageClientDestroyed(this);
+                }
+                _messageClientDestroyedListeners.Clear();
+            }
+
+            // Generate unsubscribe messages for all of the MessageClient's subscriptions and 
+            // route them to the destination this MessageClient is subscribed to.
+            // Some adapters manage their own subscription state.
+            ArrayList unsubscribeMessages = new ArrayList();
             lock (this.SyncRoot)
             {
-                IMessage[] messages = this.MessageQueue.ToArray(typeof(IMessage)) as IMessage[];
-                this.MessageQueue.Clear();
-                return messages;
+                foreach(SubscriptionInfo subscription in _subscriptions)
+                {
+                    CommandMessage unsubscribeMessage = new CommandMessage();
+                    unsubscribeMessage.destination = _messageDestination.Id;
+                    unsubscribeMessage.clientId = _clientId;
+                    unsubscribeMessage.operation = CommandMessage.UnsubscribeOperation;
+                    unsubscribeMessage.SetHeader(CommandMessage.SessionInvalidatedHeader, true);
+                    unsubscribeMessage.SetHeader(CommandMessage.SelectorHeader, subscription.Selector);
+                    unsubscribeMessage.SetHeader(AsyncMessage.SubtopicHeader, subscription.Subtopic);
+                    unsubscribeMessages.Add(unsubscribeMessage);
+                }
             }
-        }
+            // Release the lock and send the unsub messages.
+            foreach (CommandMessage commandMessage in unsubscribeMessages)
+            {
+                try
+                {
+                    _messageDestination.Service.ServiceMessage(commandMessage);
+                }
+                catch (MessageException me)
+                {
+                    if (log.IsDebugEnabled)
+                        log.Debug("MessageClient: " + _clientId + " issued an unsubscribe message during invalidation that was not processed but will continue with invalidation.", me);
+                }
+            }
+
+            lock (this.SyncRoot)
+            {
+                // If we didn't clean up all subscriptions log an error and continue with shutdown.
+                int remainingSubscriptionCount = _subscriptions.Count;
+                if (remainingSubscriptionCount > 0 && log.IsErrorEnabled)
+                    log.Error("MessageClient: " + _clientId + " failed to remove " + remainingSubscriptionCount + " subscription(s) during invalidation");
+            }
+
+            _messageDestination.SubscriptionManager.RemoveSubscriber(this);
+
+            lock (this.SyncRoot)
+            {
+                SetIsValid(false);
+                SetIsInvalidating(false);
+            }
+        }  
+
 
         /// <summary>
         /// Renews a lease.
@@ -331,7 +513,44 @@ namespace FluorineFx.Messaging
         /// </summary>
         public void Renew()
         {
-            _subscriptionManager.GetSubscriber(_messageClientId);
+            _messageDestination.SubscriptionManager.GetSubscriber(_clientId);
         }
 	}
+
+    class SubscriptionInfo : IComparable
+    {
+        readonly string _selector;
+
+        public string Selector
+        {
+            get { return _selector; }
+        }
+
+        readonly string _subtopic;
+
+        public string Subtopic
+        {
+            get { return _subtopic; }
+        } 
+
+        SubscriptionInfo(string selector, string subtopic)
+        {
+            _selector = selector;
+            _subtopic = subtopic;
+        }
+
+        #region IComparable Members
+
+        public int CompareTo(object obj)
+        {
+            if (obj is SubscriptionInfo)
+            {
+                SubscriptionInfo other = (SubscriptionInfo)obj;
+                return (string.Equals(other.Selector, _selector) && string.Equals(other.Subtopic, _subtopic)) ? 0 : -1;
+            }
+            return -1;
+        }
+
+        #endregion
+    }
 }

@@ -32,6 +32,7 @@ using FluorineFx.Collections;
 using FluorineFx.Util;
 #if !(NET_1_1)
 using System.Collections.Generic;
+using FluorineFx.Collections.Generic;
 #endif
 #if !(NET_1_1) && !(NET_2_0)
 using System.Xml.Linq;
@@ -57,18 +58,20 @@ namespace FluorineFx.IO
 		bool _useLegacyCollection = true;
         bool _useLegacyThrowable = true;
 #if !(NET_1_1)
+        static CopyOnWriteDictionary<string, ClassDefinition> classDefinitions;
+
         Dictionary<Object, int> _amf0ObjectReferences;
         Dictionary<Object, int> _objectReferences;
         Dictionary<Object, int> _stringReferences;
         Dictionary<ClassDefinition, int> _classDefinitionReferences;
-        static Dictionary<string, ClassDefinition> classDefinitions;
         static Dictionary<Type, IAMFWriter>[] AmfWriterTable;
 #else
+        static CopyOnWriteDictionary classDefinitions;
+
         Hashtable	_amf0ObjectReferences;
 		Hashtable	_objectReferences;
 		Hashtable	_stringReferences;
 		Hashtable	_classDefinitionReferences;
-        static Hashtable classDefinitions;
         static Hashtable[] AmfWriterTable;
 #endif
 
@@ -189,11 +192,12 @@ namespace FluorineFx.IO
 
 #if !(NET_1_1)
             AmfWriterTable = new Dictionary<Type, IAMFWriter>[4] { amf0Writers, null, null, amf3Writers };
-            classDefinitions = new Dictionary<string, ClassDefinition>();
+            classDefinitions = new CopyOnWriteDictionary<string,ClassDefinition>();
 #else
 			AmfWriterTable = new Hashtable[4]{amf0Writers, null, null, amf3Writers};
-            classDefinitions = new Hashtable();
+            classDefinitions = new CopyOnWriteDictionary();
 #endif
+
         }
 
 		/// <summary>
@@ -519,7 +523,17 @@ namespace FluorineFx.IO
 #endif
 */
 #if !(NET_1_1)
-            value = value.ToUniversalTime();
+            switch (FluorineConfiguration.Instance.TimezoneCompensation)
+            {
+                case TimezoneCompensation.IgnoreUTCKind:
+                    //Do not convert to UTC, consider we have it in universal time
+                    break;
+                default:
+#if !(NET_1_1)
+                    value = value.ToUniversalTime();
+#endif
+                    break;
+            }
 #else
 			if( FluorineConfiguration.Instance.TimezoneCompensation == TimezoneCompensation.Auto )
 				value = value.Subtract( DateWrapper.ClientTimeZone );
@@ -990,9 +1004,18 @@ namespace FluorineFx.IO
 
 				// Write date (milliseconds from 1970).
 				DateTime timeStart = new DateTime(1970, 1, 1, 0, 0, 0);
+                switch (FluorineConfiguration.Instance.TimezoneCompensation)
+                {
+                    case TimezoneCompensation.IgnoreUTCKind:
+                        //Do not convert to UTC, consider we have it in universal time
+                        break;
+                    default:
 #if !(NET_1_1)
-                value = value.ToUniversalTime();
+                        value = value.ToUniversalTime();
 #endif
+                        break;
+                }
+
                 TimeSpan span = value.Subtract(timeStart);
 				long milliSeconds = (long)span.TotalMilliseconds;
 				//long date = BitConverter.DoubleToInt64Bits((double)milliSeconds);
@@ -1187,7 +1210,18 @@ namespace FluorineFx.IO
 				_objectReferences.Add(value, _objectReferences.Count);
 
 				ClassDefinition classDefinition = GetClassDefinition(value);
-                if (classDefinition != null && _classDefinitionReferences.ContainsKey(classDefinition))
+                if (classDefinition == null)
+                {
+                    //Something went wrong in our reflection?
+                    string msg = __Res.GetString(__Res.Fluorine_Fatal, "serializing " + value.GetType().FullName);
+#if !SILVERLIGHT
+                    if (log.IsFatalEnabled)
+                        log.Fatal(msg);
+#endif
+                    System.Diagnostics.Debug.Assert(false, msg);
+                    return;
+                }
+                if (_classDefinitionReferences.ContainsKey(classDefinition))
                 {
                     //Existing class-def
                     int handle = (int)_classDefinitionReferences[classDefinition];//handle = classRef 0 1
@@ -1198,7 +1232,7 @@ namespace FluorineFx.IO
                 else
 				{//inline class-def
 					
-					classDefinition = CreateClassDefinition(value);
+					//classDefinition = CreateClassDefinition(value);
                     _classDefinitionReferences.Add(classDefinition, _classDefinitionReferences.Count);
 					//handle = memberCount dynamic externalizable 1 1
 					int handle = classDefinition.MemberCount;
@@ -1263,35 +1297,37 @@ namespace FluorineFx.IO
 
 		private ClassDefinition GetClassDefinition(object obj)
 		{
+            ClassDefinition classDefinition = null;
             if (obj is ASObject)
             {
                 ASObject asObject = obj as ASObject;
-                if (asObject.IsTypedObject && classDefinitions.ContainsKey(asObject.TypeName))
-                    return classDefinitions[asObject.TypeName] as ClassDefinition;
-                else
-                    return null;
+                if (asObject.IsTypedObject)
+                    classDefinitions.TryGetValue(asObject.TypeName, out classDefinition);
+                if (classDefinition != null)
+                    return classDefinition;
+
+                IObjectProxy proxy = ObjectProxyRegistry.Instance.GetObjectProxy(typeof(ASObject));
+                classDefinition = proxy.GetClassDefinition(obj);
+                if (asObject.IsTypedObject)
+                {
+                    //Only typed ASObject class definitions are cached.
+                    classDefinitions[asObject.TypeName] = classDefinition;
+                }
+                return classDefinition;
             }
             else
             {
-                if (classDefinitions.ContainsKey(obj.GetType().FullName))
-                    return classDefinitions[obj.GetType().FullName] as ClassDefinition;
-                else
-                    return null;
-            }
-		}
-
-		private ClassDefinition CreateClassDefinition(object obj)
-		{
-            lock ((classDefinitions as ICollection).SyncRoot)
-            {
-                Type type = obj.GetType();
-                IObjectProxy proxy = ObjectProxyRegistry.Instance.GetObjectProxy(type);
-                ClassDefinition classDefinition = proxy.GetClassDefinition(obj);
-                classDefinitions[type.FullName] = classDefinition;
+                string typeName = obj.GetType().FullName;
+                if( !classDefinitions.TryGetValue(typeName, out classDefinition))
+                {
+                    IObjectProxy proxy = ObjectProxyRegistry.Instance.GetObjectProxy(obj.GetType());
+                    classDefinition = proxy.GetClassDefinition(obj);
+                    classDefinitions[typeName] = classDefinition;
+                }
                 return classDefinition;
             }
 		}
 
-		#endregion AMF3
+        #endregion AMF3
 	}
 }

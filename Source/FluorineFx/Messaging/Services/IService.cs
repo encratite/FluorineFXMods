@@ -94,12 +94,6 @@ namespace FluorineFx.Messaging.Services
         [CLSCompliant(false)]
         void CheckSecurity(Destination destination);
         /// <summary>
-        /// Performs programmatic authorization.
-        /// </summary>
-        /// <param name="roles"></param>
-        /// <returns></returns>
-		bool DoAuthorization(string[] roles);
-        /// <summary>
         /// Retrieves the list of destinations in this service.
         /// </summary>
         /// <returns></returns>

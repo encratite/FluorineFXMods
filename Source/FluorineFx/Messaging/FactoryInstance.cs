@@ -18,6 +18,7 @@
 */
 using System;
 using System.Collections;
+using FluorineFx.Messaging.Config;
 
 namespace FluorineFx.Messaging
 {
@@ -29,7 +30,7 @@ namespace FluorineFx.Messaging
 	{
 		IFlexFactory _factory;
 		string _id;
-		Hashtable _properties;
+        DestinationProperties _properties;
 		string _scope;
 		string _source;
 		string _attributeId;
@@ -40,7 +41,7 @@ namespace FluorineFx.Messaging
 		/// <param name="factory">The IFlexFactory this FactoryInstance is created from.</param>
 		/// <param name="id">The Destination's id.</param>
 		/// <param name="properties">The configuration properties for this destination.</param>
-		public FactoryInstance(IFlexFactory factory, string id, Hashtable properties)
+        public FactoryInstance(IFlexFactory factory, string id, DestinationProperties properties)
 		{
 			_factory = factory;
 			_id = id;
@@ -81,7 +82,7 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Gets the configuration properties for this destination.
         /// </summary>
-		public Hashtable Properties
+        public DestinationProperties Properties
 		{
 			get{ return _properties; }
 		}

@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Web;
 using System.IO;
+using System.Net;
 using log4net;
 using FluorineFx.Util;
 using FluorineFx.Collections;
@@ -36,12 +37,6 @@ namespace FluorineFx.Messaging.Rtmpt
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(RtmptServer));
         
-        /// <summary>
-        /// Try to generate responses that contain at least 32768 bytes data.
-        /// Increasing this value results in better stream performance, but also increases the latency.
-        /// </summary>
-	    private static int RESPONSE_TARGET_SIZE = 32768;
-
         SynchronizedHashtable _connections;
         RtmptEndpoint _endpoint;
         RtmpHandler _rtmpHandler;
@@ -98,6 +93,7 @@ namespace FluorineFx.Messaging.Rtmpt
             }
         }
 
+
         public void Service(RtmptRequest request)
         {
             if (request.HttpMethod != "POST" || request.ContentLength == 0)
@@ -131,11 +127,6 @@ namespace FluorineFx.Messaging.Rtmpt
                     HandleBadRequest(__Res.GetString(__Res.Rtmpt_CommandNotSupported, path), request);
                     break;
             }
-        }
-
-        internal void OnConnectionClose(RtmptConnection connection)
-        {
-            _connections.Remove(connection.ConnectionId);
         }
 
         private string GetHttpRequestPath(HttpRequest request)
@@ -182,7 +173,6 @@ namespace FluorineFx.Messaging.Rtmpt
             return path;
         }
 
-
         private RtmptConnection GetConnection(HttpRequest request)
         {
             string id = GetClientId(request);
@@ -194,6 +184,12 @@ namespace FluorineFx.Messaging.Rtmpt
             string id = GetClientId(request);
             return _connections[id] as RtmptConnection;
         }
+
+        internal void RemoveConnection(string id)
+        {
+            _connections.Remove(id);
+        }
+
 
         private void HandleBadRequest(string message, HttpResponse response)
         {
@@ -224,9 +220,8 @@ namespace FluorineFx.Messaging.Rtmpt
             sw.Write("\r\n");
             sw.Write(message);
             sw.Flush();
-            request.Connection.Send(buffer);
+            request.Connection.Write(buffer);
         }
-
 
         private void HandleIdle(HttpRequest request, HttpResponse response)
         {
@@ -240,11 +235,14 @@ namespace FluorineFx.Messaging.Rtmpt
             {
                 // Tell client to close the connection
                 ReturnMessage((byte)0, response);
-                connection.DeferredClose();
+                connection.RealClose();
                 return;
             }
             if (connection.Client != null)
                 connection.Client.Renew();
+            FluorineContext.Current.SetSession(connection.Session);
+            FluorineContext.Current.SetClient(connection.Client);
+            FluorineContext.Current.SetConnection(connection);
             ReturnPendingMessages(connection, response);
         }
 
@@ -260,11 +258,10 @@ namespace FluorineFx.Messaging.Rtmpt
             {
                 // Tell client to close the connection
                 ReturnMessage((byte)0, request);
-                connection.DeferredClose();
+                connection.RealClose();
                 return;
             }
-            if (connection.Client != null)
-                connection.Client.Renew();
+            FluorineRtmpContext.Initialize(connection); 
             ReturnPendingMessages(connection, request);
         }
 
@@ -278,6 +275,9 @@ namespace FluorineFx.Messaging.Rtmpt
             }
             if (connection.Client != null)
                 connection.Client.Renew();
+            FluorineContext.Current.SetSession(connection.Session);
+            FluorineContext.Current.SetClient(connection.Client);
+            FluorineContext.Current.SetConnection(connection);
             int length = request.ContentLength;
             byte[] data = new byte[request.InputStream.Length];
             request.InputStream.Read(data, 0, (int)request.InputStream.Length);
@@ -295,14 +295,14 @@ namespace FluorineFx.Messaging.Rtmpt
                 {
                     if (message is ByteBuffer)
                     {
-                        ByteBuffer buf = message as ByteBuffer;
-                        connection.RawWrite(buf);
+                        connection.Write(message as ByteBuffer);
+                    }
+                    else if (message is byte[])
+                    {
+                        connection.Write(message as byte[]);
                     }
                     else
                     {
-                        FluorineWebContext webContext = FluorineContext.Current as FluorineWebContext;
-                        webContext.SetConnection(connection);
-                        webContext.SetCurrentClient(connection.Client);
                         _rtmpHandler.MessageReceived(connection, message);
                     }
                 }
@@ -323,8 +323,7 @@ namespace FluorineFx.Messaging.Rtmpt
                 HandleBadRequest(__Res.GetString(__Res.Rtmpt_UnknownClient, request.Url), request);
                 return;
             }
-            if (connection.Client != null)
-                connection.Client.Renew();
+            FluorineRtmpContext.Initialize(connection); 
             int length = request.ContentLength;
             ByteBuffer buffer = request.Data;
             IList messages = connection.Decode(buffer);
@@ -340,12 +339,14 @@ namespace FluorineFx.Messaging.Rtmpt
                 {
                     if (message is ByteBuffer)
                     {
-                        ByteBuffer buf = message as ByteBuffer;
-                        connection.RawWrite(buf);
+                        connection.Write(message as ByteBuffer);
+                    }
+                    else if (message is byte[])
+                    {
+                        connection.Write(message as byte[]);
                     }
                     else
                     {
-                        FluorineRtmpContext.Initialize(connection);
                         _rtmpHandler.MessageReceived(connection, message);
                     }
                 }
@@ -366,10 +367,15 @@ namespace FluorineFx.Messaging.Rtmpt
                 HandleBadRequest(__Res.GetString(__Res.Rtmpt_UnknownClient, GetHttpRequestPath(request)), response);
                 return;
             }
+            RemoveConnection(connection.ConnectionId);
             if (connection.Client != null)
                 connection.Client.Renew();
-            connection.DeferredClose();
+            FluorineContext.Current.SetSession(connection.Session);
+            FluorineContext.Current.SetClient(connection.Client);
+            FluorineContext.Current.SetConnection(connection);
+            _rtmpHandler.ConnectionClosed(connection);
             ReturnMessage((byte)0, response);
+            connection.RealClose();
         }
 
         private void HandleClose(RtmptRequest request)
@@ -380,15 +386,30 @@ namespace FluorineFx.Messaging.Rtmpt
                 HandleBadRequest(__Res.GetString(__Res.Rtmpt_UnknownClient, request.Url), request);
                 return;
             }
-            if (connection.Client != null)
-                connection.Client.Renew();
-            connection.DeferredClose();
+            FluorineRtmpContext.Initialize(connection);
+            RemoveConnection(connection.ConnectionId);
+            _rtmpHandler.ConnectionClosed(connection);
             ReturnMessage((byte)0, request);
+            connection.RealClose();
         }
 
         private void HandleOpen(HttpRequest request, HttpResponse response)
         {
-            RtmptConnection connection = new RtmptConnection(this, null, null);
+            HttpSession session = _endpoint.GetMessageBroker().SessionManager.GetHttpSession(HttpContext.Current);
+            FluorineContext.Current.SetSession(session);
+            RtmptConnection connection = new RtmptConnection(this, null, session, null, null);
+            Client client = this.Endpoint.GetMessageBroker().ClientRegistry.GetClient(connection.ConnectionId) as Client;
+            FluorineContext.Current.SetClient(client);
+            FluorineContext.Current.SetConnection(connection);
+            connection.Initialize(client);
+            //Current object are set notify listeners.
+            if (session != null && session.IsNew)
+                session.NotifyCreated();
+            if (client != null)
+            {
+                client.RegisterSession(session);
+                client.NotifyCreated();
+            }
             _connections[connection.ConnectionId] = connection;
             // Return connection id to client
             ReturnMessage(connection.ConnectionId + "\n", response);
@@ -396,7 +417,8 @@ namespace FluorineFx.Messaging.Rtmpt
         
         private void HandleOpen(RtmptRequest request)
         {
-            RtmptConnection connection = new RtmptConnection(request.Connection.RemoteEndPoint, this, null, null);
+            RtmptConnection connection = new RtmptConnection(this, request.Connection.RemoteEndPoint, null, null);
+            FluorineRtmpContext.Initialize(connection);
             _connections[connection.ConnectionId] = connection;
             // Return connection id to client
             ReturnMessage(connection.ConnectionId + "\n", request);
@@ -434,7 +456,7 @@ namespace FluorineFx.Messaging.Rtmpt
             sw.Write("\r\n");
             sw.Write(message);
             sw.Flush();
-            request.Connection.Send(buffer);
+            request.Connection.Write(buffer);
         }
 
         private void ReturnMessage(byte message, HttpResponse response)
@@ -469,7 +491,7 @@ namespace FluorineFx.Messaging.Rtmpt
             sw.Write("\r\n");
             sw.Write((char)message);
             sw.Flush();
-            request.Connection.Send(buffer);
+            request.Connection.Write(buffer);
         }
 
         private void ReturnMessage(RtmptConnection connection, ByteBuffer data, HttpResponse response)
@@ -512,12 +534,12 @@ namespace FluorineFx.Messaging.Rtmpt
             byte[] buf = data.ToArray();
             bw.Write(buf);
             bw.Flush();
-            request.Connection.Send(buffer);
+            request.Connection.Write(buffer);
         }
 
         private void ReturnPendingMessages(RtmptConnection connection, HttpResponse response)
         {
-            ByteBuffer data = connection.GetPendingMessages(RESPONSE_TARGET_SIZE);
+            ByteBuffer data = connection.GetPendingMessages(RtmptConnection.RESPONSE_TARGET_SIZE);
 		    if (data == null) 
             {
 			    // no more messages to send...
@@ -535,7 +557,7 @@ namespace FluorineFx.Messaging.Rtmpt
 
         private void ReturnPendingMessages(RtmptConnection connection, RtmptRequest request)
         {
-            ByteBuffer data = connection.GetPendingMessages(RESPONSE_TARGET_SIZE);
+            ByteBuffer data = connection.GetPendingMessages(RtmptConnection.RESPONSE_TARGET_SIZE);
             if (data == null)
             {
                 // no more messages to send...

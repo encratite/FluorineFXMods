@@ -16,40 +16,16 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
 using System;
-using System.Xml;
-using System.Collections;
+using FluorineFx.Messaging.Config;
 
-namespace FluorineFx.Messaging.Config
+namespace FluorineFx.Messaging.Endpoints
 {
-    /// <summary>
-    /// The flex-client element of the services configuration file.
-    /// </summary>
-    public sealed class FlexClientSettings
+    class SecureAmfEndpoint : AMFEndpoint
     {
-        int _timeoutMinutes = 0;//20;
-
-        /// <summary>
-        /// Gets or sets the number of minutes before an idle FlexClient is timed out.
-        /// </summary>
-        public int TimeoutMinutes
-        {
-            get { return _timeoutMinutes; }
-            set { _timeoutMinutes = value; }
-        }
-
-        internal FlexClientSettings()
+        public SecureAmfEndpoint(MessageBroker messageBroker, ChannelDefinition channelDefinition)
+            : base(messageBroker, channelDefinition)
 		{
-		}
-
-        internal FlexClientSettings(XmlNode flexClientNode)
-		{
-            XmlNode timeoutNode = flexClientNode.SelectSingleNode("timeout-minutes");
-            if (timeoutNode != null)
-			{
-                _timeoutMinutes = Convert.ToInt32(timeoutNode.InnerXml);
-			}
 		}
     }
 }

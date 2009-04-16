@@ -24,6 +24,7 @@ namespace FluorineFx.Messaging.Api
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IClientRegistry
 	{
 		/// <summary>
@@ -68,5 +69,9 @@ namespace FluorineFx.Messaging.Api
         /// <param name="message">Message sent from client.</param>
         /// <returns>The client object.</returns>
         IClient GetClient(IMessage message);
+        /// <summary>
+        /// Gets an object that can be used to synchronize access. 
+        /// </summary>
+        object SyncRoot { get; }
 	}
 }

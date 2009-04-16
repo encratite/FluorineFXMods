@@ -39,7 +39,7 @@ namespace FluorineFx.Threading
 		/// <summary>
 		/// Default maximum number of threads the thread pool contains.
 		/// </summary>
-		public const int DefaultMaxWorkerThreads = 1000;
+		public const int DefaultMaxWorkerThreads = 200;
 		/// <summary>
 		/// Default idle timeout in milliseconds. (One minute)
 		/// </summary>

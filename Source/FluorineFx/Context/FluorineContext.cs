@@ -33,6 +33,7 @@ using log4net;
 using FluorineFx.Security;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Endpoints;
+using FluorineFx.Messaging;
 using FluorineFx.Configuration;
 
 namespace FluorineFx.Context
@@ -59,6 +60,7 @@ namespace FluorineFx.Context
     ///     string clientId = FluorineContext.Current.ClientId;
     /// </code>
     /// </example>
+    [CLSCompliant(false)]
 	public abstract class FluorineContext
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(FluorineContext));
@@ -78,10 +80,6 @@ namespace FluorineFx.Context
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        public const string FluorineSessionAttribute = "__@fluorinesession";
-        /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
         public const string FluorineConnectionKey = "__@fluorineconnection";
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -95,52 +93,92 @@ namespace FluorineFx.Context
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         public const string FluorineDataServiceTransaction = "__@fluorinedataservicetransaction";
-        /// <summary>
-		/// Global FlexClient Id value stored by FluorineFx.
-		/// </summary>
-		public const string FlexClientIdHeader = "DSId";
+
+        static ApplicationState AppState = new ApplicationState();
+
+        protected ISession _session;
+        protected IClient _client;
+        protected IConnection _connection;
 
 		internal FluorineContext()
 		{
 		}
+
+        /// <summary>
+        /// Gets the Session instance for the current request.
+        /// </summary>
+        public ISession Session { get { return _session; } }
+        internal virtual void SetSession(ISession session)
+        {
+            _session = session;
+        }
+        /// <summary>
+        /// Gets the current Connection object.
+        /// </summary>
+        public IConnection Connection{ get { return _connection; } }
+        internal virtual void SetConnection(IConnection connection)
+        {
+            _connection = connection;
+        }
+        /// <summary>
+        /// Gets the current Client object.
+        /// </summary>
+        public IClient Client { get { return _client; } }
+        /// <summary>
+        /// Gets the current Client identity.
+        /// </summary>
+        public string ClientId
+        {
+            get
+            {
+                if (this.Client != null)
+                    return this.Client.Id;
+                return null;
+            }
+        }
+        internal virtual void SetClient(IClient client)
+        {
+            _client = client;
+        }
 
         /// <summary>Gets the FluorineContext object for the current HTTP/RTMP request.</summary>
 		static public FluorineContext Current
 		{
 			get
 			{
-                FluorineContext context = null;
-                HttpContext ctx = HttpContext.Current;
-                if (ctx != null)
-                    return ctx.Items[FluorineContext.FluorineContextKey] as FluorineContext;
-                try
-                {
-                    // See if we're running in full trust
-                    new SecurityPermission(PermissionState.Unrestricted).Demand();
-                    context = WebSafeCallContext.GetData(FluorineContext.FluorineContextKey) as FluorineContext;
-                }
-                catch (SecurityException)
-                {
-                }
-				return context;
+                return FluorineWebSafeCallContext.GetData(FluorineContext.FluorineContextKey) as FluorineContext;
 			}
 		}
 
-        /// <summary>
-        /// Gets a key-value collection that can be used to organize and share data between
-        /// an IHttpModule and an IHttpHandler during an HTTP request.
-        /// </summary>
-		public abstract IDictionary Items { get; }
 		/// <summary>
 		/// Enables sharing of global information across multiple sessions and requests within an application.
 		/// </summary>
-		public abstract IApplicationState ApplicationState { get; }
-        /// <summary>Gets or sets security information for the current request.</summary>
-		public abstract IPrincipal User {get; set;}
-		/// <summary>
-		/// Gets the SessionState instance for the current request.
-		/// </summary>
-		public abstract ISessionState Session { get; }
+		public IApplicationState ApplicationState 
+        {
+            get
+            {
+                return AppState;
+            }
+        }
+        
+        /// <summary>
+        /// Gets security information for the current request.
+        /// </summary>
+		public IPrincipal User 
+        {            
+            get 
+            { 
+                //return _principal; 
+                MessageBroker messageBroker = MessageBroker.GetMessageBroker(MessageBroker.DefaultMessageBrokerId);
+                return messageBroker.LoginManager.Principal;
+            }
+        }
+
+        public bool Logout()
+        {
+            MessageBroker messageBroker = MessageBroker.GetMessageBroker(MessageBroker.DefaultMessageBrokerId);
+            return messageBroker.LoginManager.Logout();
+        }
 
 		/// <summary>
 		/// Gets the base directory for this <see cref="AppDomain"/>
@@ -219,36 +257,6 @@ namespace FluorineFx.Context
         /// </summary>
 		public abstract string ActivationMode{ get; }
 
-        internal abstract string EncryptCredentials(IEndpoint endpoint, IPrincipal principal, string userId, string password);
-        /// <summary>
-        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="principal"></param>
-        /// <param name="userId"></param>
-        /// <param name="password"></param>
-		public abstract void StorePrincipal(IPrincipal principal, string userId, string password);
-
-        internal abstract void StorePrincipal(IPrincipal principal, string key);
-        /// <summary>
-        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="loginCommand"></param>
-        /// <returns></returns>
-		public abstract IPrincipal RestorePrincipal(ILoginCommand loginCommand);
-
-        internal abstract IPrincipal RestorePrincipal(ILoginCommand loginCommand, string key);
-        /// <summary>
-        /// Clears the current Principal.
-        /// </summary>
-        public abstract void ClearPrincipal();
-
-        /// <summary>
-        /// Gets the current Connection object.
-        /// </summary>
-        public virtual FluorineFx.Messaging.Api.IConnection Connection
-        {
-            get { return null; }
-        }
         /// <summary>
         /// Return an <see cref="FluorineFx.Context.IResource"/> handle for the specified location.
         /// </summary>
@@ -257,26 +265,6 @@ namespace FluorineFx.Context
         public virtual IResource GetResource(string location)
         {
             return new FileSystemResource(location);
-        }
-
-        internal virtual void SetCurrentClient(IClient client)
-        {
-        }
-        /// <summary>
-        /// Gets the current Client object.
-        /// </summary>
-        public abstract IClient Client { get; }
-        /// <summary>
-        /// Gets the current Client identity.
-        /// </summary>
-        public string ClientId 
-        {
-            get
-            {
-                if (this.Client != null)
-                    return this.Client.Id;
-                return null;
-            }
         }
 	}
 }

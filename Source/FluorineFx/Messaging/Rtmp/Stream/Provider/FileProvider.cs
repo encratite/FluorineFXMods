@@ -133,17 +133,16 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Provider
         {
             if(typeof(IPassive).Name.Equals(oobCtrlMsg.Target))
             {
-                if (oobCtrlMsg.ServiceName.Equals("Init"))
+                if (oobCtrlMsg.ServiceName.Equals("init"))
                 {
-                    int startTS = (int)oobCtrlMsg.ServiceParameterMap["startTS"];
-                    _start = startTS;
+                    _start = System.Convert.ToInt32(oobCtrlMsg.ServiceParameterMap["startTS"]);
                 }
             }
             else if (typeof(ISeekableProvider).Name.Equals(oobCtrlMsg.Target))
             {
-                if (oobCtrlMsg.ServiceName.Equals("Seek"))
+                if (oobCtrlMsg.ServiceName.Equals("seek"))
                 {
-                    int position = (int)oobCtrlMsg.ServiceParameterMap["position"];
+                    int position = System.Convert.ToInt32(oobCtrlMsg.ServiceParameterMap["position"]);
                     int seekPos = Seek(position);
                     // Return position we seeked to
                     oobCtrlMsg.Result = seekPos;
@@ -151,7 +150,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Provider
             }
             else if (typeof(IStreamTypeAwareProvider).Name.Equals(oobCtrlMsg.Target))
             {
-                if (oobCtrlMsg.ServiceName.Equals("HasVideo"))
+                if (oobCtrlMsg.ServiceName.Equals("hasVideo"))
                 {
                     oobCtrlMsg.Result = this.HasVideo();
                 }
@@ -193,6 +192,9 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Provider
                         break;
                     case Constants.TypeNotify:
                         msg = new Notify(tag.Body);
+                        break;
+                    case Constants.TypeFlexStreamEnd:
+                        msg = new FlexStreamSend(tag.Body);
                         break;
                     default:
                         log.Warn("Unexpected type " + tag.DataType);

@@ -40,23 +40,25 @@ namespace FluorineFx.Messaging.Endpoints
     class RemotingConnection : BaseConnection
     {
         private static ILog log = LogManager.GetLogger(typeof(RemotingConnection));
-        IPEndPoint _remoteEndPoint;
         IEndpoint _endpoint;
 
-        public RemotingConnection(IEndpoint endpoint, string path, string connectionId, Hashtable parameters)
+        public RemotingConnection(IEndpoint endpoint, ISession session, string path, string connectionId, Hashtable parameters)
             : base(path, connectionId, parameters)
         {
             _endpoint = endpoint;
-            IPAddress ipAddress = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
-            _remoteEndPoint = new IPEndPoint(ipAddress, 80);
+            _session = session;
         }
 
         public override IPEndPoint RemoteEndPoint
         {
-            get { return _remoteEndPoint; }
+            get 
+            {
+                IPAddress ipAddress = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
+                return new IPEndPoint(ipAddress, 80);
+            }
         }
 
-        public FluorineFx.Messaging.Endpoints.IEndpoint Endpoint { get { return _endpoint; } }
+        public IEndpoint Endpoint { get { return _endpoint; } }
 
         public override long ReadBytes
         {
@@ -73,6 +75,7 @@ namespace FluorineFx.Messaging.Endpoints
             get { return -1; }
         }
 
+        /*
         public override int ClientLeaseTime
         {
             get
@@ -89,5 +92,6 @@ namespace FluorineFx.Messaging.Endpoints
                 return timeout;
             }
         }
+        */
     }
 }

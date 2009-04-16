@@ -78,6 +78,14 @@ namespace FluorineFx.Messaging.Rtmp
 			get{ return _contextPath; }
 		}
 
+        public override IEndpoint Endpoint
+        {
+            get
+            {
+                return _endpoint;
+            }
+        }
+
 		public void SetContextPath(string contextPath)
 		{
 			_contextPath = contextPath;

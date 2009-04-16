@@ -44,7 +44,8 @@ namespace FluorineFx.Messaging
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(MessageServer));
 
-        ServiceConfigSettings _serviceConfigSettings;
+        private static object _syncLock = new object();
+        ServicesConfiguration _servicesConfiguration;
 		MessageBroker	_messageBroker;
         PolicyServer _policyServer;
 
@@ -54,10 +55,15 @@ namespace FluorineFx.Messaging
 		public MessageServer()
 		{
 		}
-        
-        internal ServiceConfigSettings ServiceConfigSettings
+
+        /// <summary>
+        /// Gets an object that can be used to synchronize access. 
+        /// </summary>
+        public object SyncRoot { get { return _syncLock; } }
+
+        internal ServicesConfiguration ServicesConfiguration
         {
-            get { return _serviceConfigSettings; }
+            get { return _servicesConfiguration; }
         }
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -76,72 +82,112 @@ namespace FluorineFx.Messaging
 		{
 			_messageBroker = new MessageBroker(this);
 
-            _serviceConfigSettings = ServiceConfigSettings.Load(configPath, "services-config.xml");
-            foreach (ChannelSettings channelSettings in _serviceConfigSettings.ChannelsSettings)
+            string servicesConfigFile = Path.Combine(configPath, "services-config.xml");
+            if (File.Exists(servicesConfigFile))
             {
-                Type type = ObjectFactory.Locate(channelSettings.Class);
+                _servicesConfiguration = ServicesConfiguration.Load(configPath, "services-config.xml");
+            }
+            else
+            {
+                log.Debug(__Res.GetString(__Res.MessageServer_LoadingConfigDefault, servicesConfigFile));
+                _servicesConfiguration = ServicesConfiguration.CreateDefault();
+            }
+
+            foreach (ChannelDefinition channelDefinition in _servicesConfiguration.Channels)
+            {
+                Type type = ObjectFactory.Locate(FluorineConfiguration.Instance.ClassMappings.GetType(channelDefinition.Endpoint.Class));
                 if (type != null)
                 {
-                    IEndpoint endpoint = ObjectFactory.CreateInstance(type, new object[] { _messageBroker, channelSettings }) as IEndpoint;
+                    IEndpoint endpoint = ObjectFactory.CreateInstance(type, new object[] { _messageBroker, channelDefinition }) as IEndpoint;
                     if (endpoint != null)
                         _messageBroker.AddEndpoint(endpoint);
                 }
                 else
-                    log.Error(__Res.GetString(__Res.Type_InitError, channelSettings.Class));
-
-                ChannelSettings rtmptChannelSettings = new ChannelSettings(RtmptEndpoint.FluorineRtmptEndpointId, null);
-                IEndpoint rtmptEndpoint = new RtmptEndpoint(_messageBroker, rtmptChannelSettings);
-                _messageBroker.AddEndpoint(rtmptEndpoint);
+                    log.Error(__Res.GetString(__Res.Type_InitError, channelDefinition.Class));
             }
-            foreach (FactorySettings factorySettings in _serviceConfigSettings.FactoriesSettings)
+            ChannelDefinition rtmptChannelDefinition = new ChannelDefinition();
+            rtmptChannelDefinition.Id = RtmptEndpoint.FluorineRtmptEndpointId;
+            IEndpoint rtmptEndpoint = new RtmptEndpoint(_messageBroker, rtmptChannelDefinition);
+            _messageBroker.AddEndpoint(rtmptEndpoint);
+
+            if (_servicesConfiguration.Factories != null)
             {
-                Type type = ObjectFactory.Locate(factorySettings.ClassId);
-                if (type != null)
+                foreach (Factory factory in _servicesConfiguration.Factories)
                 {
-                    IFlexFactory flexFactory = ObjectFactory.CreateInstance(type, new object[0]) as IFlexFactory;
-                    if (flexFactory != null)
-                        _messageBroker.AddFactory(factorySettings.Id, flexFactory);
+                    Type type = ObjectFactory.Locate(FluorineConfiguration.Instance.ClassMappings.GetType(factory.Class));
+                    if (type != null)
+                    {
+                        IFlexFactory flexFactory = ObjectFactory.CreateInstance(type, new object[0]) as IFlexFactory;
+                        if (flexFactory != null)
+                            _messageBroker.AddFactory(factory.Id, flexFactory);
+                    }
+                    else
+                        log.Error(__Res.GetString(__Res.Type_InitError, factory.Class));
                 }
-                else
-                    log.Error(__Res.GetString(__Res.Type_InitError, factorySettings.ClassId));
             }
             //Add the dotnet Factory
             _messageBroker.AddFactory("dotnet", new DotNetFactory());
             
             if (serviceBrowserAvailable)
             {
-                if (_serviceConfigSettings.ServiceSettings[RemotingService.RemotingServiceId] != null)
+                ServiceDefinition serviceConfiguration = _servicesConfiguration.GetServiceByClass("flex.messaging.services.RemotingService");
+                if (serviceConfiguration != null)
                 {
-                    ServiceSettings remoteServiceSettings = _serviceConfigSettings.ServiceSettings[RemotingService.RemotingServiceId];
-                    AdapterSettings adapterSettings = _serviceConfigSettings.ServiceSettings[RemotingService.RemotingServiceId].AdapterSettings["dotnet"];
-                    InstallServiceBrowserDestinations(remoteServiceSettings, adapterSettings);
+                    AdapterDefinition adapter = serviceConfiguration.GetAdapterByClass(typeof(FluorineFx.Remoting.RemotingAdapter).FullName);
+                    if( adapter != null )
+                        InstallServiceBrowserDestinations(serviceConfiguration, adapter);
                 }
             }
-            foreach (ServiceSettings serviceSettings in _serviceConfigSettings.ServiceSettings)
+            if (_servicesConfiguration.Services.ServiceDefinitions != null)
             {
-                Type type = ObjectFactory.Locate(serviceSettings.Class);//current assembly only
-                if (type != null)
+                foreach (ServiceDefinition serviceDefinition in _servicesConfiguration.Services.ServiceDefinitions)
                 {
-                    IService service = ObjectFactory.CreateInstance(type, new object[] { _messageBroker, serviceSettings }) as IService;
-                    if (service != null)
-                        _messageBroker.AddService(service);
-                }
-                else
-                    log.Error(__Res.GetString(__Res.Type_InitError, serviceSettings.Class));
-            }
-            if (_serviceConfigSettings.SecuritySettings != null)
-            {
-                if (_serviceConfigSettings.SecuritySettings.LoginCommands != null && _serviceConfigSettings.SecuritySettings.LoginCommands.Count > 0)
-                {
-                    string loginCommandClass = _serviceConfigSettings.SecuritySettings.LoginCommands.GetLoginCommand(LoginCommandSettings.FluorineLoginCommand);
-                    Type type = ObjectFactory.Locate(loginCommandClass);
+                    Type type = ObjectFactory.Locate(FluorineConfiguration.Instance.ClassMappings.GetType(serviceDefinition.Class));//current assembly only
                     if (type != null)
                     {
-                        ILoginCommand loginCommand = ObjectFactory.CreateInstance(type, new object[] { }) as ILoginCommand;
-                        _messageBroker.LoginCommand = loginCommand;
+                        IService service = ObjectFactory.CreateInstance(type, new object[] { _messageBroker, serviceDefinition }) as IService;
+                        if (service != null)
+                            _messageBroker.AddService(service);
                     }
                     else
-                        log.Error(__Res.GetString(__Res.Type_InitError, loginCommandClass));
+                        log.Error(__Res.GetString(__Res.Type_InitError, serviceDefinition.Class));
+                }
+            }
+            if (_servicesConfiguration.Services.Includes != null)
+            {
+                foreach (ServiceInclude include in _servicesConfiguration.Services.Includes)
+                {
+                    ServiceDefinition serviceDefinition = include.ServiceDefinition;
+                    Type type = ObjectFactory.Locate(FluorineConfiguration.Instance.ClassMappings.GetType(serviceDefinition.Class));//current assembly only
+                    if (type != null)
+                    {
+                        IService service = ObjectFactory.CreateInstance(type, new object[] { _messageBroker, serviceDefinition }) as IService;
+                        if (service != null)
+                            _messageBroker.AddService(service);
+                    }
+                    else
+                        log.Error(__Res.GetString(__Res.Type_InitError, serviceDefinition.Class));
+                }
+            }
+            if (_servicesConfiguration.Security != null)
+            {
+                if (_servicesConfiguration.Security.LoginCommands != null && _servicesConfiguration.Security.LoginCommands.Length > 0)
+                {
+                    LoginCommand loginCommand = _servicesConfiguration.Security.GetLoginCommand(LoginCommand.FluorineLoginCommand);
+                    if (loginCommand != null)
+                    {
+                        Type type = ObjectFactory.Locate(FluorineConfiguration.Instance.ClassMappings.GetType(loginCommand.Class));
+                        if (type != null)
+                        {
+                            ILoginCommand loginCommandObj = ObjectFactory.CreateInstance(type, new object[] { }) as ILoginCommand;
+                            _messageBroker.LoginManager.LoginCommand = loginCommandObj;
+                            _messageBroker.LoginManager.IsPerClientAuthentication = loginCommand.IsPerClientAuthentication;
+                        }
+                        else
+                            log.Error(__Res.GetString(__Res.Type_InitError, loginCommand.Class));
+                    }
+                    else
+                        log.Error(__Res.GetString(__Res.Type_InitError, "<<LoginCommand class>>"));
                 }
             }
             InitAuthenticationService();
@@ -167,30 +213,42 @@ namespace FluorineFx.Messaging
             }
 		}
 
-        private void InstallServiceBrowserDestinations(ServiceSettings serviceSettings, AdapterSettings adapterSettings)
+        private void InstallServiceBrowserDestinations(ServiceDefinition service, AdapterDefinition adapter)
         {
             //ServiceBrowser destinations
-            DestinationSettings destinationSettings = new DestinationSettings(serviceSettings, DestinationSettings.FluorineServiceBrowserDestination, adapterSettings, DestinationSettings.FluorineServiceBrowserDestination);
-            serviceSettings.DestinationSettings.Add(destinationSettings);
+            DestinationDefinition destination = new DestinationDefinition(service);
+            destination.Id = DestinationDefinition.FluorineServiceBrowserDestination;
+            destination.Properties.Source = DestinationDefinition.FluorineServiceBrowserDestination;
+            destination.AdapterRef = new AdapterRef(adapter);
+            service.AddDestination(destination);
 
-            destinationSettings = new DestinationSettings(serviceSettings, DestinationSettings.FluorineManagementDestination, adapterSettings, DestinationSettings.FluorineManagementDestination);
-            serviceSettings.DestinationSettings.Add(destinationSettings);
+            destination = new DestinationDefinition(service);
+            destination.Id = DestinationDefinition.FluorineManagementDestination;
+            destination.Properties.Source = DestinationDefinition.FluorineManagementDestination;
+            destination.AdapterRef = new AdapterRef(adapter);
+            service.AddDestination(destination);
 
-            destinationSettings = new DestinationSettings(serviceSettings, DestinationSettings.FluorineCodeGeneratorDestination, adapterSettings, DestinationSettings.FluorineCodeGeneratorDestination);
-            serviceSettings.DestinationSettings.Add(destinationSettings);
+            destination = new DestinationDefinition(service);
+            destination.Id = DestinationDefinition.FluorineCodeGeneratorDestination;
+            destination.Properties.Source = DestinationDefinition.FluorineCodeGeneratorDestination;
+            destination.AdapterRef = new AdapterRef(adapter);
+            service.AddDestination(destination);
 
-            destinationSettings = new DestinationSettings(serviceSettings, DestinationSettings.FluorineSqlServiceDestination, adapterSettings, DestinationSettings.FluorineSqlServiceDestination);
-            serviceSettings.DestinationSettings.Add(destinationSettings);
+            destination = new DestinationDefinition(service);
+            destination.Id = DestinationDefinition.FluorineSqlServiceDestination;
+            destination.Properties.Source = DestinationDefinition.FluorineSqlServiceDestination;
+            destination.AdapterRef = new AdapterRef(adapter);
+            service.AddDestination(destination);
         }
 
 		private void InitAuthenticationService()
 		{
-            ServiceSettings serviceSettings = new ServiceSettings(_serviceConfigSettings, AuthenticationService.ServiceId, typeof(AuthenticationService).FullName);
-			string messageType = "flex.messaging.messages.AuthenticationMessage";
-			string typeName = FluorineConfiguration.Instance.ClassMappings.GetType(messageType);
-			serviceSettings.SupportedMessageTypes[messageType] = typeName;
-            _serviceConfigSettings.ServiceSettings.Add(serviceSettings);
-			AuthenticationService service = new AuthenticationService(_messageBroker, serviceSettings);
+            ServiceDefinition serviceDefinition = new ServiceDefinition(_servicesConfiguration);
+            serviceDefinition.Id = AuthenticationService.ServiceId;
+            serviceDefinition.Class = typeof(AuthenticationService).FullName;
+            serviceDefinition.MessageTypes = "flex.messaging.messages.AuthenticationMessage";
+            _servicesConfiguration.Services.AddService(serviceDefinition);
+            AuthenticationService service = new AuthenticationService(_messageBroker, serviceDefinition);
 			_messageBroker.AddService(service);
 		}
         /// <summary>
@@ -202,53 +260,65 @@ namespace FluorineFx.Messaging
         /// </summary>
 		public void Start()
 		{
-			if (log.IsInfoEnabled)
-				log.Info(__Res.GetString(__Res.MessageServer_Start));
-            if (_messageBroker != null)
+            lock (this.SyncRoot)
             {
-                _messageBroker.Start();
+                if (log.IsInfoEnabled)
+                    log.Info(__Res.GetString(__Res.MessageServer_Start));
+                if (_messageBroker != null)
+                {
+                    _messageBroker.Start();
+                }
+                else
+                    log.Error(__Res.GetString(__Res.MessageServer_StartError));
             }
-            else
-                log.Error(__Res.GetString(__Res.MessageServer_StartError));
 		}
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
 		public void Stop()
 		{
-			if( _messageBroker != null )
-			{
-				if (log.IsInfoEnabled)
-					log.Info(__Res.GetString(__Res.MessageServer_Stop));
-				if( _messageBroker != null )
-				{
-					_messageBroker.Stop();
-					_messageBroker = null;
-				}
-                if (_policyServer != null)
+            lock (this.SyncRoot)
+            {
+                if (_messageBroker != null)
                 {
-                    _policyServer.Close();
-                    _policyServer = null;
+                    if (log.IsInfoEnabled)
+                        log.Info(__Res.GetString(__Res.MessageServer_Stop));
+                    if (_messageBroker != null)
+                    {
+                        _messageBroker.Stop();
+                        _messageBroker = null;
+                    }
+                    if (_policyServer != null)
+                    {
+                        _policyServer.Close();
+                        _policyServer = null;
+                    }
                 }
-			}
+            }
 		}
 
 		#region IDisposable Members
 
 		protected override void Free()
 		{
-			if (_messageBroker != null)
-			{
-				Stop();
-			}
+            lock (this.SyncRoot)
+            {
+                if (_messageBroker != null)
+                {
+                    Stop();
+                }
+            }
 		}
 
 		protected override void FreeUnmanaged()
 		{
-			if (_messageBroker != null)
-			{
-				Stop();
-			}
+            lock (this.SyncRoot)
+            {
+                if (_messageBroker != null)
+                {
+                    Stop();
+                }
+            }
 		}
 
 

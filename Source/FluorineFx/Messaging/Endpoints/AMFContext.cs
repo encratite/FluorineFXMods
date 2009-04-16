@@ -81,35 +81,12 @@ namespace FluorineFx.Messaging.Endpoints
         {
             get
             {
-                AMFContext context = null;
-                HttpContext ctx = HttpContext.Current;
-                if (ctx != null)
-                    return ctx.Items[AMFContext.FluorineAMFContextKey] as AMFContext;
-                try
-                {
-                    // See if we're running in full trust
-                    new SecurityPermission(PermissionState.Unrestricted).Demand();
-                    context = WebSafeCallContext.GetData(AMFContext.FluorineAMFContextKey) as AMFContext;
-                }
-                catch (SecurityException)
-                {
-                }
+                AMFContext context = FluorineWebSafeCallContext.GetData(AMFContext.FluorineAMFContextKey) as AMFContext;
                 return context;
             }
             set
             {
-                try
-                {
-                    // See if we're running in full trust
-                    new SecurityPermission(PermissionState.Unrestricted).Demand();
-                    WebSafeCallContext.SetData(AMFContext.FluorineAMFContextKey, value);
-                }
-                catch (SecurityException)
-                {
-                    HttpContext ctx = HttpContext.Current;
-                    if (ctx != null)
-                        ctx.Items[AMFContext.FluorineAMFContextKey] = value;
-                }
+                FluorineWebSafeCallContext.SetData(AMFContext.FluorineAMFContextKey, value);
             }
         }        
 	}

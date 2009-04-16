@@ -118,10 +118,14 @@ namespace FluorineFx.Json.Rpc
 
     this['setCredentials'] = function(userid, password)
     {
-        if( userid == null && password == null )
-            this.credentials = null;
-        else
-            this.credentials = Base64.encode(userid + ':' + password);
+        this.credentials = Base64.encode(userid + ':' + password);
+    }
+
+    this['clearCredentials'] = function()
+    {
+        var request = { id : nextId++, method : 'clearCredentials', params : [] };
+        this.credentials = null;
+        callSync('clearCredentials', request);
     }
 
     function call(method, params, callback)

@@ -23,8 +23,8 @@ using System.Security;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Security;
-
 using FluorineFx.Context;
+using FluorineFx.Messaging;
 
 namespace FluorineFx.Security
 {
@@ -68,8 +68,8 @@ namespace FluorineFx.Security
 		/// <returns>A Boolean value indicating whether the principal has been logged out.</returns>
 		public virtual bool Logout(IPrincipal principal)
 		{
-            if (FluorineContext.Current != null)
-                FluorineContext.Current.ClearPrincipal();
+            //if (FluorineContext.Current != null)
+            //    FluorineContext.Current.ClearPrincipal();
 			return true;
 		}
 		/// <summary>
@@ -93,7 +93,7 @@ namespace FluorineFx.Security
 		/// <param name="username">The principal being authenticated.</param>
 		/// <param name="credentials">The credentials are passed as a Hashtable to allow for extra properties to be passed in the future. For now, only a "password" property is sent.</param>
 		/// <returns>A principal object represents the security context of the user.</returns>
-		public virtual IPrincipal DoAuthentication(string username, Hashtable credentials)
+		public virtual IPrincipal DoAuthentication(string username, IDictionary credentials)
 		{
 			GenericIdentity identity = new GenericIdentity(username);
 			GenericPrincipal principal = new GenericPrincipal(identity, new string[]{});

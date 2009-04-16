@@ -38,7 +38,14 @@ namespace FluorineFx.Messaging.Rtmp
     {
         private Socket _socket;
 
-        public RtmpNetworkStream(Socket socket) : base( new NetworkStream(socket, false) )
+        public RtmpNetworkStream(Socket socket)
+            : base(new NetworkStream(socket, false))
+        {
+            _socket = socket;
+        }
+
+        public RtmpNetworkStream(Socket socket, System.IO.Stream stream)
+            : base(stream)
         {
             _socket = socket;
         }

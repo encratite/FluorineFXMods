@@ -67,11 +67,11 @@ namespace FluorineFx.Messaging
     /// }
     /// </code>
     /// </example>
+	[CLSCompliant(false)]
     public class ClientManager : IClientRegistry
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(ClientManager));
         object _objLock = new object();
-        private static Hashtable _sessionCreatedListeners = new Hashtable();
 
         MessageBroker _messageBroker;
         Hashtable _clients;
@@ -88,49 +88,15 @@ namespace FluorineFx.Messaging
 
         internal string GetNextId()
         {
-            return Guid.NewGuid().ToString("N");
-        }
-        /// <summary>
-        /// Adds a session create listener that will be notified when the session is created.
-        /// </summary>
-        /// <param name="listener">The listener to add.</param>
-        public static void AddSessionCreatedListener(ISessionListener listener)
-        {
-            if (listener == null)
-                return;
-            lock (_sessionCreatedListeners.SyncRoot)
-            {
-                _sessionCreatedListeners[listener] = null;
-            }
-        }
-        /// <summary>
-        /// Removes a session create listener.
-        /// </summary>
-        /// <param name="listener">The listener to remove.</param>
-        public static void RemoveSessionCreatedListener(ISessionListener listener)
-        {
-            if (listener == null)
-                return;
-            lock (_sessionCreatedListeners.SyncRoot)
-            {
-                if (_sessionCreatedListeners.Contains(listener))
-                    _sessionCreatedListeners.Remove(listener);
-            }
-        }
-        /// <summary>
-        /// Notifies session listeners.
-        /// </summary>
-        /// <param name="client">The client(sesion) created.</param>
-        protected void NotifyCreated(IClient client)
-        {
-            lock (_sessionCreatedListeners.SyncRoot)
-            {
-                foreach (ISessionListener listener in _sessionCreatedListeners.Keys)
-                    listener.SessionCreated(client);
-            }
+            return Guid.NewGuid().ToString("D");
         }
 
         #region IClientRegistry Members
+
+        /// <summary>
+        /// Gets an object that can be used to synchronize access. 
+        /// </summary>
+        public object SyncRoot { get { return _objLock; } }
 
         /// <summary>
         /// Returns an existing client from the message header transporting the global FlexClient Id value or creates a new one if not found.
@@ -139,12 +105,15 @@ namespace FluorineFx.Messaging
         /// <returns>The client object.</returns>
         public IClient GetClient(IMessage message)
         {
-            if (message.HeaderExists(MessageBase.FlexClientIdHeader))
+            lock (this.SyncRoot)
             {
-                string clientId = message.GetHeader(MessageBase.FlexClientIdHeader) as string;
-                return GetClient(clientId);
+                IClient client = GetClient(message.GetFlexClientId());
+                if (message is MessageBase)
+                    (message as MessageBase).SetFlexClientId(client.Id);
+                else
+                    Debug.Assert(false);
+                return client;
             }
-            return null;
         }
         /// <summary>
         /// Returns an existing client from a client id or creates a new one if not found.
@@ -153,7 +122,7 @@ namespace FluorineFx.Messaging
         /// <returns>The client object.</returns>
         public IClient GetClient(string id)
         {
-            lock (_objLock)
+            lock (this.SyncRoot)
             {
                 if (_clients.ContainsKey(id))
                 {
@@ -161,12 +130,13 @@ namespace FluorineFx.Messaging
                     return _clients[id] as Client;
                 }
                 if (id == null || id == "nil" || id == string.Empty)
-                    id = Guid.NewGuid().ToString("N");
+                    id = Guid.NewGuid().ToString("D");
                 Client client = new Client(this, id);
+                _clients[id] = client;
                 int clientLeaseTime = 1;
-                log.Debug(string.Format("Creating new Client {0}", id));
+                log.Debug(__Res.GetString(__Res.Client_Create, id));
                 Renew(client, clientLeaseTime);
-                NotifyCreated(client);
+                //client.NotifyCreated();
                 return client;
             }
         }
@@ -179,7 +149,7 @@ namespace FluorineFx.Messaging
         {
             if (id == null)
                 return false;
-            lock (_objLock)
+            lock (this.SyncRoot)
             {
                 return _clients.ContainsKey(id);
             }
@@ -194,7 +164,7 @@ namespace FluorineFx.Messaging
             if (clientId == null)
                 return null;
 
-            lock (_objLock)
+            lock (this.SyncRoot)
             {
                 Client client = null;
                 if (_clients.Contains(clientId))
@@ -211,61 +181,63 @@ namespace FluorineFx.Messaging
 
         internal void Renew(Client client, int clientLeaseTime)
         {
-            lock (_objLock)
+            if (client.ClientLeaseTime == clientLeaseTime)
             {
-                _clients[client.Id] = client;
-                HttpRuntime.Cache.Remove(client.Id);
+                //Keep the client in the cache.
+                HttpRuntime.Cache.Get(client.Id);
+                return;
+            }
+            lock (this.SyncRoot)
+            {
                 if (client.ClientLeaseTime < clientLeaseTime)
                 {
+                    log.Debug(__Res.GetString(__Res.Client_Lease, client.Id, client.ClientLeaseTime, clientLeaseTime));
                     client.SetClientLeaseTime(clientLeaseTime);
-                    log.Debug(string.Format("Renew Client {0} clientLeaseTime {1}", client.Id, clientLeaseTime));
                 }
                 if (clientLeaseTime == 0)
                 {
+                    log.Debug(__Res.GetString(__Res.Client_Lease, client.Id, client.ClientLeaseTime, clientLeaseTime));
                     client.SetClientLeaseTime(0);
-                    log.Debug(string.Format("Renew Client {0} clientLeaseTime {1}", client.Id, clientLeaseTime));
                 }
                 if (client.ClientLeaseTime != 0)
                 {
+                    HttpRuntime.Cache.Remove(client.Id);
                     // Add the FlexClient to the Cache with the expiration item
                     HttpRuntime.Cache.Insert(client.Id, client, null,
                         Cache.NoAbsoluteExpiration,
                         new TimeSpan(0, client.ClientLeaseTime, 0),
                         CacheItemPriority.NotRemovable, new CacheItemRemovedCallback(this.RemovedCallback));
                 }
+                else
+                    HttpRuntime.Cache.Remove(client.Id);
             }
         }
 
-        internal Client RemoveSubscriber(Client client)
+        internal IClient RemoveSubscriber(IClient client)
         {
-            lock (_objLock)
+            lock (this.SyncRoot)
             {
-                RemoveSubscriber(client.Id);
+                if (_clients.ContainsKey(client.Id))
+                {
+                    if (log.IsDebugEnabled)
+                        log.Debug(__Res.GetString(__Res.ClientManager_Remove, client.Id));
+                    HttpRuntime.Cache.Remove(client.Id);
+                    _clients.Remove(client.Id);
+                }
                 return client;
             }
         }
 
-        internal Client RemoveSubscriber(string clientId)
+        public void CancelTimeout(IClient client)
         {
-            lock (_objLock)
-            {
-                //if (log.IsDebugEnabled)
-                //    log.Debug(string.Format("Removing Flex Client {0}", clientId));
-                if (log.IsDebugEnabled)
-                    log.Debug(__Res.GetString(__Res.SubscriptionManager_Remove, clientId));
-
-                Client client = _clients[clientId] as Client;
-                HttpRuntime.Cache.Remove(clientId);
-                _clients.Remove(clientId);
-                return client;
-            }
+            HttpRuntime.Cache.Remove(client.Id);
         }
 
         internal void RemovedCallback(string key, object value, CacheItemRemovedReason callbackReason)
         {
             if (callbackReason == CacheItemRemovedReason.Expired)
             {
-                lock (_objLock)
+                lock (this.SyncRoot)
                 {
                     if (_clients.Contains(key))
                     {
@@ -275,14 +247,18 @@ namespace FluorineFx.Messaging
                             if (client != null)
                             {
                                 if (log.IsDebugEnabled)
-                                    log.Debug(__Res.GetString(__Res.SubscriptionManager_CacheExpired, client.Id));
+                                    log.Debug(__Res.GetString(__Res.ClientManager_CacheExpired, client.Id));
+
+                                _TimeoutContext context = new _TimeoutContext(client);
+                                FluorineWebSafeCallContext.SetData(FluorineContext.FluorineContextKey, context);
                                 client.Timeout();
+                                RemoveSubscriber(client);
                             }
                         }
                         catch (Exception ex)
                         {
                             if (log.IsErrorEnabled)
-                                log.Error(__Res.GetString(__Res.SubscriptionManager_CacheExpired, string.Empty), ex);
+                                log.Error(__Res.GetString(__Res.ClientManager_CacheExpired, key), ex);
                         }
                     }
                 }

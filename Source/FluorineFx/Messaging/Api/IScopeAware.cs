@@ -23,6 +23,7 @@ namespace FluorineFx.Messaging.Api
 	/// <summary>
 	/// Marker interface for all objects that are aware of the scope they are located in.
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IScopeAware
 	{
 		/// <summary>

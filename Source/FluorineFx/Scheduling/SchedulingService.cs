@@ -347,11 +347,14 @@ namespace FluorineFx.Scheduling
                         numPauses = (int)(timeUntilContinue / spinInterval);
                     }
                 }
+                catch (ThreadAbortException)
+                {
+                }
                 catch (Exception ex)
                 {
                     log.Error("Runtime error occured in main trigger firing loop.", ex);
                 }
-            } // loop...
+            }
         }
 
         public void ProcessJob(object state)

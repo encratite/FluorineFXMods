@@ -72,8 +72,8 @@ namespace FluorineFx.Messaging.Endpoints.Filter
 				//Check for Flex2 messages and handle
 				if( message != null )
 				{
-                    if (FluorineContext.Current.Client == null)
-                        FluorineContext.Current.SetCurrentClient(_endpoint.GetMessageBroker().ClientRegistry.GetClient(message));
+                    //if (FluorineContext.Current.Client == null)
+                    //    FluorineContext.Current.SetCurrentClient(_endpoint.GetMessageBroker().ClientRegistry.GetClient(message));
 
 					if(message.clientId == null)
 						message.clientId = Guid.NewGuid().ToString("D");

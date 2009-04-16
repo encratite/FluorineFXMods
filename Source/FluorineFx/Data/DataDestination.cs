@@ -37,7 +37,8 @@ namespace FluorineFx.Data
         private static readonly ILog log = LogManager.GetLogger(typeof(DataDestination));
 		SequenceManager _sequenceManager;
 
-		public DataDestination(IService service, DestinationSettings destinationSettings) : base (service, destinationSettings)
+        public DataDestination(IService service, DestinationDefinition destinationDefinition)
+            : base(service, destinationDefinition)
 		{
 			_sequenceManager = new SequenceManager(this);
 		}
@@ -47,14 +48,17 @@ namespace FluorineFx.Data
 			get{ return _sequenceManager; }
 		}
 
-		public string[] GetIdentityKeys()
+        public IdentityConfiguration[] GetIdentityKeys()
 		{
-			if( this.DestinationSettings.MetadataSettings != null )
+			if( this.DestinationDefinition.Properties.Metadata != null &&
+                this.DestinationDefinition.Properties.Metadata.Identity != null)
 			{
-				ArrayList identity = this.DestinationSettings.MetadataSettings.Identity;
-				return identity.ToArray(typeof(string)) as string[];
+				//ArrayList identity = this.DestinationSettings.MetadataSettings.Identity;
+				//return identity.ToArray(typeof(string)) as string[];
+                return this.DestinationDefinition.Properties.Metadata.Identity;
 			}
-			return new string[0];
+            return IdentityConfiguration.Empty;
+			//return new string[0];
 		}
 
 		public bool AutoRefreshFill(IList parameters)

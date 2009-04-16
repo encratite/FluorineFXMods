@@ -64,7 +64,7 @@ namespace FluorineFx.IO
 				foreach(DictionaryEntry entry in aso)
 #endif
                 {
-                    ClassMember classMember = new ClassMember(entry.Key as string, BindingFlags.Default, MemberTypes.Custom);
+                    ClassMember classMember = new ClassMember(entry.Key as string, BindingFlags.Default, MemberTypes.Custom, null);
                     classMemberList[i] = classMember;
                     i++;
                 }

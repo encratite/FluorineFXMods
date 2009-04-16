@@ -28,6 +28,8 @@ using log4net;
 #endif
 using FluorineFx.Collections;
 using FluorineFx.Messaging.Api;
+using FluorineFx.Threading;
+using FluorineFx.Util;
 
 namespace FluorineFx.Messaging
 {
@@ -41,7 +43,9 @@ namespace FluorineFx.Messaging
         private static ILog log = LogManager.GetLogger(typeof(BaseConnection));
 #endif
 
-        object _syncLock = new object();
+        private FastReaderWriterLock _readerWriterLock;
+
+        //object _syncLock = new object();
         /// <summary>
         /// Connection id.
         /// </summary>
@@ -57,15 +61,15 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Number of read messages.
         /// </summary>
-        protected long _readMessages;
+        protected AtomicLong _readMessages;
         /// <summary>
         /// Number of written messages.
         /// </summary>
-        protected long _writtenMessages;
+        protected AtomicLong _writtenMessages;
         /// <summary>
         /// Number of dropped messages.
         /// </summary>
-        protected long _droppedMessages;
+        protected AtomicLong _droppedMessages;
         /// <summary>
         /// Connection params passed from client with NetConnection.connect call.
         /// </summary>
@@ -74,6 +78,10 @@ namespace FluorineFx.Messaging
         /// Client bound to connection.
         /// </summary>
         protected IClient _client;
+        /// <summary>
+        /// Session bound to connection.
+        /// </summary>
+        protected ISession _session;
         /// <summary>
         /// Scope that connection belongs to.
         /// </summary>
@@ -121,6 +129,10 @@ namespace FluorineFx.Messaging
         /// <param name="parameters">Parameters passed from client.</param>
         internal BaseConnection(string path, string connectionId, IDictionary parameters)
         {
+            _readerWriterLock = new FastReaderWriterLock();
+            _readMessages = new AtomicLong();
+            _writtenMessages = new AtomicLong();
+            _droppedMessages = new AtomicLong();
             //V4 GUID should be safe to remove the 4 so we can use the id for rtmpt
             _connectionId = connectionId;
             _objectEncoding = ObjectEncoding.AMF0;
@@ -176,24 +188,31 @@ namespace FluorineFx.Messaging
             __fields = (value) ? (byte)(__fields | 8) : (byte)(__fields & ~8);
         }
 
-
-        #region IConnection Members
-
         /// <summary>
         /// Initializes client.
         /// </summary>
         /// <param name="client">Client bound to connection.</param>
         public void Initialize(IClient client)
         {
-            if (this.Client != null)
+            try
             {
-                // Unregister old client
-                this.Client.Unregister(this);
+                _readerWriterLock.AcquireWriterLock();
+                if (this.Client != null)
+                {
+                    // Unregister old client
+                    this.Client.Unregister(this);
+                }
+                _client = client;
+                // Register new client
+                _client.Register(this);
             }
-            _client = client;
-            // Register new client
-            _client.Register(this);
+            finally
+            {
+                _readerWriterLock.ReleaseWriterLock();
+            }
         }
+
+        #region IConnection Members
 
         /// <summary>
         /// Connect to another scope on server.
@@ -212,20 +231,28 @@ namespace FluorineFx.Messaging
         /// <returns>true on success, false otherwise.</returns>
         public virtual bool Connect(IScope scope, object[] parameters)
         {
-            IScope oldScope = _scope;
-            _scope = scope;
-            if (_scope.Connect(this, parameters))
+            try
             {
-                if (oldScope != null)
+                _readerWriterLock.AcquireWriterLock();
+                IScope oldScope = _scope;
+                _scope = scope;
+                if (_scope.Connect(this, parameters))
                 {
-                    oldScope.Disconnect(this);
+                    if (oldScope != null)
+                    {
+                        oldScope.Disconnect(this);
+                    }
+                    return true;
                 }
-                return true;
+                else
+                {
+                    _scope = oldScope;
+                    return false;
+                }
             }
-            else
+            finally
             {
-                _scope = oldScope;
-                return false;
+                _readerWriterLock.ReleaseWriterLock();
             }
         }
         /// <summary>
@@ -240,31 +267,41 @@ namespace FluorineFx.Messaging
         /// </summary>
         public virtual void Close()
         {
-            lock (this.SyncRoot)
+            try
             {
+                _readerWriterLock.AcquireWriterLock();
+
                 if (IsClosed)
                     return;
                 SetIsClosed(true);
+            }
+            finally
+            {
+                _readerWriterLock.ReleaseWriterLock();
+            }
 #if !SILVERLIGHT
-                log.Debug("Close, disconnect from scope, and children");
+            log.Debug("Close, disconnect from scope, and children");
 #endif
-                if (_basicScopes != null)
+            if (_basicScopes != null)
+            {
+                try
                 {
-                    try
+                    //Close, disconnect from scope, and children
+                    foreach (IBasicScope basicScope in _basicScopes)
                     {
-                        //Close, disconnect from scope, and children
-                        foreach (IBasicScope basicScope in _basicScopes)
-                        {
-                            UnregisterBasicScope(basicScope);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-#if !SILVERLIGHT
-                        log.Error(__Res.GetString(__Res.Scope_UnregisterError), ex);
-#endif
+                        UnregisterBasicScope(basicScope);
                     }
                 }
+                catch (Exception ex)
+                {
+#if !SILVERLIGHT
+                    log.Error(__Res.GetString(__Res.Scope_UnregisterError), ex);
+#endif
+                }
+            }
+            try
+            {
+                _readerWriterLock.AcquireWriterLock();
                 if (_scope != null)
                 {
                     try
@@ -283,7 +320,16 @@ namespace FluorineFx.Messaging
                     _client.Unregister(this);
                     _client = null;
                 }
+                if (_session != null)
+                {
+                    _session.Invalidate();
+                    _session = null;
+                }
                 _scope = null;
+            }
+            finally
+            {
+                _readerWriterLock.ReleaseWriterLock();
             }
         }
 
@@ -293,11 +339,13 @@ namespace FluorineFx.Messaging
         public virtual void Timeout()
         {
         }
+
+        /*
         /// <summary>
         /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         public virtual int ClientLeaseTime { get { return 0; } }
-
+        */
         /// <summary>
         /// Gets connection parameters.
         /// </summary>
@@ -308,6 +356,13 @@ namespace FluorineFx.Messaging
         public IClient Client
         {
             get{ return _client; }
+        }
+        /// <summary>
+        /// Gets the session object associated with this connection.
+        /// </summary>
+        public ISession Session
+        {
+            get { return _session; }
         }
         /// <summary>
         /// Get the scope this client is connected to.
@@ -339,10 +394,17 @@ namespace FluorineFx.Messaging
         {
             get { return _objectEncoding; }
         }
+        
         /// <summary>
         /// Gets an object that can be used to synchronize access to the connection.
         /// </summary>
-        public object SyncRoot { get { return _syncLock; } }
+        //public object SyncRoot { get { return _syncLock; } }
+
+        internal FastReaderWriterLock ReaderWriterLock
+        {
+            get { return _readerWriterLock; }
+        }
+
         /// <summary>
         /// Start measuring the roundtrip time for a packet on the connection.
         /// </summary>
@@ -419,15 +481,15 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Gets the total number of messages read from the connection.
         /// </summary>
-        public long ReadMessages { get { return _readMessages; } }
+        public long ReadMessages { get { return _readMessages.Value; } }
         /// <summary>
         /// Gets the total number of messages written to the connection.
         /// </summary>
-        public long WrittenMessages { get { return _writtenMessages; } }
+        public long WrittenMessages { get { return _writtenMessages.Value; } }
         /// <summary>
         /// Gets the total number of messages that have been dropped.
         /// </summary>
-        public long DroppedMessages { get { return _droppedMessages; } }
+        public long DroppedMessages { get { return _droppedMessages.Value; } }
         /// <summary>
         /// Gets the total number of messages that are pending to be sent to the connection.
         /// </summary>

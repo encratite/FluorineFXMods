@@ -19,7 +19,7 @@
 using System;
 using System.Collections;
 using System.Reflection;
-
+using FluorineFx.Messaging.Config;
 using FluorineFx.Context;
 
 namespace FluorineFx.Messaging
@@ -38,7 +38,7 @@ namespace FluorineFx.Messaging
         /// <param name="flexFactory">The IFlexFactory this FactoryInstance is created from.</param>
         /// <param name="id">The Destination identity.</param>
         /// <param name="properties">The configuration properties for this destination.</param>
-        public DotNetFactoryInstance(IFlexFactory flexFactory, string id, Hashtable properties)
+        public DotNetFactoryInstance(IFlexFactory flexFactory, string id, DestinationProperties properties)
             : base(flexFactory, id, properties)
 		{
 		}

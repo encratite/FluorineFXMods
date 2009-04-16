@@ -27,13 +27,9 @@ namespace FluorineFx.Messaging.Api
     /// The connection object. Each connection has an associated client and scope. 
     /// Connections may be persistent, polling, or transient.
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IConnection : ICoreObject
 	{
-        /// <summary>
-        /// Initialize the connection.
-        /// </summary>
-        /// <param name="client">Client object associated with connection.</param>
-		void Initialize(IClient client);
         /// <summary>
         /// Try to connect to the scope.
         /// </summary>
@@ -68,6 +64,10 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
 		IClient Client { get; }
         /// <summary>
+        /// Gets the session object associated with this connection.
+        /// </summary>
+        ISession Session { get; }
+        /// <summary>
         /// Get the scope this client is connected to.
         /// </summary>
 		IScope Scope { get; }
@@ -96,7 +96,7 @@ namespace FluorineFx.Messaging.Api
         /// <summary>
         /// Gets an object that can be used to synchronize access to the connection.
         /// </summary>
-        object SyncRoot { get; }
+        //object SyncRoot { get; }
         /// <summary>
         /// Start measuring the roundtrip time for a packet on the connection.
         /// </summary>
@@ -134,10 +134,12 @@ namespace FluorineFx.Messaging.Api
         /// Gets roundtrip time of last ping command.
         /// </summary>
         int LastPingTime { get; }
+        /*
         /// <summary>
         /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         int ClientLeaseTime { get; }
+        */
         /// <summary>
         /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>

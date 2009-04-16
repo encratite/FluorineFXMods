@@ -18,7 +18,9 @@
 */
 
 using System;
+using System.Collections;
 using System.Web;
+using System.Threading;
 using FluorineFx;
 using FluorineFx.Context;
 using FluorineFx.Configuration;
@@ -30,6 +32,7 @@ using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Messaging.Endpoints.Filter;
 using FluorineFx.Messaging.Services.Remoting;
 using FluorineFx.Util;
+using log4net;
 
 namespace FluorineFx.Messaging.Endpoints
 {
@@ -38,10 +41,12 @@ namespace FluorineFx.Messaging.Endpoints
 	/// </summary>
 	class AMFEndpoint : EndpointBase
 	{
-		FilterChain _filterChain;
+        private static readonly ILog log = LogManager.GetLogger(typeof(AMFEndpoint));
+        protected FilterChain _filterChain;
         AtomicInteger _waitingPollRequests;
 
-		public AMFEndpoint(MessageBroker messageBroker, ChannelSettings channelSettings):base(messageBroker, channelSettings)
+        public AMFEndpoint(MessageBroker messageBroker, ChannelDefinition channelDefinition)
+            : base(messageBroker, channelDefinition)
 		{
             _waitingPollRequests = new AtomicInteger();
 		}
@@ -52,6 +57,7 @@ namespace FluorineFx.Messaging.Endpoints
 			deserializationFilter.UseLegacyCollection = this.IsLegacyCollection;
 			ServiceMapFilter serviceMapFilter = new ServiceMapFilter(this);
 			WsdlFilter wsdlFilter = new WsdlFilter();
+            ContextFilter contextFilter = new ContextFilter(this);
             AuthenticationFilter authenticationFilter = new AuthenticationFilter(this);
             DescribeServiceFilter describeServiceFilter = new DescribeServiceFilter();
 			//CacheFilter cacheFilter = new CacheFilter();
@@ -64,7 +70,8 @@ namespace FluorineFx.Messaging.Endpoints
 			
 			deserializationFilter.Next = serviceMapFilter;
 			serviceMapFilter.Next = wsdlFilter;
-            wsdlFilter.Next = authenticationFilter;
+            wsdlFilter.Next = contextFilter;
+            contextFilter.Next = authenticationFilter;
             authenticationFilter.Next = describeServiceFilter;
             describeServiceFilter.Next = processFilter;
             //describeServiceFilter.Next = cacheFilter;
@@ -84,13 +91,16 @@ namespace FluorineFx.Messaging.Endpoints
 
 		public override void Service()
 		{
-			AMFContext amfContext = new AMFContext(HttpContext.Current.Request.InputStream, HttpContext.Current.Response.OutputStream );
+            AMFContext amfContext = new AMFContext(HttpContext.Current.Request.InputStream, HttpContext.Current.Response.OutputStream);
             AMFContext.Current = amfContext;
-			_filterChain.InvokeFilters( amfContext );
-		}
+            _filterChain.InvokeFilters(amfContext);
+        }
 
         public override IMessage ServiceMessage(IMessage message)
         {
+            if (FluorineContext.Current.Client != null)
+                FluorineContext.Current.Client.Renew();
+
             if (message is CommandMessage)
             {
                 CommandMessage commandMessage = message as CommandMessage;
@@ -101,19 +111,17 @@ namespace FluorineFx.Messaging.Endpoints
                             if (FluorineContext.Current.Client != null)
                                 FluorineContext.Current.Client.Renew();
 
-                            IMessage[] messages = null;
+                            //IMessage[] messages = null;
+                            IList messages = null;
                             _waitingPollRequests.Increment();
-                            int waitIntervalMillis = _channelSettings.WaitIntervalMillis != -1 ? _channelSettings.WaitIntervalMillis : 60000;// int.MaxValue;
-
-                            if (FluorineContext.Current.Client != null)
-                                FluorineContext.Current.Client.Renew();
+                            int waitIntervalMillis = this.ChannelDefinition.Properties.WaitIntervalMillis != -1 ? this.ChannelDefinition.Properties.WaitIntervalMillis : 60000;// int.MaxValue;
 
                             if (commandMessage.HeaderExists(CommandMessage.FluorineSuppressPollWaitHeader))
                                 waitIntervalMillis = 0;
                             //If async handling was not set long polling is not supported
                             if (!FluorineConfiguration.Instance.FluorineSettings.Runtime.AsyncHandler)
                                 waitIntervalMillis = 0;
-                            if (_channelSettings.MaxWaitingPollRequests <= 0 || _waitingPollRequests.Value >= _channelSettings.MaxWaitingPollRequests)
+                            if (this.ChannelDefinition.Properties.MaxWaitingPollRequests <= 0 || _waitingPollRequests.Value >= this.ChannelDefinition.Properties.MaxWaitingPollRequests)
                                 waitIntervalMillis = 0;
 
                             if (message.destination != null && message.destination != string.Empty)
@@ -122,16 +130,32 @@ namespace FluorineFx.Messaging.Endpoints
                                 MessageDestination messageDestination = this.GetMessageBroker().GetDestination(message.destination) as MessageDestination;
                                 MessageClient client = messageDestination.SubscriptionManager.GetSubscriber(clientId);
                                 client.Renew();
-                                messages = client.GetPendingMessages();
+                                //messages = client.GetPendingMessages();
                             }
                             else
                             {
-                                if (FluorineContext.Current.Client != null)
-                                    messages = FluorineContext.Current.Client.GetPendingMessages(waitIntervalMillis);
+                                //if (FluorineContext.Current.Client != null)
+                                //    messages = FluorineContext.Current.Client.GetPendingMessages(waitIntervalMillis);
                             }
+
+                            if (FluorineContext.Current.Client != null)
+                            {
+                                IEndpointPushHandler handler = FluorineContext.Current.Client.GetEndpointPushHandler(this.Id);
+                                if (handler != null)
+                                    messages = handler.GetPendingMessages();
+                                if (messages == null)
+                                {
+                                    lock (handler.SyncRoot)
+                                    {
+                                        Monitor.Wait(handler.SyncRoot, waitIntervalMillis);
+                                    }
+                                    messages = handler.GetPendingMessages();
+                                }
+                            }
+
                             _waitingPollRequests.Decrement();
 
-                            if (messages == null || messages.Length == 0)
+                            if (messages == null || messages.Count == 0)
                                 return new AcknowledgeMessage();
                             else
                             {
@@ -143,6 +167,7 @@ namespace FluorineFx.Messaging.Endpoints
                         }
                     case CommandMessage.SubscribeOperation:
                         {
+                            /*
                             if (FluorineContext.Current.Client == null)
                                 FluorineContext.Current.SetCurrentClient(this.GetMessageBroker().ClientRegistry.GetClient(message));
                             RemotingConnection remotingConnection = null;
@@ -157,11 +182,48 @@ namespace FluorineFx.Messaging.Endpoints
                             if (remotingConnection == null)
                             {
                                 remotingConnection = new RemotingConnection(this, null, FluorineContext.Current.Client.Id, null);
-                                FluorineContext.Current.Client.Renew(remotingConnection.ClientLeaseTime);
+                                FluorineContext.Current.Client.Renew(this.ClientLeaseTime);
                                 remotingConnection.Initialize(FluorineContext.Current.Client);
+                            }
+                            FluorineWebContext webContext = FluorineContext.Current as FluorineWebContext;
+                            webContext.SetConnection(remotingConnection);
+                            */
+
+                            if (this.ChannelDefinition.Properties.IsPollingEnabled)
+                            {
+                                //Create and forget, client will close the notifier
+                                IEndpointPushHandler handler = FluorineContext.Current.Client.GetEndpointPushHandler(this.Id);
+                                if( handler == null )
+                                    handler = new EndpointPushNotifier(this, FluorineContext.Current.Client);
+                                /*
+                                lock (_endpointPushHandlers.SyncRoot)
+                                {
+                                    _endpointPushHandlers.Add(notifier.Id, notifier);
+                                }
+                                */
                             }
                         }
                         break;
+                    case CommandMessage.DisconnectOperation:
+                        if (FluorineContext.Current.Client != null && FluorineContext.Current.Client.IsValid)
+                        {
+                            IList messageClients = FluorineContext.Current.Client.MessageClients;
+                            if (messageClients != null)
+                            {
+                                foreach (MessageClient messageClient in messageClients)
+                                {
+                                    messageClient.Invalidate();
+                                }
+                            }
+                            FluorineContext.Current.Client.Invalidate();
+                        }
+                        if (FluorineContext.Current.Session != null)
+                        {
+                            FluorineContext.Current.Session.Invalidate();
+                        }
+                        //Disconnect command is received from a client channel.
+                        //The response returned by this method is not guaranteed to get to the client, which is free to terminate its physical connection at any point.
+                        return new AcknowledgeMessage();
                 }
             }
             return base.ServiceMessage(message);
@@ -169,12 +231,42 @@ namespace FluorineFx.Messaging.Endpoints
 
         public override void Push(IMessage message, MessageClient messageClient)
         {
-            if (_channelSettings != null && _channelSettings.IsPollingEnabled)
+            if (this.ChannelDefinition.Properties.IsPollingEnabled)
             {
+                IEndpointPushHandler handler = messageClient.Client.GetEndpointPushHandler(this.Id);
+                if (handler != null)
+                {
+                    IMessage messageClone = message.Clone() as IMessage;
+                    messageClone.SetHeader(MessageBase.DestinationClientIdHeader, messageClient.ClientId);
+                    messageClone.clientId = messageClient.ClientId;
+                    handler.PushMessage(messageClone);
+                }
+                /*
                 IMessage messageClone = message.Clone() as IMessage;
                 messageClone.SetHeader(MessageBase.DestinationClientIdHeader, messageClient.ClientId);
                 messageClone.clientId = messageClient.ClientId;
                 messageClient.AddMessage(messageClone);
+                */
+            }
+            else
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn("Push request received for the non-polling AMF endpoint '" + this.Id + "'");
+            }
+        }
+
+        public override int ClientLeaseTime
+        {
+            get 
+            {
+                int timeout = this.GetMessageBroker().FlexClientSettings.TimeoutMinutes;
+                timeout = Math.Max(timeout, 1);//start with 1 minute timeout at least
+                if (this.ChannelDefinition.Properties.IsPollingEnabled)
+                {
+                    int pollingInterval = this.ChannelDefinition.Properties.PollingIntervalSeconds / 60;
+                    timeout = Math.Max(timeout, pollingInterval + 1);//set timout 1 minute longer then the polling interval in minutes
+                }
+                return timeout;
             }
         }
 	}

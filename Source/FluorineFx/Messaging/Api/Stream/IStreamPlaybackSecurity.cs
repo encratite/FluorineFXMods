@@ -23,6 +23,7 @@ namespace FluorineFx.Messaging.Api.Stream
     /// <summary>
     /// Interface for handlers that control access to stream playback.
     /// </summary>
+	[CLSCompliant(false)]
     public interface IStreamPlaybackSecurity
     {
         /// <summary>

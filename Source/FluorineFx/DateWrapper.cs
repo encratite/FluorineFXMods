@@ -43,21 +43,7 @@ namespace FluorineFx
 
 		internal static int GetTimeZone()
 		{
-            //object value = WebSafeCallContext.GetData(FluorineTimezoneKey);
-            object value = null;
-            try
-            {
-                // See if we're running in full trust
-                new SecurityPermission(PermissionState.Unrestricted).Demand();
-                value = WebSafeCallContext.GetData(FluorineTimezoneKey);
-            }
-            catch (SecurityException)
-            {
-                System.Web.HttpContext ctx = System.Web.HttpContext.Current;
-                if (ctx != null)
-                    value = ctx.Items[FluorineTimezoneKey];
-            }
-
+            object value = FluorineWebSafeCallContext.GetData(FluorineTimezoneKey);
             if( value != null )
                 System.Convert.ToInt32(value);
 			return 0;
@@ -65,19 +51,7 @@ namespace FluorineFx
 
 		internal static void SetTimeZone(int timezone)
 		{
-            //WebSafeCallContext.SetData(FluorineContextKey, timezone);
-            try
-            {
-                // See if we're running in full trust
-                new SecurityPermission(PermissionState.Unrestricted).Demand();
-                WebSafeCallContext.SetData(FluorineTimezoneKey, timezone);
-            }
-            catch (SecurityException)
-            {
-                System.Web.HttpContext ctx = System.Web.HttpContext.Current;
-                if (ctx != null)
-                    ctx.Items[FluorineTimezoneKey] = timezone;
-            }
+            FluorineWebSafeCallContext.SetData(FluorineTimezoneKey, timezone);
 		}
 		/// <summary>
 		/// Gets the client time zone.

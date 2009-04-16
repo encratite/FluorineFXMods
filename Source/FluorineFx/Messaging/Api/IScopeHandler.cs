@@ -31,6 +31,7 @@ namespace FluorineFx.Messaging.Api
 	/// with the on* methods. This is the core interface users implement to create
 	/// applications.
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IScopeHandler : IEventHandler
 	{
 		/// <summary>

@@ -9,6 +9,8 @@ using FluorineFx.Json.Services;
 using FluorineFx.Util;
 using FluorineFx.Messaging;
 using FluorineFx.Messaging.Messages;
+using FluorineFx.Messaging.Api;
+using FluorineFx.Context;
 
 namespace FluorineFx.Json.Rpc
 {
@@ -89,6 +91,12 @@ namespace FluorineFx.Json.Rpc
             object error = null;
             object result = null;
 
+            ISession session = this.MessageBroker.SessionManager.GetHttpSession(HttpContext.Current);
+            FluorineContext.Current.SetSession(session);
+            //Context initialized, notify listeners.
+            if (session != null && session.IsNew)
+                session.NotifyCreated();
+
             // Get the ID of the request.
             object id = request["id"];
             string credentials = request["credentials"] as string;
@@ -127,6 +135,27 @@ namespace FluorineFx.Json.Rpc
 
             if (methodName.Length == 0)
                 throw new JsonRpcException("No method name supplied for this request.");
+
+            if (methodName == "clearCredentials")
+            {
+                try
+                {
+                    CommandMessage commandMessage = new CommandMessage(CommandMessage.LogoutOperation);
+                    IMessage message = this.MessageBroker.RouteMessage(commandMessage);
+                    if (message is ErrorMessage)
+                    {
+                        error = FromException(message as ErrorMessage);
+                        return CreateResponse(id, result, error);
+                    }
+                    else
+                        return CreateResponse(id, message.body, null);
+                }
+                catch (Exception ex)
+                {
+                    error = FromException(ex);
+                    return CreateResponse(id, result, error);
+                }
+            }
 
             //Info("Invoking method {1} on service {0}.", ServiceName, methodName);
 

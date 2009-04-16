@@ -172,7 +172,7 @@ namespace FluorineFx.SWX
             if (_swf.Bookmark == -1)
             {
                 _swf.Put(SwxAssembler.ActionPushData);
-                _swf.SetBookmark();//start marking for length check
+                _swf.Mark();//start marking for length check
                 _swf.Skip(2);//Skip ActionRecord length
             }
         }
@@ -266,7 +266,7 @@ namespace FluorineFx.SWX
                 _swf.Put(SwxAssembler.DebugStart);
 
             _swf.Put(SwxAssembler.ActionPushData);
-            _swf.SetBookmark();//start marking for length check
+            _swf.Mark();//start marking for length check
             _swf.Skip(2);//Skip ActionRecord length
 
             // Add the 'result' variable name -- either
@@ -342,14 +342,14 @@ namespace FluorineFx.SWX
                 {
                     EndPush();
                     _swf.Put(SwxAssembler.ActionPushData);
-                    _swf.SetBookmark();//start marking for length check
+                    _swf.Mark();//start marking for length check
                     _swf.Skip(2);//Skip ActionRecord length
                 }
             }
             else
             {
                 _swf.Put(SwxAssembler.ActionPushData);
-                _swf.SetBookmark();//start marking for length check
+                _swf.Mark();//start marking for length check
                 _swf.Skip(2);//Skip ActionRecord length
             }
 

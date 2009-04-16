@@ -40,17 +40,16 @@ namespace FluorineFx.Messaging.Endpoints
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	class EndpointBase : IEndpoint
+	abstract class EndpointBase : IEndpoint
 	{
 		protected MessageBroker _messageBroker;
-		protected ChannelSettings _channelSettings;
-		string _id;
+        protected ChannelDefinition _channelDefinition;
+        object _syncLock = new object();
 
-		public EndpointBase(MessageBroker messageBroker, ChannelSettings channelSettings)
+        public EndpointBase(MessageBroker messageBroker, ChannelDefinition channelDefinition)
 		{
 			_messageBroker = messageBroker;
-			_channelSettings = channelSettings;
-			_id = _channelSettings.Id;
+            _channelDefinition = channelDefinition;
 		}
 
 		#region IEndpoint Members
@@ -59,12 +58,9 @@ namespace FluorineFx.Messaging.Endpoints
 		{
 			get
 			{
-				return _id;
+                return _channelDefinition.Id;
 			}
-			set
-			{
-				_id = value;
-			}
+
 		}
 
 		public MessageBroker GetMessageBroker()
@@ -72,9 +68,9 @@ namespace FluorineFx.Messaging.Endpoints
 			return _messageBroker;
 		}
 
-		public ChannelSettings GetSettings()
+        public ChannelDefinition ChannelDefinition
 		{
-			return _channelSettings;
+            get { return _channelDefinition; }
 		}
 
 		public virtual void Start()
@@ -116,7 +112,9 @@ namespace FluorineFx.Messaging.Endpoints
         {
             get
             {
-                return _channelSettings.Serialization.IsLegacyCollection;
+                if( _channelDefinition.Properties != null && _channelDefinition.Properties.Serialization != null )
+                    return _channelDefinition.Properties.Serialization.IsLegacyCollection;
+                return false;
             }
         }
 
@@ -124,8 +122,20 @@ namespace FluorineFx.Messaging.Endpoints
         {
             get
             {
-                return _channelSettings.Serialization.IsLegacyThrowable;
+                if (_channelDefinition.Properties != null && _channelDefinition.Properties.Serialization != null)
+                    return _channelDefinition.Properties.Serialization.IsLegacyThrowable;
+                return false;
             }
         }
+
+        /// <summary>
+        /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public abstract int ClientLeaseTime { get; }
+
+        /// <summary>
+        /// Gets an object that can be used to synchronize access to the connection.
+        /// </summary>
+        public object SyncRoot { get { return _syncLock; } }
 	}
 }

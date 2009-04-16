@@ -29,6 +29,7 @@ using FluorineFx.AMF3;
 using FluorineFx.Configuration;
 using FluorineFx.Util;
 using FluorineFx.Exceptions;
+using FluorineFx.Invocation;
 
 namespace FluorineFx.IO
 {
@@ -97,7 +98,8 @@ namespace FluorineFx.IO
                 {
                     bf = BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance;
                 }
-                ClassMember classMember = new ClassMember(name, bf, propertyInfo.MemberType);
+                object[] attributes = propertyInfo.GetCustomAttributes(false);
+                ClassMember classMember = new ClassMember(name, bf, propertyInfo.MemberType, attributes);
                 classMemberList.Add(classMember);
             }
             FieldInfo[] fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
@@ -111,7 +113,8 @@ namespace FluorineFx.IO
                 if (fieldInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
                     continue;
                 string name = fieldInfo.Name;
-                ClassMember classMember = new ClassMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType);
+                object[] attributes = fieldInfo.GetCustomAttributes(false);
+                ClassMember classMember = new ClassMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType, attributes);
                 classMemberList.Add(classMember);
             }
 #if !(NET_1_1)
@@ -132,15 +135,48 @@ namespace FluorineFx.IO
             if (member.MemberType == MemberTypes.Property)
             {
                 PropertyInfo propertyInfo = type.GetProperty(member.Name, member.BindingFlags);
-                return propertyInfo.GetValue(instance, null);
+                object value = propertyInfo.GetValue(instance, null);
+                value = HandleAttributes(instance, propertyInfo, value, member.CustomAttributes);
+                return value;
             }
             if (member.MemberType == MemberTypes.Field)
             {
                 FieldInfo fieldInfo = type.GetField(member.Name, member.BindingFlags);
-                return fieldInfo.GetValue(instance);
+                object value = fieldInfo.GetValue(instance);
+                value = HandleAttributes(instance, fieldInfo, value, member.CustomAttributes);
+                return value;
             }
             string msg = __Res.GetString(__Res.Reflection_MemberNotFound, string.Format("{0}.{1}", type.FullName, member.Name));
             throw new FluorineException(msg);
+        }
+
+        protected object HandleAttributes(object instance, MemberInfo memberInfo, object result, object[] attributes)
+        {
+            if (attributes != null && attributes.Length > 0)
+            {
+                InvocationManager invocationManager = new InvocationManager();
+                invocationManager.Result = result;
+                for (int i = 0; i < attributes.Length; i++)
+                {
+                    Attribute attribute = attributes[i] as Attribute;
+                    if (attribute is IInvocationCallback)
+                    {
+                        IInvocationCallback invocationCallback = attribute as IInvocationCallback;
+                        invocationCallback.OnInvoked(invocationManager, memberInfo, instance, null, result);
+                    }
+                }
+                for (int i = 0; i < attributes.Length; i++)
+                {
+                    Attribute attribute = attributes[i] as Attribute;
+                    if (attribute is IInvocationResultHandler)
+                    {
+                        IInvocationResultHandler invocationResultHandler = attribute as IInvocationResultHandler;
+                        invocationResultHandler.HandleResult(invocationManager, memberInfo, instance, null, result);
+                    }
+                }
+                return invocationManager.Result;
+            }
+            return result;
         }
 
         public virtual void SetValue(object instance, ClassMember member, object value)

@@ -29,7 +29,8 @@ namespace FluorineFx.Messaging.Services.Remoting
 	class RemotingDestination : Destination
 	{
 
-		public RemotingDestination(IService service, DestinationSettings destinationSettings) : base(service, destinationSettings)
+        public RemotingDestination(IService service, DestinationDefinition destinationDefinition)
+            : base(service, destinationDefinition)
 		{
 		}
 	}

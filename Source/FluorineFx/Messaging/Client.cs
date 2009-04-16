@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Security;
 using System.Security.Permissions;
+using System.Security.Principal;
 using log4net;
 using FluorineFx.Util;
 using FluorineFx.Collections;
@@ -29,42 +30,137 @@ using FluorineFx.Context;
 
 namespace FluorineFx.Messaging
 {
-    //[CLSCompliant(false)]
-    class Client : AttributeStore, IClient
+    [CLSCompliant(false)]
+    public class Client : AttributeStore, IClient
     {
+        private const int FlexClientInvalidated = 10027;
+        private const int EndpointPushHandlerAlreadyRegistered = 10033;
+
         private static readonly ILog log = LogManager.GetLogger(typeof(Client));
         private object _syncLock = new object();
 
         private string _id;
         private int _clientLeaseTime;
         ClientManager _clientManager;
+        /// <summary>
+        /// List of message clients.
+        /// </summary>
         private CopyOnWriteArray _messageClients;
         protected CopyOnWriteDictionary _connectionToScope = new CopyOnWriteDictionary();
-        private Hashtable _sessionDestroyedListeners;
-        private bool _polling;
+        /// <summary>
+        /// List of registered Client created listeners.
+        /// </summary>
+        private static CopyOnWriteArray _createdListeners = new CopyOnWriteArray();
+        /// <summary>
+        /// List of registered Client destroyed listeners.
+        /// </summary>
+        private CopyOnWriteArray _destroyedListeners;
+        /// <summary>
+        /// Associated Sessions that represent the connections the Client makes to the server.
+        /// </summary>
+        private CopyOnWriteArray _sessions = new CopyOnWriteArray();
+        /// <summary>
+        /// EndpointPushHandlers keyed by endpointId (string, IEndpointPushHandler).
+        /// </summary>
+        private CopyOnWriteDictionary _endpointPushHandlers;
+
+        IPrincipal _principal;
+
+        /// <summary>
+        /// State bit field.
+        /// 1 IsValid
+        /// 2 IsInvalidating
+        /// 4 IsPolling
+        /// 8 IsNew
+        /// 16 
+        /// 32
+        /// 64
+        /// </summary>
+        protected byte __fields;
 
         internal Client(ClientManager clientManager, string id)
         {
             _clientManager = clientManager;
             _id = id;
-            _clientLeaseTime = 1;
-            _polling = false;
+            _clientLeaseTime = 0;
+            SetIsNew(true);
+            SetIsValid(true);
         }
 
-        internal IList MessageClients
+        /// <summary>
+        /// Gets whether the client is disconnected.
+        /// </summary>
+        public bool IsValid
+        {
+            get { return (__fields & 1) == 1; }
+        }
+
+        internal void SetIsValid(bool value)
+        {
+            __fields = (value) ? (byte)(__fields | 1) : (byte)(__fields & ~1);
+        }
+
+        /// <summary>
+        /// Gets whether the client is being disconnected.
+        /// </summary>
+        public bool IsInvalidating
+        {
+            get { return (__fields & 2) == 2; }
+        }
+
+        internal void SetIsInvalidating(bool value)
+        {
+            __fields = (value) ? (byte)(__fields | 2) : (byte)(__fields & ~2);
+        }
+
+        /// <summary>
+        /// Gets whether the client is polling.
+        /// </summary>
+        public bool IsPolling
+        {
+            get { return (__fields & 4) == 4; }
+        }
+
+        internal void SetIsPolling(bool value)
+        {
+            __fields = (value) ? (byte)(__fields | 4) : (byte)(__fields & ~4);
+        }
+
+        /// <summary>
+        /// Gets whether the client is newly instantiated.
+        /// </summary>
+        public bool IsNew
+        {
+            get { return (__fields & 8) == 8; }
+        }
+
+        private void SetIsNew(bool value)
+        {
+            __fields = (value) ? (byte)(__fields | 8) : (byte)(__fields & ~8);
+        }
+
+        /// <summary>
+        /// Gets the MessageClients associated with this Client.
+        /// </summary>
+        public IList MessageClients
         {
             get
             {
-                if (_messageClients == null)
-                {
-                    lock (this.SyncRoot)
-                    {
-                        if (_messageClients == null)
-                            _messageClients = new CopyOnWriteArray();
-                    }
-                }
                 return _messageClients;
             }
+        }
+
+        internal IList GetMessageClients()
+        {
+            if (_messageClients == null)
+            {
+                lock (this.SyncRoot)
+                {
+                    if (_messageClients == null)
+                        _messageClients = new CopyOnWriteArray();
+                }
+            }
+            return _messageClients;
         }
 
         public void Register(IConnection connection)
@@ -78,13 +174,18 @@ namespace FluorineFx.Messaging
             if (_connectionToScope.Count == 0)
             {
                 // This client is not connected to any scopes, remove from registry.
-                Disconnect();
+                //Invalidate();//through Sessions
             }
         }
 
         internal void SetClientLeaseTime(int value)
         {
             _clientLeaseTime = value;
+        }
+
+        internal void SetPrincipal(IPrincipal principal)
+        {
+            _principal = principal;
         }
 
         #region IClient Members
@@ -98,7 +199,22 @@ namespace FluorineFx.Messaging
         {
             get { return _clientLeaseTime; }
         }
-
+        /// <summary>
+        /// Gets or sets security information for the client.
+        /// </summary>
+        /// <remarks>Available only when perClientAuthentication is in use.</remarks>
+        public IPrincipal Principal
+        {
+            get { return _principal; }
+            set 
+            { 
+                _principal = value;
+                System.Threading.Thread.CurrentPrincipal = value;
+            }
+        }
+        /// <summary>
+        /// Gets an object that can be used to synchronize access. 
+        /// </summary>
         public object SyncRoot { get { return _syncLock; } }
 
         public ICollection Scopes
@@ -113,31 +229,51 @@ namespace FluorineFx.Messaging
 
         public void RegisterMessageClient(IMessageClient messageClient)
         {
-            if (!this.MessageClients.Contains(messageClient))
+            if (!this.GetMessageClients().Contains(messageClient))
             {
-                this.MessageClients.Add(messageClient);
+                this.GetMessageClients().Add(messageClient);
+                if (_endpointPushHandlers != null)
+                {
+                    IEndpointPushHandler handler = GetEndpointPushHandler(messageClient.EndpointId);
+                    if (handler != null)
+                        handler.RegisterMessageClient(messageClient);
+                }
             }
         }
 
         public void UnregisterMessageClient(IMessageClient messageClient)
         {
             //This operation was possibly initiated by this client
-            if (messageClient.IsDisconnecting)
-                return;
-            if (this.MessageClients.Contains(messageClient))
+            //if (messageClient.IsDisconnecting)
+            //    return;
+            if (this.MessageClients != null && this.MessageClients.Contains(messageClient))
             {
                 this.MessageClients.Remove(messageClient);
-            }
-            if (this.MessageClients.Count == 0)
-            {
-                Disconnect();
+                if (_endpointPushHandlers != null)
+                {
+                    IEndpointPushHandler handler = _endpointPushHandlers[messageClient.EndpointId] as IEndpointPushHandler;
+                    if (handler != null)
+                        handler.UnregisterMessageClient(messageClient);
+                }
+                /*
+                if (this.MessageClients.Count == 0)
+                {
+                    Disconnect();
+                }
+                */
             }
         }
 
-        public void Disconnect(bool timeout)
+        /*
+    internal void Disconnect(bool timeout)
+    {
+        lock (this.SyncRoot)
         {
-            lock (this.SyncRoot)
+            if (this.IsDisconnecting || this.IsDisconnected)
+                return;
+            try
             {
+                SetIsDisconnecting(true);
                 //restore context
                 IConnection currentConnection = null;
                 if (this.Connections != null && this.Connections.Count > 0)
@@ -164,17 +300,18 @@ namespace FluorineFx.Messaging
                     }
                 }
                 _clientManager.RemoveSubscriber(this);
-                if (_sessionDestroyedListeners != null)
+                // Unregister from all sessions.
+                if (_sessions != null && _sessions.Count != 0)
                 {
-                    foreach (ISessionListener listener in _sessionDestroyedListeners.Keys)
-                    {
-                        listener.SessionDestroyed(this);
-                    }
-                }
+                    foreach (ISession session in _sessions)
+                        UnregisterSession(session);
+                }        
+                //Invalidate associated MessageClient subscriptions.
                 if (_messageClients != null)
                 {
                     foreach (MessageClient messageClient in _messageClients)
                     {
+                        messageClient.RemoveMessageClientDestroyedListener(this);
                         if (timeout)
                             messageClient.Timeout();
                         else
@@ -182,6 +319,24 @@ namespace FluorineFx.Messaging
                     }
                     _messageClients.Clear();
                 }
+                //Notify destroy listeners.
+                if (_destroyedListeners != null)
+                {
+                    foreach (IClientListener listener in _destroyedListeners)
+                    {
+                        listener.ClientDestroyed(this);
+                    }
+                }
+                // Close any registered push handlers.
+                if (_endpointPushHandlers != null && _endpointPushHandlers.Count != 0)
+                {
+                    foreach (IEndpointPushHandler handler in _endpointPushHandlers.Values)
+                    {
+                        handler.Close();
+                    }
+                    _endpointPushHandlers = null;
+                }
+
                 foreach (IConnection connection in this.Connections)
                 {
                     if (timeout)
@@ -189,76 +344,158 @@ namespace FluorineFx.Messaging
                     connection.Close();
                 }
             }
+            catch(Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error(string.Format("Disconnect Client {0}", this.Id), ex);
+            }
+            finally
+            {
+                SetIsDisconnecting(false);
+                SetIsDisconnected(true);
+            }
         }
+    }
+        */
 
-        public void Disconnect()
-        {
-            Disconnect(false);
-        }
-
-        public void Timeout()
-        {
-            if (log.IsDebugEnabled)
-                log.Debug(string.Format("Timeout Client {0}", this.Id));
-            Disconnect(true);
-        }
-
+        /*
         public IMessage[] GetPendingMessages(int waitIntervalMillis)
         {
             ArrayList messages = new ArrayList();
-            _polling = true;
-            do
+            try
             {
-                _clientManager.LookupClient(this._id);//renew
+                SetIsPolling(true);
+                do
+                {
+                    _clientManager.LookupClient(this._id);//renew
 
-                foreach (MessageClient messageClient in this.MessageClients)
-                {
-                    messageClient.Renew();
-                    messages.AddRange(messageClient.GetPendingMessages());
+                    if (_messageClients != null)
+                    {
+                        foreach (MessageClient messageClient in _messageClients)
+                        {
+                            messageClient.Renew();
+                            messages.AddRange(messageClient.GetPendingMessages());
+                        }
+                    }
+                    if (waitIntervalMillis == 0)
+                    {
+                        return messages.ToArray(typeof(IMessage)) as IMessage[];
+                    }
+                    if (messages.Count > 0)
+                    {
+                        return messages.ToArray(typeof(IMessage)) as IMessage[];
+                    }
+                    System.Threading.Thread.Sleep(500);
+                    waitIntervalMillis -= 500;
+                    if (waitIntervalMillis <= 0)
+                        SetIsPolling(false);
                 }
-                if (waitIntervalMillis == 0)
-                {
-                    _polling = false;
-                    return messages.ToArray(typeof(IMessage)) as IMessage[];
-                }
-                if (messages.Count > 0)
-                {
-                    _polling = false;
-                    return messages.ToArray(typeof(IMessage)) as IMessage[];
-                }
-                System.Threading.Thread.Sleep(500);
-                waitIntervalMillis -= 500;
-                if (waitIntervalMillis <= 0)
-                    _polling = false;
+                while (this.IsPolling && !this.IsInvalidating && !this.IsValid);
             }
-            while(_polling);
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error(string.Format("GetPendingMessages Client {0}", this.Id), ex);
+            }
+            finally
+            {
+                SetIsPolling(false);
+            }
             return messages.ToArray(typeof(IMessage)) as IMessage[];
         }
+        */
 
-        public void AddSessionDestroyedListener(ISessionListener listener)
+        /// <summary>
+        /// Adds a client destroy listener that will be notified when the client is destroyed.
+        /// </summary>
+        /// <param name="listener">The listener to add.</param>
+        public void AddClientDestroyedListener(IClientListener listener)
         {
-            if (listener == null)
-                return;
-            lock (this.SyncRoot)
+            if (listener != null)
             {
-                if (_sessionDestroyedListeners == null)
-                    _sessionDestroyedListeners = new Hashtable(1);
-                _sessionDestroyedListeners[listener] = null;
+                if (_destroyedListeners == null)
+                {
+                    lock (this.SyncRoot)
+                    {
+                        if (_destroyedListeners == null)
+                            _destroyedListeners = new CopyOnWriteArray();
+                    }
+                }
+                _destroyedListeners.AddIfAbsent(listener);
             }
         }
-
-        public void RemoveSessionDestroyedListener(ISessionListener listener)
+        /// <summary>
+        /// Removes a client destroy listener.
+        /// </summary>
+        /// <param name="listener">The listener to remove.</param>
+        public void RemoveClientDestroyedListener(IClientListener listener)
         {
-            if (listener == null)
-                return;
-            lock (this.SyncRoot)
+            if (listener != null)
             {
-                if (_sessionDestroyedListeners != null)
+                if (_destroyedListeners != null)
                 {
-                    if (_sessionDestroyedListeners.Contains(listener))
-                        _sessionDestroyedListeners.Remove(listener);
+                    _destroyedListeners.Remove(listener);
                 }
             }
+        }
+        /// <summary>
+        /// Notification that a session was created.
+        /// </summary>
+        /// <param name="client">The session that was created.</param>
+        public void SessionCreated(ISession session)
+        {
+            //NOP
+        }
+        /// <summary>
+        /// Notification that a session is about to be destroyed.
+        /// </summary>
+        /// <param name="client">The session that will be destroyed.</param>
+        public void SessionDestroyed(ISession session)
+        {
+            UnregisterSession(session);
+        }
+        /// <summary>
+        /// Associates a Session with this Client.
+        /// </summary>
+        /// <param name="session">The Session to associate with this Client.</param>
+        public void RegisterSession(ISession session)
+        {
+            if (_sessions.AddIfAbsent(session))
+            {
+                session.AddSessionDestroyedListener(this);
+                session.RegisterClient(this);
+            }
+        }
+        /// <summary>
+        /// Disassociates a Session from this Client.
+        /// </summary>
+        /// <param name="session">The Session to disassociate from this Client.</param>
+        public void UnregisterSession(ISession session)
+        {
+            if (_sessions.RemoveIfPresent(session))
+            {
+                session.RemoveSessionDestroyedListener(this);
+                session.UnregisterClient(this);
+                // Once all client sessions/connections terminate; shut down.
+                if (_sessions.Count == 0)
+                    Invalidate();
+            }
+        }
+        /// <summary>
+        /// Notification that a MessageClient instance was created.
+        /// </summary>
+        /// <param name="messageClient">The MessageClient that was created.</param>
+        public void MessageClientCreated(IMessageClient messageClient)
+        {
+            //NOP
+        }
+        /// <summary>
+        /// Notification that a MessageClient is about to be destroyed.
+        /// </summary>
+        /// <param name="messageClient">The MessageClient that will be destroyed.</param>
+        public void MessageClientDestroyed(IMessageClient messageClient)
+        {
+            UnregisterMessageClient(messageClient);
         }
 
         /// <summary>
@@ -277,11 +514,158 @@ namespace FluorineFx.Messaging
             _clientManager.Renew(this, clientLeaseTime);
         }
 
+        /// <summary>
+        /// Registers an IEndpointPushHandler for the specified endpoint to handle pushing messages.
+        /// </summary>
+        /// <param name="handler">The IEndpointPushHandler to register.</param>
+        /// <param name="endpointId">The endpoint identity to register for.</param>
+        public void RegisterEndpointPushHandler(IEndpointPushHandler handler, string endpointId)
+        {
+            if (_endpointPushHandlers == null)
+            {
+                lock (this.SyncRoot)
+                {
+                    if (_endpointPushHandlers == null)
+                        _endpointPushHandlers = new CopyOnWriteDictionary(1);
+                }
+            }
+            if (_endpointPushHandlers.ContainsKey(endpointId))
+            {
+                MessageException me = new MessageException();
+                me.FaultCode = EndpointPushHandlerAlreadyRegistered.ToString();
+                throw me;
+            }
+            _endpointPushHandlers.Add(endpointId, handler);
+        }
+        /// <summary>
+        /// Unregisters an IEndpointPushHandler from the specified endpoint.
+        /// </summary>
+        /// <param name="handler">The IEndpointPushHandler to unregister.</param>
+        /// <param name="endpointId">The endpoint identity to unregister from.</param>
+        public void UnregisterEndpointPushHandler(IEndpointPushHandler handler, string endpointId)
+        {
+            lock (this.SyncRoot)
+            {
+                if (_endpointPushHandlers == null)
+                    return;
+                if (_endpointPushHandlers[endpointId] == handler)
+                    _endpointPushHandlers.Remove(endpointId);
+            }
+        }
+
+        /// <summary>
+        /// Returns the push handler registered with the Client with the supplied endpoint id, or null if no push handler was registered with the Client
+        /// </summary>
+        /// <param name="endpointId">Endpoint identity.</param>
+        /// <returns>The push handler registered with the Client with the supplied endpoint id, or null if no push handler was registered with the Client for that endpoint.</returns>
+        public IEndpointPushHandler GetEndpointPushHandler(string endpointId)
+        {
+            lock (this.SyncRoot)
+            {
+                if (_endpointPushHandlers != null && _endpointPushHandlers.ContainsKey(endpointId))
+                    return _endpointPushHandlers[endpointId] as IEndpointPushHandler;
+                return null;
+            }
+        }
         #endregion
+
+        /// <summary>
+        /// Adds a create listener that will be notified when new clients are created.
+        /// </summary>
+        /// <param name="listener">The listener to add.</param>
+        public static void AddClientCreatedListener(IClientListener listener)
+        {
+            if (listener != null)
+                _createdListeners.AddIfAbsent(listener);
+        }
+        /// <summary>
+        /// Removes a Client created listener.
+        /// </summary>
+        /// <param name="listener">The listener to remove.</param>
+        public static void RemoveClientCreatedListener(IClientListener listener)
+        {
+            if (listener != null)
+                _createdListeners.Remove(listener);
+        }
+
+        /// <summary>
+        /// Notifies client listeners.
+        /// </summary>
+        public void NotifyCreated()
+        {
+            if (IsNew)
+            {
+                SetIsNew(false);
+                if (_createdListeners.Count != 0)
+                {
+                    foreach (IClientListener listener in _createdListeners)
+                        listener.ClientCreated(this);
+                }
+            }
+        }
 
         public override string ToString()
         {
             return "Client " + _id.ToString();
+        }
+
+        public void Timeout()
+        {
+            Invalidate();
+        }
+
+        public void Invalidate()
+        {
+            lock (this.SyncRoot)
+            {
+                if (!IsValid || IsInvalidating)
+                    return; // Already shutting down.
+
+                SetIsInvalidating(true);
+                _clientManager.RemoveSubscriber(this);
+            }
+
+            // Unregister from all Sessions.
+            if (_sessions != null && _sessions.Count != 0)
+            {
+                foreach (ISession session in _sessions)
+                    UnregisterSession(session);
+            }
+            // Invalidate associated MessageClient subscriptions.
+            if (_messageClients != null && _messageClients.Count != 0)
+            {
+                foreach (MessageClient messageClient in _messageClients)
+                {
+                    messageClient.RemoveMessageClientDestroyedListener(this);
+                    messageClient.Invalidate();
+                }
+                _messageClients.Clear();
+            }
+            // Notify destroy listeners that we're shutting the FlexClient down.
+            if (_destroyedListeners != null && _destroyedListeners.Count != 0)
+            {
+                foreach (IClientListener listener in _destroyedListeners)
+                {
+                    listener.ClientDestroyed(this);
+                }
+                _destroyedListeners.Clear();
+            }
+            // Close any registered push handlers.
+            if (_endpointPushHandlers != null && _endpointPushHandlers.Count != 0)
+            {
+                foreach (IEndpointPushHandler handler in _endpointPushHandlers.Values)
+                {
+                    handler.Close();
+                }
+                _endpointPushHandlers = null;
+            }
+            lock (this.SyncRoot)
+            {
+                SetIsValid(false);
+                SetIsInvalidating(false);
+            }
+            if (log.IsDebugEnabled)
+                log.Debug(__Res.GetString(__Res.Client_Invalidated, _id));
         }
     }
 }

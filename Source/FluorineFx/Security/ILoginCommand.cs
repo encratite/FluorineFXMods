@@ -57,8 +57,8 @@ namespace FluorineFx.Security
 		/// The gateway calls this method to perform programmatic, custom authentication.
 		/// </summary>
 		/// <param name="username">The principal being authenticated.</param>
-		/// <param name="credentials">The credentials are passed as a Hashtable to allow for extra properties to be passed in the future. For now, only a "password" property is sent.</param>
-		/// <returns>A principal object represents the security context of the user.</returns>
-		IPrincipal DoAuthentication(string username, Hashtable credentials);
+        /// <param name="credentials">The credentials are passed as a dictionary to allow for extra properties to be passed in the future. For now, only a "password" property is sent.</param>
+		/// <returns>A principal object that represents the security context of the user.</returns>
+		IPrincipal DoAuthentication(string username, IDictionary credentials);
 	}
 }

@@ -24,6 +24,7 @@ namespace FluorineFx.Messaging.Api
 	/// <summary>
     /// Connection that has options to invoke and handle remote calls.
 	/// </summary>
+    [CLSCompliant(false)]
 	public interface IServiceCapableConnection : IConnection
 	{
         /// <summary>

@@ -21,7 +21,7 @@ using System.Threading;
 
 namespace FluorineFx.Util
 {
-    class AtomicInteger
+    public class AtomicInteger
     {
         int _counter;
 

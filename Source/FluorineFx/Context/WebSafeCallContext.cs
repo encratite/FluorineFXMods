@@ -21,6 +21,8 @@ using System;
 using System.Web;
 #endif
 using System.Runtime.Remoting.Messaging;
+using System.Security;
+using System.Security.Permissions;
 
 namespace FluorineFx.Context
 {
@@ -67,6 +69,103 @@ namespace FluorineFx.Context
 #else
             CallContext.FreeNamedDataSlot(name);
 #endif
+        }
+    }
+
+    /// <summary>
+    /// Provides a set of properties that are carried with the execution code path. This class cannot be inherited.
+    /// <remarks>
+    /// FluorineWebSafeCallContext is a specialized object similar to a Thread Local Storage for method calls and provides data slots that are unique to each logical thread of execution.
+    /// </remarks>
+    /// </summary>
+    public sealed class FluorineWebSafeCallContext
+    {
+        private FluorineWebSafeCallContext()
+        {
+        }
+        /// <summary>
+        /// Retrieves an object with the specified name from the FluorineWebSafeCallContext.
+        /// </summary>
+        /// <param name="name">The name of the item in the call context.</param>
+        /// <returns>The object in the call context associated with the specified name.</returns>
+        public static object GetData(string name)
+        {
+            HttpContext ctx = HttpContext.Current;
+            if (ctx != null)
+                return ctx.Items[name];
+            return WebSafeCallContext.GetData(name);
+
+            /*
+            object value = null;
+            try
+            {
+                // See if we're running in full trust
+                new SecurityPermission(PermissionState.Unrestricted).Demand();
+                value = WebSafeCallContext.GetData(name);
+            }
+            catch (SecurityException)
+            {
+                HttpContext ctx = HttpContext.Current;
+                if (ctx != null)
+                    value = ctx.Items[name];
+            }
+            return value;
+            */
+        }
+        /// <summary>
+        /// Stores a given object and associates it with the specified name. 
+        /// </summary>
+        /// <param name="name">The name with which to associate the new item in the call context.</param>
+        /// <param name="value">The object to store in the call context.</param>
+        public static void SetData(string name, object value)
+        {
+            HttpContext ctx = HttpContext.Current;
+            if (ctx != null)
+                ctx.Items[name] = value;
+            else
+                WebSafeCallContext.SetData(name, value);
+
+            /*
+            try
+            {
+                // See if we're running in full trust
+                new SecurityPermission(PermissionState.Unrestricted).Demand();
+                WebSafeCallContext.SetData(name, value);
+            }
+            catch (SecurityException)
+            {
+                HttpContext ctx = HttpContext.Current;
+                if (ctx != null)
+                    ctx.Items[name] = value;
+            }
+            */
+        }
+        /// <summary>
+        /// Empties a data slot with the specified name.
+        /// </summary>
+        /// <param name="name">The name of the data slot to empty.</param>
+        public static void FreeNamedDataSlot(string name)
+        {
+            HttpContext ctx = HttpContext.Current;
+            if (ctx != null)
+                ctx.Items.Remove(name);
+            else
+                WebSafeCallContext.FreeNamedDataSlot(name);
+
+            /*
+            try
+            {
+                // See if we're running in full trust
+                new SecurityPermission(PermissionState.Unrestricted).Demand();
+                WebSafeCallContext.FreeNamedDataSlot(name);
+            }
+            catch (SecurityException)
+            {
+                HttpContext ctx = HttpContext.Current;
+                if (ctx != null)
+                    ctx.Items.Remove(name);
+            }
+            */
         }
     }
 }

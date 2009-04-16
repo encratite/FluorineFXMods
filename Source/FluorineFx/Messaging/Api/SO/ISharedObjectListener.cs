@@ -28,6 +28,7 @@ namespace FluorineFx.Messaging.Api.SO
 	/// <summary>
     /// Notifications about shared object updates.
 	/// </summary>
+    [CLSCompliant(false)]
 	public interface ISharedObjectListener
 	{
         /// <summary>

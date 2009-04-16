@@ -29,10 +29,10 @@ namespace FluorineFx.Messaging.Rtmpt
         string _protocol;
         string _httpMethod;
         Hashtable _headers;
-        RtmpServerConnection _connection;
         ByteBuffer _data;
+        RtmpConnection _connection;
 
-        public RtmptRequest(RtmpServerConnection connection, string url, string protocol, string httpMethod, Hashtable headers)
+        public RtmptRequest(RtmpConnection connection, string url, string protocol, string httpMethod, Hashtable headers)
         {
             _connection = connection;
             _url = url;
@@ -64,15 +64,15 @@ namespace FluorineFx.Messaging.Rtmpt
             get { return _protocol == "HTTP/1.1" ? 1 : 0; }
         }
 
-        public RtmpServerConnection Connection
-        {
-            get { return _connection; }
-        }
-
         public ByteBuffer Data
         {
             get { return _data; }
             set { _data = value; }
+        }
+
+        public RtmpConnection Connection
+        {
+            get { return _connection; }
         }
     }
 }

@@ -41,7 +41,7 @@ namespace FluorineFx.Messaging.Services
         /// <summary>
         /// Service settings.
         /// </summary>
-        protected ServiceSettings _serviceSettings;
+        protected ServiceDefinition _serviceDefinition;
         /// <summary>
         /// Destinations in this service.
         /// </summary>
@@ -56,30 +56,39 @@ namespace FluorineFx.Messaging.Services
         {
         }
 
-		internal ServiceBase(MessageBroker messageBroker, ServiceSettings serviceSettings)
+        internal ServiceBase(MessageBroker messageBroker, ServiceDefinition serviceDefinition)
 		{
 			_messageBroker = messageBroker;
-			_serviceSettings = serviceSettings;
+            _serviceDefinition = serviceDefinition;
 
 			_destinations = new Hashtable();
-            foreach (DestinationSettings destinationSettings in serviceSettings.DestinationSettings)
-			{
-				CreateDestination(destinationSettings);
-			}
+            if (this.ServiceDefinition.Destinations != null)
+            {
+                foreach (DestinationDefinition destinationDefinition in this.ServiceDefinition.Destinations)
+                {
+                    AdapterDefinition adapterDefinition = null;
+                    AdapterRef adapterRef = destinationDefinition.AdapterRef;
+                    if (adapterRef != null)
+                        adapterDefinition = serviceDefinition.GetAdapterByRef(adapterRef.Ref);
+                    else
+                        adapterDefinition = serviceDefinition.GetDefaultAdapter();
+                    CreateDestination(destinationDefinition, adapterDefinition);
+                }
+            }
 		}
         /// <summary>
         /// Creates a new Destination.
         /// </summary>
         /// <param name="destinationSettings">Destination settings.</param>
         /// <returns>The new Destination instance.</returns>
-		protected virtual Destination NewDestination(DestinationSettings destinationSettings)
+        protected virtual Destination NewDestination(DestinationDefinition destinationDefinition)
 		{
-			return new Destination(this, destinationSettings);
+            return new Destination(this, destinationDefinition);
 		}
         /// <summary>
         /// Gets service settings.
         /// </summary>
-		public ServiceSettings ServiceSettings{ get { return _serviceSettings; } }
+        public ServiceDefinition ServiceDefinition { get { return _serviceDefinition; } }
 
 		#region IService Members
 
@@ -90,7 +99,7 @@ namespace FluorineFx.Messaging.Services
 		{
 			get
 			{
-				return _serviceSettings.Id;
+                return _serviceDefinition.Id;
 			}
 		}
         /// <summary>
@@ -137,7 +146,7 @@ namespace FluorineFx.Messaging.Services
 			{
 				foreach(Destination destination in _destinations.Values)
 				{
-					string sourceTmp = destination.DestinationSettings.Properties["source"] as string;
+					string sourceTmp = destination.DestinationDefinition.Properties.Source;
 					if( source == sourceTmp )
 						return destination;
 				}
@@ -191,14 +200,7 @@ namespace FluorineFx.Messaging.Services
         /// <returns>true if the Service is capable of handling messages of a given type; otherwise, false.</returns>
         public bool IsSupportedMessageType(string messageClassName)
 		{
-			bool result = _serviceSettings.SupportedMessageTypes.Contains(messageClassName);
-			if(!result)
-			{
-				//Check whether this type is mapped				
-				string typeName = FluorineConfiguration.Instance.ClassMappings.GetCustomClass(messageClassName);
-				return _serviceSettings.SupportedMessageTypes.Contains(typeName);
-			}
-			return result;
+            return this.ServiceDefinition.IsSupportedMessageType(messageClassName);
 		}
 
         /// <summary>
@@ -219,29 +221,33 @@ namespace FluorineFx.Messaging.Services
         /// <summary>
         /// Creates a destination with the specified settings.
         /// </summary>
-        /// <param name="destinationSettings">Destination settings.</param>
+        /// <param name="destinationDefinition">Destination settings.</param>
+        /// <param name="adapterDefinition">Adapter settings.</param>
         /// <returns>The created destination instance.</returns>
-		public virtual Destination CreateDestination(DestinationSettings destinationSettings)
+        public virtual Destination CreateDestination(DestinationDefinition destinationDefinition, AdapterDefinition adapterDefinition)
 		{
 			lock(_objLock)
 			{
-				if( !_destinations.ContainsKey(destinationSettings.Id) )
+                if (!_destinations.ContainsKey(destinationDefinition.Id))
 				{
-					Destination destination = NewDestination(destinationSettings);
-					if( destinationSettings.Adapter != null )
+                    Destination destination = NewDestination(destinationDefinition);
+                    destination.Init(adapterDefinition);
+                    /*
+                    if (destinationDefinition.Adapter != null)
                         destination.Init(destinationSettings.Adapter);
 					else
                         destination.Init(_serviceSettings.DefaultAdapter);
+                    */
 					_destinations[destination.Id] = destination;
 					
-					string source = destination.DestinationSettings.Properties["source"] as string;
+					string source = destination.DestinationDefinition.Properties.Source;
 					//TODO: warn if more then one "*" source occurs.
 					if( source != null && source == "*" )
 						_defaultDestination = destination;
 					return destination;
 				}
 				else
-					return _destinations[destinationSettings.Id] as Destination;
+                    return _destinations[destinationDefinition.Id] as Destination;
 			}
 		}
         /// <summary>
@@ -261,41 +267,7 @@ namespace FluorineFx.Messaging.Services
         /// <param name="destination">The destination that should process messages.</param>
 		public virtual void CheckSecurity(Destination destination)
 		{
-			if( destination == null )
-				throw new FluorineException(__Res.GetString(__Res.Invalid_Destination, "null"));
-			if( destination.DestinationSettings != null )
-			{
-                string[] roles = destination.DestinationSettings.GetRoles();
-				if( roles.Length > 0 )
-				{
-					bool authorized = DoAuthorization(roles);
-					if( !authorized )
-						throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AccessNotAllowed));
-				}
-			}
-		}
-        /// <summary>
-        /// Performs authorization for the current user.
-        /// </summary>
-        /// <param name="roles">List of roles.</param>
-        /// <returns>true if the current user is authorized, otherwise, false.</returns>
-        /// <remarks>
-        /// If Thread.CurrentPrincipal is not set this method will throw an UnauthorizedAccessException.
-        /// If the MessageBroker of this Destination does not have a valid Login Command this method will throw an UnauthorizedAccessException.
-        /// </remarks>
-		public bool DoAuthorization(string[] roles)
-		{
-			if( Thread.CurrentPrincipal == null )
-                throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AccessNotAllowed));
-			if( _messageBroker == null )
-				throw new FluorineException(__Res.GetString(__Res.MessageBroker_NotAvailable));
-			if( _messageBroker.LoginCommand != null )
-			{
-				bool authorized = _messageBroker.LoginCommand.DoAuthorization( Thread.CurrentPrincipal, roles);
-				return authorized;
-			}
-			else
-				throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_LoginMissing));
+            this.GetMessageBroker().LoginManager.CheckSecurity(destination);
 		}
 	}
 }

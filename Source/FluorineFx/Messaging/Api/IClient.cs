@@ -18,6 +18,7 @@
 */
 using System;
 using System.Collections;
+using System.Security.Principal;
 using FluorineFx.Messaging.Messages;
 using FluorineFx.Context;
 
@@ -26,7 +27,8 @@ namespace FluorineFx.Messaging.Api
 	/// <summary>
     /// The client object represents a single client. One client may have multiple connections to different scopes on the same host.
 	/// </summary>
-	public interface IClient : IAttributeStore
+	[CLSCompliant(false)]
+    public interface IClient : IAttributeStore, ISessionListener, IMessageClientListener
 	{
         /// <summary>
         /// Gets the client identity.
@@ -44,9 +46,17 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
 		ICollection Connections{ get; }
         /// <summary>
-        /// Closes all the connections.
+        /// Gets the MessageClients associated with this Client.
         /// </summary>
-		void Disconnect();
+        IList MessageClients { get; }
+        /// <summary>
+        /// Gets whether the client is newly instantiated.
+        /// </summary>
+        bool IsNew { get; }
+        /// <summary>
+        /// Invalidates the client.
+        /// </summary>
+		void Invalidate();
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -55,12 +65,6 @@ namespace FluorineFx.Messaging.Api
         /// Gets an object that can be used to synchronize access. 
         /// </summary>
         object SyncRoot { get; }
-        /// <summary>
-        /// Gets pending messages.
-        /// </summary>
-        /// <param name="waitIntervalMillis"></param>
-        /// <returns></returns>
-        IMessage[] GetPendingMessages(int waitIntervalMillis);
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -71,16 +75,6 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
         /// <param name="messageClient"></param>
         void UnregisterMessageClient(IMessageClient messageClient);
-        /// <summary>
-        /// Adds a session destroy listener that will be notified when the session is destroyed.
-        /// </summary>
-        /// <param name="listener">The listener to add.</param>
-        void AddSessionDestroyedListener(ISessionListener listener);
-        /// <summary>
-        /// Removes a session destroy listener.
-        /// </summary>
-        /// <param name="listener">The listener to remove.</param>
-        void RemoveSessionDestroyedListener(ISessionListener listener);
         /// <summary>
         /// Renews a lease.
         /// </summary>
@@ -104,5 +98,56 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
         /// <param name="connection"></param>
         void Unregister(IConnection connection);
+        /// <summary>
+        /// Gets whether the client is disconnected.
+        /// </summary>
+        bool IsValid { get; }
+        /// <summary>
+        /// Registers an IEndpointPushHandler for the specified endpoint to handle pushing messages.
+        /// </summary>
+        /// <param name="handler">The IEndpointPushHandler to register.</param>
+        /// <param name="endpointId">The endpoint identity to register for.</param>
+        void RegisterEndpointPushHandler(IEndpointPushHandler handler, string endpointId);
+        /// <summary>
+        /// Unregisters an IEndpointPushHandler from the specified endpoint.
+        /// </summary>
+        /// <param name="handler">The IEndpointPushHandler to unregister.</param>
+        /// <param name="endpointId">The endpoint identity to unregister from.</param>
+        void UnregisterEndpointPushHandler(IEndpointPushHandler handler, string endpointId);
+        /// <summary>
+        /// Returns the push handler registered with the Client with the supplied endpoint id, or null if no push handler was registered with the Client
+        /// </summary>
+        /// <param name="endpointId">Endpoint identity.</param>
+        /// <returns>The push handler registered with the Client with the supplied endpoint id, or null if no push handler was registered with the Client for that endpoint.</returns>
+        IEndpointPushHandler GetEndpointPushHandler(string endpointId);
+        /// <summary>
+        /// Gets or sets security information for the client.
+        /// </summary>
+        /// <remarks>Available only when perClientAuthentication is in use.</remarks>
+        IPrincipal Principal { get; set; }
+        /// <summary>
+        /// Adds a client destroy listener that will be notified when the client is destroyed.
+        /// </summary>
+        /// <param name="listener">The listener to add.</param>
+        void AddClientDestroyedListener(IClientListener listener);
+        /// <summary>
+        /// Removes a client destroy listener.
+        /// </summary>
+        /// <param name="listener">The listener to remove.</param>
+        void RemoveClientDestroyedListener(IClientListener listener);
+        /// <summary>
+        /// Associates a Session with this Client.
+        /// </summary>
+        /// <param name="session">The Session to associate with this Client.</param>
+        void RegisterSession(ISession session);
+        /// <summary>
+        /// Disassociates a Session from this Client.
+        /// </summary>
+        /// <param name="session">The Session to disassociate from this Client.</param>
+        void UnregisterSession(ISession session);
+        /// <summary>
+        /// Notifies client listeners.
+        /// </summary>
+        void NotifyCreated();
 	}
 }

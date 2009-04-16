@@ -104,20 +104,20 @@ namespace FluorineFx.Messaging.Rtmp
 #else
 			ArrayList result = null;
 #endif
-            try 
-			{
-				while (true) 
-				{
-					long remaining = stream.Remaining;
-					if(context.CanStartDecoding(remaining)) 
-						context.StartDecoding();
-					else 
-						break;
+            try
+            {
+                while (true)
+                {
+                    long remaining = stream.Remaining;
+                    if (context.CanStartDecoding(remaining))
+                        context.StartDecoding();
+                    else
+                        break;
 
                     if (context.State == RtmpState.Disconnected)
                         break;
-				
-					object decodedObject = Decode(context, stream);
+
+                    object decodedObject = Decode(context, stream);
                     if (context.HasDecodedObject)
                     {
 #if !(NET_1_1)
@@ -134,14 +134,18 @@ namespace FluorineFx.Messaging.Rtmp
                     else
                         break;
 
-					if(!stream.HasRemaining) 
-						break;
-				}
-			}
-			catch
-			{
-				throw;
-			}
+                    if (!stream.HasRemaining)
+                        break;
+                }
+            }
+            catch (HandshakeFailedException)
+            {
+                throw;
+            }
+            catch(Exception)
+            {
+                throw;
+            }
 			finally
 			{
 			    stream.Compact();
@@ -149,32 +153,25 @@ namespace FluorineFx.Messaging.Rtmp
 			return result;
 		}
 
-		public static object Decode(RtmpContext context, ByteBuffer stream)
+		private static object Decode(RtmpContext context, ByteBuffer stream)
 		{
-			long start = stream.Position;
-			try 
-			{
-				switch(context.State)
-				{					
-					case RtmpState.Connected:
-						return DecodePacket(context, stream);
-					case RtmpState.Error:
-						// Attempt to correct error 
-						return null;
-					case RtmpState.Connect:
-					case RtmpState.Handshake:
-						return DecodeHandshake(context, stream);
-					default:
-						return null;
-				}
-			} 
-			catch(Exception ex) 
-			{
-				throw new ProtocolException("Error during decoding", ex);
+			//long start = stream.Position;
+			switch(context.State)
+			{					
+				case RtmpState.Connected:
+					return DecodePacket(context, stream);
+				case RtmpState.Error:
+					// Attempt to correct error 
+					return null;
+				case RtmpState.Connect:
+				case RtmpState.Handshake:
+					return DecodeHandshake(context, stream);
+				default:
+					return null;
 			}
 		}
 
-		public static ByteBuffer DecodeHandshake(RtmpContext context, ByteBuffer stream) 
+		public static object DecodeHandshake(RtmpContext context, ByteBuffer stream) 
 		{
 			long remaining = stream.Remaining;
 			if(context.Mode == RtmpMode.Server)
@@ -192,27 +189,22 @@ namespace FluorineFx.Messaging.Rtmp
 					}
 					else 
 					{
-						//This is not a RTMP packet but a single byte (0x3) followed by two 
-						//1536 byte chunks (so a total of 3072 raw bytes). 
-						//The second chunk of bytes is the original client request bytes sent 
-						//in handshake request. The first chunk can be anything. 
-						//Use null bytes it doesnt seem to matter. 
-						ByteBuffer hs = ByteBuffer.Allocate(2*HandshakeSize+1);
-						hs.Put(0x03);
-                        // TODO: the first four bytes of the handshake reply seem to be the  
-						// server uptime - send something better here...  
-						hs.PutInt(0x01);
-						hs.Fill((byte)0x00,HandshakeSize-4);
-						//hs.Fill((byte)0x00, HandshakeSize);
-						stream.Get();// skip the header byte
-						ByteBuffer.Put(hs, stream, HandshakeSize);
-						hs.Flip();
-						context.State = RtmpState.Handshake;
-						return hs;
-					}
+#if !SILVERLIGHT
+                        if (log.IsDebugEnabled)
+                            log.Debug("Handshake 1st phase");
+#endif
+                        stream.Get();// skip the header byte
+                        byte[] handshake = RtmpHandshake.GetHandshakeResponse(stream);
+                        context.SetHandshake(handshake);
+                        context.State = RtmpState.Handshake;
+                        return handshake;
+                    }
 				}
 				if(context.State == RtmpState.Handshake)
 				{
+                    //if (log.IsDebugEnabled)
+                    //    log.Debug("Handshake reply");
+
 					if(remaining < HandshakeSize)
 					{
 #if !SILVERLIGHT
@@ -224,6 +216,17 @@ namespace FluorineFx.Messaging.Rtmp
 					}				 
 					else 
 					{
+					    // Skip first 8 bytes when comparing the handshake, they seem to be changed when connecting from a Mac client.
+                        if (!context.ValidateHandshakeReply(stream, 8, HandshakeSize - 8))
+                        {
+#if !SILVERLIGHT
+                            if (log.IsDebugEnabled)
+                                log.Debug("Handshake reply validation failed, disconnecting client.");
+#endif
+                            stream.Skip(HandshakeSize);
+                            context.State = RtmpState.Error;
+                            throw new HandshakeFailedException("Handshake validation failed");
+                        }
 						stream.Skip(HandshakeSize);
 						context.State = RtmpState.Connected;
 						context.ContinueDecoding();
@@ -264,7 +267,11 @@ namespace FluorineFx.Messaging.Rtmp
 			int remaining = stream.Remaining;
 			// We need at least one byte
 			if(remaining < 1) 
-			{
+            {
+#if !SILVERLIGHT
+                if( log.IsDebugEnabled )
+                    log.Debug(__Res.GetString(__Res.Rtmp_DataBuffering, remaining, 1));
+#endif
 				context.SetBufferDecoding(1);
 				return null;
 			}
@@ -278,6 +285,10 @@ namespace FluorineFx.Messaging.Rtmp
 				if (remaining < 2) 
 				{
 					stream.Position = position;
+#if !SILVERLIGHT
+                    if (log.IsDebugEnabled)
+                        log.Debug(__Res.GetString(__Res.Rtmp_DataBuffering, remaining, 2));
+#endif
 					context.SetBufferDecoding(2);
 					return null;
 				}
@@ -288,7 +299,11 @@ namespace FluorineFx.Messaging.Rtmp
 				if (remaining < 3)
 				{
 					stream.Position = position;
-					context.SetBufferDecoding(3);
+#if !SILVERLIGHT
+                    if (log.IsDebugEnabled)
+                        log.Debug(__Res.GetString(__Res.Rtmp_DataBuffering, remaining, 3));
+#endif
+                    context.SetBufferDecoding(3);
 					return null;
 				}
 				headerValue = ((int) headerByte & 0xff) << 16 | ((int) stream.Get() & 0xff) << 8 | ((int) stream.Get() & 0xff); 
@@ -305,16 +320,18 @@ namespace FluorineFx.Messaging.Rtmp
 			int headerLength = GetHeaderLength(headerSize);
 			headerLength += byteCount - 1;
 
-			if(headerLength > remaining) 
-			{
+			//if(headerLength > remaining) 
+            if (headerLength + byteCount - 1 > remaining)
+            {
 #if !SILVERLIGHT
-                if(log.IsDebugEnabled)
-					log.Debug(__Res.GetString(__Res.Rtmp_HeaderBuffering, remaining));
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.Rtmp_HeaderBuffering, remaining));
 #endif
-				stream.Position = position;
-				context.SetBufferDecoding(headerLength);
-				return null;
-			}
+                stream.Position = position;
+                //context.SetBufferDecoding(headerLength);
+                context.SetBufferDecoding(headerLength + byteCount - 1);
+                return null;
+            }
 			// Move the position back to the start
 			stream.Position = position;
 
@@ -365,18 +382,30 @@ namespace FluorineFx.Messaging.Rtmp
 				context.ContinueDecoding();
 				return null;
 			}
+            if (buf.Position > header.Size + addSize)
+            {
+#if !SILVERLIGHT
+                log.Warn(string.Format("Packet size expanded from {0} to {1} ({2})", header.Size + addSize, buf.Position, header));
+#endif
+            }
 
 			buf.Flip();
-			IRtmpEvent message = DecodeMessage(context, header, buf);
-			packet.Message = message;
 
-			
-			if (message is ChunkSize) 
-			{
-				ChunkSize chunkSizeMsg = message as ChunkSize;
-				context.SetReadChunkSize( chunkSizeMsg.Size );
-			}
-			context.SetLastReadPacket(channelId, null);
+            try
+            {
+                IRtmpEvent message = DecodeMessage(context, packet.Header, buf);
+                packet.Message = message;
+
+                if (message is ChunkSize)
+                {
+                    ChunkSize chunkSizeMsg = message as ChunkSize;
+                    context.SetReadChunkSize(chunkSizeMsg.Size);
+                }
+            }
+            finally
+            {
+                context.SetLastReadPacket(channelId, null);
+            }
 			return packet;
 		}
 

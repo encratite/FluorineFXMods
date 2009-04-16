@@ -23,6 +23,7 @@ namespace FluorineFx.Messaging.Api.Service
 	/// <summary>
     /// Interface for objects that execute service calls (remote calls from client).
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IServiceInvoker
 	{
 		/// <summary>

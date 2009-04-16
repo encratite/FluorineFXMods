@@ -23,6 +23,7 @@ namespace FluorineFx.Messaging.Api
 	/// <summary>
     /// The global scope that acts as root for all applications in a host.
 	/// </summary>
+    [CLSCompliant(false)]
 	public interface IGlobalScope : IScope
 	{
         /// <summary>

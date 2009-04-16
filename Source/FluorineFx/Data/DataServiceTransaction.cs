@@ -18,6 +18,8 @@
 */
 using System;
 using System.Collections;
+using System.Security;
+using System.Security.Permissions;
 using log4net;
 using FluorineFx.Exceptions;
 using FluorineFx.Messaging;
@@ -140,19 +142,13 @@ namespace FluorineFx.Data
 		{
 			get
 			{
-                if (FluorineContext.Current != null)
-                    return FluorineContext.Current.Items[FluorineContext.FluorineDataServiceTransaction] as DataServiceTransaction;
-                else
-                    return WebSafeCallContext.GetData(FluorineContext.FluorineDataServiceTransaction) as DataServiceTransaction;
+                return FluorineWebSafeCallContext.GetData(FluorineContext.FluorineDataServiceTransaction) as DataServiceTransaction;
 			}
 		}
 
         private static void SetCurrentDataServiceTransaction(DataServiceTransaction dataServiceTransaction)
         {
-            if (FluorineContext.Current != null)
-                FluorineContext.Current.Items.Add(FluorineContext.FluorineDataServiceTransaction, dataServiceTransaction);
-            else
-                WebSafeCallContext.SetData(FluorineContext.FluorineDataServiceTransaction, dataServiceTransaction);
+            FluorineWebSafeCallContext.SetData(FluorineContext.FluorineDataServiceTransaction, dataServiceTransaction);
         }
 
 		/// <summary>

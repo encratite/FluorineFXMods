@@ -51,7 +51,8 @@ namespace FluorineFx.Messaging.Endpoints
 
         RtmpServer _rtmpServer;
 
-		public RtmpEndpoint(MessageBroker messageBroker, ChannelSettings channelSettings):base(messageBroker, channelSettings)
+        public RtmpEndpoint(MessageBroker messageBroker, ChannelDefinition channelDefinition)
+            : base(messageBroker, channelDefinition)
 		{
         }
 
@@ -105,17 +106,32 @@ namespace FluorineFx.Messaging.Endpoints
 
                 _rtmpServer = new RtmpServer(this);
 
-				UriBase uri = _channelSettings.GetUri();
+				UriBase uri = this.ChannelDefinition.GetUri();
+                if (uri.Protocol == "http" || uri.Protocol == "https")
+                {
+                    log.Info(string.Format("Rtmp endpoint was not started, specified protocol: {0}", uri.Protocol));
+                    return;
+                }
 				int port = 1935;
-				if( uri.Port != null && uri.Port != string.Empty )
-					port = System.Convert.ToInt32(uri.Port);
+                if (uri.Port != null && uri.Port != string.Empty)
+                {
+                    try
+                    {
+                        port = System.Convert.ToInt32(uri.Port);
+                    }
+                    catch (FormatException ex)
+                    {
+                        log.Error("Invalid port", ex);
+                        return;
+                    }
+                }
 				if( log.IsInfoEnabled )
 					log.Info(__Res.GetString(__Res.RtmpEndpoint_Starting, port.ToString()));
 
                 IPEndPoint ipEndPoint;
-                if (_channelSettings.BindAddress != null)
+                if (this.ChannelDefinition.Properties.BindAddress != null)
                 {
-                    IPAddress ipAddress = IPAddress.Parse(_channelSettings.BindAddress);
+                    IPAddress ipAddress = IPAddress.Parse(this.ChannelDefinition.Properties.BindAddress);
                     ipEndPoint = new IPEndPoint(ipAddress, port);
                 }
                 else
@@ -159,10 +175,15 @@ namespace FluorineFx.Messaging.Endpoints
 
 		public override void Push(IMessage message, MessageClient messageClient)
 		{
+            /*
             IMessageConnection messageConnection = messageClient.MessageConnection;
             Debug.Assert(messageConnection != null);
             if (messageConnection != null)
                 messageConnection.Push(message, messageClient);
+            */
+            ISession session = messageClient.Session;
+            Debug.Assert(session != null);
+            session.Push(message, messageClient);
 		}
 
 
@@ -172,5 +193,16 @@ namespace FluorineFx.Messaging.Endpoints
 			if( log.IsErrorEnabled )
                 log.Error(__Res.GetString(__Res.RtmpEndpoint_Error), e.Exception);
 		}
+        /// <summary>
+        /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public override int ClientLeaseTime
+        {
+            get 
+            {
+                int timeout = this.GetMessageBroker().FlexClientSettings.TimeoutMinutes;
+                return timeout;
+            }
+        }
 	}
 }

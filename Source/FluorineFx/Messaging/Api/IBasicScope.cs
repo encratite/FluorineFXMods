@@ -27,6 +27,7 @@ namespace FluorineFx.Messaging.Api
 	/// <summary>
 	/// Base interface for all scope objects.
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IBasicScope : ICoreObject, IEventObservable, IPersistable, IEnumerable
 	{
 		/// <summary>

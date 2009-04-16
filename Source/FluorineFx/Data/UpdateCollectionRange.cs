@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections;
+using FluorineFx.Messaging.Messages;
 
 namespace FluorineFx.Data
 {
@@ -42,6 +43,7 @@ namespace FluorineFx.Data
 		object[] _identities;
 		int _position;
 		int _updateType;
+        int _size;
 
         /// <summary>
         /// Initializes a new instance of the UpdateCollectionRange class.
@@ -77,5 +79,19 @@ namespace FluorineFx.Data
 			get{ return _updateType; }
 			set{ _updateType = value; }
 		}
+        /// <summary>
+        /// Indicates the increase in collection size. Only applicatble when update type is INCREMENT_COLLECTION_SIZE or DECREMENT_COLLECTION_SIZE.
+        /// </summary>
+        public int size
+        {
+            get { return _size; }
+            set { _size = value; }
+        }
+
+        public override string ToString()
+        {
+            string value = "UpdateCollectionRange " + "updateType = " + (updateType != 0 ? "delete" : "insert") + " " + "position = " + position;
+            return value;
+        }
 	}
 }

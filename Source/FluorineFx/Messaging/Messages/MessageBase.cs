@@ -22,6 +22,7 @@ using System.Collections;
 #if !(NET_1_1)
 using System.Collections.Generic;
 #endif
+using System.Text;
 
 namespace FluorineFx.Messaging.Messages
 {
@@ -194,7 +195,7 @@ namespace FluorineFx.Messaging.Messages
         /// <returns>The value associated with the specified header name.</returns>
 		public object GetHeader(string name)
 		{
-			if( _headers != null )
+            if (_headers != null && _headers.ContainsKey(name))
 				return _headers[name];
 			return null;
 		}
@@ -206,7 +207,11 @@ namespace FluorineFx.Messaging.Messages
         public void SetHeader(string name, object value)
 		{
 			if( _headers == null )
+#if !(NET_1_1)
+                _headers = new Dictionary<string,object>();
+#else
 				_headers = new ASObject();
+#endif
 			_headers[name] = value;
 		}
         /// <summary>
@@ -236,6 +241,181 @@ namespace FluorineFx.Messaging.Messages
 			return message;
 		}
 
+        /// <summary>
+        /// Gets the Flex client id specified in the message headers ("DSId").
+        /// </summary>
+        /// <returns>The Flex client id.</returns>
+        public string GetFlexClientId()
+        {
+            if (HeaderExists(MessageBase.FlexClientIdHeader))
+                return GetHeader(MessageBase.FlexClientIdHeader) as string;
+            return null;
+        }
+
+        internal void SetFlexClientId(string value)
+        {
+            SetHeader(MessageBase.FlexClientIdHeader, value);
+        }
+
 		#endregion
-	}
+
+        #region Message tracing
+
+        static string[] IndentLevels = { "", "  ", "    ", "      ", "        ", "          " };
+
+        internal static String GetIndent(int indentLevel)
+        {
+            if (indentLevel < IndentLevels.Length) 
+                return IndentLevels[indentLevel];
+            StringBuilder sb = new StringBuilder();
+            sb.Append(IndentLevels[IndentLevels.Length - 1]);
+            indentLevel -= IndentLevels.Length - 1;
+            for (int i = 0; i < indentLevel; i++)
+                sb.Append("  ");
+            return sb.ToString();
+        }
+
+        internal static String GetFieldSeparator(int indentLevel)
+        {
+            String indent = GetIndent(indentLevel);
+            if (indentLevel > 0)
+                indent = Environment.NewLine + indent;
+            else
+                indent = " ";
+            return indent;
+        }
+
+        public override string ToString()
+        {
+            return ToString(1);
+        }
+
+        public virtual string ToString(int indentLevel)
+        {
+            return ToStringHeader(indentLevel) + ToStringFields(indentLevel + 1);
+        }
+
+        protected string ToStringHeader(int indentLevel)
+        {
+            string value = "Flex Message";
+            value += " (" + GetType().Name + ") ";
+            return value;
+        }
+
+        protected virtual string ToStringFields(int indentLevel)
+        {
+            if (_headers != null)
+            {
+                string separator = GetFieldSeparator(indentLevel);
+                string value = string.Empty;
+                foreach (DictionaryEntry entry in _headers as IDictionary)
+                {
+                    string key = entry.Key.ToString();
+                    value += separator + "hdr(" + key + ") = ";
+                    value += BodyToString(entry.Value, indentLevel + 1);
+                }
+                return value;
+            }
+            return string.Empty;
+        }
+
+        protected string BodyToString(object body, int indentLevel) 
+        {
+            return BodyToString(body, indentLevel, null);
+        }
+
+        protected string BodyToString(object body, int indentLevel, IDictionary visited)
+        {
+            try
+            {
+                indentLevel = indentLevel + 1;
+                if (visited == null && indentLevel > 18)
+                    return Environment.NewLine + GetFieldSeparator(indentLevel) + "<..max-depth-reached..>";
+                return InternalBodyToString(body, indentLevel, visited);
+            }
+            catch (Exception ex)
+            {
+                return "Exception in BodyToString: " + ex.Message;
+            }
+        }
+
+        protected string InternalBodyToString(object body, int indentLevel)
+        {
+            return InternalBodyToString(body, indentLevel, null);
+        }
+
+        private IDictionary CheckVisited(IDictionary visited, object obj)
+        {
+            if (visited == null)
+#if !(NET_1_1)
+                visited = new Dictionary<object, bool>();
+#else
+                visited = new Hashtable();
+#endif
+            else if (!visited.Contains(obj))
+                return null;
+            visited.Add(obj, true);
+            return visited;
+        }
+
+        protected string InternalBodyToString(object body, int indentLevel, IDictionary visited)
+        {
+            if (body is object[])
+            {
+                if ((visited = CheckVisited(visited, body)) == null)
+                    return "<--";
+
+                string sep = GetFieldSeparator(indentLevel);
+                StringBuilder sb = new StringBuilder();
+                object[] arr = body as object[];
+                sb.Append(GetFieldSeparator(indentLevel - 1));
+                sb.Append("[");
+                sb.Append(sep);
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    if (i != 0)
+                    {
+                        sb.Append(",");
+                        sb.Append(sep);
+                    }
+                    sb.Append(BodyToString(arr[i], indentLevel, visited));
+                }
+                sb.Append(GetFieldSeparator(indentLevel - 1));
+                sb.Append("]");
+                return sb.ToString();
+            }
+            else if (body is IDictionary)
+            {
+                IDictionary bodyMap = body as IDictionary;
+                StringBuilder buf = new StringBuilder();
+                buf.Append("{");
+                bool first = true;
+                foreach (DictionaryEntry entry in bodyMap)
+                {
+                    if (!first)
+                        buf.Append(", ");
+                    object key = entry.Key;
+                    object value = entry.Value;
+                    buf.Append(key == this ? "(recursive map as key)" : key);
+                    buf.Append("=");
+                    if (value == this)
+                        buf.Append("(recursive map as value)");
+                    else
+                        buf.Append(BodyToString(value, indentLevel + 1, visited));
+                    first = false;
+                }
+                buf.Append("}");
+                return buf.ToString();
+            }
+            else if (body is MessageBase)
+            {
+                return (body as MessageBase).ToString(indentLevel);
+            }
+            else if (body != null)
+                return body.ToString();
+            else return "null";
+        }
+
+        #endregion Message tracing
+    }
 }

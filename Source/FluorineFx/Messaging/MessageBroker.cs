@@ -29,6 +29,7 @@ using System.Web.Caching;
 using System.Threading;
 using log4net;
 using FluorineFx.IO;
+using FluorineFx.Collections;
 using FluorineFx.Messaging.Config;
 using FluorineFx.Messaging.Services;
 using FluorineFx.Messaging.Endpoints;
@@ -40,7 +41,6 @@ using FluorineFx.Context;
 using FluorineFx.Configuration;
 using FluorineFx.Exceptions;
 using FluorineFx.Util;
-using FluorineFx.Collections;
 
 namespace FluorineFx.Messaging
 {
@@ -88,14 +88,15 @@ namespace FluorineFx.Messaging
         private static object _syncLock = new object();
         private string _messageBrokerId;
 
-		Hashtable			_services;
-		Hashtable			_endpoints;
-		Hashtable			_destinationServiceMap;
-        Hashtable           _destinations;
-		ILoginCommand		_loginCommand;
+		CopyOnWriteDictionary _services;
+		CopyOnWriteDictionary _endpoints;
+		CopyOnWriteDictionary _destinationServiceMap;
+        CopyOnWriteDictionary _destinations;
+        LoginManager _loginManager;
 		private MessageServer		_messageServer;
-		private Hashtable			_factories;
+        private CopyOnWriteDictionary _factories;
         ClientManager _clientManager;
+        SessionManager _sessionManager;
         GlobalScope _globalScope;
 
 		/// <summary>
@@ -104,12 +105,14 @@ namespace FluorineFx.Messaging
 		public MessageBroker(MessageServer messageServer)
 		{
 			_messageServer = messageServer;
-			_services = new Hashtable();
-			_endpoints = new Hashtable();
-			_factories = new Hashtable();
-			_destinationServiceMap = new Hashtable();
-            _destinations = new Hashtable();
+            _services = new CopyOnWriteDictionary();
+            _endpoints = new CopyOnWriteDictionary();
+            _factories = new CopyOnWriteDictionary();
+            _destinationServiceMap = new CopyOnWriteDictionary();
+            _destinations = new CopyOnWriteDictionary();
             _clientManager = new ClientManager(this);
+            _sessionManager = new SessionManager(this);
+            _loginManager = new LoginManager();
 		}
 
         /// <summary>
@@ -132,10 +135,9 @@ namespace FluorineFx.Messaging
         /// </remarks>
         public FluorineFx.Messaging.Api.IGlobalScope GlobalScope { get { return _globalScope; } }
 
-		internal ILoginCommand LoginCommand
+        internal LoginManager LoginManager
 		{
-			get{ return _loginCommand; }
-			set{ _loginCommand = value; }
+			get{ return _loginManager; }
 		}
 
         internal FluorineFx.Messaging.Api.IClientRegistry ClientRegistry
@@ -143,10 +145,16 @@ namespace FluorineFx.Messaging
             get { return _clientManager; }
         }
 
-        internal FlexClientSettings FlexClientSettings
+        internal FlexClient FlexClientSettings
         {
-            get { return _messageServer.ServiceConfigSettings.FlexClientSettings; }
+            get { return _messageServer.ServicesConfiguration.FlexClient; }
         }
+
+        internal SessionManager SessionManager
+        {
+            get { return _sessionManager; }
+        }
+
         /// <summary>
         /// Registers the message broker.
         /// </summary>
@@ -323,6 +331,8 @@ namespace FluorineFx.Messaging
 
 		internal IEndpoint GetEndpoint(string endpointId)
 		{
+            if (endpointId == null || endpointId == string.Empty)
+                return null;
 			foreach(DictionaryEntry entry in _endpoints)
 			{
 				IEndpoint endpoint = entry.Value as IEndpoint;
@@ -337,8 +347,7 @@ namespace FluorineFx.Messaging
 			foreach(DictionaryEntry entry in _endpoints)
 			{
 				IEndpoint endpoint = entry.Value as IEndpoint;
-				ChannelSettings channelSettings = endpoint.GetSettings();
-				if( channelSettings != null && channelSettings.Bind(path, contextPath ) )
+                if (endpoint.ChannelDefinition.Bind(path, contextPath))
 					return endpoint;
 			}
 			return null;
@@ -349,8 +358,7 @@ namespace FluorineFx.Messaging
             foreach (DictionaryEntry entry in _endpoints)
             {
                 IEndpoint endpoint = entry.Value as IEndpoint;
-                ChannelSettings channelSettings = endpoint.GetSettings();
-                log.Debug(channelSettings.ToString());
+                log.Debug(endpoint.ChannelDefinition.ToString());
             }
         }
 
@@ -382,16 +390,24 @@ namespace FluorineFx.Messaging
 			object result = null;
 			IMessage responseMessage = null;
 
+            if( log.IsDebugEnabled )
+                log.Debug(__Res.GetString(__Res.MessageBroker_RoutingMessage, message.ToString()));
+
 			CommandMessage commandMessage = message as CommandMessage;
 			if( commandMessage != null && (commandMessage.operation == CommandMessage.LoginOperation || commandMessage.operation == CommandMessage.LogoutOperation) )//Login, Logout
 			{
-				log.Debug(string.Format("Routing CommandMessage operation = {0}", commandMessage.operation));
 				try
 				{
 					service = GetService(AuthenticationService.ServiceId);
 					result = service.ServiceMessage(commandMessage);
 					responseMessage = result as IMessage;
 				}
+                catch (UnauthorizedAccessException uae)
+                {
+                    if (log.IsDebugEnabled)
+                        log.Debug(uae.Message);
+                    responseMessage = ErrorMessage.GetErrorMessage(message, uae);
+                }
                 catch (SecurityException exception)
                 {
                     if (log.IsDebugEnabled)
@@ -407,17 +423,15 @@ namespace FluorineFx.Messaging
 			}
             else if (commandMessage != null && commandMessage.operation == CommandMessage.ClientPingOperation)
             {
-				log.Debug("Routing CommandMessage ping");
                 responseMessage = new AcknowledgeMessage();
                 responseMessage.body = true;
             }
             else
             {
-				log.Debug(string.Format("Routing message {0}", message.GetType().Name));
 				//The only case when context is not set should be when one starts a new thread in the backend
-                if( FluorineContext.Current != null )
-                    FluorineContext.Current.RestorePrincipal(this.LoginCommand);
-				//log.Debug(string.Format("Locate service for message {0}", message.GetType().Name));
+                //if( FluorineContext.Current != null )
+                //    FluorineContext.Current.RestorePrincipal(this.LoginCommand);
+                _loginManager.RestorePrincipal();
 				service = GetService(message);
                 if (service != null)
                 {
@@ -431,6 +445,12 @@ namespace FluorineFx.Messaging
                         if (log.IsDebugEnabled)
                             log.Debug(uae.Message);
                         result = ErrorMessage.GetErrorMessage(message, uae);
+                    }
+                    catch (ServiceException exception)
+                    {
+                        if (log.IsDebugEnabled)
+                            log.Debug(exception.Message);
+                        result = ErrorMessage.GetErrorMessage(message, exception);
                     }
                     catch (Exception exception)
                     {

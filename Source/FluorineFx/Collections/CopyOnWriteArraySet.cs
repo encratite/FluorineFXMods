@@ -96,13 +96,7 @@ namespace FluorineFx.Collections
         /// <returns></returns>
         public bool Add(object value)
         {
-            //_array.AddIfAbsent(value);
-            if (!_array.Contains(value))
-            {
-                _array.Add(value);
-                return true;
-            }
-            return false;
+            return _array.AddIfAbsent(value);
         }
         /// <summary>
         /// Returns an enumerator that iterates through an CopyOnWriteArraySet.

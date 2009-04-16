@@ -33,13 +33,14 @@ namespace FluorineFx.Messaging.Services
 	{
 		public const string RemotingServiceId = "remoting-service";
 
-		public RemotingService(MessageBroker broker, ServiceSettings settings) : base(broker, settings)
+        public RemotingService(MessageBroker broker, ServiceDefinition serviceDefinition)
+            : base(broker, serviceDefinition)
 		{
 		}
 
-		protected override Destination NewDestination(DestinationSettings destinationSettings)
+        protected override Destination NewDestination(DestinationDefinition destinationDefinition)
 		{
-			RemotingDestination remotingDestination = new RemotingDestination(this, destinationSettings);
+            RemotingDestination remotingDestination = new RemotingDestination(this, destinationDefinition);
 			return remotingDestination;
 		}
 

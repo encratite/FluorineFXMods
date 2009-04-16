@@ -64,6 +64,7 @@ namespace FluorineFx
         internal const string Rtmp_HSInitBuffering = "Rtmp_HSInitBuffering";
         internal const string Rtmp_HSReplyBuffering = "Rtmp_HSReplyBuffering";
         internal const string Rtmp_HeaderBuffering = "Rtmp_HeaderBuffering";
+        internal const string Rtmp_DataBuffering = "Rtmp_DataBuffering";
         internal const string Rtmp_ChunkSmall = "Rtmp_ChunkSmall";
         internal const string Rtmp_DecodeHeader = "Rtmp_DecodeHeader";
         internal const string Rtmp_ServerAddMapping = "Rtmp_ServerAddMapping";
@@ -80,6 +81,13 @@ namespace FluorineFx
         internal const string Rtmp_SocketDisconnectProcessing = "Rtmp_SocketDisconnectProcessing";
         internal const string Rtmp_ConnectionClose = "Rtmp_ConnectionClose";
         internal const string Rtmp_CouldNotProcessMessage = "Rtmp_CouldNotProcessMessage";
+        internal const string Rtmp_BeginHandlePacket = "Rtmp_BeginHandlePacket";
+        internal const string Rtmp_EndHandlePacket = "Rtmp_EndHandlePacket";
+        internal const string Rtmp_BeginDisconnect = "Rtmp_BeginDisconnect";
+        internal const string Rtmp_WritePacket = "Rtmp_WritePacket";
+        internal const string Rtmp_SocketSend = "Rtmp_SocketSend";
+
+        internal const string PushNotSupported = "PushNotSupported";
 
         internal const string Arg_Mismatch = "Arg_Mismatch";
 
@@ -111,6 +119,8 @@ namespace FluorineFx
         internal const string MessageBroker_NotAvailable = "MessageBroker_NotAvailable";
         internal const string MessageBroker_RegisterError = "MessageBroker_RegisterError";
         internal const string MessageBroker_RoutingError = "MessageBroker_RoutingError";
+        internal const string MessageBroker_RoutingMessage = "MessageBroker_RoutingMessage";
+        
 
         internal const string MessageServer_LoadingConfig = "MessageServer_LoadingConfig";
         internal const string MessageServer_LoadingConfigDefault = "MessageServer_LoadingConfigDefault";
@@ -138,9 +148,22 @@ namespace FluorineFx
         internal const string Subtopic_Invalid = "Subtopic_Invalid";
         internal const string Selector_InvalidResult = "Selector_InvalidResult";
 
-        internal const string SubscriptionManager_Remove = "SubscriptionManager_Remove";
-        internal const string SubscriptionManager_CacheExpired = "SubscriptionManager_CacheExpired";
 
+        internal const string Client_Create = "Client_Create";
+        internal const string Client_Invalidated = "Client_Invalidated";
+        internal const string Client_Lease = "Client_Lease";
+        internal const string ClientManager_CacheExpired = "ClientManager_CacheExpired";
+        internal const string ClientManager_Remove = "ClientManager_Remove";
+
+        internal const string Session_Create = "Session_Create";
+        internal const string Session_Invalidated = "Session_Invalidated";
+        internal const string Session_Lease = "Session_Lease";
+        internal const string SessionManager_CacheExpired = "SessionManager_CacheExpired";
+        internal const string SessionManager_Remove = "SessionManager_Remove";
+
+        internal const string SubscriptionManager_CacheExpired = "SubscriptionManager_CacheExpired";
+        internal const string SubscriptionManager_Remove = "SubscriptionManager_Remove";
+        
         internal const string Invalid_Destination = "Invalid_Destination";
 
         internal const string Security_AccessNotAllowed = "Security_AccessNotAllowed";
@@ -218,6 +241,7 @@ namespace FluorineFx
         internal const string Invocation_NoSuitableMethod = "Invocation_NoSuitableMethod";
         internal const string Invocation_Ambiguity = "Invocation_Ambiguity";
         internal const string Invocation_ParameterType = "Invocation_ParameterType";
+        internal const string Invocation_Failed = "Invocation_Failed";
 
         internal const string Reflection_MemberNotFound = "Reflection_MemberNotFound";
         internal const string Reflection_PropertyReadOnly = "Reflection_PropertyReadOnly";
@@ -243,6 +267,7 @@ namespace FluorineFx
         internal const string Fluorine_InitModule = "Fluorine_InitModule";
         internal const string Fluorine_Start = "Fluorine_Start";
         internal const string Fluorine_Version = "Fluorine_Version";
+        internal const string Fluorine_Fatal = "Fluorine_Fatal";
 
         internal const string ServiceBrowser_Aquire = "ServiceBrowser_Aquire";
         internal const string ServiceBrowser_Aquired = "ServiceBrowser_Aquired";

@@ -69,7 +69,7 @@ namespace FluorineFx.Collections
         /// Adds an element with the specified key and value into the CopyOnWriteDictionary.
         /// </summary>
         /// <param name="key">The key of the element to add.</param>
-        /// <param name="value">The value of the element to add. The value can be nullNothingnullptra null reference (Nothing in Visual Basic).</param>
+        /// <param name="value">The value of the element to add. The value can be null reference (Nothing in Visual Basic).</param>
         public void Add(object key, object value)
         {
             lock (this.SyncRoot)
@@ -143,6 +143,23 @@ namespace FluorineFx.Collections
                 }
             }
         }
+
+        public object RemoveAndGet(object key)
+        {
+            lock (this.SyncRoot)
+            {
+                if (ContainsKey(key))
+                {
+                    Hashtable dictionary = new Hashtable(_dictionary);
+                    dictionary.Remove(key);
+                    object value = _dictionary[key];
+                    _dictionary = dictionary;
+                    return value;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// Gets an ICollection containing the values in the CopyOnWriteDictionary.
         /// </summary>
@@ -221,6 +238,39 @@ namespace FluorineFx.Collections
         public bool ContainsKey(object key)
         {
             return _dictionary.ContainsKey(key);
+        }
+
+        /// <summary>
+        /// Adds an item to the dictionary if this CopyOnWriteDictionary does not yet contain this item.
+        /// </summary>
+        ///<param name="key">The <see cref="T:System.Object"></see> to use as the key of the element to add. </param>
+        ///<param name="value">The <see cref="T:System.Object"></see> to use as the value of the element to add. </param>
+        /// <returns>The value if added, otherwise the old value in the dictionary.</returns>
+        public object AddIfAbsent(object key, object value)
+        {
+            lock (SyncRoot)
+            {
+                if (!_dictionary.ContainsKey(key))
+                {
+                    _dictionary.Add(key, value);
+                    return value;
+                }
+                else
+                {
+                    return _dictionary[key];
+                }
+            }
+        }
+
+        public bool TryGetValue(object key, out object value)
+        {
+            value = null;
+            if (_dictionary.ContainsKey(key))
+            {
+                value = _dictionary[key];
+                return true;
+            }
+            return false;
         }
     }
 }

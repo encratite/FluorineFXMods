@@ -31,6 +31,7 @@ using FluorineFx.Messaging;
 using FluorineFx.Messaging.Messages;
 using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Security;
+using FluorineFx.Messaging.Api;
 
 namespace FluorineFx.Context
 {
@@ -39,45 +40,20 @@ namespace FluorineFx.Context
 	/// </summary>
 	sealed class FluorineWebContext : FluorineContext
 	{
-		internal FluorineWebContext() : base()
+        private FluorineWebContext()
 		{
-		}
+        }
 
         internal static void Initialize()
         {
             HttpContext.Current.Items[FluorineContext.FluorineContextKey] = new FluorineWebContext();
         }
-
 		/// <summary>
 		/// Gets a key-value collection that can be used to organize and share data between an IHttpModule and an IHttpHandler during an HTTP request.
 		/// </summary>
-		public override IDictionary Items
+		public IDictionary Items
 		{ 
 			get{ return HttpContext.Current.Items; }
-		}
-		/// <summary>
-		/// Enables sharing of global information across multiple sessions and requests within an ASP.NET application.
-		/// </summary>
-		public override IApplicationState ApplicationState
-		{
-			get
-			{
-				return new HttpApplicationStateWrapper();
-			}
-		}
-		/// <summary>
-		/// Gets or sets security information for the current HTTP request.
-		/// </summary>
-		public override IPrincipal User
-		{ 
-			get
-			{
-				return HttpContext.Current.User;
-			}
-			set
-			{
-				HttpContext.Current.User = value;
-			}
 		}
 		/// <summary>
 		/// Gets the physical drive path of the application directory for the application hosted in the current application domain.
@@ -139,16 +115,6 @@ namespace FluorineFx.Context
 		{ 
 			get{ return HttpContext.Current.Request.Url.AbsoluteUri; }
 		}
-		/// <summary>
-		/// Gets the SessionState instance for the current HTTP request.
-		/// </summary>
-		public override ISessionState Session
-		{
-			get
-			{
-                 return HttpSessionStateWrapper.CreateSessionWrapper(HttpContext.Current.Session);
-			}
-		}
 
 		public override string ActivationMode
 		{ 
@@ -168,209 +134,13 @@ namespace FluorineFx.Context
 			}
 		}
 
-        internal override string EncryptCredentials(IEndpoint endpoint, IPrincipal principal, string userId, string password)
-        {
-            string uniqueKey = endpoint.Id;//HttpContext.Current.Session.SessionID;
-            HttpCookie cookie = FormsAuthentication.GetAuthCookie("fluorine", false);
-            FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
-
-            string cacheKey = string.Join("|", new string[] { GenericLoginCommand.FluorineTicket, uniqueKey, userId, password });
-            // Store the Guid inside the Forms Ticket with all the attributes aligned with 
-            // the config Forms section.
-            FormsAuthenticationTicket newTicket = new FormsAuthenticationTicket(ticket.Version, ticket.Name, ticket.IssueDate, ticket.Expiration, ticket.IsPersistent, cacheKey, ticket.CookiePath);
-            return FormsAuthentication.Encrypt(newTicket);
-        }
-
-		public override void StorePrincipal(IPrincipal principal, string userId, string password)
-		{
-			string uniqueKey = Guid.NewGuid().ToString("N");
-			// Get the cookie created by the FormsAuthentication API
-			// Notice that this cookie will have all the attributes according to   
-			// the ones in the config file setting.
-			// This does not set the cookie as part of the outgoing response.
-
-			HttpCookie cookie = FormsAuthentication.GetAuthCookie(userId, false );
-			FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
-
-			string cacheKey = string.Join("|", new string[] {GenericLoginCommand.FluorineTicket, uniqueKey, userId, password});
-			// Store the Guid inside the Forms Ticket with all the attributes aligned with 
-			// the config Forms section.
-			FormsAuthenticationTicket newTicket = new FormsAuthenticationTicket(
-				ticket.Version,
-				ticket.Name,
-				ticket.IssueDate,
-				ticket.Expiration,
-				ticket.IsPersistent,
-				cacheKey,
-				ticket.CookiePath);
-			// Add the encrypted ticket to the cookie as data.
-			cookie.Value = FormsAuthentication.Encrypt(newTicket);
-            cookie.Secure = FormsAuthentication.RequireSSL;
-			// Update the outgoing cookies collection.
-			HttpContext.Current.Response.Cookies.Add(cookie);
-			// Add the principal to the Cache with the expiration item sync with the FormsAuthentication ticket timeout
-			HttpRuntime.Cache.Insert( cacheKey, principal, null, 
-				Cache.NoAbsoluteExpiration,
-				newTicket.Expiration.Subtract( newTicket.IssueDate ), 
-				CacheItemPriority.Default, null );
-		}
-
-        internal override void StorePrincipal(IPrincipal principal, string key)
-        {
-            HttpCookie cookie = FormsAuthentication.GetAuthCookie("fluorine", false);
-            FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
-            // Add the principal to the Cache with the expiration item sync with the FormsAuthentication ticket timeout
-            HttpRuntime.Cache.Insert(key, principal, null,
-                Cache.NoAbsoluteExpiration,
-                ticket.Expiration.Subtract(ticket.IssueDate),
-                CacheItemPriority.Default, null);
-        }
-
+        /*
 		public static string GetFormsAuthCookieName()
 		{
 			string formsCookieName = Environment.UserInteractive ? ".ASPXAUTH" : FormsAuthentication.FormsCookieName;
 			return formsCookieName;
 		}
-
-		public override IPrincipal RestorePrincipal(ILoginCommand loginCommand)
-		{
-			IPrincipal principal = null;
-
-			//User already authenticated
-			if(HttpContext.Current != null && HttpContext.Current.Request.IsAuthenticated)
-			{
-				
-				if (HttpContext.Current.User.Identity is FormsIdentity)
-				{
-					FormsIdentity formsIdentity = HttpContext.Current.User.Identity as FormsIdentity;
-					if( formsIdentity.Ticket.UserData == null || !formsIdentity.Ticket.UserData.StartsWith(FluorineContext.FluorineTicket) )
-						return HttpContext.Current.User;
-					//Let fluorine get the correct principal
-				}
-				else
-					return HttpContext.Current.User;
-			}
-
-			HttpCookie authCookie = HttpContext.Current.Request.Cookies.Get(GetFormsAuthCookieName());
-			if( authCookie != null )
-			{
-				/*
-				FormsAuthenticationTicket ticket = null;
-				try 
-				{
-					ticket = FormsAuthentication.Decrypt( authCookie.Value );
-				}
-				catch(CryptographicException)
-				{
-				}
-				*/
-				FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt( authCookie.Value );
-				if( ticket != null )
-				{
-					principal = HttpContext.Current.Cache[ticket.UserData] as IPrincipal;
-					if( principal == null )
-					{
-						if( ticket.UserData != null && ticket.UserData.StartsWith(FluorineContext.FluorineTicket) )
-						{
-							//Get the principal as the cache lost the data
-							string[] userData = ticket.UserData.Split(new char[] {'|'});
-							string userId = userData[2];
-							string password = userData[3];
-							if( loginCommand != null )
-							{
-								Hashtable credentials = new Hashtable(1);
-								credentials["password"] = password;
-								principal = loginCommand.DoAuthentication(userId, credentials);
-								if( principal == null )
-									throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AuthenticationFailed));
-								StorePrincipal(principal, userId, password);
-							}
-							else
-								throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_LoginMissing));
-						}
-					}
-				}
-				else
-				{
-					//This is not our cookie so rely on application's authentication
-					principal = Thread.CurrentPrincipal;
-				}
-			}
-			if( principal != null )
-			{
-                this.User = principal;
-				Thread.CurrentPrincipal = principal;
-			}
-			return principal;
-		}
-
-        internal override IPrincipal RestorePrincipal(ILoginCommand loginCommand, string key)
-        {
-            IPrincipal principal = null;
-            if (key != null)
-            {
-                principal = HttpContext.Current.Cache[key] as IPrincipal;
-                if (principal == null)
-                {
-				    FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(key);
-                    if (ticket != null)
-                    {
-                        //Get the principal as the cache lost the data
-                        string[] userData = ticket.UserData.Split(new char[] { '|' });
-                        string userId = userData[2];
-                        string password = userData[3];
-                        if (loginCommand != null)
-                        {
-                            Hashtable credentials = new Hashtable(1);
-                            credentials["password"] = password;
-                            principal = loginCommand.DoAuthentication(userId, credentials);
-                            if (principal == null)
-                                throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AuthenticationFailed));
-                            StorePrincipal(principal, key);
-                        }
-                        else
-                            throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_LoginMissing));
-                    }
-                    else
-                        throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AuthenticationFailed));
-                }
-            }
-            if (principal != null)
-            {
-                this.User = principal;
-                Thread.CurrentPrincipal = principal;
-            }
-            return principal;
-        }
-
-        public override void ClearPrincipal()
-        {
-			HttpCookie authCookie = HttpContext.Current.Request.Cookies.Get(GetFormsAuthCookieName());
-			if( authCookie != null )
-			{
-				FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt( authCookie.Value );
-				if( ticket != null && ticket.UserData != null && ticket.UserData.StartsWith(FluorineContext.FluorineTicket) )
-				{
-					HttpRuntime.Cache.Remove(ticket.UserData);
-				}
-			}
-            FormsAuthentication.SignOut();
-            if (AMFContext.Current != null)
-            {
-                AMFContext amfContext = AMFContext.Current;
-                AMFHeader amfHeader = amfContext.AMFMessage.GetHeader(AMFHeader.CredentialsIdHeader);
-                if (amfHeader != null)
-                {
-                    amfContext.AMFMessage.RemoveHeader(AMFHeader.CredentialsIdHeader);
-                    ASObject asoObjectCredentialsId = new ASObject();
-                    asoObjectCredentialsId["name"] = AMFHeader.CredentialsIdHeader;
-                    asoObjectCredentialsId["mustUnderstand"] = false;
-                    asoObjectCredentialsId["data"] = null;//clear
-                    AMFHeader headerCredentialsId = new AMFHeader(AMFHeader.RequestPersistentHeader, true, asoObjectCredentialsId);
-                    amfContext.MessageOutput.AddHeader(headerCredentialsId);
-                }
-            }
-        }
+        */
 
         /// <summary>
         /// Return an <see cref="FluorineFx.Context.IResource"/> handle for the
@@ -380,32 +150,6 @@ namespace FluorineFx.Context
         public override IResource GetResource(string location)
         {
             return new FileSystemResource(location);
-        }
-
-        public override FluorineFx.Messaging.Api.IConnection Connection
-        {
-            get
-            {
-                return this.Items[FluorineContext.FluorineConnectionKey] as FluorineFx.Messaging.Api.IConnection;
-            }
-        }
-
-        internal void SetConnection(FluorineFx.Messaging.Api.IConnection connection)
-        {
-            this.Items[FluorineContext.FluorineConnectionKey] = connection;
-        }
-
-        internal override void SetCurrentClient(FluorineFx.Messaging.Api.IClient client)
-        {
-            this.Items[FluorineContext.FluorineClientKey] = client;
-        }
-
-        public override FluorineFx.Messaging.Api.IClient Client
-        {
-            get 
-            { 
-                return this.Items[FluorineContext.FluorineClientKey] as FluorineFx.Messaging.Api.IClient; 
-            }
         }
 	}
 }

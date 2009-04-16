@@ -86,12 +86,17 @@ namespace FluorineFx.AMF3
         string _name;
         BindingFlags _bindingFlags;
         MemberTypes _memberType;
+        /// <summary>
+        /// Cached member custom attributes.
+        /// </summary>
+        object[] _customAttributes;
 
-        internal ClassMember(string name, BindingFlags bindingFlags, MemberTypes memberType)
+        internal ClassMember(string name, BindingFlags bindingFlags, MemberTypes memberType, object[] customAttributes)
         {
             _name = name;
             _bindingFlags = bindingFlags;
             _memberType = memberType;
+            _customAttributes = customAttributes;
         }
         /// <summary>
         /// Gets the member name.
@@ -114,5 +119,13 @@ namespace FluorineFx.AMF3
         {
             get { return _memberType; }
         }
+        /// <summary>
+        /// Gets member custom attributes.
+        /// </summary>
+        public object[] CustomAttributes
+        {
+            get { return _customAttributes; }
+        }
+
     }
 }

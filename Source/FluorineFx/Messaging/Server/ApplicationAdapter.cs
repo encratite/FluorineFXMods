@@ -68,6 +68,7 @@ namespace FluorineFx.Messaging.Adapter
     /// }
     /// </code>
     /// </example>
+	[CLSCompliant(false)]
     public class ApplicationAdapter : StatefulScopeWrappingAdapter, ISharedObjectService, ISharedObjectSecurityService, IStreamSecurityService
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(ApplicationAdapter));

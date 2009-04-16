@@ -26,12 +26,6 @@ namespace FluorineFx.Context
 	public interface IApplicationState
 	{
         /// <summary>
-        /// Gets a single ApplicationState object by index.
-        /// </summary>
-        /// <param name="index">The numerical index of the object in the collection.</param>
-        /// <returns>The object referenced by index.</returns>
-		object this[int index] {get;}
-        /// <summary>
         /// Gets the value of a single ApplicationState object by name.
         /// </summary>
         /// <param name="name">The name of the object in the collection.</param>
@@ -42,11 +36,6 @@ namespace FluorineFx.Context
         /// </summary>
         /// <param name="key">The name of the object to be removed from the collection.</param>
 		void Remove(string key );
-        /// <summary>
-        /// Removes an ApplicationState object from the collection by index.
-        /// </summary>
-        /// <param name="index">The position in the collection of the item to remove.</param>
-		void RemoveAt(int index);
         /// <summary>
         /// Adds a new object to the ApplicationState collection.
         /// </summary>

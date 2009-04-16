@@ -18,7 +18,7 @@
 */
 using System;
 using System.Collections;
-
+using FluorineFx.Messaging.Config;
 using FluorineFx.Context;
 
 namespace FluorineFx.Messaging
@@ -43,14 +43,14 @@ namespace FluorineFx.Messaging
         /// <param name="id">The Destination identity.</param>
         /// <param name="properties">Configuration properties for the destination.</param>
         /// <returns>A FactoryInstance instance.</returns>
-		public FactoryInstance CreateFactoryInstance(string id, Hashtable properties)
+		public FactoryInstance CreateFactoryInstance(string id, DestinationProperties properties)
 		{
 			DotNetFactoryInstance factoryInstance = new DotNetFactoryInstance(this, id, properties);
-			factoryInstance.Source = properties["source"] as string;
-			factoryInstance.Scope = properties["scope"] as string;
+			factoryInstance.Source = properties.Source;
+			factoryInstance.Scope = properties.Scope;
 			if( factoryInstance.Scope == null )
 				factoryInstance.Scope = "request";
-			factoryInstance.AttributeId = properties["attribute-id"] as string;
+			factoryInstance.AttributeId = properties.AttributeId;
 			return factoryInstance;
 		}
         /// <summary>

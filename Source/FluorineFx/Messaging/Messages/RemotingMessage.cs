@@ -59,5 +59,11 @@ namespace FluorineFx.Messaging.Messages
 			get{ return _operation; }
 			set{ _operation = value; }
 		}
+
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            return sep + "operation = " + operation + base.ToStringFields(indentLevel);
+        }
 	}
 }

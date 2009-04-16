@@ -35,8 +35,8 @@ namespace FluorineFx.Messaging.Services
 	{
         private object _syncLock = new object();
         private Destination _destination;
-        private DestinationSettings _destinationSettings;
-        private AdapterSettings _adapterSettings;
+        private DestinationDefinition _destinationDefinition;
+        private AdapterDefinition _adapterDefinition;
 
         /// <summary>
         /// Initializes a new instance of the ServiceAdapter class.
@@ -94,18 +94,18 @@ namespace FluorineFx.Messaging.Services
         /// <summary>
         /// Gets the settings for the Destination of the ServiceAdapter.
         /// </summary>
-        public DestinationSettings DestinationSettings { get { return _destinationSettings; } }
-        internal void SetDestinationSettings(DestinationSettings value)
+        public DestinationDefinition DestinationDefinition { get { return _destinationDefinition; } }
+        internal void SetDestinationSettings(DestinationDefinition value)
         {
-            _destinationSettings = value;
+            _destinationDefinition = value;
         }
         /// <summary>
         /// Gets settings for the ServiceAdapter.
         /// </summary>
-        public AdapterSettings AdapterSettings { get { return _adapterSettings; } }
-        internal void SetAdapterSettings(AdapterSettings value)
+        public AdapterDefinition AdapterDefinition { get { return _adapterDefinition; } }
+        internal void SetAdapterSettings(AdapterDefinition value)
         {
-            _adapterSettings = value;
+            _adapterDefinition = value;
         }
         /// <summary>
         /// Gets an object that can be used to synchronize access. 

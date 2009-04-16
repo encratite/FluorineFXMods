@@ -35,54 +35,24 @@ namespace FluorineFx.Context
 {
     sealed class _TimeoutContext : FluorineContext
     {
-        IConnection _connection;
-        IClient _client;
-        Hashtable _items;
-
         private _TimeoutContext()
-            : base()
 		{
 		}
 
-        internal _TimeoutContext(IConnection connection, IClient client)
-            : base()
+        internal _TimeoutContext(ISession session)
+        {
+            _session = session;
+        }
+
+        internal _TimeoutContext(IClient client)
         {
             _client = client;
-            _connection = connection;
         }
 
-        private Hashtable GetItems()
+        internal _TimeoutContext(IMessageClient messageClient)
         {
-            if (_items == null)
-                _items = new Hashtable();
-            return _items;
-        }
-
-        public override IDictionary Items
-        {
-            get { return GetItems(); }
-        }
-
-        public override IApplicationState ApplicationState
-        {
-            get { throw new NotImplementedException("The method or operation is not implemented."); }
-        }
-
-        public override IPrincipal User
-        {
-            get
-            {
-                return Thread.CurrentPrincipal;
-            }
-            set
-            {
-                Thread.CurrentPrincipal = value;
-            }
-        }
-
-        public override ISessionState Session
-        {
-            get { throw new NotImplementedException("The method or operation is not implemented."); }
+            _session = messageClient.Session;
+            _client = messageClient.Client;
         }
 
         public override string RootPath
@@ -120,52 +90,9 @@ namespace FluorineFx.Context
             get { throw new NotImplementedException("The method or operation is not implemented."); }
         }
 
-        internal override string EncryptCredentials(FluorineFx.Messaging.Endpoints.IEndpoint endpoint, IPrincipal principal, string userId, string password)
-        {
-            throw new NotImplementedException("The method or operation is not implemented.");
-        }
-
-        public override void StorePrincipal(IPrincipal principal, string userId, string password)
-        {
-            throw new NotImplementedException("The method or operation is not implemented.");
-        }
-
-        internal override void StorePrincipal(IPrincipal principal, string key)
-        {
-            throw new NotImplementedException("The method or operation is not implemented.");
-        }
-
-        public override IPrincipal RestorePrincipal(ILoginCommand loginCommand)
-        {
-            throw new NotImplementedException("The method or operation is not implemented.");
-        }
-
-        internal override IPrincipal RestorePrincipal(ILoginCommand loginCommand, string key)
-        {
-            throw new NotImplementedException("The method or operation is not implemented.");
-        }
-
-        public override void ClearPrincipal()
-        {
-            throw new NotImplementedException("The method or operation is not implemented.");
-        }
-
         public override IResource GetResource(string location)
         {
             return new FileSystemResource(location);
-        }
-
-        public override IConnection Connection
-        {
-            get
-            {
-                return _connection;
-            }
-        }
-
-        public override FluorineFx.Messaging.Api.IClient Client
-        {
-            get { return _client; }
         }
     }
 }

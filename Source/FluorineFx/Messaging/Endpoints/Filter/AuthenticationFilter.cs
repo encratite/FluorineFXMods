@@ -56,7 +56,6 @@ namespace FluorineFx.Messaging.Endpoints.Filter
 
 		public override void Invoke(AMFContext context)
 		{
-            IPrincipal principal = null;
             MessageBroker messageBroker = _endpoint.GetMessageBroker();
             try
             {
@@ -65,28 +64,15 @@ namespace FluorineFx.Messaging.Endpoints.Filter
                 {
                     string userId = ((ASObject)amfHeader.Content)["userid"] as string;
                     string password = ((ASObject)amfHeader.Content)["password"] as string;
-                    //Clear credentials header
+                    //Clear credentials header, further requests will not send the credentials
                     ASObject asoObject = new ASObject();
                     asoObject["name"] = AMFHeader.CredentialsHeader;
                     asoObject["mustUnderstand"] = false;
                     asoObject["data"] = null;//clear
                     AMFHeader header = new AMFHeader(AMFHeader.RequestPersistentHeader, true, asoObject);
                     context.MessageOutput.AddHeader(header);
-                    ILoginCommand loginCommand = _endpoint.GetMessageBroker().LoginCommand;
-                    if (loginCommand != null)
-                    {
-                        Hashtable credentials = new Hashtable(1);
-                        credentials["password"] = password;
-                        principal = loginCommand.DoAuthentication(userId, credentials);
-                        if (principal == null)
-                            throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AccessNotAllowed));
-                    }
-                    else
-                        throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_LoginMissing));
-                    FluorineContext.Current.StorePrincipal(principal, userId, password);
-                    string key = FluorineContext.Current.EncryptCredentials(_endpoint, principal, userId, password);
-                    FluorineContext.Current.StorePrincipal(principal, key);
-
+                    IPrincipal principal = _endpoint.GetMessageBroker().LoginManager.Login(userId, amfHeader.Content as IDictionary);
+                    string key = EncryptCredentials(_endpoint, principal, userId, password);
                     ASObject asoObjectCredentialsId = new ASObject();
                     asoObjectCredentialsId["name"] = AMFHeader.CredentialsIdHeader;
                     asoObjectCredentialsId["mustUnderstand"] = false;
@@ -101,11 +87,11 @@ namespace FluorineFx.Messaging.Endpoints.Filter
                     {
                         string key = amfHeader.Content as string;
                         if (key != null)
-                            principal = FluorineContext.Current.RestorePrincipal(messageBroker.LoginCommand, key);
+                            _endpoint.GetMessageBroker().LoginManager.RestorePrincipal(key);
                     }
                     else
                     {
-                        principal = FluorineContext.Current.RestorePrincipal(messageBroker.LoginCommand);
+                        _endpoint.GetMessageBroker().LoginManager.RestorePrincipal();
                     }
                 }
             }
@@ -129,56 +115,21 @@ namespace FluorineFx.Messaging.Endpoints.Filter
                     context.MessageOutput.AddBody(errorResponseBody);
                 }
             }
-            if (principal != null)
-            {
-                FluorineContext.Current.User = principal;
-                Thread.CurrentPrincipal = principal;
-            }
 		}
 
 		#endregion
 
-        /*
-		void AuthenticateFlashClient(AMFContext context, AMFBody body)
-		{
-			MessageBroker messageBroker = _endpoint.GetMessageBroker();
-			IPrincipal principal = FluorineContext.Current.RestorePrincipal(messageBroker.LoginCommand);
+        string EncryptCredentials(IEndpoint endpoint, IPrincipal principal, string userId, string password)
+        {
+            string uniqueKey = endpoint.Id;//HttpContext.Current.Session.SessionID;
+            HttpCookie cookie = FormsAuthentication.GetAuthCookie("fluorine", false);
+            FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
 
-			if( principal == null )
-			{
-				//Check for Credentials Header
-				AMFMessage amfMessage = context.AMFMessage;
-				AMFHeader amfHeader = amfMessage.GetHeader( AMFHeader.CredentialsHeader );
-				if( amfHeader != null && amfHeader.Content != null )
-				{
-					string userId = ((ASObject)amfHeader.Content)["userid"] as string;
-					string password = ((ASObject)amfHeader.Content)["password"] as string;
-					//Clear credentials header
-					ASObject asoObject = new ASObject();
-					asoObject["name"] = AMFHeader.CredentialsHeader;
-					asoObject["mustUnderstand"] = false;
-					asoObject["data"] = null;//clear
-					AMFHeader header = new AMFHeader(AMFHeader.RequestPersistentHeader, true, asoObject);
-					context.MessageOutput.AddHeader( header );
-
-					ILoginCommand loginCommand = _endpoint.GetMessageBroker().LoginCommand;
-					if( loginCommand != null )
-					{
-						Hashtable credentials = new Hashtable(1);
-						credentials["password"] = password;
-						principal = loginCommand.DoAuthentication(userId, credentials);
-						if( principal == null )
-							throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AccessNotAllowed));
-						FluorineContext.Current.StorePrincipal(principal, userId, password);
-						// Attach the new principal object to the current Context object
-						FluorineContext.Current.User = principal;
-						Thread.CurrentPrincipal = principal;
-					}
-					else
-                        throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_LoginMissing));
-				}
-			}
-		}
-        */
+            string cacheKey = string.Join("|", new string[] { GenericLoginCommand.FluorineTicket, uniqueKey, userId, password });
+            // Store the Guid inside the Forms Ticket with all the attributes aligned with 
+            // the config Forms section.
+            FormsAuthenticationTicket newTicket = new FormsAuthenticationTicket(ticket.Version, ticket.Name, ticket.IssueDate, ticket.Expiration, ticket.IsPersistent, cacheKey, ticket.CookiePath);
+            return FormsAuthentication.Encrypt(newTicket);
+        }
 	}
 }

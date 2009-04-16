@@ -23,6 +23,7 @@ namespace FluorineFx.Messaging.Api.Stream.Support
     /// <summary>
     /// Stream security handler that denies access to all streams.
     /// </summary>
+	[CLSCompliant(false)]
     public class DenyAllStreamAccess : IStreamPublishSecurity, IStreamPlaybackSecurity 
     {
         #region IStreamPublishSecurity Members

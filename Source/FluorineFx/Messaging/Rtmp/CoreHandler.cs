@@ -48,29 +48,44 @@ namespace FluorineFx.Messaging.Rtmp
 		public bool Connect(IConnection connection, IScope scope, object[] parameters)
 		{
             IScope connectionScope = connection.Scope;
+            // Use client registry from scope the client connected to.
+            IClientRegistry clientRegistry = connectionScope.Context.ClientRegistry;
+
             IClient client = null;
             if (connection.IsFlexClient)
             {
                 if (parameters != null && parameters.Length > 2)
                 {
                     string clientId = parameters[1] as string;
-                    client = connectionScope.Context.ClientRegistry.GetClient(clientId);
-                    connection.Initialize(client);
-                    client.Renew(connection.ClientLeaseTime);
-                    return true;
+                    client = clientRegistry.GetClient(clientId);
                 }
             }
-            string id = connection.ConnectionId;
-            // Use client registry from scope the client connected to.
-            IClientRegistry clientRegistry = connectionScope.Context.ClientRegistry;
-            client = clientRegistry.GetClient(id);
-            //IClient client = clientRegistry.HasClient(id) ? clientRegistry.LookupClient(id) : clientRegistry.NewClient(id, connection.ClientLeaseTime, parameters);
+            if (client == null)
+            {
+                // Prefered Client id would be the connection's id.
+                client = clientRegistry.GetClient(connection.ConnectionId);
+            }
             // We have a context, and a client object.. time to init the conneciton.
-            connection.Initialize(client);
-            client.Renew(connection.ClientLeaseTime);
-            // we could check for banned clients here 
-			return true;
-		}
+            (connection as BaseConnection).Initialize(client);
+            if (scope.Endpoint != null)
+                client.Renew(scope.Endpoint.ClientLeaseTime);
+            else
+                client.Renew(MessageBroker.GetMessageBroker(MessageBroker.DefaultMessageBrokerId).FlexClientSettings.TimeoutMinutes);
+            // TODO: we could check for banned clients here 
+
+            FluorineContext.Current.SetSession(connection.Session);
+            FluorineContext.Current.SetClient(client);
+            FluorineContext.Current.SetConnection(connection);
+            //Current objects are set notify listeners.
+            if (FluorineContext.Current.Session != null && FluorineContext.Current.Session.IsNew)
+                FluorineContext.Current.Session.NotifyCreated();
+            if (client != null)
+            {
+                client.RegisterSession(FluorineContext.Current.Session);
+                client.NotifyCreated();
+            }
+            return true;
+        }
 
 		public void Disconnect(IConnection connection, IScope scope)
 		{

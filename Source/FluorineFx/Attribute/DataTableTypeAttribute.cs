@@ -89,11 +89,11 @@ namespace FluorineFx
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         /// <param name="invocationManager"></param>
-        /// <param name="methodInfo"></param>
+        /// <param name="memberInfo"></param>
         /// <param name="obj"></param>
         /// <param name="arguments"></param>
         /// <param name="result"></param>
-		public void OnInvoked(IInvocationManager invocationManager, MethodInfo methodInfo, object obj, object[] arguments, object result)
+        public void OnInvoked(IInvocationManager invocationManager, MemberInfo memberInfo, object obj, object[] arguments, object result)
 		{
 			if( result is DataSet )
 			{

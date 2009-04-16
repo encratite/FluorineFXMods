@@ -44,7 +44,7 @@ namespace FluorineFx.IO
                 PropertyInfo propertyInfo = propertyInfos[i];
                 if (propertyInfo.Name != "HelpLink" && propertyInfo.Name != "TargetSite")
                 {
-                    ClassMember classMember = new ClassMember(propertyInfo.Name, bindingAttr, propertyInfo.MemberType);
+                    ClassMember classMember = new ClassMember(propertyInfo.Name, bindingAttr, propertyInfo.MemberType, null);
                     classMemberList.Add(classMember);
                 }
             }

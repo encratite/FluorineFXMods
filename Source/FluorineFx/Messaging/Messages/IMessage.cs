@@ -93,5 +93,10 @@ namespace FluorineFx.Messaging.Messages
         /// <param name="name"></param>
         /// <returns></returns>
 		bool HeaderExists(string name);
+        /// <summary>
+        /// Gets the Flex client id specified in the message headers ("DSId").
+        /// </summary>
+        /// <returns>The Flex client id.</returns>
+        string GetFlexClientId();
 	}
 }

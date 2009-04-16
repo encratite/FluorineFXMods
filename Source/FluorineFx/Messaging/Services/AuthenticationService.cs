@@ -28,6 +28,7 @@ using System.Web.Caching;
 using System.Threading;
 
 using log4net;
+using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Messaging.Config;
 using FluorineFx.Messaging;
 using FluorineFx.Messaging.Messages;
@@ -46,7 +47,8 @@ namespace FluorineFx.Messaging.Services
 
 		public const string ServiceId = "authentication-service";
 
-		public AuthenticationService(MessageBroker broker, ServiceSettings settings) : base(broker, settings)
+        public AuthenticationService(MessageBroker broker, ServiceDefinition serviceDefinition)
+            : base(broker, serviceDefinition)
 		{
 		}
 
@@ -62,12 +64,13 @@ namespace FluorineFx.Messaging.Services
 						IPrincipal principal = null;
 						try
 						{
-							principal = Authenticate(message);
-                            // Attach the new principal object to the current Context object
-                            FluorineContext.Current.User = principal;
-                            Thread.CurrentPrincipal = principal;
+                            principal = Authenticate(message);
 						}
                         catch (SecurityException)
+                        {
+                            throw;
+                        }
+                        catch (UnauthorizedAccessException)
                         {
                             throw;
                         }
@@ -90,7 +93,7 @@ namespace FluorineFx.Messaging.Services
 						//TODO: Logs the user out of the destination. Logging out of a destination applies to everything connected using the same ChannelSet as specified in the server configuration.
 						//For example, if you're connected over the my-rtmp channel and you log out using one of your RPC components, anything that was 
 						//connected over the same ChannelSet is logged out.
-						bool logout = _messageBroker.LoginCommand.Logout(FluorineContext.Current.User);
+                        _messageBroker.LoginManager.Logout();
 						responseMessage = new AcknowledgeMessage();
 						responseMessage.body = "success";
 						break;
@@ -118,32 +121,17 @@ namespace FluorineFx.Messaging.Services
 
         internal IPrincipal Authenticate(string credentials)
         {
-            IPrincipal principal = null;
             string base64String = credentials;
             byte[] base64Data = System.Convert.FromBase64String(base64String);
             StringBuilder sb = new StringBuilder();
             sb.Append(UTF8Encoding.UTF8.GetChars(base64Data));
             string data = sb.ToString();
             string[] parts = data.Split(new char[] { ':' });
-            string user = parts[0];
+            string userId = parts[0];
             string password = parts[1];
-            if (_messageBroker.LoginCommand != null)
-            {
-                Hashtable credentialsDictionary = new Hashtable(1);
-                credentialsDictionary["password"] = password;
-                principal = _messageBroker.LoginCommand.DoAuthentication(user, credentialsDictionary);
-                if (principal != null)
-                {
-                    FluorineContext.Current.StorePrincipal(principal, user, password);
-                }
-            }
-            else
-            {
-                if (log.IsErrorEnabled)
-                    log.Error(__Res.GetString(__Res.Security_LoginMissing));
-            }
-            return principal;
+            Hashtable credentialsDictionary = new Hashtable(1);
+            credentialsDictionary["password"] = password;
+            return _messageBroker.LoginManager.Login(userId, credentialsDictionary);
         }
-
 	}
 }

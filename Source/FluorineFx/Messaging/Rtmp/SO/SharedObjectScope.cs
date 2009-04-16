@@ -553,10 +553,17 @@ namespace FluorineFx.Messaging.Rtmp.SO
 			{
 				return _so.Path;
 			}
+			/*
 			set
 			{
 				_so.Path = value;
 			}
+			*/
+		}
+		
+		public void SetPath(string value)
+		{
+			_so.Path = value;
 		}
 
 		public override long LastModified

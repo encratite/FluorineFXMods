@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Net;
+using System.Web;
 using log4net;
 using FluorineFx.Util;
 using FluorineFx.Collections;
@@ -26,16 +27,47 @@ using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Messaging.Rtmp;
 using FluorineFx.Messaging.Messages;
+using FluorineFx.Threading;
 
 namespace FluorineFx.Messaging.Rtmpt
 {
+    class PendingData
+    {
+        private object _buffer;
+        private RtmpPacket _packet;
+
+        public PendingData(object buffer, RtmpPacket packet)
+        {
+            _buffer = buffer;
+            _packet = packet;
+        }
+
+        public PendingData(object buffer)
+        {
+            _buffer = buffer;
+        }
+
+        public object Buffer
+        {
+            get { return _buffer; }
+        }
+
+        public RtmpPacket Packet
+        {
+            get { return _packet; }
+        }
+    }
+
     class RtmptConnection : RtmpConnection
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(RtmptConnection));
 
-        IPEndPoint _remoteEndPoint;
-        RtmptServer _rtmptServer;
-        
+        /// <summary>
+        /// Try to generate responses that contain at least 32768 bytes data.
+        /// Increasing this value results in better stream performance, but also increases the latency.
+        /// </summary>
+        internal static int RESPONSE_TARGET_SIZE = 32768;
+
         /// <summary>
         /// Start to increase the polling delay after this many empty results
         /// </summary>
@@ -53,126 +85,156 @@ namespace FluorineFx.Messaging.Rtmpt
         /// </summary>
         protected byte _pollingDelay = INITIAL_POLLING_DELAY;
         /// <summary>
-        /// Number of read bytes
-        /// </summary>
-        protected long _readBytes;
-        /// <summary>
-        /// Number of written bytes
-        /// </summary>
-        protected long _writtenBytes;
-        /// <summary>
         /// Timeframe without pending messages. If this time is greater then polling delay, then polling delay increased
         /// </summary>
         protected long _noPendingMessages;
+        /// <summary>
+        /// List of pending messages (PendingData)
+        /// </summary>
+        protected LinkedList _pendingMessages;
+        /// <summary>
+        /// Number of read bytes
+        /// </summary>
+        protected AtomicLong _readBytes;
+        /// <summary>
+        /// Number of written bytes
+        /// </summary>
+        protected AtomicLong _writtenBytes;
 
         protected ByteBuffer _buffer;
-        /// <summary>
-        /// List of pending messages
-        /// </summary>
-        protected LinkedList _pendingMessages = new LinkedList();
-        /// <summary>
-        /// List of notification messages
-        /// </summary>
-        protected LinkedList _notifyMessages = new LinkedList();
 
+        IPEndPoint _remoteEndPoint;
+        RtmptServer _rtmptServer;
+        FastReaderWriterLock _lock;
 
-        static object[] EmptyList = new object[0];
-
-        public RtmptConnection(RtmptServer rtmptServer, string path, Hashtable parameters)
-            : base(path, parameters)
+        public RtmptConnection(RtmptServer rtmptServer, IPEndPoint ipEndPoint, string path, Hashtable parameters)
+            : base(rtmptServer.RtmpHandler, path, parameters)
         {
+            _lock = new FastReaderWriterLock();
+            _remoteEndPoint = ipEndPoint;
             _rtmptServer = rtmptServer;
-            IPAddress ipAddress = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
-            _remoteEndPoint = new IPEndPoint(ipAddress, 80);
-            _buffer = ByteBuffer.Allocate(2048);
-            _readBytes = 0;
-            _writtenBytes = 0;
+            _readBytes = new AtomicLong();
+            _writtenBytes = new AtomicLong();
+            _session = rtmptServer.Endpoint.GetMessageBroker().SessionManager.CreateSession(this);
         }
 
-        public RtmptConnection(IPEndPoint ipEndPoint, RtmptServer rtmptServer, string path, Hashtable parameters)
-            : base(path, parameters)
+        public RtmptConnection(RtmptServer rtmptServer, IPEndPoint ipEndPoint, ISession session, string path, Hashtable parameters)
+            : base(rtmptServer.RtmpHandler, path, parameters)
         {
-            _rtmptServer = rtmptServer;
+            _lock = new FastReaderWriterLock();
             _remoteEndPoint = ipEndPoint;
-            _buffer = ByteBuffer.Allocate(2048);
-            _readBytes = 0;
-            _writtenBytes = 0;
+            _rtmptServer = rtmptServer;
+            _readBytes = new AtomicLong();
+            _writtenBytes = new AtomicLong();
+            _session = session;
         }
 
         public override IPEndPoint RemoteEndPoint
         {
-            get { return _remoteEndPoint; }
+            get 
+            {
+                if( _remoteEndPoint != null )
+                    return _remoteEndPoint;
+                else
+                {
+                    if (HttpContext.Current != null)
+                    {
+                        IPAddress ipAddress = IPAddress.Parse(HttpContext.Current.Request.UserHostAddress);
+                        IPEndPoint remoteEndPoint = new IPEndPoint(ipAddress, 80);
+                        return remoteEndPoint;
+                    }
+                }
+                return null;
+            }
         }
 
-        public FluorineFx.Messaging.Endpoints.IEndpoint Endpoint { get { return _rtmptServer.Endpoint; } }
+        public IEndpoint Endpoint { get { return _rtmptServer.Endpoint; } }
 
         public override long ReadBytes
         {
-            get { return _readBytes; }
+            get { return _readBytes.Value; }
         }
 
         public override long WrittenBytes
         {
-            get { return _writtenBytes; }
+            get { return _writtenBytes.Value; }
         }
 
         public byte PollingDelay
         {
             get
             {
-                if( this.State == RtmpState.Disconnected)
+                try
                 {
-                    // Special value to notify client about a closed connection.
-                    return (byte)0;
+                    _lock.AcquireReaderLock();
+                    if (this.State == RtmpState.Disconnected)
+                    {
+                        // Special value to notify client about a closed connection.
+                        return (byte)0;
+                    }
+                    return (byte)(_pollingDelay + 1);
                 }
-                return (byte)(_pollingDelay + 1);
+                finally
+                {
+                    _lock.ReleaseReaderLock();
+                }
             }
         }
 
         public ByteBuffer GetPendingMessages(int targetSize)
         {
-            if (_pendingMessages.Count == 0)
+            ByteBuffer result = null;
+            LinkedList toNotify = new LinkedList();
+            try
             {
-                _noPendingMessages += 1;
-                if (_noPendingMessages > INCREASE_POLLING_DELAY_COUNT)
+                _lock.AcquireWriterLock();
+                if (_pendingMessages == null || _pendingMessages.Count == 0)
                 {
-                    if (_pollingDelay == 0)
-                        _pollingDelay = 1;
-                    _pollingDelay = (byte)(_pollingDelay * 2);
-                    if (_pollingDelay > MAX_POLLING_DELAY)
-                        _pollingDelay = MAX_POLLING_DELAY;
-                }
-                return null;
-            }
-            ByteBuffer result = ByteBuffer.Allocate(2048);
-            if (log.IsDebugEnabled)
-                log.Debug(__Res.GetString(__Res.Rtmpt_ReturningMessages, _pendingMessages.Count));
-            _noPendingMessages = 0;
-            _pollingDelay = INITIAL_POLLING_DELAY;
-            while (result.Limit < targetSize)
-            {
-                if (_pendingMessages.Count == 0)
-                    break;
-                lock (_pendingMessages.SyncRoot)
-                {
-                    foreach (ByteBuffer buffer in _pendingMessages)
+                    _noPendingMessages += 1;
+                    if (_noPendingMessages > INCREASE_POLLING_DELAY_COUNT)
                     {
-                        result.Put(buffer);
+                        if (_pollingDelay == 0)
+                            _pollingDelay = 1;
+                        _pollingDelay = (byte)(_pollingDelay * 2);
+                        if (_pollingDelay > MAX_POLLING_DELAY)
+                            _pollingDelay = MAX_POLLING_DELAY;
                     }
-                    _pendingMessages.Clear();
+                    return null;
                 }
-                // We'll have to create a copy here to avoid endless recursion
-                LinkedList toNotify = new LinkedList();
-                lock (_notifyMessages.SyncRoot)
+                _noPendingMessages = 0;
+                _pollingDelay = INITIAL_POLLING_DELAY;
+
+                if (_pendingMessages.Count == 0)
+                    return null;
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.Rtmpt_ReturningMessages, _pendingMessages.Count));
+                result = ByteBuffer.Allocate(2048);
+                while (_pendingMessages.Count > 0)
                 {
-                    toNotify.AddAll(_notifyMessages);
-                    _notifyMessages.Clear();
+                    PendingData pendingData = _pendingMessages[0] as PendingData;
+                    _pendingMessages.RemoveAt(0);
+                    if (pendingData.Buffer is ByteBuffer)
+                        result.Put(pendingData.Buffer as ByteBuffer);
+                    if (pendingData.Buffer is byte[])
+                        result.Put(pendingData.Buffer as byte[]);
+                    if (pendingData.Packet != null)
+                        toNotify.Add(pendingData.Packet);
+
+                    if ((result.Position > targetSize))
+                        break;
                 }
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
+            }
+            if (toNotify != null)
+            {
                 foreach (object message in toNotify)
                 {
                     try
                     {
-                        _rtmptServer.RtmpHandler.MessageSent(this, message);
+                        _handler.MessageSent(this, message);
                     }
                     catch (Exception ex)
                     {
@@ -182,53 +244,25 @@ namespace FluorineFx.Messaging.Rtmpt
                 }
             }
             result.Flip();
-            _writtenBytes += result.Limit;
+            _writtenBytes.Increment(result.Limit);
             return result;
         }
 
-        public IList Decode(ByteBuffer data)
-        {
-            if (this.State == RtmpState.Disconnected)
-                return EmptyList;
-            _readBytes += data.Limit;
-            _buffer.Put(data);
-            _buffer.Flip();
-            return RtmpProtocolDecoder.DecodeBuffer(this.Context, _buffer);
-        }
-
-        public override void Close()
-        {
-            lock (this.SyncRoot)
-            {
-                // Defer actual closing so we can send back pending messages to the client.
-                SetIsClosing(true);
-            }
-        }
-
-        public void DeferredClose()
-        {
-            lock (this.SyncRoot)
-            {
-                _notifyMessages.Clear();
-                _pendingMessages.Clear();
-                base.Close();
-                _rtmptServer.OnConnectionClose(this);
-            }
-        }
-
-
         public override void Write(RtmpPacket packet)
         {
-            if (this.State == RtmpState.Disconnected)
+            _lock.AcquireReaderLock();
+            try
             {
-                // Connection is being closed, don't send any new packets
-                return;
+                if (IsClosed || IsClosing)
+                    return;
             }
-            // We need to synchronize to prevent two packages to the
-            // same channel to be sent in different order thus resulting
-            // in wrong headers being generated.
-            lock (this.SyncRoot)
+            finally
             {
+                _lock.ReleaseReaderLock();
+            }
+            try
+            {
+                _lock.AcquireWriterLock();
                 ByteBuffer data;
                 try
                 {
@@ -241,30 +275,196 @@ namespace FluorineFx.Messaging.Rtmpt
                 }
                 // Mark packet as being written
                 WritingMessage(packet);
-                // Enqueue encoded packet data to be sent to client
-                RawWrite(data);
-		        // Make sure stream subsystem will be notified about sent packet later
-                lock (_notifyMessages.SyncRoot)
-                {
-                    _notifyMessages.Add(packet);
-                }
+                if (_pendingMessages == null)
+                    _pendingMessages = new LinkedList();
+                _pendingMessages.Add(new PendingData(data, packet));
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
             }
         }
 
-        public void RawWrite(ByteBuffer packet)
+        public override void Write(ByteBuffer buffer)
         {
-            lock (_pendingMessages.SyncRoot)
+            _lock.AcquireReaderLock();
+            try
             {
-                _pendingMessages.Add(packet);
+                if (IsClosed || IsClosing)
+                    return;
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
+            try
+            {
+                _lock.AcquireWriterLock();
+                if (_pendingMessages == null)
+                    _pendingMessages = new LinkedList();
+                _pendingMessages.Add(new PendingData(buffer));
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
             }
         }
+
+        public override void Write(byte[] buffer)
+        {
+            _lock.AcquireReaderLock();
+            try
+            {
+                if (IsClosed || IsClosing)
+                    return;
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
+
+            try
+            {
+                _lock.AcquireWriterLock();
+                if (_pendingMessages == null)
+                    _pendingMessages = new LinkedList();
+                _pendingMessages.Add(new PendingData(buffer));
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
+            }            
+        }
+
+        public IList Decode(ByteBuffer data)
+        {
+            _lock.AcquireReaderLock();
+            try
+            {
+                if (IsClosed || IsClosing)
+                    return Internal.EmptyIList;// Already shutting down.
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
+            _readBytes.Increment(data.Limit);
+            if( _buffer == null )
+                _buffer = ByteBuffer.Allocate(2048);
+            _buffer.Put(data);
+            _buffer.Flip();
+            try
+            {
+                IList result = RtmpProtocolDecoder.DecodeBuffer(this.Context, _buffer);
+                return result;
+            }
+            catch (HandshakeFailedException hfe)
+            {
+#if !SILVERLIGHT
+                if (log.IsDebugEnabled)
+                    log.Debug(string.Format("Handshake failed: {0}", hfe.Message));
+#endif
+
+                // Clear buffer if something is wrong in protocol decoding.
+                _buffer.Clear();
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                // Catch any exception in the decoding then clear the buffer to eliminate memory leaks when we can't parse protocol
+                // Also close Connection because we can't parse data from it
+#if !SILVERLIGHT
+                log.Error("Error decoding buffer", ex);
+#endif
+                // Clear buffer if something is wrong in protocol decoding.
+                _buffer.Clear();
+                this.Close();
+            }
+            return null;
+        }
+
+        public override void Close()
+        {
+            // Defer actual closing so we can send back pending messages to the client.
+            _lock.AcquireReaderLock();
+            try
+            {
+                if (IsClosed || IsClosing)
+                    return; // Already shutting down.
+                try
+                {
+                    _lock.UpgradeToWriterLock();
+                    SetIsClosing(true);
+                    _lock.DowngradeToReaderLock();
+                }
+                catch (ApplicationException)
+                {
+                    //Some other thread did an upgrade
+                    return;
+                }
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
+        }
+
+        public void RealClose()
+        {
+            _lock.AcquireReaderLock();
+            try
+            {
+                if (!IsClosing)
+                    return;
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
+            try
+            {
+                _lock.AcquireWriterLock();
+                if (_buffer != null)
+                {
+                    _buffer.Dispose();
+                    _buffer = null;
+                }
+                if (_pendingMessages != null)
+                {
+                    _pendingMessages.Clear();
+                    _pendingMessages = null;
+                }
+                _rtmptServer.RemoveConnection(this.ConnectionId);
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
+            }
+            base.Close();
+            _lock.AcquireWriterLock();
+            try
+            {
+                SetIsClosed(true);
+                SetIsClosing(false);
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
+            }
+        }
+
 
         public override void Push(IMessage message, IMessageClient messageClient)
         {
-            if (this.State == RtmpState.Disconnected)
+            _lock.AcquireReaderLock();
+            try
             {
-                // Connection is being closed, don't send any new packets
-                return;
+                if (IsClosed || IsClosing)
+                    return; // Already shutting down.
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
             }
             RtmpHandler.Push(this, message, messageClient);
             /*
@@ -277,19 +477,11 @@ namespace FluorineFx.Messaging.Rtmpt
 
         protected override void OnInactive()
         {
+            if( log.IsDebugEnabled )
+                log.Debug(string.Format("Inactive connection {0}, closing", this.ConnectionId));
             //this.Timeout();
             Close();
-            DeferredClose();
-        }
-
-        public override int ClientLeaseTime
-        {
-            get
-            {
-                int timeout = this.Endpoint.GetMessageBroker().FlexClientSettings.TimeoutMinutes;
-                timeout = Math.Max(timeout, 1);//start with 1 minute timeout at least
-                return timeout;
-            }
+            RealClose();
         }
 
         public override string ToString()

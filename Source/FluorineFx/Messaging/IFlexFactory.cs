@@ -18,6 +18,7 @@
 */
 using System;
 using System.Collections;
+using FluorineFx.Messaging.Config;
 
 namespace FluorineFx.Messaging
 {
@@ -32,7 +33,7 @@ namespace FluorineFx.Messaging
 		/// <param name="id">The Destination identity.</param>
 		/// <param name="properties">Configuration properties.</param>
         /// <returns>A FactoryInstance instance.</returns>
-		FactoryInstance CreateFactoryInstance(string id, Hashtable properties);
+		FactoryInstance CreateFactoryInstance(string id, DestinationProperties properties);
 		/// <summary>
 		/// This method is called by the default implementation of FactoryInstance.Lookup.
 		/// </summary>

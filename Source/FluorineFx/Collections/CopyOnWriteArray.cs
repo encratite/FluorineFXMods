@@ -112,6 +112,23 @@ namespace FluorineFx.Collections
             }
         }
         /// <summary>
+        /// Adds the specified element to this array if it is not already present.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool AddIfAbsent(object value)
+        {
+            lock (this.SyncRoot)
+            {
+                if (!this.Contains(value))
+                {
+                    this.Add(value);
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
         /// Removes all elements from the CopyOnWriteArray.
         /// </summary>
         public void Clear()
@@ -178,26 +195,35 @@ namespace FluorineFx.Collections
         /// <param name="value">The Object to remove from the CopyOnWriteArray.</param>
         public void Remove(object value)
         {
+            RemoveIfPresent(value);
+        }
+        /// <summary>
+        /// Removes the first occurrence of a specific object from the CopyOnWriteArray.
+        /// </summary>
+        /// <param name="value">The Object to remove from the CopyOnWriteArray.</param>
+        /// <returns>True if the object was removed from the list.</returns>
+        public bool RemoveIfPresent(object value)
+        {
             lock (this.SyncRoot)
             {
                 int len = _array.Length;
-                if (len == 0) 
-                    return;
+                if (len == 0)
+                    return false;
                 // Copy while searching for element to remove
                 // This wins in the normal case of element being present
-                int newlen = len-1;
+                int newlen = len - 1;
                 object[] newArray = new Object[newlen];
 
-                for (int i = 0; i < newlen; ++i) 
+                for (int i = 0; i < newlen; ++i)
                 {
                     if (value == _array[i] || (value != null && value.Equals(_array[i])))
                     {
                         // found one;  copy remaining and exit
-                        for (int k = i + 1; k < len; ++k) 
-                            newArray[k-1] = _array[k];
+                        for (int k = i + 1; k < len; ++k)
+                            newArray[k - 1] = _array[k];
                         _array = newArray;
-                        return;
-                    } 
+                        return true;
+                    }
                     else
                         newArray[i] = _array[i];
                 }
@@ -205,8 +231,10 @@ namespace FluorineFx.Collections
                 if (value == _array[newlen] || (value != null && value.Equals(_array[newlen])))
                 {
                     _array = newArray;
+                    return true;
                 }
             }
+            return false;
         }
         /// <summary>
         /// Removes the element at the specified index of the CopyOnWriteArray.

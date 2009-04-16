@@ -24,6 +24,7 @@ namespace FluorineFx.Messaging.Api
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
+	[CLSCompliant(false)]
     public class ScopeShuttingDownException : FluorineException
     {
         /// <summary>

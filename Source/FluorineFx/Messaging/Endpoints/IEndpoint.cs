@@ -18,10 +18,11 @@
 */
 
 using System;
-using System.Web;
 
 using FluorineFx.Messaging;
+#if !FXCLIENT
 using FluorineFx.Messaging.Config;
+#endif
 using FluorineFx.Messaging.Messages;
 using FluorineFx.Messaging.Api;
 
@@ -37,23 +38,14 @@ namespace FluorineFx.Messaging.Endpoints
     /// and are defined by the named URI path on which they are located. 
     /// </para>
 	/// </summary>
+    [CLSCompliant(false)]
 	public interface IEndpoint
 	{
         /// <summary>
-        /// Gets or sets endpoint id.
+        /// Gets the endpoint id.
         /// </summary>
         /// <remarks>All endpoints are referenceable by an id that is unique among all the endpoints registered to a single broker instance.</remarks>
-		string Id{ get; set; }
-        /// <summary>
-        /// Returns a reference to the message broker managing this endpoint.
-        /// </summary>
-        /// <returns></returns>
-		MessageBroker GetMessageBroker();
-        /// <summary>
-        /// Returns channel settings.
-        /// </summary>
-        /// <returns></returns>
-		ChannelSettings GetSettings();
+		string Id{ get; }
         /// <summary>
         /// Starts the endpoint.
         /// </summary>
@@ -62,12 +54,6 @@ namespace FluorineFx.Messaging.Endpoints
         /// Stops and destroys the endpoint.
         /// </summary>
 		void Stop();
-        /// <summary>
-        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="messageclient"></param>
-		void Push(IMessage message, MessageClient messageclient);
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -82,6 +68,27 @@ namespace FluorineFx.Messaging.Endpoints
         /// Specifies whether this protocol requires the secure HTTPS protocol.
         /// </summary>
 		bool IsSecure{ get; }
-
-	}
+        /// <summary>
+        /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        int ClientLeaseTime { get; }
+#if !FXCLIENT
+        /// <summary>
+        /// Returns a reference to the message broker managing this endpoint.
+        /// </summary>
+        /// <returns></returns>
+		MessageBroker GetMessageBroker();
+        /// <summary>
+        /// Gets channel defintion settings.
+        /// </summary>
+        /// <returns></returns>
+        ChannelDefinition ChannelDefinition { get; }
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="messageclient"></param>
+		void Push(IMessage message, MessageClient messageclient);
+#endif
+    }
 }

@@ -27,9 +27,21 @@ namespace FluorineFx.Messaging.Rtmp.Event
     /// </summary>
     class FlexStreamSend : Notify
     {
-        public FlexStreamSend(ByteBuffer data):base(data)
-        {
+        internal FlexStreamSend()
+		{
             _dataType = Constants.TypeFlexStreamEnd;
+		}
+
+        internal FlexStreamSend(ByteBuffer data)
+            : this()
+		{
+			_data = data;
+		}
+
+        internal FlexStreamSend(byte[] data)
+            : this()
+        {
+            _data = ByteBuffer.Wrap(data);
         }
     }
 }

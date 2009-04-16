@@ -33,6 +33,10 @@ namespace FluorineFx.IO
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
+        public const string AMFDSIdHeader = "DSId";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
         public const string DebugHeader = "amf_server_debug";
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -50,6 +54,10 @@ namespace FluorineFx.IO
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         public const string RequestPersistentHeader = "RequestPersistentHeader";
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public const string UrlAppendHeader = "AppendToGatewayUrl";
 
 		object	_content;
 		bool	_mustUnderstand;

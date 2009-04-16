@@ -490,6 +490,7 @@ namespace FluorineFx.Configuration
 	{
 		private string _type;
 		private string _server;
+        bool _perClientAuthentication = false;
 
         public const string FluorineLoginCommand = "asp.net";
         /// <summary>
@@ -516,6 +517,15 @@ namespace FluorineFx.Configuration
 			get{return _server;}
 			set{_server = value;}
 		}
+        /// <summary>
+        /// Set to true to enable per-client authentication. The default value is false.
+        /// </summary>
+        [XmlElement("per-client-authentication")]
+        public bool PerClientAuthentication
+        {
+            get { return _perClientAuthentication; }
+            set { _perClientAuthentication = value; }
+        }
 	}
 #endif
 	#endregion LoginCommandSettings
@@ -543,34 +553,36 @@ namespace FluorineFx.Configuration
         /// </summary>
 		public ClassMappingCollection()
 		{
-			Add("FluorineFx.AMF3.ArrayCollection", "flex.messaging.io.ArrayCollection");
-			Add("FluorineFx.AMF3.ByteArray", "flex.messaging.io.ByteArray");
-			Add("FluorineFx.AMF3.ObjectProxy", "flex.messaging.io.ObjectProxy");
+			Add(typeof(FluorineFx.AMF3.ArrayCollection).FullName, "flex.messaging.io.ArrayCollection");
+			Add(typeof(FluorineFx.AMF3.ByteArray).FullName, "flex.messaging.io.ByteArray");
+			Add(typeof(FluorineFx.AMF3.ObjectProxy).FullName, "flex.messaging.io.ObjectProxy");
 
-			//FDS
-			Add("FluorineFx.Messaging.Messages.CommandMessage", "flex.messaging.messages.CommandMessage");
-			Add("FluorineFx.Messaging.Messages.RemotingMessage", "flex.messaging.messages.RemotingMessage");
-			Add("FluorineFx.Messaging.Messages.AsyncMessage", "flex.messaging.messages.AsyncMessage");
-			Add("FluorineFx.Messaging.Messages.AcknowledgeMessage", "flex.messaging.messages.AcknowledgeMessage");
-			Add("FluorineFx.Data.Messages.DataMessage", "flex.data.messages.DataMessage");
-			Add("FluorineFx.Data.Messages.PagedMessage", "flex.data.messages.PagedMessage");
-			Add("FluorineFx.Data.Messages.UpdateCollectionMessage", "flex.data.messages.UpdateCollectionMessage");
-			Add("FluorineFx.Data.Messages.SequencedMessage", "flex.data.messages.SequencedMessage");
-            Add("FluorineFx.Data.Messages.DataErrorMessage", "flex.data.messages.DataErrorMessage");
-            Add("FluorineFx.Messaging.Messages.ErrorMessage", "flex.messaging.messages.ErrorMessage");
-			Add("FluorineFx.Messaging.Messages.RemotingMessage", "flex.messaging.messages.RemotingMessage");
-			Add("FluorineFx.Messaging.Messages.RPCMessage", "flex.messaging.messages.RPCMessage");			
-
-			Add("FluorineFx.Data.UpdateCollectionRange", "flex.data.UpdateCollectionRange");			
+			Add(typeof(FluorineFx.Messaging.Messages.CommandMessage).FullName, "flex.messaging.messages.CommandMessage");
+			Add(typeof(FluorineFx.Messaging.Messages.RemotingMessage).FullName, "flex.messaging.messages.RemotingMessage");
+			Add(typeof(FluorineFx.Messaging.Messages.AsyncMessage).FullName, "flex.messaging.messages.AsyncMessage");
+			Add(typeof(FluorineFx.Messaging.Messages.AcknowledgeMessage).FullName, "flex.messaging.messages.AcknowledgeMessage");
+            Add(typeof(FluorineFx.Messaging.Messages.ErrorMessage).FullName, "flex.messaging.messages.ErrorMessage");
+			//Add(typeof(FluorineFx.Messaging.Messages.RPCMessage).FullName, "flex.messaging.messages.RPCMessage");			
 			
-			Add("FluorineFx.Messaging.Services.RemotingService", "flex.messaging.services.RemotingService");
-			Add("FluorineFx.Messaging.Services.MessageService", "flex.messaging.services.MessageService");
-			Add("FluorineFx.Data.DataService", "flex.data.DataService");
-            Add("FluorineFx.Messaging.Endpoints.RtmpEndpoint", "flex.messaging.endpoints.RTMPEndpoint");
-            Add("FluorineFx.Messaging.Endpoints.AMFEndpoint", "flex.messaging.endpoints.AMFEndpoint");
+#if !FXCLIENT
+			Add(typeof(FluorineFx.Data.Messages.DataMessage).FullName, "flex.data.messages.DataMessage");
+			Add(typeof(FluorineFx.Data.Messages.PagedMessage).FullName, "flex.data.messages.PagedMessage");
+			Add(typeof(FluorineFx.Data.Messages.UpdateCollectionMessage).FullName, "flex.data.messages.UpdateCollectionMessage");
+			Add(typeof(FluorineFx.Data.Messages.SequencedMessage).FullName, "flex.data.messages.SequencedMessage");
+            Add(typeof(FluorineFx.Data.Messages.DataErrorMessage).FullName, "flex.data.messages.DataErrorMessage");
+			Add(typeof(FluorineFx.Data.UpdateCollectionRange).FullName, "flex.data.UpdateCollectionRange");			
 
-			Add("FluorineFx.Messaging.Services.Remoting.DotNetAdapter", "flex.messaging.services.remoting.adapters.JavaAdapter");
-		}
+            Add(typeof(FluorineFx.Messaging.Services.RemotingService).FullName, "flex.messaging.services.RemotingService");
+			Add(typeof(FluorineFx.Messaging.Services.MessageService).FullName, "flex.messaging.services.MessageService");
+			Add(typeof(FluorineFx.Data.DataService).FullName, "flex.data.DataService");
+            Add(typeof(FluorineFx.Messaging.Endpoints.RtmpEndpoint).FullName, "flex.messaging.endpoints.RTMPEndpoint");
+            Add(typeof(FluorineFx.Messaging.Endpoints.AMFEndpoint).FullName, "flex.messaging.endpoints.AMFEndpoint");
+            Add(typeof(FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint).FullName, "flex.messaging.endpoints.StreamingAMFEndpoint");
+            Add(typeof(FluorineFx.Messaging.Endpoints.SecureAmfEndpoint).FullName, "flex.messaging.endpoints.SecureAMFEndpoint");
+            Add(typeof(FluorineFx.Messaging.Endpoints.SecureRtmpEndpoint).FullName, "flex.messaging.endpoints.SecureRTMPEndpoint");
+			Add(typeof(FluorineFx.DotNetAdapter).FullName, "flex.messaging.services.remoting.adapters.JavaAdapter");
+#endif
+        }
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>

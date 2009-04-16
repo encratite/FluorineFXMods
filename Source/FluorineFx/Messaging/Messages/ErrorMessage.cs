@@ -115,5 +115,21 @@ namespace FluorineFx.Messaging.Messages
 			return errorMessage;
 		}
 
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = base.ToStringFields(indentLevel);
+            value += sep + "code =  " + faultCode;
+            value += sep + "message =  " + faultString;
+            value += sep + "details =  " + faultDetail;
+            value += sep + "rootCause =  ";
+            if (rootCause == null)
+                value += "null";
+            else
+                value += rootCause.ToString();
+            value += sep + "body =  " + BodyToString(body, indentLevel);
+            value += sep + "extendedData =  " + BodyToString(extendedData, indentLevel);
+            return value;
+        }
 	}
 }

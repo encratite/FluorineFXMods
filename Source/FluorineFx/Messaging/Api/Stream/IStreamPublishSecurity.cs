@@ -23,6 +23,7 @@ namespace FluorineFx.Messaging.Api.Stream
     /// <summary>
     /// Interface for handlers that control access to stream publishing.
     /// </summary>
+	[CLSCompliant(false)]
     public interface IStreamPublishSecurity
     {
         /// <summary>

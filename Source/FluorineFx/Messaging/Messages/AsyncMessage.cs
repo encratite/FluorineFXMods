@@ -52,5 +52,20 @@ namespace FluorineFx.Messaging.Messages
 			get{ return _correlationId; }
 			set{ _correlationId = value; }
 		}
+
+        protected override string ToStringFields(int indentLevel)
+        {
+            String sep = GetFieldSeparator(indentLevel);
+            String value = sep + "clientId = " + clientId;
+            value += sep + "correlationId = " + correlationId;
+            value += sep + "destination = " + destination;
+            value += sep + "messageId = " + messageId;
+            value += sep + "timestamp = " + timestamp;
+            value += sep + "timeToLive = " + timeToLive;
+            value += sep + "body = " + BodyToString(body, indentLevel);
+            value += base.ToStringFields(indentLevel);
+            return value;
+        }
+
 	}
 }

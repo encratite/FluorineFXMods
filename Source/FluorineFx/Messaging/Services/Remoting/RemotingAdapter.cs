@@ -49,7 +49,7 @@ namespace FluorineFx.Remoting
 			object result = null;
 			RemotingMessage remotingMessage = message as RemotingMessage;
 			string operation = remotingMessage.operation;
-            string className = this.DestinationSettings.Properties["source"] as string;
+            string className = this.DestinationDefinition.Properties.Source;
             //This property is provided for backwards compatibility. The best practice, however, is to not expose the underlying source of a 
             //RemoteObject destination on the client and only one source to a destination.
             if (remotingMessage.source != null && remotingMessage.source != string.Empty)
@@ -58,7 +58,7 @@ namespace FluorineFx.Remoting
                     className = remotingMessage.source;
                 if (className != remotingMessage.source)
                 {
-                    string msg = __Res.GetString(__Res.Type_MismatchMissingSource, remotingMessage.source, this.DestinationSettings.Properties["source"] as string);
+                    string msg = __Res.GetString(__Res.Type_MismatchMissingSource, remotingMessage.source, this.DestinationDefinition.Properties.Source as string);
                     throw new MessageException(msg, new TypeLoadException(msg));
                 }
             }
@@ -117,36 +117,45 @@ namespace FluorineFx.Remoting
 					MethodInfo mi = MethodHandler.GetMethod(type, operation, parameterList);
 					if( mi != null )
 					{
-						//Messagebroker checked xml configured security, check attributes too
-						object[] roleAttributes = mi.GetCustomAttributes( typeof(RoleAttribute), true);
-						if( roleAttributes != null && roleAttributes.Length == 1 )
-						{
-							RoleAttribute roleAttribute = roleAttributes[0] as RoleAttribute;
-							string[] roles = roleAttribute.Roles.Split(',');
+                        try
+                        {
+                            //Messagebroker checked xml configured security, check attributes too
+                            object[] roleAttributes = mi.GetCustomAttributes(typeof(RoleAttribute), true);
+                            if (roleAttributes != null && roleAttributes.Length == 1)
+                            {
+                                RoleAttribute roleAttribute = roleAttributes[0] as RoleAttribute;
+                                string[] roles = roleAttribute.Roles.Split(',');
 
-							bool authorized = this.Destination.Service.DoAuthorization(roles);
-							if( !authorized )
-								throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AccessNotAllowed));
-						}
+                                bool authorized = this.Destination.Service.GetMessageBroker().LoginManager.DoAuthorization(roles);
+                                if (!authorized)
+                                    throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AccessNotAllowed));
+                            }
 
-						ParameterInfo[] parameterInfos = mi.GetParameters();
-						object[] args = new object[parameterInfos.Length];
-						parameterList.CopyTo(args, 0);
-						TypeHelper.NarrowValues( args, parameterInfos);
-						InvocationHandler invocationHandler = new InvocationHandler(mi);
-						result = invocationHandler.Invoke(instance, args);
+                            ParameterInfo[] parameterInfos = mi.GetParameters();
+                            object[] args = new object[parameterInfos.Length];
+                            parameterList.CopyTo(args, 0);
+                            TypeHelper.NarrowValues(args, parameterInfos);
+                            InvocationHandler invocationHandler = new InvocationHandler(mi);
+                            result = invocationHandler.Invoke(instance, args);
+                        }
+                        catch (TargetInvocationException exception)
+                        {
+                            MessageException messageException = null;
+                            if (exception.InnerException is MessageException)
+                                messageException = exception.InnerException as MessageException;//User code throws MessageException
+                            else
+                                messageException = new MessageException(exception.InnerException);
+                            
+                            if (log.IsDebugEnabled)
+                                log.Debug(__Res.GetString(__Res.Invocation_Failed, mi.Name, messageException.Message));
+                            return messageException.GetErrorMessage();
+                            //Do not throw here, we do not want to log user code exceptions.
+                            //throw messageException;
+                        }
+
 					}
 					else
 						throw new MessageException(new MissingMethodException(className, operation));
-				}
-				catch(TargetInvocationException exception)
-				{
-					MessageException messageException = null;
-                    if (exception.InnerException is MessageException)
-                        messageException = exception.InnerException as MessageException;//User code throws MessageException
-					else
-                        messageException = new MessageException(exception.InnerException);
-					throw messageException;
 				}
                 catch (Exception exception)
 				{

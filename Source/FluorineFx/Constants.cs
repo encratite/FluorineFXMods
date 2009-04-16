@@ -165,5 +165,11 @@ namespace FluorineFx
     {
         public const string RTMPT = "application/x-fcs";
         public const string AMF = "application/x-amf";
+        public const string XForm = "application/x-www-form-urlencoded";
+    }
+
+    internal class Internal
+    {
+        public static readonly object[] EmptyIList = new object[0];
     }
 }
