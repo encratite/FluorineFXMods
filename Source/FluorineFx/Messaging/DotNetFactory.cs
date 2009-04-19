@@ -49,7 +49,7 @@ namespace FluorineFx.Messaging
 			factoryInstance.Source = properties.Source;
 			factoryInstance.Scope = properties.Scope;
 			if( factoryInstance.Scope == null )
-				factoryInstance.Scope = "request";
+				factoryInstance.Scope = FactoryInstance.RequestScope;
 			factoryInstance.AttributeId = properties.AttributeId;
 			return factoryInstance;
 		}
@@ -63,14 +63,14 @@ namespace FluorineFx.Messaging
 			DotNetFactoryInstance dotNetFactoryInstance = factoryInstance as DotNetFactoryInstance;
 			switch(dotNetFactoryInstance.Scope)
 			{
-                case "application":
+                case FactoryInstance.ApplicationScope:
                     {
                         object instance = dotNetFactoryInstance.ApplicationInstance;
                         if (FluorineContext.Current != null && FluorineContext.Current.ApplicationState != null && dotNetFactoryInstance.AttributeId != null)
                             FluorineContext.Current.ApplicationState[dotNetFactoryInstance.AttributeId] = instance;
                         return instance;
                     }
-				case "session":
+				case FactoryInstance.SessionScope:
 					if( FluorineContext.Current.Session != null )
 					{
 						object instance = FluorineContext.Current.Session[dotNetFactoryInstance.AttributeId];

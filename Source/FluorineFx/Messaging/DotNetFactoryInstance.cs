@@ -112,5 +112,22 @@ namespace FluorineFx.Messaging
 				return _applicationInstance;
 			}
 		}
+        /// <summary>
+        /// When the caller is done with the instance, this method is called. For session scoped components, this gives you the opportunity to 
+        /// update any state modified in the instance in a remote persistence store. 
+        /// </summary>
+        /// <param name="instance">Instance of the given factory.</param>
+        public override void OnOperationComplete(object instance)
+        {
+            base.OnOperationComplete(instance);
+            if (this.Scope == FactoryInstance.RequestScope)
+            {
+                if (instance is IDisposable)
+                {
+                    IDisposable disposable = instance as IDisposable;
+                    disposable.Dispose();
+                }
+            }
+        }
 	}
 }

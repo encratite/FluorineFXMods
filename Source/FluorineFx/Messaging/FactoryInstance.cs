@@ -28,6 +28,10 @@ namespace FluorineFx.Messaging
 	/// </summary>
 	public class FactoryInstance
 	{
+        public const string RequestScope = "request";
+        public const string SessionScope = "session";
+        public const string ApplicationScope = "application";
+
 		IFlexFactory _factory;
 		string _id;
         DestinationProperties _properties;

@@ -104,19 +104,19 @@ namespace FluorineFx.Remoting
 
 			if( instance != null )
 			{
-				Type type = instance.GetType();
-                bool isAccessible = TypeHelper.GetTypeIsAccessible(type);
-                if (!isAccessible)
+                try
                 {
-                    string msg = __Res.GetString(__Res.Type_InitError, type.FullName);
-                    throw new MessageException(msg, new TypeLoadException(msg));
-                }
+                    Type type = instance.GetType();
+                    bool isAccessible = TypeHelper.GetTypeIsAccessible(type);
+                    if (!isAccessible)
+                    {
+                        string msg = __Res.GetString(__Res.Type_InitError, type.FullName);
+                        throw new MessageException(msg, new TypeLoadException(msg));
+                    }
 
-				try
-				{
-					MethodInfo mi = MethodHandler.GetMethod(type, operation, parameterList);
-					if( mi != null )
-					{
+                    MethodInfo mi = MethodHandler.GetMethod(type, operation, parameterList);
+                    if (mi != null)
+                    {
                         try
                         {
                             //Messagebroker checked xml configured security, check attributes too
@@ -145,7 +145,7 @@ namespace FluorineFx.Remoting
                                 messageException = exception.InnerException as MessageException;//User code throws MessageException
                             else
                                 messageException = new MessageException(exception.InnerException);
-                            
+
                             if (log.IsDebugEnabled)
                                 log.Debug(__Res.GetString(__Res.Invocation_Failed, mi.Name, messageException.Message));
                             return messageException.GetErrorMessage();
@@ -153,15 +153,23 @@ namespace FluorineFx.Remoting
                             //throw messageException;
                         }
 
-					}
-					else
-						throw new MessageException(new MissingMethodException(className, operation));
-				}
+                    }
+                    else
+                        throw new MessageException(new MissingMethodException(className, operation));
+                }
+                catch (MessageException)
+                {
+                    throw;
+                }
                 catch (Exception exception)
-				{
+                {
                     MessageException messageException = new MessageException(exception);
-					throw messageException;
-				}
+                    throw messageException;
+                }
+                finally
+                {
+                    factoryInstance.OnOperationComplete(instance);
+                }
 			}
 			else
 				throw new MessageException( new TypeInitializationException(className, null) );
