@@ -82,7 +82,10 @@ namespace FluorineFx.Messaging.Rtmp
                     FileSystemResource fsr = new FileSystemResource(endpoint.ChannelDefinition.Properties.KeystoreFile);
                     if (fsr.Exists)
                     {
-                        _serverCertificate = X509Certificate.CreateFromCertFile(fsr.File.FullName);
+                        if (endpoint.ChannelDefinition.Properties.KeystorePassword != null)
+                            _serverCertificate = new X509Certificate2(fsr.File.FullName, endpoint.ChannelDefinition.Properties.KeystorePassword);
+                        else
+                            _serverCertificate = X509Certificate.CreateFromCertFile(fsr.File.FullName);
                         log.Info(string.Format("Certificate issued to {0} and is valid from {1} until {2}.", _serverCertificate.Subject, _serverCertificate.GetEffectiveDateString(), _serverCertificate.GetExpirationDateString()));
                     }
                     else
