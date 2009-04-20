@@ -18,7 +18,7 @@
 */
 namespace FluorineFx.Messaging.Api
 {
-    class Constants
+    public class Constants
     {
         public const byte TypeUnknown = 0;
         /// <summary>

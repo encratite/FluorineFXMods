@@ -35,6 +35,7 @@ using FluorineFx.Messaging.Rtmp.Stream.Codec;
 using FluorineFx.Messaging.Rtmp.Stream.Consumer;
 using FluorineFx.Messaging.Rtmp.Stream.Messages;
 using FluorineFx.Messaging.Messages;
+using FluorineFx.Collections;
 
 namespace FluorineFx.Messaging.Rtmp.Stream
 {
@@ -130,7 +131,16 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// Stores absolute time for audio stream.
         /// </summary>
         private int _videoTime = -1;
-
+        /// <summary>
+        /// Minimum stream time
+        /// </summary>
+        private int _minStreamTime;
+        /// <summary>
+        /// Listeners to get notified about received packets.
+        /// Set(IStreamListener)
+        /// </summary>
+        private CopyOnWriteArraySet _listeners = new CopyOnWriteArraySet();
+        
 	    private void CheckSendNotifications(IEvent evt) 
         {
 		    IEventListener source = evt.Source;
@@ -475,6 +485,30 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
             get { return this; }
         }
+        /// <summary>
+        /// Add a listener to be notified about received packets.
+        /// </summary>
+        /// <param name="listener">The listener to add.</param>
+        public void AddStreamListener(IStreamListener listener)
+        {
+            _listeners.Add(listener);
+        }
+        /// <summary>
+        /// Return registered stream listeners.
+        /// </summary>
+        /// <returns>The registered listeners.</returns>
+        public ICollection GetStreamListeners()
+        {
+            return _listeners;
+        }
+        /// <summary>
+        /// Remove a listener from being notified about received packets.
+        /// </summary>
+        /// <param name="listener">The listener to remove.</param>
+        public void RemoveStreamListener(IStreamListener listener)
+        {
+            _listeners.Remove(listener);
+        }
 
         #endregion
 
@@ -576,12 +610,25 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             }
 
             IRtmpEvent rtmpEvent = evt as IRtmpEvent;
+            if (rtmpEvent == null)
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug("IRtmpEvent expected in event dispatch");
+                return;
+            }
             int eventTime = -1;
             // If this is first packet save it's timestamp
             if (_firstPacketTime == -1)
             {
                 _firstPacketTime = rtmpEvent.Timestamp;
+                if (log.IsDebugEnabled)
+                    log.Debug(string.Format("CBS: {0} firstPacketTime={1} {2}", this.Name, _firstPacketTime, rtmpEvent.Header.IsTimerRelative ? "(rel)" : "(abs)"));
             }
+            if (rtmpEvent is IStreamData && (rtmpEvent as IStreamData).Data != null)
+            {
+                _bytesReceived += (rtmpEvent as IStreamData).Data.Limit;
+            }
+
             if (rtmpEvent is AudioData)
             {
                 if (info != null)
@@ -590,6 +637,8 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 }
                 if (rtmpEvent.Header.IsTimerRelative)
                 {
+				    if (_audioTime == 0)
+					    log.Warn(string.Format("First Audio timestamp is relative! {0}", rtmpEvent.Timestamp));
                     _audioTime += rtmpEvent.Timestamp;
                 }
                 else
@@ -626,11 +675,31 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 }
                 if (rtmpEvent.Header.IsTimerRelative)
                 {
+                    if (_videoTime == 0)
+                        log.Warn(string.Format("First Video timestamp is relative! {0}", rtmpEvent.Timestamp));
                     _videoTime += rtmpEvent.Timestamp;
                 }
                 else
                 {
                     _videoTime = rtmpEvent.Timestamp;
+                    // Flash player may send first VideoData with old-absolute timestamp.
+                    // This ruins the stream's timebase in FileConsumer.
+                    // We don't want to discard the packet, as it may be a video keyframe.
+                    // Generally a Data or Audio packet has set the timebase to a reasonable value,
+                    // Eventually a new/correct absolute time will come on the video channel.
+                    // We could put this logic between livePipe and filePipe;
+                    // This would work for Audio Data as well, but have not seen the need.
+                    int cts = Math.Max(_audioTime, _dataTime);
+                    cts = Math.Max(cts, _minStreamTime);
+                    int fudge = 20;
+                    // Accept some slightly (20ms) retro timestamps [this may not be needed,
+                    // the publish Data should strictly precede the video data]
+                    if (_videoTime + fudge < cts)
+                    {
+                        if (log.IsDebugEnabled)
+                            log.Debug(string.Format("DispatchEvent: adjust archaic videoTime, from: {0} to {1}", _videoTime, cts));
+                        _videoTime = cts;
+                    }
                 }
                 eventTime = _videoTime;
             }
@@ -638,6 +707,8 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             {
                 if (rtmpEvent.Header.IsTimerRelative)
                 {
+                    if (_dataTime == 0)
+                        log.Warn(string.Format("First data [Invoke] timestamp is relative! {0}", rtmpEvent.Timestamp));
                     _dataTime += rtmpEvent.Timestamp;
                 }
                 else
@@ -650,6 +721,8 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             {
                 if (rtmpEvent.Header.IsTimerRelative)
                 {
+                    if (_dataTime == 0)
+                        log.Warn(string.Format("First data [Notify] timestamp is relative! {0}", rtmpEvent.Timestamp));
                     _dataTime += rtmpEvent.Timestamp;
                 }
                 else
@@ -657,12 +730,6 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     _dataTime = rtmpEvent.Timestamp;
                 }
                 eventTime = _dataTime;
-            }
-
-            if (rtmpEvent is IStreamData
-                    && (rtmpEvent as IStreamData).Data != null)
-            {
-                _bytesReceived += (rtmpEvent as IStreamData).Data.Limit;
             }
 
             // Notify event listeners
@@ -683,6 +750,22 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             {
                 SendRecordFailedNotify(ex.Message);
                 Stop();
+            }
+
+		// Notify listeners about received packet
+            if (rtmpEvent is IStreamPacket)
+            {
+                foreach (IStreamListener listener in GetStreamListeners())
+                {
+                    try
+                    {
+                        listener.PacketReceived(this, rtmpEvent as IStreamPacket);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error(string.Format("Error while notifying listener {0}", listener), ex);
+                    }
+                }
             }
         }
 
@@ -739,7 +822,8 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 IConsumerService consumerManager = this.Scope.GetService(typeof(IConsumerService)) as IConsumerService;
                 try
                 {
-                    _videoCodecFactory = new VideoCodecFactory();
+                    //_videoCodecFactory = new VideoCodecFactory();
+                    _videoCodecFactory = this.Scope.GetService(typeof(VideoCodecFactory)) as VideoCodecFactory;
                     _checkVideoCodec = true;
                 }
                 catch (Exception ex)

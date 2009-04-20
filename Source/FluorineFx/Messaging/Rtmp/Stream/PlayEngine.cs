@@ -412,7 +412,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                         {
                             RtmpMessage rtmpMessage = (RtmpMessage)msg;
                             IRtmpEvent body = rtmpMessage.body;
-                            if (body is VideoData && ((VideoData)body).FrameType == FrameType.KEYFRAME)
+                            if (body is VideoData && ((VideoData)body).FrameType == FrameType.Keyframe)
                             {
                                 body.Timestamp = seekPos;
                                 DoPushMessage(rtmpMessage);
@@ -1068,7 +1068,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                         IVideoStreamCodec videoCodec = null;
                         if (_msgIn is IBroadcastScope)
                         {
-                            IClientBroadcastStream stream = (IClientBroadcastStream)((IBroadcastScope)_msgIn).GetAttribute(Constants.BroadcastScopeStreamAttribute);
+                            IClientBroadcastStream stream = ((IBroadcastScope)_msgIn).GetAttribute(Constants.BroadcastScopeStreamAttribute) as IClientBroadcastStream;
                             if (stream != null && stream.CodecInfo != null)
                             {
                                 videoCodec = stream.CodecInfo.VideoCodec;

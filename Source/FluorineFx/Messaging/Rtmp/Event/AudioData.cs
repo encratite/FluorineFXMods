@@ -21,6 +21,7 @@ using System.IO;
 using FluorineFx.Util;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Event;
+using FluorineFx.Messaging.Api.Stream;
 using FluorineFx.Messaging.Rtmp.Stream;
 
 namespace FluorineFx.Messaging.Rtmp.Event
@@ -28,7 +29,8 @@ namespace FluorineFx.Messaging.Rtmp.Event
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	class AudioData : BaseEvent, IStreamData
+    [CLSCompliant(false)]
+	public class AudioData : BaseEvent, IStreamData, IStreamPacket
 	{
 		protected ByteBuffer _data;
 

@@ -24,7 +24,8 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Messages
     /// <summary>
     /// To notify the client to reset the playing state.
     /// </summary>
-    class ResetMessage : AsyncMessage
+    [CLSCompliant(false)]
+    public class ResetMessage : AsyncMessage
     {
     }
 }

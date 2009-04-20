@@ -20,6 +20,7 @@ using System;
 using FluorineFx.Configuration;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Endpoints;
+using FluorineFx.Messaging.Rtmp.Stream;
 
 namespace FluorineFx.Messaging
 {
@@ -52,6 +53,8 @@ namespace FluorineFx.Messaging
             FluorineFx.Messaging.Rtmp.Stream.IBWControlService bwControlService = ObjectFactory.CreateInstance(FluorineConfiguration.Instance.FluorineSettings.BWControlService.Type) as FluorineFx.Messaging.Rtmp.Stream.IBWControlService;
             AddService(typeof(FluorineFx.Messaging.Rtmp.Stream.IBWControlService), bwControlService, false);
             bwControlService.Start(null);
+            VideoCodecFactory videoCodecFactory = new VideoCodecFactory();
+            AddService(typeof(VideoCodecFactory), videoCodecFactory, false);
             Init();
 		}
 

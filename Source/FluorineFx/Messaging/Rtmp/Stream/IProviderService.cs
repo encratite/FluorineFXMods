@@ -28,7 +28,8 @@ namespace FluorineFx.Messaging.Rtmp.Stream
     /// <summary>
     /// Central unit to get access to different types of provider inputs.
     /// </summary>
-    interface IProviderService : IScopeService
+    [CLSCompliant(false)]
+    public interface IProviderService : IScopeService
     {
         /// <summary>
         /// Returns a named provider as the source of input. Live stream first, VOD stream second.

@@ -108,6 +108,7 @@ namespace FluorineFx.Messaging.Rtmp.Service
 
 		public bool Invoke(IServiceCall call, object service)
 		{
+            /*
             IConnection connection = FluorineFx.Context.FluorineContext.Current.Connection;
 			string serviceMethod = call.ServiceMethodName;
 
@@ -159,6 +160,27 @@ namespace FluorineFx.Messaging.Rtmp.Service
             }
             else
                 arguments = argsWithConnection;
+            */
+
+            string serviceMethod = call.ServiceMethodName;
+            object[] arguments = call.Arguments;
+
+            // First, search for method with exact parameter type match
+            MethodInfo mi = MethodHandler.GetMethod(service.GetType(), serviceMethod, arguments, true, false, false);
+            if (mi == null)
+            {
+                // Second, search for method with type conversions
+                mi = MethodHandler.GetMethod(service.GetType(), serviceMethod, arguments, false, false, false);
+                if (mi == null)
+                {
+                    string msg = __Res.GetString(__Res.Invocation_NoSuitableMethod, serviceMethod);
+                    call.Status = Call.STATUS_METHOD_NOT_FOUND;
+                    call.Exception = new FluorineException(msg);//MissingMethodException(service.GetType().Name, serviceMethod);
+                    //_log.Error("Method " + serviceMethod + " not found in " + service);
+                    _log.Error(msg, call.Exception);
+                    return false;
+                }
+            }
 
             try
             {

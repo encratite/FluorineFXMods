@@ -213,6 +213,7 @@
     <Compile Include="Messaging\Rtmp\RtmpHandshake.cs" />
     <Compile Include="Messaging\Rtmp\RtmptProtocolDecoder.cs" />
     <Compile Include="Messaging\Rtmp\RtmptProtocolEncoder.cs" />
+    <Compile Include="Messaging\Rtmp\Stream\BroadcastStream.cs" />
     <Compile Include="Messaging\Rtmp\Stream\PlayEngine.cs" />
     <Compile Include="Messaging\Rtmp\Stream\ServerStream.cs" />
     <Compile Include="Messaging\Rtmp\Stream\StreamUtils.cs" />

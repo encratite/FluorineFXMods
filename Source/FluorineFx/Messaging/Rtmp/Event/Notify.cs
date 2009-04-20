@@ -24,6 +24,8 @@ using FluorineFx.Util;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Event;
 using FluorineFx.Messaging.Api.Service;
+using FluorineFx.Messaging.Api.Stream;
+using FluorineFx.Messaging.Rtmp.Stream;
 
 namespace FluorineFx.Messaging.Rtmp.Event
 {
@@ -31,7 +33,7 @@ namespace FluorineFx.Messaging.Rtmp.Event
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
     [CLSCompliant(false)]
-    public class Notify : BaseEvent
+    public class Notify : BaseEvent, IStreamData, IStreamPacket
 	{
         /// <summary>
         /// Service call.

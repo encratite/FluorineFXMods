@@ -17,6 +17,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+using System.Collections;
 using FluorineFx.Messaging.Api.Messaging;
 
 namespace FluorineFx.Messaging.Api.Stream
@@ -49,5 +50,21 @@ namespace FluorineFx.Messaging.Api.Stream
         /// Gets the provider corresponding to this stream.
         /// </summary>
         IProvider Provider { get; }
+        /// <summary>
+        /// Add a listener to be notified about received packets.
+        /// </summary>
+        /// <param name="listener">The listener to add.</param>
+        void AddStreamListener(IStreamListener listener);
+        /// <summary>
+        /// Remove a listener from being notified about received packets.
+        /// </summary>
+        /// <param name="listener">The listener to remove.</param>
+        void RemoveStreamListener(IStreamListener listener);
+        /// <summary>
+        /// Return registered stream listeners.
+        /// </summary>
+        /// <returns>The registered listeners.</returns>
+        ICollection GetStreamListeners();
+
     }
 }

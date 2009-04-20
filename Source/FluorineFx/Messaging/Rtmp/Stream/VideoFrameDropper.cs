@@ -84,7 +84,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     break;
                 case FrameDropperState.SEND_INTERFRAMES:
                     // Only keyframes and interframes will be sent.
-                    if (type == FrameType.KEYFRAME)
+                    if (type == FrameType.Keyframe)
                     {
                         if (pending == 0)
                         {
@@ -93,14 +93,14 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                         }
                         result = true;
                     }
-                    else if (type == FrameType.INTERFRAME)
+                    else if (type == FrameType.Interframe)
                     {
                         result = true;
                     }
                     break;
                 case FrameDropperState.SEND_KEYFRAMES:
                     // Only keyframes will be sent.
-                    result = (type == FrameType.KEYFRAME);
+                    result = (type == FrameType.Keyframe);
                     if (result && pending == 0)
                     {
                         // Maybe switch back to SEND_INTERFRAMES after the next keyframe
@@ -109,7 +109,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     break;
                 case FrameDropperState.SEND_KEYFRAMES_CHECK:
                     // Only keyframes will be sent.
-                    result = (type == FrameType.KEYFRAME);
+                    result = (type == FrameType.Keyframe);
                     if (result && pending == 0)
                     {
                         // Continue with sending interframes as well
@@ -137,18 +137,18 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             switch (_state)
             {
                 case FrameDropperState.SEND_ALL:
-                    if (type == FrameType.DISPOSABLE_INTERFRAME)
+                    if (type == FrameType.DisposableInterframe)
                     {
                         // Remain in state, packet is safe to drop.
                         return;
                     }
-                    else if (type == FrameType.INTERFRAME)
+                    else if (type == FrameType.Interframe)
                     {
                         // Drop all frames until the next keyframe.
                         _state = FrameDropperState.SEND_KEYFRAMES;
                         return;
                     }
-                    else if (type == FrameType.KEYFRAME)
+                    else if (type == FrameType.Keyframe)
                     {
                         // Drop all frames until the next keyframe.
                         _state = FrameDropperState.SEND_KEYFRAMES;
@@ -156,13 +156,13 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     }
                     break;
                 case FrameDropperState.SEND_INTERFRAMES:
-                    if (type == FrameType.INTERFRAME)
+                    if (type == FrameType.Interframe)
                     {
                         // Drop all frames until the next keyframe.
                         _state = FrameDropperState.SEND_KEYFRAMES_CHECK;
                         return;
                     }
-                    else if (type == FrameType.KEYFRAME)
+                    else if (type == FrameType.Keyframe)
                     {
                         // Drop all frames until the next keyframe.
                         _state = FrameDropperState.SEND_KEYFRAMES;
@@ -173,7 +173,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     // Remain in state.
                     break;
                 case FrameDropperState.SEND_KEYFRAMES_CHECK:
-                    if (type == FrameType.KEYFRAME)
+                    if (type == FrameType.Keyframe)
                     {
                         // Switch back to sending keyframes, but don't move to SEND_INTERFRAMES afterwards.
                         _state = FrameDropperState.SEND_KEYFRAMES;

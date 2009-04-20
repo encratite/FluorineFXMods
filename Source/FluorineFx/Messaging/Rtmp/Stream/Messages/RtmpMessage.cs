@@ -25,7 +25,8 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Messages
     /// <summary>
     /// RTMP message
     /// </summary>
-    class RtmpMessage : AsyncMessage
+    [CLSCompliant(false)]
+    public class RtmpMessage : AsyncMessage
     {
         /// <summary>
         /// Gets or sets the body of the message.

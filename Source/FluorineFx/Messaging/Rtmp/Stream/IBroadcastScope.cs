@@ -26,7 +26,8 @@ namespace FluorineFx.Messaging.Rtmp.Stream
     /// Broadcast scope is marker interface that represents object that works as basic scope and
     /// has pipe connection event dispatching capabilities.
     /// </summary>
-    interface IBroadcastScope : IBasicScope, IPipe
+    [CLSCompliant(false)]
+    public interface IBroadcastScope : IBasicScope, IPipe
     {
     }
 }

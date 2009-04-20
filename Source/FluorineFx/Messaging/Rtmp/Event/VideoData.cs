@@ -22,6 +22,7 @@ using FluorineFx.Util;
 using FluorineFx.IO;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Event;
+using FluorineFx.Messaging.Api.Stream;
 using FluorineFx.Messaging.Rtmp.Stream;
 
 namespace FluorineFx.Messaging.Rtmp.Event
@@ -29,15 +30,16 @@ namespace FluorineFx.Messaging.Rtmp.Event
 	/// <summary>
 	/// Videoframe type.
 	/// </summary>
-	enum FrameType 
+	public enum FrameType 
 	{
-		UNKNOWN, KEYFRAME, INTERFRAME, DISPOSABLE_INTERFRAME
+		Unknown, Keyframe, Interframe, DisposableInterframe
 	}
 
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	class VideoData : BaseEvent, IStreamData
+    [CLSCompliant(false)]
+    public class VideoData : BaseEvent, IStreamData, IStreamPacket
 	{
 		/// <summary>
 		/// Video data.
@@ -46,7 +48,7 @@ namespace FluorineFx.Messaging.Rtmp.Event
 		/// <summary>
 		/// Frame type, unknown by default.
 		/// </summary>
-		FrameType _frameType = FrameType.UNKNOWN;
+		FrameType _frameType = FrameType.Unknown;
 
 		public VideoData(ByteBuffer data):base(EventType.STREAM_DATA)
 		{
@@ -59,13 +61,13 @@ namespace FluorineFx.Messaging.Rtmp.Event
 				data.Position = oldPos;
 				int frameType = (firstByte & IOConstants.MASK_VIDEO_FRAMETYPE) >> 4;
 				if (frameType == IOConstants.FLAG_FRAMETYPE_KEYFRAME)
-					_frameType = FrameType.KEYFRAME;
+					_frameType = FrameType.Keyframe;
 				else if (frameType == IOConstants.FLAG_FRAMETYPE_INTERFRAME) 
-					_frameType = FrameType.INTERFRAME;
+					_frameType = FrameType.Interframe;
 				else if (frameType == IOConstants.FLAG_FRAMETYPE_DISPOSABLE) 
-					_frameType = FrameType.DISPOSABLE_INTERFRAME;
+					_frameType = FrameType.DisposableInterframe;
 				else 
-					_frameType = FrameType.UNKNOWN;
+					_frameType = FrameType.Unknown;
 			}
 		}
 
