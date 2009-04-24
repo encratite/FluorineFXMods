@@ -493,7 +493,7 @@ namespace FluorineFx
             if (FluorineConfiguration.Instance.RemotingServiceAttributeConstraint == RemotingServiceAttributeConstraint.Access)
             {
                 //Additional check for RemotingServiceAttribute presence
-                Attribute attribute = ReflectionUtils.GetAttribute(typeof(RemotingServiceAttribute), type, false);
+                Attribute attribute = ReflectionUtils.GetAttribute(typeof(RemotingServiceAttribute), type, true);
                 if (attribute != null)
                     return true;
                 else
