@@ -40,7 +40,7 @@ namespace FluorineFx.IO
         /// </summary>
         long BytesRead { get; }
         /// <summary>
-        /// Gets length in seconds.
+        /// Gets length in milliseconds.
         /// </summary>
         long Duration { get; }
         /// <summary>

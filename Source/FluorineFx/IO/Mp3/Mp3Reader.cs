@@ -173,8 +173,7 @@ namespace FluorineFx.IO.Mp3
                 {
                     byte[] buffer = new byte[4];
                     _fileStream.Read(buffer, 0, 4);
-                    int value = (int)((buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3]);
-                    header = new Mp3Header(value);
+                    header = new Mp3Header(buffer);
                 }
                 catch (IOException ex)
                 {
@@ -270,11 +269,7 @@ namespace FluorineFx.IO.Mp3
                 _tag.Body = body.ToArray();
                 */
                 buffer[0] = tagType;
-                int value = header.Data;
-                buffer[1] = (byte)(0xFF & (value >> 24));
-                buffer[2] = (byte)(0xFF & (value >> 16));
-                buffer[3] = (byte)(0xFF & (value >> 8));
-                buffer[4] = (byte)(0xFF & value);
+                Array.Copy(header.Data, 0, buffer, 1, 4);
                 _fileStream.Read(buffer, 5, frameSize - 4);
                 _tag.Body = buffer;
                 return _tag;
@@ -455,8 +450,7 @@ namespace FluorineFx.IO.Mp3
                 {
                     byte[] buffer = new byte[4];
                     _fileStream.Read(buffer, 0, 4);
-                    int value = (int)((buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3]);
-                    header = new Mp3Header(value);
+                    header = new Mp3Header(buffer);
                 }
                 catch (IOException ex)
                 {

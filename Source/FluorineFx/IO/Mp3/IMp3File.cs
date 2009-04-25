@@ -24,7 +24,10 @@ using FluorineFx.IO;
 
 namespace FluorineFx.IO.Mp3
 {
-    interface IMp3File : IStreamableFile
+    /// <summary>
+    /// Mp3 handler interface.
+    /// </summary>
+    public interface IMp3File : IStreamableFile
     {
     }
 }

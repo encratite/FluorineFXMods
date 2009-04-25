@@ -27,7 +27,11 @@ using FluorineFx.IO;
 
 namespace FluorineFx.IO.Mp3
 {
-    class Mp3File : IMp3File
+    /// <summary>
+    /// Handles mp3 files.
+    /// </summary>
+    [CLSCompliant(false)]
+    public class Mp3File : IMp3File
     {
         private FileInfo _file;
 
