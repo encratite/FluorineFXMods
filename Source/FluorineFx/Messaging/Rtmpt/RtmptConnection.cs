@@ -117,7 +117,7 @@ namespace FluorineFx.Messaging.Rtmpt
             _writtenBytes = new AtomicLong();
             _session = rtmptServer.Endpoint.GetMessageBroker().SessionManager.CreateSession(this);
         }
-
+        /*
         public RtmptConnection(RtmptServer rtmptServer, IPEndPoint ipEndPoint, ISession session, string path, Hashtable parameters)
             : base(rtmptServer.RtmpHandler, path, parameters)
         {
@@ -128,7 +128,7 @@ namespace FluorineFx.Messaging.Rtmpt
             _writtenBytes = new AtomicLong();
             _session = session;
         }
-
+        */
         public override IPEndPoint RemoteEndPoint
         {
             get 

@@ -138,28 +138,6 @@ namespace FluorineFx.Context
             return null;
         }
 
-        /*
-        public ISession GetOrCreateSession(IConnection connection)
-        {
-            string sessionId = connection.ConnectionId;
-            lock (this.SyncRoot)
-            {
-                if (_sessions.ContainsKey(sessionId))
-                {
-                    HttpRuntime.Cache.Get(sessionId);
-                    return _sessions[sessionId] as ISession;
-                }
-                else
-                {
-                    ISession session = new ConnectionSession(this, connection);
-                    log.Debug(__Res.GetString(__Res.Session_Create, session.Id));
-                    session.AddSessionDestroyedListener(this);
-                    _sessions[sessionId] = session;
-                    return session;
-                }
-            }
-        }
-        */
         public ISession CreateSession(IConnection connection)
         {
             lock (this.SyncRoot)

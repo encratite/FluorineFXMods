@@ -86,7 +86,7 @@ namespace FluorineFx.Context
 
         public override void CopyTo(Array array, int index)
         {
-            throw new NotImplementedException();
+            _connection.CopyTo(array as object[], index);
         }
 
         public override int Count
@@ -105,7 +105,7 @@ namespace FluorineFx.Context
 
         public override IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _connection.GetEnumerator();
         }
 
         #endregion

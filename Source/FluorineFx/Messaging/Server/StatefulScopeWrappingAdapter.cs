@@ -69,8 +69,12 @@ namespace FluorineFx.Messaging.Adapter
         /// Returns the attribute names.
         /// </summary>
         /// <returns>Collection of attribute names.</returns>
-        public ICollection GetAttributeNames()
-		{
+#if !(NET_1_1)
+        public virtual ICollection<string> GetAttributeNames()
+#else
+        public virtual ICollection GetAttributeNames()
+#endif
+        {
 			return _scope.GetAttributeNames();
 		}
         /// <summary>
@@ -209,6 +213,12 @@ namespace FluorineFx.Messaging.Adapter
             _scope.CopyTo(array, index);
         }
 #endif
+
+        public IEnumerator GetEnumerator()
+        {
+            return _scope.GetEnumerator();
+        }
+        
 		#endregion
 
         /// <summary>

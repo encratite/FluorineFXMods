@@ -150,6 +150,11 @@ namespace FluorineFx.Messaging
             get { return _messageServer.ServicesConfiguration.FlexClient; }
         }
 
+        internal ServicesConfiguration ServicesConfiguration
+        {
+            get { return _messageServer.ServicesConfiguration; }
+        }
+
         internal SessionManager SessionManager
         {
             get { return _sessionManager; }

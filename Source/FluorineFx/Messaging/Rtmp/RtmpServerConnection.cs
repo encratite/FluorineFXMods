@@ -277,7 +277,9 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 IsTunnelingDetected = true;
                 byte rtmpDetect = _readBuffer.Get(0);
-                SetIsTunneled(rtmpDetect != 0x3);
+                bool encrypted = (rtmpDetect == 0x06); //rtmpe?
+                if (!encrypted)
+                    SetIsTunneled(rtmpDetect != 0x3);
 
                 if (!IsTunneled)
                 {

@@ -27,13 +27,17 @@ namespace FluorineFx.Messaging.Api
 	/// <summary>
 	/// Base interface for all API objects with attributes.
 	/// </summary>
-    public interface IAttributeStore
+    public interface IAttributeStore : IEnumerable
 	{
 		/// <summary>
 		/// Returns the attribute names.
 		/// </summary>
 		/// <returns>Collection of attribute names.</returns>
-		ICollection GetAttributeNames();
+#if !(NET_1_1)
+        ICollection<string> GetAttributeNames();
+#else
+        ICollection GetAttributeNames();
+#endif
 		/// <summary>
 		/// Sets an attribute on this object.
 		/// </summary>
@@ -117,5 +121,5 @@ namespace FluorineFx.Messaging.Api
         /// <param name="index">The zero-based index in array from which copying starts.</param>
         void CopyTo(Array array, int index);
 #endif
-	}
+    }
 }

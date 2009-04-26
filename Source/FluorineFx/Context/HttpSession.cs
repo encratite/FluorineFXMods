@@ -22,13 +22,14 @@ using System.Web;
 using System.Security.Principal;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Messages;
+using FluorineFx.Messaging.Rtmp;
 
 namespace FluorineFx.Context
 {
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
-    sealed class HttpSession : Session
+    class HttpSession : Session
     {
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.

@@ -1135,7 +1135,7 @@ namespace FluorineFx.Messaging.Rtmp
             try
             {
                 ReaderWriterLock.AcquireWriterLock();
-                if (_keepAliveJobName == null)
+                if (_keepAliveJobName == null && this.Scope != null)
                 {
                     ISchedulingService service = this.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
                     if (service != null)

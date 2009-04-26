@@ -103,7 +103,6 @@ namespace FluorineFx.Messaging.Endpoints
                         scope.Register();
                     }
                 }
-
                 _rtmpServer = new RtmpServer(this);
 
 				UriBase uri = this.ChannelDefinition.GetUri();

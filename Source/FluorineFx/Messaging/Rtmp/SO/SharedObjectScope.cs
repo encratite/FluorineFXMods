@@ -265,8 +265,12 @@ namespace FluorineFx.Messaging.Rtmp.SO
 
 		#region IAttributeStore Members
 
-		public override ICollection GetAttributeNames()
-		{
+#if !(NET_1_1)
+        public virtual ICollection<string> GetAttributeNames()
+#else
+        public virtual ICollection GetAttributeNames()
+#endif
+        {
             lock (this.SyncRoot)
             {
                 return _so.GetAttributeNames();

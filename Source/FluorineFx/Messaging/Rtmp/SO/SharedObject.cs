@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Specialized;
 #if !(NET_1_1)
 using System.Collections.Generic;
+using FluorineFx.Collections.Generic;
 #endif
 using log4net;
 using FluorineFx;
@@ -242,9 +243,9 @@ namespace FluorineFx.Messaging.Rtmp.SO
             _path = reader.ReadData() as string;
             _attributes.Clear();
 #if !(NET_1_1)
-            _attributes = new Dictionary<string, object>(reader.ReadData() as IDictionary<string, object>);
+            _attributes = new CopyOnWriteDictionary<string, object>(reader.ReadData() as IDictionary<string, object>);
 #else
-            _attributes = new Hashtable(reader.ReadData() as IDictionary);
+            _attributes = new CopyOnWriteDictionary(reader.ReadData() as IDictionary);
 #endif
 			_persistent = true; _persistentSO = true;
             _ownerMessage.SetName(_name);
@@ -526,7 +527,11 @@ namespace FluorineFx.Messaging.Rtmp.SO
         public override void RemoveAttributes() 
 		{
 			// TODO: there must be a direct way to clear the SO on the client side...
-		    ICollection names = GetAttributeNames();
+#if !(NET_1_1)
+            ICollection<string> names = GetAttributeNames();
+#else
+            ICollection names = GetAttributeNames();
+#endif
             foreach (string key in names)
             {
                 _ownerMessage.AddEvent(SharedObjectEventType.CLIENT_DELETE_DATA, key, null);

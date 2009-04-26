@@ -70,10 +70,6 @@ namespace FluorineFx.Messaging.Endpoints
             _rtmptServer.Service(HttpContext.Current.Request, HttpContext.Current.Response);
         }
 
-        public override void Push(IMessage message, MessageClient messageClient)
-        {
-        }
-
         public void Service(RtmptRequest rtmptRequest)
         {
             _rtmptServer.Service(rtmptRequest);

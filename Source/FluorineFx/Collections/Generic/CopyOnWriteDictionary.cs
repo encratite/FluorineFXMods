@@ -29,7 +29,7 @@ namespace FluorineFx.Collections.Generic
     /// A thread-safe version of IDictionary in which all operations that change the dictionary are implemented by 
     /// making a new copy of the underlying Hashtable.
     /// </summary>
-    class CopyOnWriteDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ICollection
+    public class CopyOnWriteDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ICollection
     {
         Dictionary<TKey, TValue> _dictionary;
 
