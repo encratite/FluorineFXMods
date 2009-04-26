@@ -651,8 +651,8 @@ namespace FluorineFx.Messaging.Config
         /// </summary>
         public const string FluorineSqlServiceDestination = "FluorineFx.ServiceBrowser.SqlService";
 
+        bool _hasCachedRoles;
         string[] _cachedRoles;
-        static string[] EmptyRoles = new string[0];
 
         ServiceDefinition _service;
 
@@ -776,30 +776,40 @@ namespace FluorineFx.Messaging.Config
 
         public string[] GetRoles()
         {
-            if (_cachedRoles == null)
+            if (!_hasCachedRoles)
             {
-                Debug.Assert(this.Service != null);
-                if (this.Security != null)
+                lock (typeof(DestinationDefinition))
                 {
-                    ArrayList result = new ArrayList();
-                    foreach (SecurityConstraint securityConstraint in this.Security)
+                    if (!_hasCachedRoles)
                     {
-                        SecurityConstraint constraint;
-                        if (securityConstraint.Ref == null)
-                            constraint = securityConstraint;
-                        else
-                            constraint = this.Service.Parent.GetSecurityConstraintById(securityConstraint.Ref);
-                        if (constraint != null)
+                        _hasCachedRoles = true;
+
+                        Debug.Assert(this.Service != null);
+                        if (this.Security != null)
                         {
-                            if (constraint.Roles != null)
-                                result.AddRange(constraint.Roles);
+                            ArrayList result = null;
+                            foreach (SecurityConstraint securityConstraint in this.Security)
+                            {
+                                if( result == null )
+                                    result = new ArrayList();
+                                SecurityConstraint constraint;
+                                if (securityConstraint.Ref == null)
+                                    constraint = securityConstraint;
+                                else
+                                    constraint = this.Service.Parent.GetSecurityConstraintById(securityConstraint.Ref);
+                                if (constraint != null)
+                                {
+                                    if (constraint.Roles != null)
+                                        result.AddRange(constraint.Roles);
+                                }
+                            }
+                            if (result != null)
+                                _cachedRoles = result.ToArray(typeof(string)) as string[];
                         }
                     }
-                    if (result.Count > 0)
-                        _cachedRoles = result.ToArray(typeof(string)) as string[];
+                    else
+                        return _cachedRoles;
                 }
-                if (_cachedRoles == null)
-                    _cachedRoles = DestinationDefinition.EmptyRoles;
             }
             return _cachedRoles;
         }

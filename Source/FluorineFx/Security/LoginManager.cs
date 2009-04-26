@@ -319,7 +319,7 @@ namespace FluorineFx.Security
             if (destination.DestinationDefinition != null)
             {
                 string[] roles = destination.DestinationDefinition.GetRoles();
-                if (roles.Length > 0)
+                if (roles != null)
                 {
                     bool authorized = DoAuthorization(roles);
                     if (!authorized)

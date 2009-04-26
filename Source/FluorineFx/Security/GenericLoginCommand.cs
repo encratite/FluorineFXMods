@@ -80,6 +80,12 @@ namespace FluorineFx.Security
 		/// <returns>A Boolean value indicating whether the principal has been authorized.</returns>
 		public virtual bool DoAuthorization(IPrincipal principal, IList roles)
 		{
+            if (roles.Count == 0)
+            {
+                //No roles were defined we should check only if the Principal is authenticated
+                if (principal.Identity != null)
+                    return principal.Identity.IsAuthenticated;
+            }
 			foreach(string role in roles )
 			{
 				if( principal.IsInRole(role) )
