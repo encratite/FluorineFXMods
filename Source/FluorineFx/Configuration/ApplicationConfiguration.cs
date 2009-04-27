@@ -23,6 +23,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
 using System.IO;
+using FluorineFx.Messaging;
 
 namespace FluorineFx.Configuration
 {
@@ -186,6 +187,24 @@ namespace FluorineFx.Configuration
             }
             set { _type = value; }
         }
+
+        string _factory;
+
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        [XmlAttribute("factory")]
+        public string Factory
+        {
+            get
+            {
+                if (_factory != null)
+                    return _factory;
+                return DotNetFactory.Id;
+            }
+            set { _factory = value; }
+        }
+
     }
 
     /// <summary>

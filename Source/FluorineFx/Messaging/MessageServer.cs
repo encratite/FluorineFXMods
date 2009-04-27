@@ -126,7 +126,7 @@ namespace FluorineFx.Messaging
                 }
             }
             //Add the dotnet Factory
-            _messageBroker.AddFactory("dotnet", new DotNetFactory());
+            _messageBroker.AddFactory(DotNetFactory.Id, new DotNetFactory());
             
             if (serviceBrowserAvailable)
             {

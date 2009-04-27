@@ -75,7 +75,7 @@ namespace FluorineFx.Messaging
 			{
                 if (_destinationDefinition.Properties.Factory != null)
                     return _destinationDefinition.Properties.Factory;
-				return "dotnet";
+				return DotNetFactory.Id;
 			}
 		}
         /// <summary>

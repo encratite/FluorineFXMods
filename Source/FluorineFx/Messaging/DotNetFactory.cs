@@ -28,6 +28,7 @@ namespace FluorineFx.Messaging
 	/// </summary>
 	public class DotNetFactory : IFlexFactory
 	{
+        public const string Id = "dotnet";
         /// <summary>
         /// Initializes a new instance of the DotNetFactory class.
         /// </summary>
@@ -46,11 +47,14 @@ namespace FluorineFx.Messaging
 		public FactoryInstance CreateFactoryInstance(string id, DestinationProperties properties)
 		{
 			DotNetFactoryInstance factoryInstance = new DotNetFactoryInstance(this, id, properties);
-			factoryInstance.Source = properties.Source;
-			factoryInstance.Scope = properties.Scope;
+            if (properties != null)
+            {
+                factoryInstance.Source = properties.Source;
+                factoryInstance.Scope = properties.Scope;
+                factoryInstance.AttributeId = properties.AttributeId;
+            }
 			if( factoryInstance.Scope == null )
 				factoryInstance.Scope = FactoryInstance.RequestScope;
-			factoryInstance.AttributeId = properties.AttributeId;
 			return factoryInstance;
 		}
         /// <summary>

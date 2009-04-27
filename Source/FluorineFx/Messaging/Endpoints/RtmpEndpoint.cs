@@ -91,10 +91,21 @@ namespace FluorineFx.Messaging.Endpoints
                         // Store context in scope
                         scope.Context = scopeContext;
                         // ApplicationAdapter
-                        IScopeHandler scopeHandler = ObjectFactory.CreateInstance(configuration.ApplicationHandler.Type) as IScopeHandler;
+                        IFlexFactory factory = GetMessageBroker().GetFactory(configuration.ApplicationHandler.Factory);
+                        FactoryInstance factoryInstance = factory.CreateFactoryInstance(this.Id, null);
+                        if (factoryInstance == null)
+                        {
+                            string msg = string.Format("Missing factory {0}", configuration.ApplicationHandler.Factory);
+                            log.Fatal(msg);
+                            throw new NotSupportedException(msg);
+                        }
+                        factoryInstance.Source = configuration.ApplicationHandler.Type;
+                        object applicationHandlerInstance = factoryInstance.Lookup();
+                        IScopeHandler scopeHandler = applicationHandlerInstance as IScopeHandler;
                         if (scopeHandler == null)
                         {
                             log.Error(__Res.GetString(__Res.Type_InitError, configuration.ApplicationHandler.Type));
+                            throw new TypeInitializationException(configuration.ApplicationHandler.Type, null);
                         }
                         scope.Handler = scopeHandler;
                         // Make available as "/<directoryName>" and allow access from all hosts
