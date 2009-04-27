@@ -75,14 +75,17 @@ namespace FluorineFx.Messaging
         /// </summary>
         /// <param name="name">The attribute name.</param>
         /// <param name="value">The attribute value.</param>
-        /// <returns>true if the attribute value changed otherwise false</returns>
-		public virtual bool SetAttribute(string name, object value)
-		{
-			if(name == null )
-				return false;
-                // Update with new value
-                object previous = _attributes.AddIfAbsent(name, value);
-                return (previous == null || value == previous || !value.Equals(previous));
+        /// <returns>true if the attribute value changed otherwise false.</returns>
+        public virtual bool SetAttribute(string name, object value)
+        {
+            if (name == null)
+                return false;
+            // Update with new value
+            object previous = null;
+            _attributes.TryGetValue(name, out previous);
+            if( previous == null || !value.Equals(previous) )
+                _attributes[name] = value;
+            return (previous == null || !value.Equals(previous));
         }
 #if !(NET_1_1)
         /// <summary>
