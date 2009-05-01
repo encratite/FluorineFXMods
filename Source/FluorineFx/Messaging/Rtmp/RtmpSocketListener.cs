@@ -92,14 +92,14 @@ namespace FluorineFx.Messaging.Rtmp
 			if(!this.IsDisposed)
 			{
                 RtmpSocketListener listener = ar.AsyncState as RtmpSocketListener;
-				try
-				{
-					//Get accepted socket
+                try
+                {
+                    //Get accepted socket
                     Socket acceptedSocket = listener.Socket.EndAccept(ar);
 #if !(NET_1_1)
                     acceptedSocket.NoDelay = FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpTransportSettings.TcpNoDelay;//true;
 #endif
-					//Adjust buffer size
+                    //Adjust buffer size
 #if NET_1_1
 					try
 					{
@@ -123,15 +123,18 @@ namespace FluorineFx.Messaging.Rtmp
 #endif
 
                     listener.RtmpServer.InitializeConnection(acceptedSocket);
+                }
+                catch (Exception ex)
+                {
+                    //log.Error(__Res.GetString(__Res.SocketServer_ListenerFail), ex);
+                    if (HandleError(ex))
+                        listener.RtmpServer.RaiseOnError(ex);
+                }
+                finally
+                {
                     //Continue to accept
                     listener.Socket.BeginAccept(new AsyncCallback(BeginAcceptCallback), listener);
                 }
-				catch(Exception ex)
-				{
-                    //log.Error(__Res.GetString(__Res.SocketServer_ListenerFail), ex);
-                    if( HandleError(ex) )
-                        listener.RtmpServer.RaiseOnError(ex);
-				}
 			}
 		}
 
