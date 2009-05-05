@@ -8,16 +8,16 @@
 
 <fluorinefx>
 	<settings>
-		<runtime
-			asyncHandler="true|false"
-			minWorkerThreads="0"
-			maxWorkerThreads="25"
-		/>
+		<!-- Runtime settings for asynchronous request handling and threadpool configuration -->
+		<runtime asyncHandler="true|false" minWorkerThreads="0" maxWorkerThreads="25"/>
+		<!--  <debug mode="On|Off" dumpPath="~"/> -->
+		<!--  When mode is set to "On" for unexpected AMF deserialization errors dump files are created. -->
+		<debug mode="Off" dumpPath=""/>
 		<!--  Reflection optimizer provider="codedom|il" debug="true|false" -->
 		<optimizer provider="codedom" debug="true"/>
 		<wsdlGenerateProxyClasses>true</wsdlGenerateProxyClasses>
 		<wsdlProxyNamespace>FluorineFx.Proxy</wsdlProxyNamespace>
-		<!--  Time Zone Compensation ="none|auto|server" -->
+		<!--  Time Zone Compensation ="none|auto|server|ignore" -->
 		<timezoneCompensation>none</timezoneCompensation>
 		<!--  Any value-type that is not explicitly initialized with a value will contain the default value for that object type -->
 		<acceptNullValueTypes>false</acceptNullValueTypes>
@@ -84,7 +84,6 @@
 				<add path="ScriptResource.axd"/>
 			</excludedPaths>
 		</httpCompress>
-		<fluorineContextFactory type="FluorineFx.Context.FluorineRtmpContextFactory"/>
 		<rtmpServer>
 			<!-- Ping clients every "pingInterval" ms. Set to 0 to disable ghost detection code. -->
 			<!-- Disconnect client after "maxInactivity" ms of not responding. -->
@@ -95,20 +94,14 @@
 		</rtmpServer>
 		<!-- Check for buffer underruns every X ms and generate NetStream.Play.InsufficientBW accordingly.
 		     Set to 0 to disable. Be careful not to set this value too small to avoid network congestion.
-		  -->		
-		<!-- A NetStream.Play.InsufficientBW message is generated if more than X messages are queued for sending on the connection.
+		     A NetStream.Play.InsufficientBW message is generated if more than X messages are queued for sending on the connection.
 		     This value will also control the maximum pending messages on the server. To use a smaller value on slow connections
 		     to get smaller delay for downstream server commands.
-		  -->
+		  -->		
 		<playlistSubscriberStream underrunTrigger="10" bufferCheckInterval="5000"/>
 		<!-- Simple bandwidth control -->
 		<!-- <bwControlService type="FluorineFx.Messaging.Rtmp.Stream.SimpleBWControlService" interval="100" defaultCapacity="104857600"/> -->
 		<bwControlService type="FluorineFx.Messaging.Rtmp.Stream.DummyBWControlService"/>
-		<!-- 
-			Allow any domain to access the data SWFs from the SWX gateway? 
-			If you set this to false, you will only be able to call the SWX gateway from SWFs that reside on exactly the same domain (not even subdomains are allowed).
-		-->
-		<swx allowDomain="true"/>
 		<json>
 			<jsonRpcGenerators>
 				<add name="mygenerator" type=".NET Full type name" />

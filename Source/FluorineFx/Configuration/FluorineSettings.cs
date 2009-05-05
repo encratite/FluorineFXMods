@@ -59,6 +59,7 @@ namespace FluorineFx.Configuration
         private JSonSettings _jsonSettings;
         private SilverlightSettings _silverlightSettings;
         private RuntimeSettings _runtimeSettings;
+        private Debug _debug;
 #endif
         private CustomErrors _customErrors;
         private bool _acceptNullValueTypes;
@@ -317,6 +318,15 @@ namespace FluorineFx.Configuration
         {
             get { return _runtimeSettings; }
             set { _runtimeSettings = value; }
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        [XmlElement(ElementName = "debug")]
+        public Debug Debug
+        {
+            get { return _debug; }
+            set { _debug = value; }
         }
 #endif
         /// <summary>
@@ -2945,4 +2955,50 @@ namespace FluorineFx.Configuration
     }
 #endif
     #endregion PolicyServerSettings
+
+    #region Debug
+
+    /// <summary>
+    /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// </summary>
+    public sealed class Debug
+    {
+        public const string Off = "Off";
+
+        private string _mode;
+        private string _dumpPath;
+
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        public Debug()
+        {
+            _mode = Debug.Off;
+        }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+#if !FXCLIENT
+        [XmlAttribute(DataType = "string", AttributeName = "mode")]
+#endif
+        public string Mode
+        {
+            get { return _mode; }
+            set { _mode = value; }
+        }
+
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+#if !FXCLIENT
+        [XmlAttribute(DataType = "string", AttributeName = "dumpPath")]
+#endif
+        public string DumpPath
+        {
+            get { return _dumpPath; }
+            set { _dumpPath = value; }
+        }
+    }
+
+    #endregion Debug
 }
