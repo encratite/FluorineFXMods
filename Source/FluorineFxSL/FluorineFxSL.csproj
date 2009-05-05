@@ -552,6 +552,12 @@
     <Compile Include="..\FluorineFx\Messaging\Api\Stream\IStreamCodecInfo.cs">
       <Link>Messaging\Api\Stream\IStreamCodecInfo.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\Stream\IStreamListener.cs">
+      <Link>Messaging\Api\Stream\IStreamListener.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\Stream\IStreamPacket.cs">
+      <Link>Messaging\Api\Stream\IStreamPacket.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\Stream\ISubscriberStream.cs">
       <Link>Messaging\Api\Stream\ISubscriberStream.cs</Link>
     </Compile>
