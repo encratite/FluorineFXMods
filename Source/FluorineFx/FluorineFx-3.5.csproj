@@ -208,6 +208,7 @@
     <Compile Include="Messaging\Api\IMessageClient.cs" />
     <Compile Include="Messaging\Api\ISession.cs" />
     <Compile Include="Messaging\Api\ISessionListener.cs" />
+    <Compile Include="Messaging\Api\Statistics\IStatisticsCounter.cs" />
     <Compile Include="Messaging\Api\Stream\IStreamListener.cs" />
     <Compile Include="Messaging\Api\Stream\IStreamPacket.cs" />
     <Compile Include="Messaging\Config\ServicesConfiguration.cs" />
