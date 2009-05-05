@@ -159,6 +159,7 @@ namespace FluorineFx.Messaging.Rtmp
 
         private static void Dump(ByteBuffer buffer)
         {
+#if !SILVERLIGHT
             if (FluorineConfiguration.Instance.FluorineSettings.Debug != null && FluorineContext.Current != null)
             {
                 if (FluorineConfiguration.Instance.FluorineSettings.Debug.Mode != Debug.Off)
@@ -180,6 +181,7 @@ namespace FluorineFx.Messaging.Rtmp
                     }
                 }
             }
+#endif
         }
 
 		private static object Decode(RtmpContext context, ByteBuffer stream)

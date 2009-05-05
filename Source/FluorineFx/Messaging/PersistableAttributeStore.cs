@@ -93,7 +93,11 @@ namespace FluorineFx.Messaging
 
         public void Serialize(AMFWriter writer)
 		{
+#if !(NET_1_1)
+            Dictionary<string, object> persistentAttributes = new Dictionary<string, object>();
+#else
             Hashtable persistentAttributes = new Hashtable();
+#endif
             foreach (string attribute in this.GetAttributeNames())
             {
                 if (attribute.StartsWith(Constants.TransientPrefix))
