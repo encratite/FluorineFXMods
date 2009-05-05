@@ -27,6 +27,7 @@ namespace FluorineFx.IO.Mp3
     /// <summary>
     /// Mp3 handler interface.
     /// </summary>
+    [CLSCompliant(false)]
     public interface IMp3File : IStreamableFile
     {
     }

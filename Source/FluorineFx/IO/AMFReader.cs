@@ -74,7 +74,7 @@ namespace FluorineFx.IO
 				new AMF0BooleanReader(), /*1*/
 				new AMF0StringReader(), /*2*/
 				new AMF0ASObjectReader(), /*3*/
-				new AMFUnknownTagReader(), 
+				new MovieclipMarker(), /*4*/
 				new AMF0NullReader(), /*5*/
 				new AMF0NullReader(), /*6*/
 				new AMF0ReferenceReader(), /*7*/
@@ -83,7 +83,7 @@ namespace FluorineFx.IO
 				new AMF0ArrayReader(), /*10*/
 				new AMF0DateTimeReader(), /*11*/
 				new AMF0LongStringReader(), /*12*/
-				new AMFUnknownTagReader(),
+				new UnsupportedMarker(),
 				new AMFUnknownTagReader(),
 				new AMF0XmlReader(), /*15*/
 #if !FXCLIENT
