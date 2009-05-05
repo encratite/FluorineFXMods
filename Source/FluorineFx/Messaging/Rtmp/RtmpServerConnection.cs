@@ -545,7 +545,7 @@ namespace FluorineFx.Messaging.Rtmp
             else
             {
                 //We should never get here
-                Debug.Assert(false);
+                System.Diagnostics.Debug.Assert(false);
             }
 		}
 

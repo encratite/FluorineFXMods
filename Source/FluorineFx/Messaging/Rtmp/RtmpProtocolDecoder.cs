@@ -32,13 +32,16 @@ using FluorineFx.Messaging.Rtmp.Service;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
 using FluorineFx.Util;
+using FluorineFx.Configuration;
+using FluorineFx.Context;
 
 namespace FluorineFx.Messaging.Rtmp
 {
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	sealed class RtmpProtocolDecoder
+    [CLSCompliant(false)]
+	public sealed class RtmpProtocolDecoder
 	{
 #if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(RtmpProtocolDecoder));
@@ -142,16 +145,42 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 throw;
             }
-            catch(Exception)
+            catch (Exception)
             {
+                Dump(stream);
                 throw;
             }
-			finally
+            finally
 			{
 			    stream.Compact();
 			}
 			return result;
 		}
+
+        private static void Dump(ByteBuffer buffer)
+        {
+            if (FluorineConfiguration.Instance.FluorineSettings.Debug != null && FluorineContext.Current != null)
+            {
+                if (FluorineConfiguration.Instance.FluorineSettings.Debug.Mode != Debug.Off)
+                {
+                    try
+                    {
+                        if (FluorineConfiguration.Instance.FluorineSettings.Debug.DumpPath != null)
+                        {
+                            string fileName = string.Format("dump_{0}_{1}.bin", DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff"), buffer.Position);
+                            if( FluorineContext.Current != null && FluorineContext.Current.Connection != null )
+                                fileName = string.Format("dump_{0}_{1}_{2}.bin", FluorineContext.Current.Connection.ConnectionId, DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff"), buffer.Position);
+                            //string fileName = "dump_" + Guid.NewGuid().ToString("N") + "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff") + ".bin";
+                            IResource resource = FluorineContext.Current.GetResource(Path.Combine(FluorineConfiguration.Instance.FluorineSettings.Debug.DumpPath, fileName));
+                            buffer.Dump(resource.File.FullName);
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+        }
 
 		private static object Decode(RtmpContext context, ByteBuffer stream)
 		{
@@ -354,8 +383,8 @@ namespace FluorineFx.Messaging.Rtmp
 			}
 
 			ByteBuffer buf = packet.Data;
-			//int addSize = (header.Timer == 0xffffff ? 4 : 0);
-            int addSize = 0;
+			int addSize = (header.Timer == 0xffffff ? 4 : 0);
+            //int addSize = 0;
 			int readRemaining = header.Size + addSize - (int)buf.Position;
 			int chunkSize = context.GetReadChunkSize();
 			int readAmount = (readRemaining > chunkSize) ? chunkSize : readRemaining;

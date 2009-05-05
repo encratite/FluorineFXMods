@@ -85,7 +85,7 @@ namespace FluorineFx.Messaging.Rtmp
         /// </summary>
         byte[] _handshake; 
 
-        internal RtmpContext(RtmpMode mode)
+        public RtmpContext(RtmpMode mode)
 		{
 			_mode = mode;
 			_objectEncoding = ObjectEncoding.AMF0;
