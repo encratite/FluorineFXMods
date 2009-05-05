@@ -134,13 +134,22 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// <summary>
         /// Minimum stream time
         /// </summary>
-        private int _minStreamTime;
+        private int _minStreamTime = 0;
         /// <summary>
         /// Listeners to get notified about received packets.
         /// Set(IStreamListener)
         /// </summary>
         private CopyOnWriteArraySet _listeners = new CopyOnWriteArraySet();
-        
+
+        /// <summary>
+        /// Gets or sets minimum stream time.
+        /// </summary>
+        public int MinStreamTime
+        {
+            get { return _minStreamTime; }
+            set { _minStreamTime = value; }
+        }
+
 	    private void CheckSendNotifications(IEvent evt) 
         {
 		    IEventListener source = evt.Source;

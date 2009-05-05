@@ -31,7 +31,8 @@ namespace FluorineFx.Messaging
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	class PersistableAttributeStore : AttributeStore, IPersistable
+    [CLSCompliant(false)]
+	public class PersistableAttributeStore : AttributeStore, IPersistable
 	{
 		protected bool		_persistent = true;
 		protected string	_name;
@@ -92,12 +93,21 @@ namespace FluorineFx.Messaging
 
         public void Serialize(AMFWriter writer)
 		{
-			// TODO:  Add PersistableAttributeStore.Serialize implementation
+            Hashtable persistentAttributes = new Hashtable();
+            foreach (string attribute in this.GetAttributeNames())
+            {
+                if (attribute.StartsWith(Constants.TransientPrefix))
+                    continue;
+                persistentAttributes.Add(attribute, this[attribute]);
+            }
+            writer.WriteData(ObjectEncoding.AMF0, persistentAttributes);
 		}
 
         public void Deserialize(AMFReader reader)
 		{
-			// TODO:  Add PersistableAttributeStore.Deserialize implementation
+            this.RemoveAttributes();
+            IDictionary persistentAttributes = reader.ReadData() as IDictionary;
+            this.SetAttributes(persistentAttributes);
 		}
 
 		#endregion

@@ -192,7 +192,7 @@ namespace FluorineFx.Messaging.Endpoints
                 messageConnection.Push(message, messageClient);
             */
             ISession session = messageClient.Session;
-            Debug.Assert(session != null);
+            System.Diagnostics.Debug.Assert(session != null);
             session.Push(message, messageClient);
 		}
 

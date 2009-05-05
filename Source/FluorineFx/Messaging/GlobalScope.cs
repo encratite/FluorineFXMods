@@ -36,11 +36,6 @@ namespace FluorineFx.Messaging
 
 		#region IGlobalScope Members
 
-        public FluorineFx.Messaging.Api.IServiceProvider ServiceProvider
-        {
-            get { return _serviceContainer; }
-        }
-
 		public void Register()
 		{
             //Start services

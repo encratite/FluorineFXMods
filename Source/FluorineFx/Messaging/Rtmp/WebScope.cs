@@ -42,7 +42,7 @@ namespace FluorineFx.Messaging.Rtmp
         protected bool _isRegistered;
 
         internal WebScope(RtmpEndpoint endpoint, IGlobalScope globalScope, ApplicationConfiguration appConfig)
-            : base(null, globalScope.ServiceProvider)
+            : base(null)
         {
             _endpoint = endpoint;
             _appConfig = appConfig;

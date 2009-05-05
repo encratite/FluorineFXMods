@@ -31,14 +31,15 @@ namespace FluorineFx.Messaging
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	class BasicScope : PersistableAttributeStore, IBasicScope
+    [CLSCompliant(false)]
+	public class BasicScope : PersistableAttributeStore, IBasicScope
 	{
         object _syncLock = new object();
-		protected IScope	_parent;
+        private IScope _parent;
 #if !(NET_1_1)
-        protected CopyOnWriteArray<IEventListener> _listeners = new CopyOnWriteArray<IEventListener>();
+        private CopyOnWriteArray<IEventListener> _listeners = new CopyOnWriteArray<IEventListener>();
 #else
-		protected CopyOnWriteArray _listeners = new CopyOnWriteArray();
+		private CopyOnWriteArray _listeners = new CopyOnWriteArray();
 #endif
         /// <summary>
         /// Set to true to prevent the scope from being freed upon disconnect.
@@ -147,7 +148,7 @@ namespace FluorineFx.Messaging
 
 		#region IEnumerable Members
 
-		public virtual IEnumerator GetEnumerator()
+		public new virtual IEnumerator GetEnumerator()
 		{
 			return null;
 		}

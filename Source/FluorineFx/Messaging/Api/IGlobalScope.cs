@@ -30,9 +30,5 @@ namespace FluorineFx.Messaging.Api
         /// Register the global scope in the server and initialize it.
         /// </summary>
 		void Register();
-        /// <summary>
-        /// Gets the root service provide object.
-        /// </summary>
-        IServiceProvider ServiceProvider { get; }
 	}
 }

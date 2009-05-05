@@ -96,7 +96,7 @@ namespace FluorineFx.Messaging.Adapter
         {
             _scope.SetAttributes(values);
         }
-#else
+#endif
         /// <summary>
         /// Sets multiple attributes on this object.
         /// </summary>
@@ -105,7 +105,6 @@ namespace FluorineFx.Messaging.Adapter
 		{
 			_scope.SetAttributes(values);
 		}
-#endif
         /// <summary>
         /// Sets multiple attributes on this object.
         /// </summary>

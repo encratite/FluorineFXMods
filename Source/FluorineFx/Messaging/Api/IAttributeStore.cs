@@ -51,13 +51,12 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
         /// <param name="values">Dictionary of attributes.</param>
         void SetAttributes(IDictionary<string, object> values);
-#else
-		/// <summary>
+#endif
+        /// <summary>
 		/// Sets multiple attributes on this object.
 		/// </summary>
 		/// <param name="values">Dictionary of attributes.</param>
         void SetAttributes(IDictionary values);
-#endif
 		/// <summary>
 		/// Sets multiple attributes on this object.
 		/// </summary>

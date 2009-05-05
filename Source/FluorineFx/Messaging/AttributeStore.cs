@@ -99,7 +99,7 @@ namespace FluorineFx.Messaging
                 SetAttribute(entry.Key, entry.Value);
             }
         }
-#else
+#endif
         /// <summary>
         /// Sets multiple attributes on this object.
         /// </summary>
@@ -111,7 +111,6 @@ namespace FluorineFx.Messaging
                 SetAttribute(entry.Key as string, entry.Value);
             }
 		}
-#endif
         /// <summary>
         /// Sets multiple attributes on this object.
         /// </summary>

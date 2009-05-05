@@ -76,6 +76,7 @@ namespace FluorineFx.Messaging
     /// msgBroker.RouteMessage(msg);
     /// </code>
     /// </example>
+    [CLSCompliant(false)]
     public class MessageBroker
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(MessageBroker));

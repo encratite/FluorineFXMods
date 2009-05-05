@@ -44,7 +44,8 @@ namespace FluorineFx.Messaging
     /// 
     /// The following are all names for scopes: application, room, place, lobby.
 	/// </summary>
-	class Scope : BasicScope, IScope
+    [CLSCompliant(false)]
+	public class Scope : BasicScope, IScope
 	{
 #if !SILVERLIGHT
         static ILog log = LogManager.GetLogger(typeof(Scope));
@@ -59,7 +60,7 @@ namespace FluorineFx.Messaging
 		private bool _autoStart = true;
 		private bool _enabled = true;
 		private bool _running = false;
-        protected ServiceContainer _serviceContainer;
+        private ServiceContainer _serviceContainer;
 
 #if !(NET_1_1)
         /// <summary>
@@ -87,15 +88,15 @@ namespace FluorineFx.Messaging
 		{
 		}
 
-        protected Scope(string name)
-            : this(name, null)
-		{
-		}
-
-        protected Scope(string name, FluorineFx.Messaging.Api.IServiceProvider serviceProvider)
+        public Scope(string name)
             : base(null, ScopeType, name, false)
+		{
+            _serviceContainer = new ServiceContainer();
+        }
+
+        internal ServiceContainer ServiceContainer
         {
-            _serviceContainer = new ServiceContainer(serviceProvider);
+            get { return _serviceContainer; }
         }
 
 		public bool IsEnabled
@@ -429,7 +430,7 @@ namespace FluorineFx.Messaging
 
 		public bool CreateChildScope(string name)
 		{
-			Scope scope = new Scope(name, _serviceContainer);
+			Scope scope = new Scope(name);
 			scope.Parent = this;
 			return AddChildScope(scope);
 		}
@@ -457,6 +458,11 @@ namespace FluorineFx.Messaging
 				}
 			}
 #if !SILVERLIGHT
+            if (scope is Scope)
+            {
+                //Chain service containers
+                (scope as Scope).ServiceContainer.Container = this.ServiceContainer;
+            }
             if( log != null && log.IsDebugEnabled )
 				log.Debug("Add child scope: " + scope + " to " + this);
 #endif
@@ -482,6 +488,11 @@ namespace FluorineFx.Messaging
 #endif
 				this.Handler.RemoveChildScope(scope);
 			}
+            if (scope is Scope)
+            {
+                //Chain service containers
+                (scope as Scope).ServiceContainer.Container = null;
+            }
 		}
 
 		public ICollection GetScopeNames()
@@ -576,7 +587,7 @@ namespace FluorineFx.Messaging
 		public IScopeContext GetContext()
 		{
 			if(!HasContext && HasParent) 
-				return _parent.Context;
+				return this.Parent.Context;
 			else 
 				return _context;
 		}

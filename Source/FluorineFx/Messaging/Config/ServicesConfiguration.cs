@@ -784,7 +784,7 @@ namespace FluorineFx.Messaging.Config
                     {
                         _hasCachedRoles = true;
 
-                        Debug.Assert(this.Service != null);
+                        System.Diagnostics.Debug.Assert(this.Service != null);
                         if (this.Security != null)
                         {
                             ArrayList result = null;

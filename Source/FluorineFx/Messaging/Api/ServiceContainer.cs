@@ -27,6 +27,10 @@ using FluorineFx.Collections.Generic;
 
 namespace FluorineFx.Messaging.Api
 {
+    /// <summary>
+    /// ServiceContainer implementation.
+    /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// </summary>
     class ServiceContainer : IServiceContainer
     {
 #if !(NET_1_1)
@@ -46,7 +50,7 @@ namespace FluorineFx.Messaging.Api
             _parentProvider = parentProvider;
         }
 
-        private IServiceContainer Container
+        public IServiceContainer Container
         {
             get
             {
@@ -56,6 +60,10 @@ namespace FluorineFx.Messaging.Api
                     service = (IServiceContainer)_parentProvider.GetService(typeof(IServiceContainer));
                 }
                 return service;
+            }
+            set
+            {
+                _parentProvider = value;
             }
         }
 
