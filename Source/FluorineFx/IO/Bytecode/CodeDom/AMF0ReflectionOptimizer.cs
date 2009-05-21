@@ -122,6 +122,7 @@ namespace FluorineFx.IO.Bytecode.CodeDom
 				StreamWriter sw = File.CreateText( file);
 				sw.Write(code);
 				sw.Close();
+                log.Debug(__Res.GetString(__Res.Optimizer_FileLocation, _mappedClass.FullName, file));
 
 				_cp.TempFiles = new TempFileCollection(Path.GetTempPath());
 				_cp.TempFiles.KeepFiles = true;
@@ -215,8 +216,14 @@ namespace FluorineFx.IO.Bytecode.CodeDom
                 if (memberInfos != null && memberInfos.Length > 0)
                     GeneratePropertySet(memberInfos[0]);
                 else
-                    throw new MissingMemberException(_mappedClass.FullName, key);
-
+                {
+                    //Log this error (do not throw exception), otherwise our current AMF stream becomes unreliable
+                    log.Warn(__Res.GetString(__Res.Optimizer_Warning));
+                    string msg = __Res.GetString(__Res.Reflection_MemberNotFound, string.Format("{0}.{1}", _mappedClass.FullName, key));
+                    log.Warn(msg);
+                    _layouter.AppendFormat("//{0}", msg);
+                    _layouter.Append("reader.ReadData(typeCode);");
+                }
 				key = _reader.ReadString();
 			}
 			_layouter.Append("key = reader.ReadString();");
@@ -268,71 +275,100 @@ namespace FluorineFx.IO.Bytecode.CodeDom
 					case TypeCode.UInt64:
 					case TypeCode.Single:
 					case TypeCode.Double:
-						if(DoTypeCheck()) _layouter.Append("if( typeCode == AMF0TypeCode.Number )");
-                        if (DoTypeCheck()) _layouter.Begin();
-						_layouter.AppendFormat("instance.{0} = ({1})reader.ReadDouble();", memberInfo.Name, memberType.FullName);
-                        if (DoTypeCheck()) _layouter.End();
-                        if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                        _layouter.Append("if( typeCode == AMF0TypeCode.Number )");
+                        _layouter.Begin();
+                        _layouter.AppendFormat("instance.{0} = ({1})reader.ReadDouble();", memberInfo.Name, memberType.FullName);
+                        _layouter.End();
+                        _layouter.Append("else");
+                        _layouter.Begin();
+                        if (DoTypeCheck())
+                            GenerateThrowUnexpectedAMFException(memberInfo);
+                        else
+                            _layouter.Append("reader.ReadData(typeCode);");
+                        _layouter.End();
 						break;
 					case TypeCode.Boolean:
-                        if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF0TypeCode.Boolean )");
-                        if (DoTypeCheck()) _layouter.Begin();
-						_layouter.AppendFormat("instance.{0} = reader.ReadBoolean();", memberInfo.Name);
-                        if (DoTypeCheck()) _layouter.End();
-                        if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                        _layouter.Append("if( typeCode == AMF0TypeCode.Boolean )");
+                        _layouter.Begin();
+                        _layouter.AppendFormat("instance.{0} = reader.ReadBoolean();", memberInfo.Name);
+                        _layouter.End();
+                        _layouter.Append("else");
+                        _layouter.Begin();
+                        if (DoTypeCheck())
+                            GenerateThrowUnexpectedAMFException(memberInfo);
+                        else
+                            _layouter.Append("reader.ReadData(typeCode);");
+                        _layouter.End();
 						break;
 					case TypeCode.Char:
-                        if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF0TypeCode.String )");
-                        if (DoTypeCheck()) _layouter.Append("{");
-                        if (DoTypeCheck()) _layouter.Begin();
-						_layouter.AppendFormat("string str{0} = reader.ReadString();", memberInfo.Name);
-                        if (DoTypeCheck()) _layouter.AppendFormat("if( str{0} != null && str{0} != string.Empty )", memberInfo.Name);
-                        if (DoTypeCheck()) _layouter.Begin();
-						_layouter.AppendFormat("instance.{0} = str{0}[0];", memberInfo.Name);
-                        if (DoTypeCheck()) _layouter.End();
-                        if (DoTypeCheck()) _layouter.End();
-                        if (DoTypeCheck()) _layouter.Append("}");
-                        if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                        _layouter.Append("if( typeCode == AMF0TypeCode.String )");
+                        _layouter.Append("{");
+                        _layouter.Begin();
+                        _layouter.AppendFormat("string str{0} = reader.ReadString();", memberInfo.Name);
+                        _layouter.AppendFormat("if( str{0} != null && str{0} != string.Empty )", memberInfo.Name);
+                        _layouter.Begin();
+                        _layouter.AppendFormat("instance.{0} = str{0}[0];", memberInfo.Name);
+                        _layouter.End();
+                        _layouter.End();
+                        _layouter.Append("}");
+                        _layouter.Append("else");
+                        _layouter.Begin();
+                        if (DoTypeCheck())
+                            GenerateThrowUnexpectedAMFException(memberInfo);
+                        else
+                            _layouter.Append("reader.ReadData(typeCode);");
+                        _layouter.End();
 						break;
 				}
 				return;
 			}
 			if( memberType.IsEnum )
 			{
-                if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF0TypeCode.String || typeCode == AMF0TypeCode.Number )");
-                if (DoTypeCheck()) _layouter.Append("{");
-                if (DoTypeCheck()) _layouter.Begin();
-				_layouter.Append("if( typeCode == AMF0TypeCode.String )");
-				_layouter.Begin();
-				_layouter.AppendFormat("instance.{0} = ({1})Enum.Parse(typeof({1}), reader.ReadString(), true);", memberInfo.Name, memberType.FullName);
-				_layouter.End();
-				_layouter.Append("if( typeCode == AMF0TypeCode.Number )");
-				_layouter.Begin();
-				_layouter.AppendFormat("instance.{0} = ({1})Enum.ToObject(typeof({1}), Convert.ToInt32(reader.ReadDouble()));", memberInfo.Name, memberType.FullName);
-				_layouter.End();
-                if (DoTypeCheck()) _layouter.End();
-                if (DoTypeCheck()) _layouter.Append("}");
-                if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                _layouter.Append("if( typeCode == AMF0TypeCode.String )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = ({1})Enum.Parse(typeof({1}), reader.ReadString(), true);", memberInfo.Name, memberType.FullName);
+                _layouter.End();
+                _layouter.Append("else if( typeCode == AMF0TypeCode.Number )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = ({1})Enum.ToObject(typeof({1}), Convert.ToInt32(reader.ReadDouble()));", memberInfo.Name, memberType.FullName);
+                _layouter.End();
+                _layouter.Append("else");
+                _layouter.Begin();
+                if (DoTypeCheck())
+                    GenerateThrowUnexpectedAMFException(memberInfo);
+                else
+                    _layouter.Append("reader.ReadData(typeCode);");
+                _layouter.End();
 				return;
 			}
 			if( memberType == typeof(DateTime) )
 			{
-                if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF0TypeCode.DateTime )");
-                if (DoTypeCheck()) _layouter.Begin();
+                _layouter.Append("if( typeCode == AMF0TypeCode.DateTime )");
+                _layouter.Begin();
                 _layouter.AppendFormat("instance.{0} = reader.ReadDateTime();", memberInfo.Name);
-                if (DoTypeCheck()) _layouter.End();
-                if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                _layouter.End();
+                _layouter.Append("else");
+                _layouter.Begin();
+                if (DoTypeCheck())
+                    GenerateThrowUnexpectedAMFException(memberInfo);
+                else
+                    _layouter.Append("reader.ReadData(typeCode);");
+                _layouter.End();
 				return;
 			}
 			if (memberType == typeof(Guid))
 			{
-                if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF0TypeCode.String )");
-                if (DoTypeCheck()) _layouter.Append("{");
-                if (DoTypeCheck()) _layouter.Begin();
-				_layouter.AppendFormat("instance.{0} = new Guid(reader.ReadString());", memberInfo.Name);
-                if (DoTypeCheck()) _layouter.End();
-                if (DoTypeCheck()) _layouter.Append("}");
-                if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                _layouter.Append("if( typeCode == AMF0TypeCode.String )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = new Guid(reader.ReadString());", memberInfo.Name);
+                _layouter.End();
+                _layouter.Append("else");
+                _layouter.Begin();
+                if (DoTypeCheck())
+                    GenerateThrowUnexpectedAMFException(memberInfo);
+                else
+                    _layouter.Append("reader.ReadData(typeCode);");
+                _layouter.End();
 				return;
 			}
 			if( memberType.IsValueType )
@@ -342,47 +378,57 @@ namespace FluorineFx.IO.Bytecode.CodeDom
 			}
 			if( memberType == typeof(string) )
 			{
-                if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF0TypeCode.String || typeCode == AMF0TypeCode.LongString || typeCode == AMF0TypeCode.Null || typeCode == AMF0TypeCode.Undefined )");
-                if (DoTypeCheck()) _layouter.Append("{");
-                if (DoTypeCheck()) _layouter.Begin();
-				_layouter.Append("if( typeCode == AMF0TypeCode.String )");
-				_layouter.Begin();
-				_layouter.AppendFormat("instance.{0} = reader.ReadString();", memberInfo.Name);
-				_layouter.End();
-				_layouter.Append("if( typeCode == AMF0TypeCode.LongString )");
-				_layouter.Begin();
-				_layouter.AppendFormat("instance.{0} = reader.ReadLongString();", memberInfo.Name);
-				_layouter.End();
-				_layouter.Append("if( typeCode == AMF0TypeCode.Null || typeCode == AMF0TypeCode.Undefined )");
-				_layouter.Begin();
-				_layouter.AppendFormat("instance.{0} = null;", memberInfo.Name);
-				_layouter.End();
-                if (DoTypeCheck()) _layouter.End();
-                if (DoTypeCheck()) _layouter.Append("}");
-                if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                _layouter.Append("if( typeCode == AMF0TypeCode.String )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = reader.ReadString();", memberInfo.Name);
+                _layouter.End();
+                _layouter.Append("else if( typeCode == AMF0TypeCode.LongString )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = reader.ReadLongString();", memberInfo.Name);
+                _layouter.End();
+                _layouter.Append("else if( typeCode == AMF0TypeCode.Null )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = null;", memberInfo.Name);
+                _layouter.End();
+                _layouter.Append("else if( typeCode == AMF0TypeCode.Undefined )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = null;", memberInfo.Name);
+                _layouter.End();
+                _layouter.Append("else");
+                _layouter.Begin();
+                if (DoTypeCheck())
+                    GenerateThrowUnexpectedAMFException(memberInfo);
+                else
+                    _layouter.Append("reader.ReadData(typeCode);");
+                _layouter.End();
 				return;
 			}
 			if( memberType == typeof(XmlDocument) )
 			{
-                if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF0TypeCode.Xml || typeCode == AMF0TypeCode.Null || typeCode == AMF0TypeCode.Undefined )");
-                if (DoTypeCheck()) _layouter.Append("{");
-                if (DoTypeCheck()) _layouter.Begin();
-				_layouter.Append("if( typeCode == AMF0TypeCode.Xml )");
-				_layouter.Append("{");
-				_layouter.Begin();
-				_layouter.Append("string xml = reader.ReadLongString();");
-				_layouter.Append("System.Xml.XmlDocument xmlDocument = new System.Xml.XmlDocument();");
-				_layouter.Append("xmlDocument.LoadXml(xml);");
-				_layouter.AppendFormat("instance.{0} = xmlDocument;", memberInfo.Name);
-				_layouter.End();
-				_layouter.Append("}");
-				_layouter.Append("if( typeCode == AMF0TypeCode.Null || typeCode == AMF0TypeCode.Undefined )");
-				_layouter.Begin();
-				_layouter.AppendFormat("instance.{0} = null;", memberInfo.Name);
-				_layouter.End();
-                if (DoTypeCheck()) _layouter.End();
-                if (DoTypeCheck()) _layouter.Append("}");
-                if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                _layouter.Append("if( typeCode == AMF0TypeCode.Xml )");
+                _layouter.Append("{");
+                _layouter.Begin();
+                _layouter.AppendFormat("string xml{0} = reader.ReadLongString();", memberInfo.Name);
+                _layouter.AppendFormat("System.Xml.XmlDocument xmlDocument{0} = new System.Xml.XmlDocument();", memberInfo.Name);
+                _layouter.AppendFormat("xmlDocument{0}.LoadXml(xml{0});", memberInfo.Name);
+                _layouter.AppendFormat("instance.{0} = xmlDocument{0};", memberInfo.Name);
+                _layouter.End();
+                _layouter.Append("}");
+                _layouter.Append("else if( typeCode == AMF0TypeCode.Null )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = null;", memberInfo.Name);
+                _layouter.End();
+                _layouter.Append("else if( typeCode == AMF0TypeCode.Undefined )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = null;", memberInfo.Name);
+                _layouter.End();
+                _layouter.Append("else");
+                _layouter.Begin();
+                if (DoTypeCheck())
+                    GenerateThrowUnexpectedAMFException(memberInfo);
+                else
+                    _layouter.Append("reader.ReadData(typeCode);");
+                _layouter.End();
 				return;
 			}
             _layouter.AppendFormat("instance.{0} = ({1})TypeHelper.ChangeType(reader.ReadData(typeCode), typeof({1}));", memberInfo.Name, TypeHelper.GetCSharpName(memberType));
@@ -395,5 +441,16 @@ namespace FluorineFx.IO.Bytecode.CodeDom
 			_layouter.AppendFormat("throw new UnexpectedAMF(\"Unexpected data for member {0}\");", memberInfo.Name);
 			_layouter.End();
 		}
+
+        protected void GenerateThrowUnexpectedAMFException(MemberInfo memberInfo)
+        {
+            _layouter.AppendFormat("throw new UnexpectedAMF(\"Unexpected data for member {0}\");", memberInfo.Name);
+        }
+
+        protected void GenerateThrowUnexpectedAMFException(string message)
+        {
+            _layouter.AppendFormat("throw new UnexpectedAMF(\"{0}\");", message);
+        }
+
 	}
 }

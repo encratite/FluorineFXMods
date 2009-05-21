@@ -287,6 +287,10 @@ namespace FluorineFx
         internal const string Silverlight_StartPS = "Silverlight_StartPS";
         internal const string Silverlight_PSError = "Silverlight_PSError";
 
+        internal const string Optimizer_Fatal = "Optimizer_Fatal";
+        internal const string Optimizer_Warning = "Optimizer_Warning";
+        internal const string Optimizer_FileLocation = "Optimizer_FileLocation";
+
 		internal static string GetString(string key)
 		{
 			if (_resMgr == null)

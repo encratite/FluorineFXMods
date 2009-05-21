@@ -93,82 +93,44 @@ namespace FluorineFx.IO
 			return new AMFHeader(name, mustUnderstand, content);
 		}
 
-		private AMFBody ReadBody()
-		{
-			this.Reset();
-			string target = base.ReadString();
+        private AMFBody ReadBody()
+        {
+            this.Reset();
+            string target = base.ReadString();
 
-			// Response that the client understands.
-			string response = base.ReadString();
-			int length = base.ReadInt32();
-			if( base.BaseStream.CanSeek )
-			{
-				long position = base.BaseStream.Position;
-				// Read content.
-				try
-				{
-					object content = base.ReadData();
-                    AMFBody amfBody = new AMFBody(target, response, content);
-                    Exception exception = this.LastError;
-                    if (exception != null)
-                    {
-                        ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);
-                        _failedAMFBodies.Add(errorResponseBody);
-#if !SILVERLIGHT
-                        if (log.IsFatalEnabled)
-                            log.Fatal(__Res.GetString(__Res.Amf_ReadBodyFail), exception);
-#endif
-                        return null;
-                    }
-                    return amfBody;
-				}
-				catch(Exception exception)
-				{
-					base.BaseStream.Position = position + length;
-                    //Try to build a valid response from partialy deserialized amf body
-                    AMFBody amfBody = new AMFBody(target, response, null);
+            // Response that the client understands.
+            string response = base.ReadString();
+            int length = base.ReadInt32();
+            try
+            {
+                object content = base.ReadData();
+                AMFBody amfBody = new AMFBody(target, response, content);
+                Exception exception = this.LastError;
+                if (exception != null)
+                {
                     ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);
                     _failedAMFBodies.Add(errorResponseBody);
 #if !SILVERLIGHT
-					if( log.IsFatalEnabled )
-						log.Fatal(__Res.GetString(__Res.Amf_ReadBodyFail), exception);
-#endif
-					return null;
-				}
-			}
-			else
-			{
-				try
-				{
-					object content = base.ReadData();
-                    AMFBody amfBody = new AMFBody(target, response, content);
-                    Exception exception = this.LastError;
-                    if (exception != null)
-                    {
-                        ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);
-                        _failedAMFBodies.Add(errorResponseBody);
-#if !SILVERLIGHT
-                        if (log.IsFatalEnabled)
-                            log.Fatal(__Res.GetString(__Res.Amf_ReadBodyFail), exception);
-#endif
-                        return null;
-                    }
-                    return amfBody;
-                }
-				catch(Exception exception)
-				{
-                    //Try to build a valid response from partialy deserialized amf body
-                    AMFBody amfBody = new AMFBody(target, response, null);
-                    ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);
-                    _failedAMFBodies.Add(errorResponseBody);
-#if !SILVERLIGHT
-					if( log.IsFatalEnabled )
+                    if (log.IsFatalEnabled)
                         log.Fatal(__Res.GetString(__Res.Amf_ReadBodyFail), exception);
 #endif
-					throw;
-				}
-			}
-		}
+                    return null;
+                }
+                return amfBody;
+            }
+            catch (Exception exception)
+            {
+                //Try to build a valid response from partialy deserialized amf body
+                AMFBody amfBody = new AMFBody(target, response, null);
+                ErrorResponseBody errorResponseBody = GetErrorBody(amfBody, exception);
+                _failedAMFBodies.Add(errorResponseBody);
+#if !SILVERLIGHT
+                if (log.IsFatalEnabled)
+                    log.Fatal(__Res.GetString(__Res.Amf_ReadBodyFail), exception);
+#endif
+                throw;
+            }
+        }
 
         private ErrorResponseBody GetErrorBody(AMFBody amfBody, Exception exception)
         {

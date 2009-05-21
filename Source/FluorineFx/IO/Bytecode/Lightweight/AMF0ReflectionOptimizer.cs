@@ -120,7 +120,20 @@ namespace FluorineFx.IO.Bytecode.Lightweight
                 if (memberInfos != null && memberInfos.Length > 0)
                     GeneratePropertySet(emit, typeCode, memberInfos[0]);
                 else
-                    throw new MissingMemberException(type.FullName, key);                
+                {
+                    //Log this error (do not throw exception), otherwise our current AMF stream becomes unreliable
+                    log.Warn(__Res.GetString(__Res.Optimizer_Warning));
+                    string msg = __Res.GetString(__Res.Reflection_MemberNotFound, string.Format("{0}.{1}", type.FullName, key));
+                    log.Warn(msg);
+                    //reader.ReadAMF3Data(typeCode);
+                    emit
+                        .ldarg_0 //Push 'reader'
+                        .ldloc_1 //Push 'typeCode'
+                        .callvirt(typeof(AMFReader).GetMethod("ReadData", new Type[] { typeof(byte) }))
+                        .pop
+                        .end()
+                    ;
+                }
 
                 key = reader.ReadString();
             }
@@ -152,6 +165,11 @@ namespace FluorineFx.IO.Bytecode.Lightweight
             ;
 
             return (ReadDataInvoker)method.CreateDelegate(typeof(ReadDataInvoker));
+        }
+
+        protected bool DoTypeCheck()
+        {
+            return FluorineConfiguration.Instance.OptimizerSettings.TypeCheck;
         }
 
         private void GeneratePropertySet(EmitHelper emit, int typeCode, MemberInfo memberInfo)
@@ -196,7 +214,7 @@ namespace FluorineFx.IO.Bytecode.Lightweight
                             //if( typeCode == AMF0TypeCode.Number )
                             emit
                                 .ldloc_1 //Push 'typeCode'
-                                .ldc_i4_0 //Push AMF0TypeCode.Number
+                                .ldc_i4(AMF0TypeCode.Number)
                                 .ceq
                                 .brfalse_s(labelNotNumber)
                                 //instance.{0} = ({1})reader.ReadDouble();
@@ -221,9 +239,11 @@ namespace FluorineFx.IO.Bytecode.Lightweight
                             Label labelNotBoolean = emit.ILGenerator.DefineLabel();
                             Label labelExit = emit.ILGenerator.DefineLabel();
 
-                            //if( typeCode == AMF0TypeCode.Number )
+                            //if( typeCode == AMF0TypeCode.Boolean )
                             emit
                                 .ldloc_1 //Push 'typeCode'
+                                .ldc_i4(AMF0TypeCode.Boolean)
+                                .ceq
                                 .brfalse_s(labelNotBoolean)
                                 //instance.{0} = ({1})reader.ReadBoolean();
                                 .ldloc_0 //Push 'instance'
@@ -249,7 +269,7 @@ namespace FluorineFx.IO.Bytecode.Lightweight
                                 //if( typeCode == AMF0TypeCode.String )
                                 emit
                                     .ldloc_1 //Push 'typeCode'
-                                    .ldc_i4(2) //Push AMF0TypeCode.String
+                                    .ldc_i4(AMF0TypeCode.String)
                                     .ceq
                                     .brfalse_s(labelNotString)
                                     //instance.member = reader.ReadString()[0];
@@ -286,12 +306,12 @@ namespace FluorineFx.IO.Bytecode.Lightweight
                     Label labelNotStringOrNumber = emit.ILGenerator.DefineLabel();
                     Label labelExit = emit.ILGenerator.DefineLabel();
                     Label labelReadDouble = emit.ILGenerator.DefineLabel();
-                    if( typeCode == AMF0TypeCode.String || typeCode == AMF0TypeCode.Number )
+                    //if( typeCode == AMF0TypeCode.String || typeCode == AMF0TypeCode.Number )
                     emit
                         .ldloc_1 //Push 'typeCode'
                         .brfalse_s(labelReadDouble) //Branch if 0 (AMF0TypeCode.Number)
                         .ldloc_1 //Push 'typeCode'
-                        .ldc_i4(2) //Push AMF0TypeCode.String
+                        .ldc_i4(AMF0TypeCode.String)
                         .ceq
                         .brfalse_s(labelNotStringOrNumber)
                         //we have a string
@@ -333,7 +353,7 @@ namespace FluorineFx.IO.Bytecode.Lightweight
                 //if( typeCode == AMF0TypeCode.DateTime )
                 emit
                     .ldloc_1 //Push 'typeCode'
-                    .ldc_i4(11) //Push AMF0TypeCode.DateTime
+                    .ldc_i4(AMF0TypeCode.DateTime)
                     .ceq
                     .brfalse_s(labelNotDate)
                     .ldloc_0 //Push 'instance'
@@ -360,19 +380,19 @@ namespace FluorineFx.IO.Bytecode.Lightweight
                 emit
                     //if( typeCode == AMF0TypeCode.String || typeCode == AMF0TypeCode.LongString || typeCode == AMF0TypeCode.Null || typeCode == AMF0TypeCode.Undefined )
                     .ldloc_1 //Push 'typeCode'
-                    .ldc_i4(2) //Push AMF0TypeCode.String
+                    .ldc_i4(AMF0TypeCode.String)
                     .ceq
                     .brtrue_s(labelReadString)
                     .ldloc_1 //Push 'typeCode'
-                    .ldc_i4(12) //Push AMF0TypeCode.LongString
+                    .ldc_i4(AMF0TypeCode.LongString)
                     .ceq
                     .brtrue_s(labelReadLongString)
                     .ldloc_1 //Push 'typeCode'
-                    .ldc_i4(5) //Push AMF0TypeCode.Null
+                    .ldc_i4(AMF0TypeCode.Null)
                     .ceq
                     .brtrue_s(labelSetNull)
                     .ldloc_1 //Push 'typeCode'
-                    .ldc_i4(6) //Push AMF0TypeCode.Undefined
+                    .ldc_i4(AMF0TypeCode.Undefined)
                     .ceq
                     .brtrue_s(labelSetNull)
                     .br_s(labelNotStringOrNull)
@@ -409,7 +429,7 @@ namespace FluorineFx.IO.Bytecode.Lightweight
                 emit
                     //if( typeCode == AMF0TypeCode.String )
                     .ldloc_1 //Push 'typeCode'
-                    .ldc_i4(2) //Push AMF0TypeCode.String
+                    .ldc_i4(AMF0TypeCode.String)
                     .ceq
                     .brfalse_s(labelNotString)
                     .ldloc_0 //Push 'instance'

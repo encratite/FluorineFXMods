@@ -57,20 +57,25 @@ namespace FluorineFx.IO.Bytecode.CodeDom
             _layouter.AppendFormat("{0} instance = new {0}();", _mappedClass.FullName);
             _layouter.Append("reader.AddAMF3ObjectReference(instance);");
             _layouter.Append("byte typeCode = 0;");
-            //_layouter.Append("string key = null;");
             for (int i = 0; i < _classDefinition.MemberCount; i++)
             {
                 string key = _classDefinition.Members[i].Name;
                 object value = _reader.ReadAMF3Data();
                 _reader.SetMember(instance, key, value);
 
-                //_layouter.AppendFormat("key = classDefinition.Members[{0}];", i);
                 _layouter.Append("typeCode = reader.ReadByte();");
                 MemberInfo[] memberInfos = type.GetMember(key);
                 if (memberInfos != null && memberInfos.Length > 0)
                     GeneratePropertySet(memberInfos[0]);
                 else
-                    throw new MissingMemberException(_mappedClass.FullName, key);
+                {
+                    //Log this error (do not throw exception), otherwise our current AMF stream becomes unreliable
+                    log.Warn(__Res.GetString(__Res.Optimizer_Warning));
+                    string msg = __Res.GetString(__Res.Reflection_MemberNotFound, string.Format("{0}.{1}", _mappedClass.FullName, key));
+                    log.Warn(msg);
+                    _layouter.AppendFormat("//{0}", msg);
+                    _layouter.Append("reader.ReadAMF3Data(typeCode);");
+                }
             }
 
             _layouter.Append("return instance;");
@@ -113,92 +118,108 @@ namespace FluorineFx.IO.Bytecode.CodeDom
                     case TypeCode.Decimal:
                     case TypeCode.Single:
                     case TypeCode.Double:
-                        if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF3TypeCode.Number || typeCode == AMF3TypeCode.Integer )");
-                        if (DoTypeCheck()) _layouter.Append("{");
-                        if (DoTypeCheck()) _layouter.Begin();
-
                         _layouter.Append("if( typeCode == AMF3TypeCode.Number )");
                         _layouter.Begin();
                         _layouter.AppendFormat("instance.{0} = ({1})reader.ReadDouble();", memberInfo.Name, memberType.FullName);
                         _layouter.End();
-
-                        _layouter.Append("if( typeCode == AMF3TypeCode.Integer )");
+                        _layouter.Append("else if( typeCode == AMF3TypeCode.Integer )");
                         _layouter.Begin();
-                        _layouter.AppendFormat("instance.{0} = ({1})(int)reader.ReadAMF3Int();", memberInfo.Name, memberType.FullName);
+                        _layouter.AppendFormat("instance.{0} = ({1})reader.ReadAMF3Int();", memberInfo.Name, memberType.FullName);
                         _layouter.End();
-
-                        if (DoTypeCheck()) _layouter.End();
-                        if (DoTypeCheck()) _layouter.Append("}");
-                        if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                        _layouter.Append("else");
+                        _layouter.Begin();
+                        if (DoTypeCheck())
+                            GenerateThrowUnexpectedAMFException(memberInfo);
+                        else
+                            _layouter.Append("reader.ReadAMF3Data(typeCode);");
+                        _layouter.End();
                         break;
                     case TypeCode.Boolean:
-                        if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF3TypeCode.BooleanFalse || typeCode == AMF3TypeCode.BooleanTrue )");
-                        if (DoTypeCheck()) _layouter.Append("{");
-                        if (DoTypeCheck()) _layouter.Begin();
                         _layouter.Append("if( typeCode == AMF3TypeCode.BooleanFalse )");
                         _layouter.Begin();
                         _layouter.AppendFormat("instance.{0} = false;", memberInfo.Name);
                         _layouter.End();
-                        _layouter.Append("if( typeCode == AMF3TypeCode.BooleanTrue )");
+                        _layouter.Append("else if( typeCode == AMF3TypeCode.BooleanTrue )");
                         _layouter.Begin();
                         _layouter.AppendFormat("instance.{0} = true;", memberInfo.Name);
                         _layouter.End();
-                        if (DoTypeCheck()) _layouter.End();
-                        if (DoTypeCheck()) _layouter.Append("}");
-                        if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                        _layouter.Append("else");
+                        _layouter.Begin();
+                        if (DoTypeCheck())
+                            GenerateThrowUnexpectedAMFException(memberInfo);
+                        else
+                            _layouter.Append("reader.ReadAMF3Data(typeCode);");
+                        _layouter.End();
                         break;
                     case TypeCode.Char:
-                        if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF3TypeCode.String )");
-                        if (DoTypeCheck()) _layouter.Append("{");
-                        if (DoTypeCheck()) _layouter.Begin();
+                        _layouter.Append("if( typeCode == AMF3TypeCode.String )");
+                        _layouter.Append("{");
+                        _layouter.Begin();
                         _layouter.AppendFormat("string str{0} = reader.ReadAMF3String();", memberInfo.Name);
-                        if (DoTypeCheck()) _layouter.AppendFormat("if( str{0} != null && str{0} != string.Empty )", memberInfo.Name);
-                        if (DoTypeCheck()) _layouter.Begin();
+                        _layouter.AppendFormat("if( str{0} != null && str{0} != string.Empty )", memberInfo.Name);
+                        _layouter.Begin();
                         _layouter.AppendFormat("instance.{0} = str{0}[0];", memberInfo.Name);
-                        if (DoTypeCheck()) _layouter.End();
-                        if (DoTypeCheck()) _layouter.End();
-                        if (DoTypeCheck()) _layouter.Append("}");
-                        if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                        _layouter.End();
+                        _layouter.End();
+                        _layouter.Append("}");
+                        _layouter.Append("else");
+                        _layouter.Begin();
+                        if (DoTypeCheck())
+                            GenerateThrowUnexpectedAMFException(memberInfo);
+                        else
+                            _layouter.Append("reader.ReadAMF3Data(typeCode);");
+                        _layouter.End();
                         break;
                 }
                 return;
             }
             if (memberType.IsEnum)
             {
-                if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF3TypeCode.String || typeCode == AMF3TypeCode.Integer )");
-                if (DoTypeCheck()) _layouter.Append("{");
-                if (DoTypeCheck()) _layouter.Begin();
                 _layouter.Append("if( typeCode == AMF3TypeCode.String )");
                 _layouter.Begin();
                 _layouter.AppendFormat("instance.{0} = ({1})Enum.Parse(typeof({1}), reader.ReadAMF3String(), true);", memberInfo.Name, memberType.FullName);
                 _layouter.End();
-                _layouter.Append("if( typeCode == AMF3TypeCode.Integer )");
+                _layouter.Append("else if( typeCode == AMF3TypeCode.Integer )");
                 _layouter.Begin();
                 _layouter.AppendFormat("instance.{0} = ({1})Enum.ToObject(typeof({1}), reader.ReadAMF3Int());", memberInfo.Name, memberType.FullName);
                 _layouter.End();
-                if (DoTypeCheck()) _layouter.End();
-                if (DoTypeCheck()) _layouter.Append("}");
-                if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                _layouter.Append("else");
+                _layouter.Begin();
+                if (DoTypeCheck())
+                    GenerateThrowUnexpectedAMFException(memberInfo);
+                else
+                    _layouter.Append("reader.ReadAMF3Data(typeCode);");
+                _layouter.End();
                 return;
             }
             if (memberType == typeof(DateTime))
             {
-                if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF3TypeCode.DateTime )");
-                if (DoTypeCheck()) _layouter.Begin();
+                _layouter.Append("if( typeCode == AMF3TypeCode.DateTime )");
+                _layouter.Begin();
                 _layouter.AppendFormat("instance.{0} = reader.ReadAMF3Date();", memberInfo.Name);
-                if (DoTypeCheck()) _layouter.End();
-                if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                _layouter.End();
+                _layouter.Append("else");
+                _layouter.Begin();
+                if (DoTypeCheck())
+                    GenerateThrowUnexpectedAMFException(memberInfo);
+                else
+                    _layouter.Append("reader.ReadAMF3Data(typeCode);");
+                _layouter.End();
                 return;
             }
             if (memberType == typeof(Guid))
             {
-                if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF3TypeCode.String )");
-                if (DoTypeCheck()) _layouter.Append("{");
-                if (DoTypeCheck()) _layouter.Begin();
+                _layouter.Append("if( typeCode == AMF3TypeCode.String )");
+                _layouter.Begin();
                 _layouter.AppendFormat("instance.{0} = new Guid(reader.ReadAMF3String());", memberInfo.Name);
-                if (DoTypeCheck()) _layouter.End();
-                if (DoTypeCheck()) _layouter.Append("}");
-                if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                _layouter.End();
+                _layouter.Append("else");
+                _layouter.Begin();
+                if (DoTypeCheck())
+                    GenerateThrowUnexpectedAMFException(memberInfo);
+                else
+                    _layouter.Append("reader.ReadAMF3Data(typeCode);");
+                _layouter.End();
                 return;
             }
             if (memberType.IsValueType)
@@ -208,38 +229,52 @@ namespace FluorineFx.IO.Bytecode.CodeDom
             }
             if (memberType == typeof(string))
             {
-                if (DoTypeCheck()) _layouter.Append("if( typeCode == AMF3TypeCode.String || typeCode == AMF3TypeCode.Null || typeCode == AMF3TypeCode.Undefined )");
-                if (DoTypeCheck()) _layouter.Append("{");
-                if (DoTypeCheck()) _layouter.Begin();
                 _layouter.Append("if( typeCode == AMF3TypeCode.String )");
                 _layouter.Begin();
                 _layouter.AppendFormat("instance.{0} = reader.ReadAMF3String();", memberInfo.Name);
                 _layouter.End();
-                _layouter.Append("if( typeCode == AMF3TypeCode.Null || typeCode == AMF3TypeCode.Undefined )");
+                _layouter.Append("else if( typeCode == AMF3TypeCode.Null )");
                 _layouter.Begin();
                 _layouter.AppendFormat("instance.{0} = null;", memberInfo.Name);
                 _layouter.End();
-                if (DoTypeCheck()) _layouter.End();
-                if (DoTypeCheck()) _layouter.Append("}");
-                if (DoTypeCheck()) GenerateElseThrowUnexpectedAMFException(memberInfo);
+                _layouter.Append("else if( typeCode == AMF3TypeCode.Undefined )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = null;", memberInfo.Name);
+                _layouter.End();
+                _layouter.Append("else");
+                _layouter.Begin();
+                if (DoTypeCheck())
+                    GenerateThrowUnexpectedAMFException(memberInfo);
+                else
+                    _layouter.Append("reader.ReadAMF3Data(typeCode);");
+                _layouter.End();
                 return;
             }
             if (memberType == typeof(XmlDocument))
             {
-                _layouter.Append("if( typeCode == AMF3TypeCode.Xml || typeCode == AMF3TypeCode.Xml2 || typeCode == AMF3TypeCode.Null || typeCode == AMF3TypeCode.Undefined )");
-                _layouter.Append("{");
-                _layouter.Begin();
-                _layouter.Append("if( typeCode == AMF3TypeCode.Xml || typeCode == AMF3TypeCode.Xml2 )");
+                _layouter.Append("if( typeCode == AMF3TypeCode.Xml )");
                 _layouter.Begin();
                 _layouter.AppendFormat("instance.{0} = reader.ReadAMF3XmlDocument();", memberInfo.Name);
                 _layouter.End();
-                _layouter.Append("if( typeCode == AMF3TypeCode.Null || typeCode == AMF3TypeCode.Undefined )");
+                _layouter.Append("else if( typeCode == AMF3TypeCode.Xml2 )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = reader.ReadAMF3XmlDocument();", memberInfo.Name);
+                _layouter.End();
+                _layouter.Append("else if( typeCode == AMF3TypeCode.Null )");
                 _layouter.Begin();
                 _layouter.AppendFormat("instance.{0} = null;", memberInfo.Name);
                 _layouter.End();
+                _layouter.Append("else if( typeCode == AMF3TypeCode.Undefined )");
+                _layouter.Begin();
+                _layouter.AppendFormat("instance.{0} = null;", memberInfo.Name);
                 _layouter.End();
-                _layouter.Append("}");
-                GenerateElseThrowUnexpectedAMFException(memberInfo);
+                _layouter.Append("else");
+                _layouter.Begin();
+                if (DoTypeCheck())
+                    GenerateThrowUnexpectedAMFException(memberInfo);
+                else
+                    _layouter.Append("reader.ReadAMF3Data(typeCode);");
+                _layouter.End();
                 return;
             }
 

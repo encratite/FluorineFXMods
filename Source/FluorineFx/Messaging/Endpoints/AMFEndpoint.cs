@@ -21,6 +21,7 @@ using System;
 using System.Collections;
 using System.Web;
 using System.Threading;
+using System.IO;
 using FluorineFx;
 using FluorineFx.Context;
 using FluorineFx.Configuration;
@@ -91,7 +92,24 @@ namespace FluorineFx.Messaging.Endpoints
 
 		public override void Service()
 		{
-            AMFContext amfContext = new AMFContext(HttpContext.Current.Request.InputStream, HttpContext.Current.Response.OutputStream);
+            //AMFContext amfContext = new AMFContext(HttpContext.Current.Request.InputStream, HttpContext.Current.Response.OutputStream);
+            AMFContext amfContext = null;
+            if (FluorineConfiguration.Instance.FluorineSettings.Debug != null &&
+                FluorineConfiguration.Instance.FluorineSettings.Debug.Mode != Debug.Off)
+            {
+                MemoryStream ms = new MemoryStream();
+                int bufferSize = 255;
+                byte[] buffer = new byte[bufferSize];
+                int byteCount = 0;
+                while ((byteCount = HttpContext.Current.Request.InputStream.Read(buffer, 0, bufferSize)) > 0)
+                {
+                    ms.Write(buffer, 0, byteCount);
+                }
+                ms.Seek(0, SeekOrigin.Begin);
+                amfContext = new AMFContext(ms, HttpContext.Current.Response.OutputStream);
+            }
+            if( amfContext == null )
+                amfContext = new AMFContext(HttpContext.Current.Request.InputStream, HttpContext.Current.Response.OutputStream);
             AMFContext.Current = amfContext;
             _filterChain.InvokeFilters(amfContext);
         }

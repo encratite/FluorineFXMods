@@ -123,7 +123,20 @@ namespace FluorineFx.IO.Bytecode.Lightweight
                 if (memberInfos != null && memberInfos.Length > 0)
                     GeneratePropertySet(emit, typeCode, memberInfos[0]);
                 else
-                    throw new MissingMemberException(type.FullName, key);                
+                {
+                    //Log this error (do not throw exception), otherwise our current AMF stream becomes unreliable
+                    log.Warn(__Res.GetString(__Res.Optimizer_Warning));
+                    string msg = __Res.GetString(__Res.Reflection_MemberNotFound, string.Format("{0}.{1}", type.FullName, key));
+                    log.Warn(msg);
+                    //reader.ReadAMF3Data(typeCode);
+                    emit
+                        .ldarg_0 //Push 'reader'
+                        .ldloc_1 //Push 'typeCode'
+                        .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Data", new Type[] { typeof(byte) }))
+                        .pop
+                        .end()
+                    ;
+                }
             }
             Label labelExit = emit.DefineLabel();
             emit
@@ -134,6 +147,11 @@ namespace FluorineFx.IO.Bytecode.Lightweight
             ;
 
             return (ReadDataInvoker)method.CreateDelegate(typeof(ReadDataInvoker));
+        }
+
+        protected bool DoTypeCheck()
+        {
+            return FluorineConfiguration.Instance.OptimizerSettings.TypeCheck;
         }
 
         private void GeneratePropertySet(EmitHelper emit, int typeCode, MemberInfo memberInfo)
@@ -152,6 +170,412 @@ namespace FluorineFx.IO.Bytecode.Lightweight
             if (memberType == null)
                 throw new ArgumentNullException(memberInfo.Name);
 
+            //The primitive types are: Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, Char, Double, Single
+            //We handle here Decimal types too
+            if (memberType.IsPrimitive || memberType == typeof(decimal))
+            {
+                TypeCode primitiveTypeCode = Type.GetTypeCode(memberType);
+                switch (primitiveTypeCode)
+                {
+                    case TypeCode.Byte:
+                    case TypeCode.Decimal:
+                    case TypeCode.Int16:
+                    case TypeCode.Int32:
+                    case TypeCode.Int64:
+                    case TypeCode.SByte:
+                    case TypeCode.UInt16:
+                    case TypeCode.UInt32:
+                    case TypeCode.UInt64:
+                    case TypeCode.Single:
+                    case TypeCode.Double:
+                        {
+                            #region Primitive numeric
+                            Label labelCheckInt = emit.ILGenerator.DefineLabel();
+                            Label labelNotNumber = emit.ILGenerator.DefineLabel();
+                            Label labelExit = emit.ILGenerator.DefineLabel();
+
+                            //if( typeCode == AMF0TypeCode.Number )
+                            emit
+                                .ldloc_1 //Push 'typeCode'
+                                .ldc_i4(AMF3TypeCode.Number)
+                                .ceq
+                                .brfalse_s(labelCheckInt)
+                                //instance.{0} = ({1})reader.ReadDouble();
+                                .ldloc_0 //Push 'instance'
+                                .ldarg_0 //Push 'reader'
+                                .callvirt(typeof(AMFReader).GetMethod("ReadDouble"))
+                                .GeneratePrimitiveCast(primitiveTypeCode)
+                                .GenerateSetMember(memberInfo)
+                                .br_s(labelExit)
+                                .MarkLabel(labelCheckInt)
+                                .ldloc_1 //Push 'typeCode'
+                                .ldc_i4(AMF3TypeCode.Integer)
+                                .ceq
+                                .brfalse_s(labelNotNumber)
+                                //instance.{0} = ({1})reader.ReadAMF3Int();
+                                .ldloc_0 //Push 'instance'
+                                .ldarg_0 //Push 'reader'
+                                .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Int"))
+                                .GeneratePrimitiveCast(primitiveTypeCode)
+                                .GenerateSetMember(memberInfo)
+                                .br_s(labelExit)
+                                .MarkLabel(labelNotNumber)
+                                .end()
+                            ;
+                            if (DoTypeCheck())
+                            {
+                                emit
+                                    .GenerateThrowUnexpectedAMFException(memberInfo)
+                                    .MarkLabel(labelExit)
+                                    //.nop
+                                    .end()
+                                ;
+                            }
+                            else
+                            {
+                                emit
+                                    .ldarg_0 //Push 'reader'
+                                    .ldloc_1 //Push 'typeCode'
+                                    .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Data", new Type[] { typeof(byte) }))
+                                    .pop
+                                    .MarkLabel(labelExit)
+                                    .end()
+                                ;
+                            }
+                            #endregion Primitive numeric
+                        }
+                        break;
+                    case TypeCode.Boolean:
+                        {
+                            #region Primitive boolean
+                            Label labelCheckBooleanTrue = emit.ILGenerator.DefineLabel();
+                            Label labelNotBoolean = emit.ILGenerator.DefineLabel();
+                            Label labelExit = emit.ILGenerator.DefineLabel();
+
+                            //if( typeCode == AMF3TypeCode.BooleanFalse )
+                            emit
+                                .ldloc_1 //Push 'typeCode'
+                                .ldc_i4(AMF3TypeCode.BooleanFalse)
+                                .ceq
+                                .brfalse_s(labelCheckBooleanTrue)
+                                //instance.{0} = false;
+                                .ldloc_0 //Push 'instance'
+                                .ldc_i4_0
+                                .GenerateSetMember(memberInfo)
+                                .br_s(labelExit)
+                                .MarkLabel(labelCheckBooleanTrue)
+                                .ldloc_1 //Push 'typeCode'
+                                .ldc_i4(AMF3TypeCode.BooleanTrue)
+                                .ceq
+                                .brfalse_s(labelNotBoolean)
+                                //instance.{0} = true;
+                                .ldloc_0 //Push 'instance'
+                                .ldc_i4_1
+                                .GenerateSetMember(memberInfo)
+                                .br_s(labelExit)
+                                .MarkLabel(labelNotBoolean)
+                                .end()
+                            ;
+                            if (DoTypeCheck())
+                            {
+                                emit
+                                    .GenerateThrowUnexpectedAMFException(memberInfo)
+                                    .MarkLabel(labelExit)
+                                    //.nop
+                                    .end()
+                                ;
+                            }
+                            else
+                            {
+                                emit
+                                    .ldarg_0 //Push 'reader'
+                                    .ldloc_1 //Push 'typeCode'
+                                    .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Data", new Type[] { typeof(byte) }))
+                                    .pop
+                                    .MarkLabel(labelExit)
+                                    .end()
+                                ;
+                            }
+                            #endregion Primitive boolean
+                        }
+                        break;
+                    case TypeCode.Char:
+                        {
+                            #region Primitive Char
+                            {
+                                Label labelNotString = emit.ILGenerator.DefineLabel();
+                                Label labelExit = emit.ILGenerator.DefineLabel();
+                                //if( typeCode == AMF3TypeCode.String )
+                                emit
+                                    .ldloc_1 //Push 'typeCode'
+                                    .ldc_i4(AMF3TypeCode.String)
+                                    .ceq
+                                    .brfalse_s(labelNotString)
+                                    //instance.member = reader.ReadAMF3String()[0];
+                                    .ldarg_0 //Push 'reader'
+                                    .callvirt(typeof(AMFReader).GetMethod("ReadAMF3String"))
+                                    .stloc_2
+                                    .ldloc_2 //Push 'key'
+                                    .brfalse_s(labelNotString) // Branch if 'key' is null
+                                    .ldloc_2 //Push strTmp
+                                    .ldsfld(typeof(string).GetField("Empty"))
+                                    .call(typeof(string).GetMethod("op_Inequality", new Type[] { typeof(string), typeof(string) }))
+                                    .brfalse_s(labelNotString)
+                                    .ldloc_0 //Push 'instance'
+                                    .ldloc_2 //Push 'key'
+                                    .ldc_i4_0 //Push char index 0
+                                    .callvirt(typeof(string).GetMethod("get_Chars", new Type[] { typeof(Int32) }))
+                                    .GenerateSetMember(memberInfo)
+                                    .br_s(labelExit)
+                                    .MarkLabel(labelNotString)
+                                    .end()
+                                ;
+                                if (DoTypeCheck())
+                                {
+                                    emit
+                                        .GenerateThrowUnexpectedAMFException(memberInfo)
+                                        .MarkLabel(labelExit)
+                                        //.nop
+                                        .end()
+                                    ;
+                                }
+                                else
+                                {
+                                    emit
+                                        .ldarg_0 //Push 'reader'
+                                        .ldloc_1 //Push 'typeCode'
+                                        .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Data", new Type[] { typeof(byte) }))
+                                        .pop
+                                        .MarkLabel(labelExit)
+                                        .end()
+                                    ;
+                                }
+                            }
+                            #endregion Primitive Char
+                        }
+                        break;
+                }
+                return;
+            }
+            if (memberType.IsEnum)
+            {
+                #region Enum
+                Label labelNotInteger = emit.ILGenerator.DefineLabel();
+                Label labelNotString = emit.ILGenerator.DefineLabel();
+                Label labelExit = emit.ILGenerator.DefineLabel();
+                //if (typeCode == AMF3TypeCode.String || typeCode == AMF3TypeCode.Integer)
+                emit
+                    .ldloc_1 //Push 'typeCode'
+                    .ldc_i4(AMF3TypeCode.Integer)
+                    .ceq
+                    .brfalse_s(labelNotInteger)
+                    //instance.{0} = ({1})Enum.ToObject(typeof({1}), reader.ReadAMF3Int());
+                    .ldloc_0 //Push 'instance'
+                    .ldtoken(memberType)
+                    .call(typeof(Type).GetMethod("GetTypeFromHandle"))
+                    .ldarg_0 //Push 'reader'
+                    .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Int"))
+                    .call(typeof(Enum).GetMethod("ToObject", new Type[] { typeof(Type), typeof(Int32) }))
+                    .unbox_any(memberType)
+                    .GenerateSetMember(memberInfo)
+                    .br_s(labelExit)
+                    .MarkLabel(labelNotInteger)
+                    .ldloc_1 //Push 'typeCode'
+                    .ldc_i4(AMF3TypeCode.String)
+                    .ceq
+                    .brfalse_s(labelNotString)
+                    //instance.{0} = ({1})Enum.Parse(typeof({1}), reader.ReadAMF3String(), true);
+                    .ldloc_0 //Push 'instance'
+                    .ldtoken(memberType)
+                    .call(typeof(Type).GetMethod("GetTypeFromHandle"))
+                    .ldarg_0 //Push 'reader'
+                    .callvirt(typeof(AMFReader).GetMethod("ReadAMF3String"))
+                    .ldc_i4_1
+                    .call(typeof(Enum).GetMethod("Parse", new Type[] { typeof(Type), typeof(string), typeof(bool) }))
+                    .unbox_any(memberType)
+                    .GenerateSetMember(memberInfo)
+                    .br_s(labelExit)
+                    .MarkLabel(labelNotString)
+                    .end()
+                ;
+                if (DoTypeCheck())
+                {
+                    emit
+                        .GenerateThrowUnexpectedAMFException(memberInfo)
+                        .MarkLabel(labelExit)
+                        //.nop
+                        .end()
+                    ;
+                }
+                else
+                {
+                    emit
+                        .ldarg_0 //Push 'reader'
+                        .ldloc_1 //Push 'typeCode'
+                        .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Data", new Type[] { typeof(byte) }))
+                        .pop
+                        .MarkLabel(labelExit)
+                        .end()
+                    ;
+                }
+                return;
+                #endregion Enum
+            }
+            if (memberType == typeof(DateTime))
+            {
+                #region DateTime
+                Label labelNotDate = emit.ILGenerator.DefineLabel();
+                Label labelExit = emit.ILGenerator.DefineLabel();
+                //if( typeCode == AMF3TypeCode.DateTime )
+                emit
+                    .ldloc_1 //Push 'typeCode'
+                    .ldc_i4(AMF3TypeCode.DateTime)
+                    .ceq
+                    .brfalse_s(labelNotDate)
+                    .ldloc_0 //Push 'instance'
+                    .ldarg_0 //Push 'reader'
+                    .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Date"))
+                    .GenerateSetMember(memberInfo)
+                    .br_s(labelExit)
+                    .MarkLabel(labelNotDate)
+                    .end()
+                ;
+                if (DoTypeCheck())
+                {
+                    emit
+                        .GenerateThrowUnexpectedAMFException(memberInfo)
+                        .MarkLabel(labelExit)
+                        //.nop
+                        .end()
+                    ;
+                }
+                else
+                {
+                    emit
+                        .ldarg_0 //Push 'reader'
+                        .ldloc_1 //Push 'typeCode'
+                        .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Data", new Type[] { typeof(byte) }))
+                        .pop
+                        .MarkLabel(labelExit)
+                        .end()
+                    ;
+                }
+                return;
+                #endregion DateTime
+            }
+            if (memberType == typeof(Guid))
+            {
+                #region Guid
+                Label labelNotString = emit.ILGenerator.DefineLabel();
+                Label labelExit = emit.ILGenerator.DefineLabel();
+                emit
+                    //if( typeCode == AMF3TypeCode.String )
+                    .ldloc_1 //Push 'typeCode'
+                    .ldc_i4(AMF3TypeCode.String)
+                    .ceq
+                    .brfalse_s(labelNotString)
+                    .ldloc_0 //Push 'instance'
+                    .ldarg_0 //Push 'reader'
+                    .callvirt(typeof(AMFReader).GetMethod("ReadAMF3String"))
+                    .newobj(typeof(Guid).GetConstructor(EmitHelper.AnyVisibilityInstance, null, CallingConventions.HasThis, new Type[] { typeof(string) }, null))
+                    .GenerateSetMember(memberInfo)
+                    .br_s(labelExit)
+                    .MarkLabel(labelNotString)
+                    .end()
+                ;
+                if (DoTypeCheck())
+                {
+                    emit
+                        .GenerateThrowUnexpectedAMFException(memberInfo)
+                        .MarkLabel(labelExit)
+                        //.nop
+                        .end()
+                    ;
+                }
+                else
+                {
+                    emit
+                        .ldarg_0 //Push 'reader'
+                        .ldloc_1 //Push 'typeCode'
+                        .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Data", new Type[] { typeof(byte) }))
+                        .pop
+                        .MarkLabel(labelExit)
+                        .end()
+                    ;
+                }
+                return;
+                #endregion Guid
+            }
+            if (memberType.IsValueType)
+            {
+                //structs are not handled
+                throw new FluorineException("Struct value types are not supported");
+            }
+            if (memberType == typeof(string))
+            {
+                #region String
+
+                Label labelCheckNull = emit.ILGenerator.DefineLabel();
+                Label labelCheckUndefined = emit.ILGenerator.DefineLabel();
+                Label labelNotString = emit.ILGenerator.DefineLabel();
+                Label labelExit = emit.ILGenerator.DefineLabel();
+
+                emit
+                    .ldloc_1 //Push 'typeCode'
+                    .ldc_i4(AMF3TypeCode.String)
+                    .ceq
+                    .brfalse_s(labelCheckNull)
+                    //instance.{0} = reader.ReadAMF3String();
+                    .ldloc_0 //Push 'instance'
+                    .ldarg_0 //Push 'reader'
+                    .callvirt(typeof(AMFReader).GetMethod("ReadAMF3String"))
+                    .GenerateSetMember(memberInfo)
+                    .br_s(labelExit)
+                    .MarkLabel(labelCheckNull)
+                    .ldloc_1 //Push 'typeCode'
+                    .ldc_i4(AMF3TypeCode.Null)
+                    .ceq
+                    .brfalse_s(labelCheckUndefined)
+                    .ldloc_0 //Push 'instance'
+                    .ldc_i4_0
+                    .GenerateSetMember(memberInfo)
+                    .br_s(labelExit)
+                    .MarkLabel(labelCheckUndefined)
+                    .ldloc_1 //Push 'typeCode'
+                    .ldc_i4(AMF3TypeCode.Undefined)
+                    .ceq
+                    .brfalse_s(labelNotString)
+                    .ldloc_0 //Push 'instance'
+                    .ldc_i4_0
+                    .GenerateSetMember(memberInfo)
+                    .br_s(labelExit)
+                    .MarkLabel(labelNotString)
+                    .end()
+                ;
+                if (DoTypeCheck())
+                {
+                    emit
+                        .GenerateThrowUnexpectedAMFException(memberInfo)
+                        .MarkLabel(labelExit)
+                        //.nop
+                        .end()
+                    ;
+                }
+                else
+                {
+                    emit
+                        .ldarg_0 //Push 'reader'
+                        .ldloc_1 //Push 'typeCode'
+                        .callvirt(typeof(AMFReader).GetMethod("ReadAMF3Data", new Type[] { typeof(byte) }))
+                        .pop
+                        .MarkLabel(labelExit)
+                        .end()
+                    ;
+                }
+                return;
+
+                #endregion String
+            }
             //instance.member = (type)TypeHelper.ChangeType(reader.ReadAMF3Data(typeCode), typeof(member));
             emit
                 .ldloc_0 //Push 'instance'
@@ -166,7 +590,6 @@ namespace FluorineFx.IO.Bytecode.Lightweight
                 .end()
             ;
         }
-
 
         #region IReflectionOptimizer Members
 

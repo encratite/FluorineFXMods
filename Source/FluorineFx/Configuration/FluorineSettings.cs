@@ -2502,7 +2502,8 @@ namespace FluorineFx.Configuration
 		{
             _provider = "codedom";
 			_debug = true;
-            _typeCheck = false;
+            //Generate type checking by default
+            _typeCheck = true;
 		}
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.

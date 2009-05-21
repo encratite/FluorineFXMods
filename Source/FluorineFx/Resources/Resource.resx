@@ -741,4 +741,13 @@
   <data name="Invocation_Failed" xml:space="preserve">
     <value>Exception has been thrown by the invoked method {0}: {1}</value>
   </data>
+  <data name="Optimizer_Fatal" xml:space="preserve">
+    <value>Fatal reflection optimizer problem detected. Please turn off the reflection optimizer in the configuration file and check your log file for further information</value>
+  </data>
+  <data name="Optimizer_FileLocation" xml:space="preserve">
+    <value>Custom AMF deserializer source code for {0} located at {1}</value>
+  </data>
+  <data name="Optimizer_Warning" xml:space="preserve">
+    <value>Reflection optimizer problem detected. Please turn off the reflection optimizer in the configuration file and check your log file for further information</value>
+  </data>
 </root>

@@ -303,7 +303,7 @@ namespace FluorineFx.Configuration
         }
 #endif
 
-        internal OptimizerSettings OptimizerSettings
+        public OptimizerSettings OptimizerSettings
 		{
 			get
 			{

@@ -727,10 +727,12 @@ namespace FluorineFx.Util
         /// <param name="file"></param>
 		public void Dump(string file)
 		{
-			FileStream fs = new FileStream(file, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-			byte[] buffer = this.ToArray();
-			fs.Write(buffer, 0, buffer.Length);
-			fs.Close();
+            using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+            {
+                byte[] buffer = this.ToArray();
+                fs.Write(buffer, 0, buffer.Length);
+                fs.Close();
+            }
 		}
 	}
 }
