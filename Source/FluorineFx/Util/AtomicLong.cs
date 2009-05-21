@@ -107,6 +107,11 @@ namespace FluorineFx.Util
             return Interlocked.CompareExchange(ref _counter, value, comparand);
         }
 
+        public bool CompareAndSet(long old, long newValue)
+        {
+            return old == Interlocked.CompareExchange(ref _counter, newValue, old);
+        }
+
         public long Exchange(long value)
         {
             return Interlocked.Exchange(ref _counter, value);

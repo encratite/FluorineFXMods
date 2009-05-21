@@ -63,18 +63,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
     {
         static private ILog log = LogManager.GetLogger(typeof(ServerStream));
 
-        /// <summary>
-        /// Stream states.
-        /// </summary>
-        protected enum State
-        {
-            UNINIT, CLOSED, STOPPED, PLAYING, PAUSED
-        }
         private static long WAIT_THRESHOLD = 0;
-        /// <summary>
-        /// Current state
-        /// </summary>
-        protected State _state;
         /// <summary>
         /// Stream published name
         /// </summary>

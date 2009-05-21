@@ -26,11 +26,11 @@ using FluorineFx.Messaging.Messages;
 namespace FluorineFx.Messaging.Rtmp.Stream
 {
     /// <summary>
-    /// Possible states enumeration
+    /// Stream states.
     /// </summary>
-    enum State
+    public enum State
     {
-        UNINIT, STOPPED, PLAYING, PAUSED, CLOSED
+        UNINIT, CLOSED, STOPPED, PLAYING, PAUSED
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// <summary>
         /// Current state.
         /// </summary>
-        private State _state = State.UNINIT;
+        protected State _state = State.UNINIT;
 
         internal State State
         {

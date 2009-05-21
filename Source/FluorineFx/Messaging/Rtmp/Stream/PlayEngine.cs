@@ -18,7 +18,9 @@
 */
 using System;
 using System.Collections;
+#if !(NET_1_1)
 using System.Collections.Generic;
+#endif
 using System.IO;
 using log4net;
 using FluorineFx.Util;

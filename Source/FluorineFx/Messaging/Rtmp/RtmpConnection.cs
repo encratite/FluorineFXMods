@@ -145,15 +145,15 @@ namespace FluorineFx.Messaging.Rtmp
         /// <summary>
         /// Timestamp when last ping command was sent.
         /// </summary>
-        protected int _lastPingSent;
+        protected AtomicInteger _lastPingSent = new AtomicInteger(0);
         /// <summary>
         /// Timestamp when last ping result was received.
         /// </summary>
-        protected int _lastPongReceived;
+        protected AtomicInteger _lastPongReceived = new AtomicInteger(0);
         /// <summary>
         /// Last ping timestamp.
         /// </summary>
-        protected int _lastPingTime = -1;
+        protected AtomicInteger _lastPingTime = new AtomicInteger(-1);
         /// <summary>
         /// Number of bytes the client reported to have received.
         /// </summary>
@@ -314,7 +314,7 @@ namespace FluorineFx.Messaging.Rtmp
                     {
 #if !SILVERLIGHT
                         if (log.IsDebugEnabled)
-                            log.Debug("Closing stream: " + stream.StreamId);
+                            log.Debug(string.Format("{0} Closing stream: {1}", _connectionId, stream.StreamId));
 #endif
                         streamService.deleteStream(this, stream.StreamId);
                         _streamCount.Decrement();
@@ -470,12 +470,14 @@ namespace FluorineFx.Messaging.Rtmp
         public override void Ping()
         {
             int newPingTime = Environment.TickCount;
-            if(_lastPingSent == 0)
-                _lastPongReceived = newPingTime;
+            if( log.IsDebugEnabled )
+                log.Debug(string.Format("{0} Pinging connection at {1}, last ping sent at {2}", _connectionId, newPingTime, _lastPingSent.Value));
+            if(_lastPingSent.Value == 0)
+                _lastPongReceived.Value = newPingTime;
             Ping pingRequest = new Ping();
             pingRequest.Value1 = (short)FluorineFx.Messaging.Rtmp.Event.Ping.PingClient;
-            _lastPingSent = newPingTime;
-            int now = (int)(_lastPingSent & 0xffffffff);
+            _lastPingSent.Value = newPingTime;
+            int now = (int)(newPingTime & 0xffffffff);
             pingRequest.Value2 = now;
             pingRequest.Value3 = FluorineFx.Messaging.Rtmp.Event.Ping.Undefined;
             Ping(pingRequest);
@@ -852,14 +854,19 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="pong"></param>
         internal void PingReceived(Ping pong)
         {
-            _lastPongReceived = Environment.TickCount;
-            int now = (int)(_lastPongReceived & 0xffffffff);
-            _lastPingTime = now - pong.Value2;
+            int now = Environment.TickCount;
+            int previousReceived = _lastPongReceived.Value;
+            if( log.IsDebugEnabled )
+                log.Debug(string.Format("{0} Ping received at {1} with value {2}, previous received at {3}", _connectionId, now, pong.Value2, previousReceived ));
+            if (_lastPongReceived.CompareAndSet(previousReceived, now))
+            {
+                _lastPingTime.Value = ((int)(previousReceived & 0xffffffff)) - pong.Value2;
+            }
         }
         /// <summary>
         /// Gets roundtrip time of last ping command.
         /// </summary>
-        public override int LastPingTime { get { return _lastPingTime; } }
+        public override int LastPingTime { get { return _lastPingTime.Value; } }
 
 
 		#region IServiceCapableConnection Members
@@ -1142,7 +1149,7 @@ namespace FluorineFx.Messaging.Rtmp
                     {
                         _keepAliveJobName = service.AddScheduledJob(FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.PingInterval, new KeepAliveJob(this));
                         if (log.IsDebugEnabled)
-                            log.Debug("Keep alive job name " + _keepAliveJobName);
+                            log.Debug(string.Format("{0} Keep alive job name {1}", _connectionId, _keepAliveJobName));
                     }
                 }
             }
@@ -1182,13 +1189,13 @@ namespace FluorineFx.Messaging.Rtmp
                 if (thisRead > previousReadBytes)
                 {
                     // Client sent data since last check and thus is not dead. No need to ping.
-                    _lastBytesRead.CompareExchange(thisRead, previousReadBytes);
-                    _lastBytesReadTime = System.Environment.TickCount;
+                    if (_lastBytesRead.CompareAndSet(previousReadBytes, thisRead))
+                        _lastBytesReadTime = System.Environment.TickCount;
                     return;
                 }
                 FluorineRtmpContext.Initialize(_connection);
-                if (_connection._lastPongReceived > 0 && 
-                    _connection._lastPingSent - _connection._lastPongReceived > FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.MaxInactivity
+                if (_connection._lastPongReceived.Value > 0 && 
+                    _connection._lastPingSent.Value - _connection._lastPongReceived.Value > FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.MaxInactivity
                     && !(System.Environment.TickCount - _lastBytesReadTime < FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.MaxInactivity))
                 {
                     try
@@ -1198,7 +1205,7 @@ namespace FluorineFx.Messaging.Rtmp
                         if (_connection._keepAliveJobName != null)
                         {
                             if (log.IsDebugEnabled)
-                                log.Debug("Keep alive job name " + _connection._keepAliveJobName);
+                                log.Debug(string.Format("{0} Keep alive job name {1}", _connection.ConnectionId, _connection._keepAliveJobName));
 
                             ISchedulingService service = _connection.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
                             service.RemoveScheduledJob(_connection._keepAliveJobName);
@@ -1209,7 +1216,9 @@ namespace FluorineFx.Messaging.Rtmp
                     {
                         _connection.ReaderWriterLock.ReleaseWriterLock();
                     }
-                    log.Warn(string.Format("Closing {0} due to too much inactivity ({1}).", _connection, (_connection._lastPingSent - _connection._lastPongReceived)));
+                    if( log.IsWarnEnabled )
+                        log.Warn(string.Format("{0} Closing due to too much inactivity ({1}ms), last ping sent {2}ms ago", _connection.ConnectionId, _connection._lastPingSent.Value - _connection._lastPongReceived.Value,
+                            System.Environment.TickCount - _connection._lastPingSent.Value));
                     _connection.OnInactive();
                     return;
                 }
