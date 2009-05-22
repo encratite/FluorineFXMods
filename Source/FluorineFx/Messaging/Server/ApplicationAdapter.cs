@@ -30,6 +30,8 @@ using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Messaging.Rtmp.Stream;
 using FluorineFx.Messaging.Server;
 using FluorineFx.Exceptions;
+using FluorineFx.Util;
+using FluorineFx.Context;
 
 namespace FluorineFx.Messaging.Adapter
 {
@@ -631,7 +633,7 @@ namespace FluorineFx.Messaging.Adapter
 	    }
 
         /// <summary>
-        /// Invoke client with parameters and callback.
+        /// Invoke clients with parameters and callback.
         /// </summary>
         /// <param name="method">Method name.</param>
         /// <param name="arguments">Invocation parameters passed to the method.</param>
@@ -641,7 +643,7 @@ namespace FluorineFx.Messaging.Adapter
             InvokeClients(method, arguments, callback, false);
         }
         /// <summary>
-        /// Invoke client with parameters and callback.
+        /// Invoke clients with parameters and callback.
         /// </summary>
         /// <param name="method">Method name.</param>
         /// <param name="arguments">Invocation parameters passed to the method.</param>
@@ -652,7 +654,7 @@ namespace FluorineFx.Messaging.Adapter
             InvokeClients(method, arguments, callback, ignoreSelf, this.Scope);
         }
         /// <summary>
-        /// Invoke client with parameters and callback.
+        /// Invoke clients with parameters and callback.
         /// </summary>
         /// <param name="method">Method name.</param>
         /// <param name="arguments">Invocation parameters passed to the method.</param>
@@ -661,17 +663,170 @@ namespace FluorineFx.Messaging.Adapter
         /// <param name="targetScope">Invoke clients subscribed to the specified Scope.</param>
         protected void InvokeClients(string method, object[] arguments, IPendingServiceCallback callback, bool ignoreSelf, IScope targetScope)
         {
-            IServiceCapableConnection connection = FluorineFx.Context.FluorineContext.Current.Connection as IServiceCapableConnection;
-            IEnumerator collections = targetScope.GetConnections();
-            while(collections.MoveNext())
+            try
             {
-                IConnection connectionTmp = collections.Current as IConnection;
-                if (!connectionTmp.Scope.Name.Equals(targetScope.Name))
-                    continue;
-                if( (connectionTmp is IServiceCapableConnection) && (!ignoreSelf || connectionTmp != connection) )
-                    (connectionTmp as IServiceCapableConnection).Invoke(method, arguments, callback);
+                if (log.IsDebugEnabled)
+                    log.Debug(string.Format("Invoke clients: {0}", method));
+                IServiceCapableConnection connection = FluorineFx.Context.FluorineContext.Current.Connection as IServiceCapableConnection;
+                IEnumerator collections = targetScope.GetConnections();
+                while (collections.MoveNext())
+                {
+                    IConnection connectionTmp = collections.Current as IConnection;
+                    if (!connectionTmp.Scope.Name.Equals(targetScope.Name))
+                        continue;
+                    if ((connectionTmp is IServiceCapableConnection) && (!ignoreSelf || connectionTmp != connection))
+                        (connectionTmp as IServiceCapableConnection).Invoke(method, arguments, callback);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("InvokeClients failed", ex);
+                throw;
+            }
+            finally
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug(string.Format("Finished invoking clients ({0})", method));
             }
         }
+
+
+        /// <summary>
+        /// Asynchronous invoke clients with parameters and callback.
+        /// </summary>
+        /// <param name="asyncCallback">Callback object.</param>
+        /// <param name="method">Method name.</param>
+        /// <param name="arguments">Invocation parameters passed to the method.</param>
+        /// <param name="callback">Callback used to handle return values.</param>
+        /// <returns></returns>
+        /// <remarks>The <i>asyncCallback</i> object identifies the callback invoked when the messages are sent, the <i>callback</i> object identifies the callback handling client responses.</remarks>
+        protected IAsyncResult BeginInvokeClients(AsyncCallback asyncCallback, string method, object[] arguments, IPendingServiceCallback callback)
+        {
+            return BeginInvokeClients(asyncCallback, method, arguments, callback, false);
+        }
+        /// <summary>
+        /// Asynchronous invoke clients with parameters and callback.
+        /// </summary>
+        /// <param name="asyncCallback">Callback object.</param>
+        /// <param name="method">Method name.</param>
+        /// <param name="arguments">Invocation parameters passed to the method.</param>
+        /// <param name="callback">Callback used to handle return values.</param>
+        /// <param name="ignoreSelf">Current client shoud be ignored.</param>
+        /// <returns></returns>
+        /// <remarks>The <i>asyncCallback</i> object identifies the callback invoked when the messages are sent, the <i>callback</i> object identifies the callback handling client responses.</remarks>
+        protected IAsyncResult BeginInvokeClients(AsyncCallback asyncCallback, string method, object[] arguments, IPendingServiceCallback callback, bool ignoreSelf)
+        {
+            return BeginInvokeClients(asyncCallback, method, arguments, callback, ignoreSelf, this.Scope);
+        }
+        /// <summary>
+        /// Asynchronous invoke clients with parameters and callback.
+        /// </summary>
+        /// <param name="asyncCallback">Callback object.</param>
+        /// <param name="method">Method name.</param>
+        /// <param name="arguments">Invocation parameters passed to the method.</param>
+        /// <param name="callback">Callback used to handle return values.</param>
+        /// <param name="ignoreSelf">Current client shoud be ignored.</param>
+        /// <param name="targetScope">Invoke clients subscribed to the specified Scope.</param>
+        /// <returns></returns>
+        /// <remarks>The <i>asyncCallback</i> object identifies the callback invoked when the messages are sent, the <i>callback</i> object identifies the callback handling client responses.</remarks>
+        protected IAsyncResult BeginInvokeClients(AsyncCallback asyncCallback, string method, object[] arguments, IPendingServiceCallback callback, bool ignoreSelf, IScope targetScope)
+        {
+            // Create IAsyncResult object identifying the asynchronous operation
+            AsyncResultNoResult ar = new AsyncResultNoResult(asyncCallback, new InvokeData(FluorineContext.Current, method, arguments, callback, ignoreSelf, targetScope));
+            // Use a thread pool thread to perform the operation
+            FluorineFx.Threading.ThreadPoolEx.Global.QueueUserWorkItem(new System.Threading.WaitCallback(OnBeginInvokeClients), ar);
+            // Return the IAsyncResult to the caller
+            return ar;
+        }
+
+        #region InvokeData
+        class InvokeData
+        {
+            FluorineContext _context;
+            string _method;
+            object[] _arguments;
+            IPendingServiceCallback _callback;
+            bool _ignoreSelf;
+            IScope _targetScope;
+
+            public FluorineContext Context
+            {
+                get { return _context; }
+            }
+
+            public string Method
+            {
+                get { return _method; }
+            }
+
+            public object[] Arguments
+            {
+                get { return _arguments; }
+            }
+
+            public IPendingServiceCallback Callback
+            {
+                get { return _callback; }
+            }
+
+            public bool IgnoreSelf
+            {
+                get { return _ignoreSelf; }
+            }
+
+            public IScope TargetScope
+            {
+                get { return _targetScope; }
+            }
+
+
+            public InvokeData(FluorineContext context, string method, object[] arguments, IPendingServiceCallback callback, bool ignoreSelf, IScope targetScope)
+            {
+                _context = context;
+                _method = method;
+                _arguments = arguments;
+                _callback = callback;
+                _ignoreSelf = ignoreSelf;
+                _targetScope = targetScope;
+            }
+        }
+        #endregion InvokeData
+
+        private void OnBeginInvokeClients(object asyncResult)
+        {
+            AsyncResultNoResult ar = asyncResult as AsyncResultNoResult;
+            try
+            {
+                // Perform the operation; if sucessful set the result
+                InvokeData invokeData = ar.AsyncState as InvokeData;
+                //Restore context
+                FluorineWebSafeCallContext.SetData(FluorineContext.FluorineContextKey, invokeData.Context);
+                InvokeClients(invokeData.Method, invokeData.Arguments, invokeData.Callback, invokeData.IgnoreSelf, invokeData.TargetScope);
+                ar.SetAsCompleted(null, false);
+            }
+            catch (Exception ex)
+            {
+                // If operation fails, set the exception
+                ar.SetAsCompleted(ex, false);
+            }
+            finally
+            {
+                FluorineWebSafeCallContext.FreeNamedDataSlot(FluorineContext.FluorineContextKey);
+            }
+        }
+
+        /// <summary>
+        /// Asynchronous version of invoke clients.
+        /// </summary>
+        /// <param name="asyncResult"></param>
+        public void EndInvokeClients(IAsyncResult asyncResult)
+        {
+            AsyncResultNoResult ar = asyncResult as AsyncResultNoResult;
+            // Wait for operation to complete, then return result or throw exception
+            ar.EndInvoke();
+        }
+
         /// <summary>
         /// Start a bandwidth check.
         /// </summary>
