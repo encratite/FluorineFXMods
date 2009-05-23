@@ -693,43 +693,73 @@ namespace FluorineFx.Messaging.Adapter
 
 
         /// <summary>
-        /// Asynchronous invoke clients with parameters and callback.
+        /// Begins an asynchronous operation to invoke clients with parameters and callback.
         /// </summary>
-        /// <param name="asyncCallback">Callback object.</param>
+        /// <param name="asyncCallback">The AsyncCallback delegate.</param>
         /// <param name="method">Method name.</param>
         /// <param name="arguments">Invocation parameters passed to the method.</param>
         /// <param name="callback">Callback used to handle return values.</param>
-        /// <returns></returns>
-        /// <remarks>The <i>asyncCallback</i> object identifies the callback invoked when the messages are sent, the <i>callback</i> object identifies the callback handling client responses.</remarks>
+        /// <returns>An IAsyncResult that references the asynchronous invocation.</returns>
+        /// <remarks>
+        /// <para>
+        /// The <i>asyncCallback</i> delegate identifies the callback invoked when the messages are sent, the <i>callback</i> object identifies the callback handling client responses.
+        /// </para>
+        /// <para>
+        /// You can create a callback method that implements the AsyncCallback delegate and pass its name to the BeginInvokeClients method.
+        /// </para>
+        /// <para>
+        /// Your callback method should invoke the EndInvokeClients method. When your application calls BeginInvokeClients, the system will use a separate thread to execute the specified callback method, and will block on EndInvokeClients until the clients are invoked successfully or throws an exception.
+        /// </para>
+        /// </remarks>
         protected IAsyncResult BeginInvokeClients(AsyncCallback asyncCallback, string method, object[] arguments, IPendingServiceCallback callback)
         {
             return BeginInvokeClients(asyncCallback, method, arguments, callback, false);
         }
         /// <summary>
-        /// Asynchronous invoke clients with parameters and callback.
+        /// Begins an asynchronous operation to invoke clients with parameters and callback.
         /// </summary>
-        /// <param name="asyncCallback">Callback object.</param>
+        /// <param name="asyncCallback">The AsyncCallback delegate.</param>
         /// <param name="method">Method name.</param>
         /// <param name="arguments">Invocation parameters passed to the method.</param>
         /// <param name="callback">Callback used to handle return values.</param>
         /// <param name="ignoreSelf">Current client shoud be ignored.</param>
-        /// <returns></returns>
-        /// <remarks>The <i>asyncCallback</i> object identifies the callback invoked when the messages are sent, the <i>callback</i> object identifies the callback handling client responses.</remarks>
+        /// <returns>An IAsyncResult that references the asynchronous invocation.</returns>
+        /// <remarks>
+        /// <para>
+        /// The <i>asyncCallback</i> delegate identifies the callback invoked when the messages are sent, the <i>callback</i> object identifies the callback handling client responses.
+        /// </para>
+        /// <para>
+        /// You can create a callback method that implements the AsyncCallback delegate and pass its name to the BeginInvokeClients method.
+        /// </para>
+        /// <para>
+        /// Your callback method should invoke the EndInvokeClients method. When your application calls BeginInvokeClients, the system will use a separate thread to execute the specified callback method, and will block on EndInvokeClients until the clients are invoked successfully or throws an exception.
+        /// </para>
+        /// </remarks>
         protected IAsyncResult BeginInvokeClients(AsyncCallback asyncCallback, string method, object[] arguments, IPendingServiceCallback callback, bool ignoreSelf)
         {
             return BeginInvokeClients(asyncCallback, method, arguments, callback, ignoreSelf, this.Scope);
         }
         /// <summary>
-        /// Asynchronous invoke clients with parameters and callback.
+        /// Begins an asynchronous operation to invoke clients with parameters and callback.
         /// </summary>
-        /// <param name="asyncCallback">Callback object.</param>
+        /// <param name="asyncCallback">The AsyncCallback delegate.</param>
         /// <param name="method">Method name.</param>
         /// <param name="arguments">Invocation parameters passed to the method.</param>
         /// <param name="callback">Callback used to handle return values.</param>
         /// <param name="ignoreSelf">Current client shoud be ignored.</param>
         /// <param name="targetScope">Invoke clients subscribed to the specified Scope.</param>
-        /// <returns></returns>
-        /// <remarks>The <i>asyncCallback</i> object identifies the callback invoked when the messages are sent, the <i>callback</i> object identifies the callback handling client responses.</remarks>
+        /// <returns>An IAsyncResult that references the asynchronous invocation.</returns>
+        /// <remarks>
+        /// <para>
+        /// The <i>asyncCallback</i> delegate identifies the callback invoked when the messages are sent, the <i>callback</i> object identifies the callback handling client responses.
+        /// </para>
+        /// <para>
+        /// You can create a callback method that implements the AsyncCallback delegate and pass its name to the BeginInvokeClients method.
+        /// </para>
+        /// <para>
+        /// Your callback method should invoke the EndInvokeClients method. When your application calls BeginInvokeClients, the system will use a separate thread to execute the specified callback method, and will block on EndInvokeClients until the clients are invoked successfully or throws an exception.
+        /// </para>
+        /// </remarks>
         protected IAsyncResult BeginInvokeClients(AsyncCallback asyncCallback, string method, object[] arguments, IPendingServiceCallback callback, bool ignoreSelf, IScope targetScope)
         {
             // Create IAsyncResult object identifying the asynchronous operation
@@ -739,59 +769,6 @@ namespace FluorineFx.Messaging.Adapter
             // Return the IAsyncResult to the caller
             return ar;
         }
-
-        #region InvokeData
-        class InvokeData
-        {
-            FluorineContext _context;
-            string _method;
-            object[] _arguments;
-            IPendingServiceCallback _callback;
-            bool _ignoreSelf;
-            IScope _targetScope;
-
-            public FluorineContext Context
-            {
-                get { return _context; }
-            }
-
-            public string Method
-            {
-                get { return _method; }
-            }
-
-            public object[] Arguments
-            {
-                get { return _arguments; }
-            }
-
-            public IPendingServiceCallback Callback
-            {
-                get { return _callback; }
-            }
-
-            public bool IgnoreSelf
-            {
-                get { return _ignoreSelf; }
-            }
-
-            public IScope TargetScope
-            {
-                get { return _targetScope; }
-            }
-
-
-            public InvokeData(FluorineContext context, string method, object[] arguments, IPendingServiceCallback callback, bool ignoreSelf, IScope targetScope)
-            {
-                _context = context;
-                _method = method;
-                _arguments = arguments;
-                _callback = callback;
-                _ignoreSelf = ignoreSelf;
-                _targetScope = targetScope;
-            }
-        }
-        #endregion InvokeData
 
         private void OnBeginInvokeClients(object asyncResult)
         {
@@ -817,9 +794,21 @@ namespace FluorineFx.Messaging.Adapter
         }
 
         /// <summary>
-        /// Asynchronous version of invoke clients.
+        /// Ends a pending asynchronous client invocation.
         /// </summary>
-        /// <param name="asyncResult"></param>
+        /// <param name="asyncResult">An IAsyncResult that stores state information and any user defined data for this asynchronous operation.</param>
+        /// <remarks>
+        /// <para>
+        /// EndInvokeClients is a blocking method that completes the asynchronous client invocation request started in the BeginInvokeClients method.
+        /// </para>
+        /// <para>
+        /// Before calling BeginInvokeClients, you can create a callback method that implements the AsyncCallback delegate. This callback method executes in a separate thread and is called by the system after BeginInvokeClients returns. 
+        /// The callback method must accept the IAsyncResult returned by the BeginInvokeClients method as a parameter.
+        /// </para>
+        /// <para>Within the callback method you can call the EndInvokeClients method to successfully complete the invocation attempt.</para>
+        /// <para>The BeginInvokeClients enables to use the fire and forget pattern too (by not implementing an AsyncCallback delegate), however if the invocation fails the EndInvokeClients method is responsible to throw an appropriate exception.
+        /// Implementing the callback and calling EndInvokeClients also allows early garbage collection of the internal objects used in the asynchronous call.</para>
+        /// </remarks>
         public void EndInvokeClients(IAsyncResult asyncResult)
         {
             AsyncResultNoResult ar = asyncResult as AsyncResultNoResult;

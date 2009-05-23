@@ -936,6 +936,172 @@ namespace FluorineFx.Messaging.Rtmp
 			Invoke(call);
 		}
         /// <summary>
+        /// Begins an asynchronous operation to invoke a service using service call object and channel.
+        /// </summary>
+        /// <param name="asyncCallback">The AsyncCallback delegate.</param>
+        /// <param name="serviceCall">Service call object.</param>
+        /// <param name="channel">Channel to use.</param>
+        /// <returns>An IAsyncResult that references the asynchronous invocation.</returns>
+        /// <remarks>
+        /// <para>
+        /// You can create a callback method that implements the AsyncCallback delegate and pass its name to the BeginInvoke method.
+        /// </para>
+        /// <para>
+        /// Your callback method should invoke the EndInvoke method. When your application calls BeginInvoke, the system will use a separate thread to execute the specified callback method, and will block on EndInvoke until the client is invoked successfully or throws an exception.
+        /// </para>
+        /// </remarks>        
+        public IAsyncResult BeginInvoke(AsyncCallback asyncCallback, IServiceCall serviceCall, byte channel)
+        {
+            // Create IAsyncResult object identifying the asynchronous operation
+            AsyncResultNoResult ar = new AsyncResultNoResult(asyncCallback, new InvokeData(FluorineContext.Current, serviceCall, channel));
+            // Use a thread pool thread to perform the operation
+            FluorineFx.Threading.ThreadPoolEx.Global.QueueUserWorkItem(new System.Threading.WaitCallback(OnBeginInvoke), ar);
+            // Return the IAsyncResult to the caller
+            return ar;
+        }
+
+        private void OnBeginInvoke(object asyncResult)
+        {
+            AsyncResultNoResult ar = asyncResult as AsyncResultNoResult;
+            try
+            {
+                // Perform the operation; if sucessful set the result
+                InvokeData invokeData = ar.AsyncState as InvokeData;
+                //Restore context
+                FluorineWebSafeCallContext.SetData(FluorineContext.FluorineContextKey, invokeData.Context);
+                Invoke(invokeData.Call, invokeData.Channel);
+                ar.SetAsCompleted(null, false);
+            }
+            catch (Exception ex)
+            {
+                // If operation fails, set the exception
+                ar.SetAsCompleted(ex, false);
+            }
+            finally
+            {
+                FluorineWebSafeCallContext.FreeNamedDataSlot(FluorineContext.FluorineContextKey);
+            }
+        }
+        /// <summary>
+        /// Begins an asynchronous operation to invoke a service using service call object.
+        /// </summary>
+        /// <param name="asyncCallback">The AsyncCallback delegate.</param>
+        /// <param name="serviceCall">Service call object.</param>
+        /// <returns>An IAsyncResult that references the asynchronous invocation.</returns>
+        /// <remarks>
+        /// <para>
+        /// You can create a callback method that implements the AsyncCallback delegate and pass its name to the BeginInvoke method.
+        /// </para>
+        /// <para>
+        /// Your callback method should invoke the EndInvoke method. When your application calls BeginInvoke, the system will use a separate thread to execute the specified callback method, and will block on EndInvoke until the client is invoked successfully or throws an exception.
+        /// </para>
+        /// </remarks>        
+        public IAsyncResult BeginInvoke(AsyncCallback asyncCallback, IServiceCall serviceCall)
+        {
+            return BeginInvoke(asyncCallback, serviceCall, (byte)3);
+        }
+        /// <summary>
+        /// Begins an asynchronous operation to invoke a service by name.
+        /// </summary>
+        /// <param name="asyncCallback">The AsyncCallback delegate.</param>
+        /// <param name="method">Method name.</param>
+        /// <returns>An IAsyncResult that references the asynchronous invocation.</returns>
+        /// <remarks>
+        /// <para>
+        /// You can create a callback method that implements the AsyncCallback delegate and pass its name to the BeginInvoke method.
+        /// </para>
+        /// <para>
+        /// Your callback method should invoke the EndInvoke method. When your application calls BeginInvoke, the system will use a separate thread to execute the specified callback method, and will block on EndInvoke until the client is invoked successfully or throws an exception.
+        /// </para>
+        /// </remarks>
+        public IAsyncResult BeginInvoke(AsyncCallback asyncCallback, string method)
+        {
+            return BeginInvoke(asyncCallback, method, null, null);
+        }
+        /// <summary>
+        /// Begins an asynchronous operation to invoke a service by name and with callback.
+        /// </summary>
+        /// <param name="asyncCallback">The AsyncCallback delegate.</param>
+        /// <param name="method">Method name.</param>
+        /// <param name="callback">Callback used to handle return values.</param>
+        /// <returns>An IAsyncResult that references the asynchronous invocation.</returns>
+        /// <remarks>
+        /// <para>
+        /// You can create a callback method that implements the AsyncCallback delegate and pass its name to the BeginInvoke method.
+        /// </para>
+        /// <para>
+        /// Your callback method should invoke the EndInvoke method. When your application calls BeginInvoke, the system will use a separate thread to execute the specified callback method, and will block on EndInvoke until the client is invoked successfully or throws an exception.
+        /// </para>
+        /// </remarks>
+        public IAsyncResult BeginInvoke(AsyncCallback asyncCallback, string method, IPendingServiceCallback callback)
+        {
+            return BeginInvoke(asyncCallback, method, null, callback);
+        }
+        /// <summary>
+        /// Begins an asynchronous operation to invoke a service by name and with parameters.
+        /// </summary>
+        /// <param name="asyncCallback">The AsyncCallback delegate.</param>
+        /// <param name="method">Method name.</param>
+        /// <param name="parameters">Invocation parameters passed to the method.</param>
+        /// <returns>An IAsyncResult that references the asynchronous invocation.</returns>
+        /// <remarks>
+        /// <para>
+        /// You can create a callback method that implements the AsyncCallback delegate and pass its name to the BeginInvoke method.
+        /// </para>
+        /// <para>
+        /// Your callback method should invoke the EndInvoke method. When your application calls BeginInvoke, the system will use a separate thread to execute the specified callback method, and will block on EndInvoke until the client is invoked successfully or throws an exception.
+        /// </para>
+        /// </remarks>
+        public IAsyncResult BeginInvoke(AsyncCallback asyncCallback, string method, object[] parameters)
+        {
+            return BeginInvoke(asyncCallback, method, parameters, null);
+        }
+        /// <summary>
+        /// Begins an asynchronous operation to invoke a service by name with parameters and callback.
+        /// </summary>
+        /// <param name="asyncCallback">The AsyncCallback delegate.</param>
+        /// <param name="method">Method name.</param>
+        /// <param name="parameters">Invocation parameters passed to the method.</param>
+        /// <param name="callback">Callback used to handle return values.</param>
+        /// <returns>An IAsyncResult that references the asynchronous invocation.</returns>
+        /// <remarks>
+        /// <para>
+        /// You can create a callback method that implements the AsyncCallback delegate and pass its name to the BeginInvoke method.
+        /// </para>
+        /// <para>
+        /// Your callback method should invoke the EndInvoke method. When your application calls BeginInvoke, the system will use a separate thread to execute the specified callback method, and will block on EndInvoke until the client is invoked successfully or throws an exception.
+        /// </para>
+        /// </remarks>
+        public IAsyncResult BeginInvoke(AsyncCallback asyncCallback, string method, object[] parameters, IPendingServiceCallback callback)
+        {
+            IPendingServiceCall call = new PendingCall(method, parameters);
+            if (callback != null)
+                call.RegisterCallback(callback);
+            return BeginInvoke(asyncCallback, call);
+        }
+        /// <summary>
+        /// Ends a pending asynchronous service invocation.
+        /// </summary>
+        /// <param name="asyncResult">An IAsyncResult that stores state information and any user defined data for this asynchronous operation.</param>
+        /// <remarks>
+        /// <para>
+        /// EndInvoke is a blocking method that completes the asynchronous client invocation request started in the BeginInvoke method.
+        /// </para>
+        /// <para>
+        /// Before calling BeginInvoke, you can create a callback method that implements the AsyncCallback delegate. This callback method executes in a separate thread and is called by the system after BeginInvoke returns. 
+        /// The callback method must accept the IAsyncResult returned by the BeginInvoke method as a parameter.
+        /// </para>
+        /// <para>Within the callback method you can call the EndInvoke method to successfully complete the invocation attempt.</para>
+        /// <para>The BeginInvoke enables to use the fire and forget pattern too (by not implementing an AsyncCallback delegate), however if the invocation fails the EndInvoke method is responsible to throw an appropriate exception.
+        /// Implementing the callback and calling EndInvoke also allows early garbage collection of the internal objects used in the asynchronous call.</para>
+        /// </remarks>
+        public void EndInvoke(IAsyncResult asyncResult)
+        {
+            AsyncResultNoResult ar = asyncResult as AsyncResultNoResult;
+            // Wait for operation to complete, then return result or throw exception
+            ar.EndInvoke();
+        }
+        /// <summary>
         /// Notifies service using service call object.
         /// </summary>
         /// <param name="serviceCall">Service call object.</param>
@@ -1228,4 +1394,77 @@ namespace FluorineFx.Messaging.Rtmp
         }
 #endif
     }
+
+    #region InvokeData
+    class InvokeData
+    {
+        FluorineContext _context;
+        string _method;
+        object[] _arguments;
+        IPendingServiceCallback _callback;
+        bool _ignoreSelf;
+        IScope _targetScope;
+        
+        IServiceCall _call;
+        byte _channel;
+
+        public FluorineContext Context
+        {
+            get { return _context; }
+        }
+
+        public string Method
+        {
+            get { return _method; }
+        }
+
+        public object[] Arguments
+        {
+            get { return _arguments; }
+        }
+
+        public IPendingServiceCallback Callback
+        {
+            get { return _callback; }
+        }
+
+        public bool IgnoreSelf
+        {
+            get { return _ignoreSelf; }
+        }
+
+        public IScope TargetScope
+        {
+            get { return _targetScope; }
+        }
+
+        public IServiceCall Call
+        {
+            get { return _call; }
+        }
+
+        public byte Channel
+        {
+            get { return _channel; }
+        }
+
+        public InvokeData(FluorineContext context, string method, object[] arguments, IPendingServiceCallback callback, bool ignoreSelf, IScope targetScope)
+        {
+            _context = context;
+            _method = method;
+            _arguments = arguments;
+            _callback = callback;
+            _ignoreSelf = ignoreSelf;
+            _targetScope = targetScope;
+        }
+
+        public InvokeData(FluorineContext context, IServiceCall call, byte channel)
+        {
+            _context = context;
+            _call = call;
+            _channel = channel;
+        }
+    }
+    #endregion InvokeData
+
 }
