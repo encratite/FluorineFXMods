@@ -77,7 +77,7 @@ namespace FluorineFx.Security
             {
                 IPrincipal principal = _loginCommand.DoAuthentication(username, credentials);
                 if (principal == null)
-                    throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AccessNotAllowed));
+                    throw new SecurityException(__Res.GetString(__Res.Security_AccessNotAllowed));
                 this.Principal = principal;
                 System.Threading.Thread.CurrentPrincipal = principal;
                 // Attach the new principal object to the current Context object
@@ -340,7 +340,7 @@ namespace FluorineFx.Security
         public bool DoAuthorization(string[] roles)
         {
             if (this.Principal == null)
-                throw new UnauthorizedAccessException(__Res.GetString(__Res.Security_AccessNotAllowed));
+                throw new SecurityException(__Res.GetString(__Res.Security_AccessNotAllowed));
             if (_loginCommand != null)
             {
                 bool authorized = _loginCommand.DoAuthorization(this.Principal, roles);
