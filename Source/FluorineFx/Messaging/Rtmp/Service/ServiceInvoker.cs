@@ -170,7 +170,7 @@ namespace FluorineFx.Messaging.Rtmp.Service
             if (mi == null)
             {
                 // Second, search for method with type conversions
-                mi = MethodHandler.GetMethod(service.GetType(), serviceMethod, arguments, false, false, false);
+                mi = MethodHandler.GetMethod(service.GetType(), serviceMethod, arguments, false, false, true);
                 if (mi == null)
                 {
                     string msg = __Res.GetString(__Res.Invocation_NoSuitableMethod, serviceMethod);
