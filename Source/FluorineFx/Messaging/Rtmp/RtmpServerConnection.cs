@@ -173,6 +173,7 @@ namespace FluorineFx.Messaging.Rtmp
         #region Network IO
         public void BeginReceive(bool IOCPThread)
         {
+            log4net.ThreadContext.Properties["ClientIP"] = this.RemoteEndPoint;
             if (log.IsDebugEnabled)
                 log.Debug(__Res.GetString(__Res.Rtmp_SocketBeginReceive, _connectionId, IOCPThread));
 
@@ -185,6 +186,7 @@ namespace FluorineFx.Messaging.Rtmp
 
         public void BeginReceiveCallbackProcessing(object state)
         {
+            log4net.ThreadContext.Properties["ClientIP"] = this.RemoteEndPoint;
             _lock.AcquireReaderLock();
             try
             {
@@ -213,6 +215,7 @@ namespace FluorineFx.Messaging.Rtmp
 
         private void BeginReadCallbackProcessing(IAsyncResult ar)
         {
+            log4net.ThreadContext.Properties["ClientIP"] = this.RemoteEndPoint;
             byte[] buffer = ar.AsyncState as byte[];
             _lock.AcquireReaderLock();
             try
@@ -258,6 +261,7 @@ namespace FluorineFx.Messaging.Rtmp
 
         private void OnReceivedCallback(object state)
         {
+            log4net.ThreadContext.Properties["ClientIP"] = this.RemoteEndPoint;
             _lock.AcquireReaderLock();
             try
             {
@@ -403,6 +407,7 @@ namespace FluorineFx.Messaging.Rtmp
 
         internal void BeginDisconnect()
         {
+            log4net.ThreadContext.Properties["ClientIP"] = this.RemoteEndPoint;
             _lock.AcquireReaderLock();
             try
             {
@@ -430,6 +435,7 @@ namespace FluorineFx.Messaging.Rtmp
 
         private void OnDisconnectCallback(object state)
         {
+            log4net.ThreadContext.Properties["ClientIP"] = this.RemoteEndPoint;
             _lock.AcquireReaderLock();
             try
             {

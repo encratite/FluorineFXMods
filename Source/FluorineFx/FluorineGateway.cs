@@ -373,7 +373,7 @@ namespace FluorineFx
                 try
                 {
                     log = LogManager.GetLogger(typeof(FluorineGateway));
-                    log4net.GlobalContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
+                    log4net.ThreadContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
                 }
                 catch { }
                 if (log != null && log.IsDebugEnabled)
@@ -413,7 +413,7 @@ namespace FluorineFx
                 try
                 {
                     log = LogManager.GetLogger(typeof(FluorineGateway));
-                    log4net.GlobalContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
+                    log4net.ThreadContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
                 }
                 catch { }
                 if (log != null && log.IsDebugEnabled)
@@ -455,7 +455,7 @@ namespace FluorineFx
 				try
 				{
 					log = LogManager.GetLogger(typeof(FluorineGateway));
-                    log4net.GlobalContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
+                    log4net.ThreadContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
 				}
 				catch{}
 				if (log != null && log.IsDebugEnabled)
@@ -509,7 +509,7 @@ namespace FluorineFx
                 try
                 {
                     log = LogManager.GetLogger(typeof(FluorineGateway));
-                    log4net.GlobalContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
+                    log4net.ThreadContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
                 }
                 catch { }
                 if (log != null && log.IsDebugEnabled)
@@ -558,7 +558,7 @@ namespace FluorineFx
                 try
                 {
                     log = LogManager.GetLogger(typeof(FluorineGateway));
-                    log4net.GlobalContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
+                    log4net.ThreadContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
                 }
                 catch { }
                 if (log != null && log.IsDebugEnabled)
