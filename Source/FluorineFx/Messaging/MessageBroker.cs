@@ -452,6 +452,12 @@ namespace FluorineFx.Messaging
                             log.Debug(uae.Message);
                         result = ErrorMessage.GetErrorMessage(message, uae);
                     }
+                    catch (SecurityException exception)
+                    {
+                        if (log.IsDebugEnabled)
+                            log.Debug(exception.Message);
+                        responseMessage = ErrorMessage.GetErrorMessage(message, exception);
+                    }
                     catch (ServiceException exception)
                     {
                         if (log.IsDebugEnabled)
