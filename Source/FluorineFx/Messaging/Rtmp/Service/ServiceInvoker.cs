@@ -19,10 +19,9 @@
 using System;
 using System.Collections;
 using System.Reflection;
-// Import log4net classes.
+using System.Security;
 using log4net;
 using log4net.Config;
-
 using FluorineFx.Invocation;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
@@ -36,18 +35,12 @@ namespace FluorineFx.Messaging.Rtmp.Service
 	class ServiceInvoker : IServiceInvoker
 	{
 		public static string SERVICE_NAME = "serviceInvoker";
-		
-		private ILog	_log;
+        static ILog log = LogManager.GetLogger(typeof(ServiceInvoker));
 		//IServiceResolver
 		private ArrayList _serviceResolvers = new ArrayList();
 
 		public ServiceInvoker()
 		{
-			try
-			{
-				_log = LogManager.GetLogger(typeof(ServiceInvoker));
-			}
-			catch{}
 		}
 
 		public void SetServiceResolvers(ArrayList resolvers) 
@@ -67,20 +60,35 @@ namespace FluorineFx.Messaging.Rtmp.Service
 			if(serviceName == null || serviceName == string.Empty) 
 			{
 				// No service requested, return application scope handler
-				return service;
+                if (log.IsDebugEnabled)
+                {
+                    if( service != null )
+                        log.Debug(__Res.GetString(__Res.ServiceInvoker_Resolve, "[scope handler]", service.GetType().FullName, scope.Name));
+                }
+                if (log.IsErrorEnabled)
+                {
+                    if (service == null)
+                        log.Error(__Res.GetString(__Res.ServiceInvoker_ResolveFail, "[scope handler]", scope.Name));
+                }
+                return service;
 			}
-
 			// Search service resolver that knows about service name
 			if( _serviceResolvers != null )
 			{
 				foreach(IServiceResolver resolver in _serviceResolvers) 
 				{
 					service = resolver.ResolveService(scope, serviceName);
-					if (service != null) 
-						return service;
+                    if (service != null)
+                    {
+                        if (log.IsDebugEnabled)
+                            log.Debug(__Res.GetString(__Res.ServiceInvoker_Resolve, serviceName, service.GetType().FullName, scope.Name));
+                        return service;
+                    }
 				}
 			}
 			// Requested service does not exist.
+            if (log.IsErrorEnabled)
+                log.Error(__Res.GetString(__Res.ServiceInvoker_ResolveFail, serviceName, scope.Name));
 			return null;
 		}
 
@@ -89,20 +97,14 @@ namespace FluorineFx.Messaging.Rtmp.Service
 		public bool Invoke(IServiceCall call, IScope scope)
 		{
 			string serviceName = call.ServiceName;
-			_log.Debug("Service name " + serviceName);
 			object service = GetServiceHandler(scope, serviceName);
 
 			if (service == null) 
 			{
 				call.Exception = new ServiceNotFoundException(serviceName);
 				call.Status = Call.STATUS_SERVICE_NOT_FOUND;
-				_log.Warn("Service not found: " + serviceName);
 				return false;
 			} 
-			else 
-			{
-				_log.Debug("Service found: " + serviceName);
-			}
 			return Invoke(call, service);
 		}
 
@@ -170,21 +172,19 @@ namespace FluorineFx.Messaging.Rtmp.Service
             if (mi == null)
             {
                 // Second, search for method with type conversions
+                // This second call will trace 'suitable method' errors too
                 mi = MethodHandler.GetMethod(service.GetType(), serviceMethod, arguments, false, false, true);
                 if (mi == null)
                 {
                     string msg = __Res.GetString(__Res.Invocation_NoSuitableMethod, serviceMethod);
                     call.Status = Call.STATUS_METHOD_NOT_FOUND;
-                    call.Exception = new FluorineException(msg);//MissingMethodException(service.GetType().Name, serviceMethod);
-                    //_log.Error("Method " + serviceMethod + " not found in " + service);
-                    _log.Error(msg, call.Exception);
+                    call.Exception = new FluorineException(msg);
                     return false;
                 }
             }
 
             try
             {
-                _log.Debug("Invoking method: " + mi.Name);
                 ParameterInfo[] parameterInfos = mi.GetParameters();
                 object[] parameters = new object[parameterInfos.Length];
                 arguments.CopyTo(parameters, 0);
@@ -206,28 +206,36 @@ namespace FluorineFx.Messaging.Rtmp.Service
                 if (call is IPendingServiceCall)
                     (call as IPendingServiceCall).Result = result;
             }
-            catch (System.Security.SecurityException exception)
+            catch (SecurityException exception)
             {
                 call.Exception = exception;
                 call.Status = Call.STATUS_ACCESS_DENIED;
-                _log.Error("Error executing call: " + call);
-                _log.Error("Service invocation error", exception);
+                if (log.IsDebugEnabled)
+                    log.Debug(exception.Message);
+                return false;
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                call.Exception = exception;
+                call.Status = Call.STATUS_ACCESS_DENIED;
+                if (log.IsDebugEnabled)
+                    log.Debug(exception.Message);
                 return false;
             }
             catch (TargetInvocationException exception)
             {
-                call.Exception = exception;
+                call.Exception = exception.InnerException;
                 call.Status = Call.STATUS_INVOCATION_EXCEPTION;
-                _log.Error("Error executing call: " + call);
-                _log.Error("Service invocation error", exception);
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.Invocation_Failed, mi.Name, exception.InnerException.Message));
                 return false;
             }
             catch (Exception exception)
             {
                 call.Exception = exception;
                 call.Status = Call.STATUS_GENERAL_EXCEPTION;
-                _log.Error("Error executing call: " + call);
-                _log.Error("Service invocation error", exception);
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.Invocation_Failed, mi.Name, exception.Message));
                 return false;
             }
             return true;

@@ -134,7 +134,7 @@ namespace FluorineFx.Messaging.Rtmp
         /// <returns>A string that represents the current RtmpChannel object.</returns>
         public override string ToString()
 		{
-			return "RtmpChannel " + _channelId;
+            return "RTMP Channel " + _channelId;
 		}
 
 	}

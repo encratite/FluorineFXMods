@@ -63,5 +63,10 @@ namespace FluorineFx.Messaging.Rtmp
             base.Close();
             _socket.Close();
         }
+
+        public virtual bool DataAvailable 
+        {
+            get { return (this.InnerStream as NetworkStream).DataAvailable; }
+        }
     }
 }

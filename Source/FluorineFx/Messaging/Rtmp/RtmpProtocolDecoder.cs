@@ -46,16 +46,26 @@ namespace FluorineFx.Messaging.Rtmp
 #if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(RtmpProtocolDecoder));
 #endif
+        /// <summary>
+        /// RTMP handshake size.
+        /// </summary>
 		public const int HandshakeSize = 1536;
 
 		static RtmpProtocolDecoder()
 		{
 		}
-
+        /// <summary>
+        /// Initializes a new instance of the RtmpProtocolDecoder class.
+        /// </summary>
 		public RtmpProtocolDecoder()
 		{
 		}
-
+        /// <summary>
+        /// Decode channel id.
+        /// </summary>
+        /// <param name="headerByte">Header byte.</param>
+        /// <param name="byteCount">Byte count.</param>
+        /// <returns>Channel id.</returns>
 		public static byte DecodeChannelId(int headerByte, int byteCount) 
 		{
 			if (byteCount == 1) 
@@ -65,7 +75,12 @@ namespace FluorineFx.Messaging.Rtmp
 			else
 				return (byte)(64 + ((headerByte >> 8) & 0xff) + ((headerByte & 0xff) << 8));
 		}
-
+        /// <summary>
+        /// Decode header size.
+        /// </summary>
+        /// <param name="headerByte">Header byte.</param>
+        /// <param name="byteCount">Byte count.</param>
+        /// <returns>Header size.</returns>
 		public static byte DecodeHeaderSize(int headerByte, int byteCount) 
 		{
 			if (byteCount == 1) 
@@ -75,7 +90,11 @@ namespace FluorineFx.Messaging.Rtmp
 			else 
 				return (byte)(headerByte >> 22);
 		}
-
+        /// <summary>
+        /// Returns the header length from marker value.
+        /// </summary>
+        /// <param name="headerSize">Header size marker value.</param>
+        /// <returns>The header length.</returns>
 		public static int GetHeaderLength(byte headerSize) 
 		{
 			switch((HeaderType)headerSize) 
@@ -94,6 +113,12 @@ namespace FluorineFx.Messaging.Rtmp
 		}
 
 #if !(NET_1_1)
+        /// <summary>
+        /// Decodes all available objects in the buffer.
+        /// </summary>
+        /// <param name="context">State for the protocol.</param>
+        /// <param name="stream">Buffer of data to be decoded.</param>
+        /// <returns>A list of decoded objects, may be empty if nothing could be decoded.</returns>
 		public static List<object> DecodeBuffer(RtmpContext context, ByteBuffer stream)
 #else
         public static ArrayList DecodeBuffer(RtmpContext context, ByteBuffer stream)
@@ -201,7 +226,12 @@ namespace FluorineFx.Messaging.Rtmp
 					return null;
 			}
 		}
-
+        /// <summary>
+        /// Decodes handshake message.
+        /// </summary>
+        /// <param name="context">RTMP protocol state.</param>
+        /// <param name="stream">Buffer to be decoded.</param>
+        /// <returns>Buffer with handshake response.</returns>
 		public static object DecodeHandshake(RtmpContext context, ByteBuffer stream) 
 		{
 			long remaining = stream.Remaining;
@@ -292,7 +322,12 @@ namespace FluorineFx.Messaging.Rtmp
 			}
 			return null;
 		}
-
+        /// <summary>
+        /// Decodes a RTMP packet.
+        /// </summary>
+        /// <param name="context">RTMP protocol state.</param>
+        /// <param name="stream">Buffer to be decoded.</param>
+        /// <returns>The decoded RTMP packet.</returns>
 		public static RtmpPacket DecodePacket(RtmpContext context, ByteBuffer stream)
 		{
 			int remaining = stream.Remaining;
@@ -368,7 +403,7 @@ namespace FluorineFx.Messaging.Rtmp
 
 			RtmpHeader header = DecodeHeader(context, context.GetLastReadHeader(channelId), stream);
 #if !SILVERLIGHT
-            log.Debug("Decoded header " + header);
+            log.Debug("Decoded " + header);
 #endif
 
 			if (header == null) 
@@ -376,7 +411,7 @@ namespace FluorineFx.Messaging.Rtmp
 
 			// Save the header
 			context.SetLastReadHeader(channelId, header);
-			// Check to see if this is a new packets or continue decoding an existing one.
+			// Check to see if this is a new packet or continue decoding an existing one.
 			RtmpPacket packet = context.GetLastReadPacket(channelId);
 			if(packet == null) 
 			{
@@ -437,9 +472,19 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 context.SetLastReadPacket(channelId, null);
             }
+            if (log.IsDebugEnabled)
+            {
+                log.Debug("Decoded " + packet.ToString());
+            }
 			return packet;
 		}
-
+        /// <summary>
+        /// Decodes RTMP packet header.
+        /// </summary>
+        /// <param name="context">RTMP protocol state.</param>
+        /// <param name="lastHeader">Previous header.</param>
+        /// <param name="stream">Buffer to be decoded.</param>
+        /// <returns>Decoded RTMP header.</returns>
 		public static RtmpHeader DecodeHeader(RtmpContext context, RtmpHeader lastHeader, ByteBuffer stream)
 		{
 			byte headerByte = stream.Get();
@@ -515,7 +560,13 @@ namespace FluorineFx.Messaging.Rtmp
 
 			return header;
 		}
-
+        /// <summary>
+        /// Decodes RTMP message event.
+        /// </summary>
+        /// <param name="context">RTMP protocol state.</param>
+        /// <param name="header">RTMP header.</param>
+        /// <param name="stream">Buffer to be decoded.</param>
+        /// <returns>Decoded RTMP event.</returns>
 		public static IRtmpEvent DecodeMessage(RtmpContext context, RtmpHeader header, ByteBuffer stream)
 		{
 			IRtmpEvent message = null;

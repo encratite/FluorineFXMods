@@ -129,13 +129,16 @@ namespace FluorineFx.Messaging.Rtmp
         public void MessageReceived(RtmpConnection connection, object obj)
         {
             IRtmpEvent message = null;
+            RtmpPacket packet = null;
+            RtmpHeader header = null;
+            RtmpChannel channel = null;
+            IClientStream stream = null;
             try
             {
-                RtmpPacket packet = obj as RtmpPacket;
+                packet = obj as RtmpPacket;
                 message = packet.Message;
-                RtmpHeader header = packet.Header;
-                RtmpChannel channel = connection.GetChannel(header.ChannelId);
-                IClientStream stream = null;
+                header = packet.Header;
+                channel = connection.GetChannel(header.ChannelId);
                 if( connection is IStreamCapableConnection )
                     stream = (connection as IStreamCapableConnection).GetStreamById(header.StreamId);
 
@@ -227,7 +230,13 @@ namespace FluorineFx.Messaging.Rtmp
             catch (Exception ex)
             {
 #if !SILVERLIGHT
-                log.Error("Runtime error", ex);
+                if (log.IsErrorEnabled)
+                {
+                    log.Error(__Res.GetString(__Res.Rtmp_HandlerError), ex);
+                    log.Error(__Res.GetString(__Res.Error_ContextDump));
+                    log.Error(Environment.NewLine);
+                    log.Error(packet);
+                }
 #endif
             }
         }

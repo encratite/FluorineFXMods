@@ -96,6 +96,9 @@ namespace FluorineFx.Messaging.Rtmp
                 {
                     //Get accepted socket
                     Socket acceptedSocket = listener.Socket.EndAccept(ar);
+                    if (acceptedSocket.Connected == false)
+                        return;
+
 #if !(NET_1_1)
                     acceptedSocket.NoDelay = FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpTransportSettings.TcpNoDelay;//true;
 #endif

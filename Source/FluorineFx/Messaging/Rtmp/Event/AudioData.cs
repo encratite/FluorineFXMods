@@ -32,12 +32,15 @@ namespace FluorineFx.Messaging.Rtmp.Event
     [CLSCompliant(false)]
 	public class AudioData : BaseEvent, IStreamData, IStreamPacket
 	{
+        /// <summary>
+        /// Audio data.
+        /// </summary>
 		protected ByteBuffer _data;
 
         /// <summary>
         /// Initializes a new instance of the AudioData class.
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="data">AudioData buffer.</param>
 		public AudioData(ByteBuffer data):base(EventType.STREAM_DATA)
 		{
 			_dataType = Constants.TypeAudioData;
@@ -52,27 +55,35 @@ namespace FluorineFx.Messaging.Rtmp.Event
         /// <summary>
         /// Initializes a new instance of the AudioData class.
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="data">AudioData buffer.</param>
         public AudioData(byte[] data)
             : this(ByteBuffer.Wrap(data))
         {
         }
-        /// <summary>
-        /// Returns a string that represents the current AudioData object.
-        /// </summary>
-        /// <returns>A string that represents the current AudioData object.</returns>
-        public override string ToString()
-		{
-			return "Audio  ts: " + this.Header.Timer;
-		}
 
 		#region IStreamData Members
 
-		public ByteBuffer Data
+        /// <summary>
+        /// Gets audio data buffer.
+        /// </summary>
+        public ByteBuffer Data
 		{
 			get{ return _data; }
 		}
 
 		#endregion
+
+        /// <summary>
+        /// Returns a string that represents the current object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the members.</param>
+        /// <returns>A string that represents the current object fields.</returns>
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = base.ToStringFields(indentLevel);
+            value += sep + "data = " + (_data != null ? "buffer(" + _data.Length + ")" : "(null)");
+            return value;
+        }
 	}
 }

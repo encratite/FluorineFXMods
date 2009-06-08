@@ -20,6 +20,8 @@ using System;
 using System.Collections;
 #if SILVERLIGHT
 using System.Collections.Generic;
+#else
+using log4net;
 #endif
 
 //TODO This class should have a generic version for !(NET_1_1)
@@ -31,6 +33,8 @@ namespace FluorineFx.Util
     /// </summary>
     abstract class ObjectPool : DisposableBase
     {
+        private static ILog log = LogManager.GetLogger(typeof(ObjectPool));
+
         private bool _forceGC = true;
         private int _growth = 10;
 #if SILVERLIGHT
@@ -111,6 +115,7 @@ namespace FluorineFx.Util
         {
             if (!IsDisposed)
             {
+                log.Debug(string.Format("ObjectPool creating {0} pooled objects", count));
                 if (_forceGC)
                     GC.Collect();
                 for (int i = 1; i <= count; i++)

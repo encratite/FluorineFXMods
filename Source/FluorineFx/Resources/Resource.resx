@@ -730,7 +730,7 @@
     <value>{0} Socket send</value>
   </data>
   <data name="Rtmp_WritePacket" xml:space="preserve">
-    <value>{0} Write RTMP packet {1}</value>
+    <value>{0} Write {1}</value>
   </data>
   <data name="MessageBroker_RoutingMessage" xml:space="preserve">
     <value>Routing message {0} </value>
@@ -749,5 +749,17 @@
   </data>
   <data name="Optimizer_Warning" xml:space="preserve">
     <value>Reflection optimizer problem detected. Please turn off the reflection optimizer in the configuration file and check your log file for further information</value>
+  </data>
+  <data name="Error_ContextDump" xml:space="preserve">
+    <value>Error context dump</value>
+  </data>
+  <data name="Rtmp_HandlerError" xml:space="preserve">
+    <value>RTMP handler runtime error</value>
+  </data>
+  <data name="ServiceInvoker_Resolve" xml:space="preserve">
+    <value>Requested service {0} found {1} in scope {2}</value>
+  </data>
+  <data name="ServiceInvoker_ResolveFail" xml:space="preserve">
+    <value>Requested service {0} was not found  in scope {1}</value>
   </data>
 </root>

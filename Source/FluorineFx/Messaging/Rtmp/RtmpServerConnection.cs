@@ -48,6 +48,7 @@ using FluorineFx.Scheduling;
 
 namespace FluorineFx.Messaging.Rtmp
 {
+    /*
     class SocketBufferPool
     {
         private static BufferPool bufferPool;
@@ -68,7 +69,7 @@ namespace FluorineFx.Messaging.Rtmp
             }
         }
     }
-
+    */
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
@@ -169,6 +170,7 @@ namespace FluorineFx.Messaging.Rtmp
 
         public IEndpoint Endpoint { get { return _endpoint; } }
 
+        internal BufferPool SocketBufferPool { get { return _rtmpServer.BufferPool; } }
 
         #region Network IO
         public void BeginReceive(bool IOCPThread)
@@ -203,12 +205,12 @@ namespace FluorineFx.Messaging.Rtmp
             byte[] buffer = null;
             try
             {
-                buffer = SocketBufferPool.Pool.CheckOut();
+                buffer = SocketBufferPool.CheckOut();
                 _rtmpNetworkStream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginReadCallbackProcessing), buffer);
             }
             catch (Exception ex)
             {
-                SocketBufferPool.Pool.CheckIn(buffer);
+                SocketBufferPool.CheckIn(buffer);
                 HandleError(ex);
             }
         }
@@ -222,7 +224,7 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 if (IsClosed || IsClosing)
                 {
-                    SocketBufferPool.Pool.CheckIn(buffer);
+                    SocketBufferPool.CheckIn(buffer);
                     return; // Already shutting down.
                 }
             }
@@ -241,6 +243,12 @@ namespace FluorineFx.Messaging.Rtmp
                 if (readBytes > 0)
                 {
                     _readBuffer.Append(buffer, 0, readBytes);
+                    while (_rtmpNetworkStream.DataAvailable)
+                    {
+                        readBytes = _rtmpNetworkStream.Read(buffer, 0, buffer.Length);
+                        _readBuffer.Append(buffer, 0, readBytes);
+                        _readBytes.Increment(readBytes);
+                    }
                     //Leave IOCP thread
                     ThreadPoolEx.Global.QueueUserWorkItem(new WaitCallback(OnReceivedCallback), null);
                 }
@@ -255,7 +263,7 @@ namespace FluorineFx.Messaging.Rtmp
             }
             finally
             {
-                SocketBufferPool.Pool.CheckIn(buffer);
+                SocketBufferPool.CheckIn(buffer);
             }
         }
 
@@ -538,7 +546,7 @@ namespace FluorineFx.Messaging.Rtmp
                 _lock.ReleaseReaderLock();
             }
             if (log.IsDebugEnabled)
-                log.Debug(__Res.GetString(__Res.Rtmp_WritePacket, _connectionId, packet.Header));
+                log.Debug(__Res.GetString(__Res.Rtmp_WritePacket, _connectionId, packet));
 
             if (!this.IsTunneled)
             {

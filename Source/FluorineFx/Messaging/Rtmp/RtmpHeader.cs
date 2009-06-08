@@ -18,6 +18,7 @@
 */
 using System;
 using System.Text;
+using FluorineFx.Messaging.Messages;
 
 namespace FluorineFx.Messaging.Rtmp
 {
@@ -129,13 +130,51 @@ namespace FluorineFx.Messaging.Rtmp
         /// <returns>A string that represents the current RtmpHeader object.</returns>
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("ChannelId: ").Append(_channelId).Append(", ");
-            sb.Append("Timer: ").Append(_timer).Append(" (" + (_timerRelative ? "relative" : "absolute") + ')').Append(", ");
-            sb.Append("Size: ").Append(_size).Append(", ");
-            sb.Append("DateType: ").Append(_headerDataType).Append(", ");
-            sb.Append("StreamId: ").Append(_streamId);
-            return sb.ToString();
+            return ToString(1);
         }
+        /// <summary>
+        /// Returns a string that represents the current RtmpHeader object.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the header members.</param>
+        /// <returns>A string that represents the current RtmpHeader object.</returns>
+        public string ToString(int indentLevel)
+        {
+            return ToStringHeader(indentLevel) + ToStringFields(indentLevel + 1);
+        }
+        /// <summary>
+        /// Returns a header string that represents the current RtmpHeader object.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the header members.</param>
+        /// <returns>A header string that represents the current RtmpHeader object.</returns>
+        private string ToStringHeader(int indentLevel)
+        {
+            string value = "RTMP Header";
+            return value;
+        }
+        /// <summary>
+        /// Returns a string that represents the current RtmpHeader object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the header members.</param>
+        /// <returns>A string that represents the current RtmpHeader object fields.</returns>
+        internal string ToStringFields(int indentLevel)
+        {
+            String sep = MessageBase.GetFieldSeparator(indentLevel);
+            String value = sep + "channelId = " + _channelId;
+            value += sep + "timer = " + _timer + " (" + (_timerRelative ? "relative" : "absolute") + ")";
+            value += sep + "size = " + _size;
+            value += sep + "streamId = " + _streamId;
+            value += sep + "dateType = " + _headerDataType + " (" + HeaderTypeToString(_headerDataType) + ")";
+            return value;
+        }
+
+        static string[] HeaderTypeNames = { "unknown", "chunk_size", "unknown2", "bytes_read", "ping", "server_bw", "client_bw", "unknown7", "audio", "video", "unknown10", "unknown11", "unknown12", "unknown13", "unknown14", "flex_stream", "flex_shared_object", "flex_message", "notify", "shared_object", "invoke" };
+
+        private static string HeaderTypeToString(int type)
+        {
+            if (type < 0 || type >= HeaderTypeNames.Length)
+                return "invalid header type";
+            return HeaderTypeNames[type];
+        }
+
 	}
 }

@@ -32,7 +32,22 @@ namespace FluorineFx.Messaging.Rtmp.Event
 	/// </summary>
 	public enum FrameType 
 	{
-		Unknown, Keyframe, Interframe, DisposableInterframe
+        /// <summary>
+        /// Unknow frame type.
+        /// </summary>
+		Unknown, 
+        /// <summary>
+        /// Keyframe.
+        /// </summary>
+        Keyframe, 
+        /// <summary>
+        /// Inter frame.
+        /// </summary>
+        Interframe,
+        /// <summary>
+        /// Disposable inter frame.
+        /// </summary>
+        DisposableInterframe
 	}
 
 	/// <summary>
@@ -49,7 +64,11 @@ namespace FluorineFx.Messaging.Rtmp.Event
 		/// Frame type, unknown by default.
 		/// </summary>
 		FrameType _frameType = FrameType.Unknown;
-
+        
+        /// <summary>
+        /// Initializes a new instance of the VideoData class.
+        /// </summary>
+        /// <param name="data">VideoData buffer.</param>
 		public VideoData(ByteBuffer data):base(EventType.STREAM_DATA)
 		{
 			_dataType = Constants.TypeVideoData;
@@ -70,33 +89,52 @@ namespace FluorineFx.Messaging.Rtmp.Event
 					_frameType = FrameType.Unknown;
 			}
 		}
-
+        /// <summary>
+        /// Initializes a new instance of the VideoData class.
+        /// </summary>
 		public VideoData():this(ByteBuffer.Allocate(0))
 		{
 		}
-
+        /// <summary>
+        /// Initializes a new instance of the VideoData class.
+        /// </summary>
+        /// <param name="data">VideoData buffer.</param>
         public VideoData(byte[] data)
             : this(ByteBuffer.Wrap(data))
         {
         }
-
+        /// <summary>
+        /// Gets video frame type.
+        /// </summary>
 		public FrameType FrameType 
 		{
 			get{ return _frameType; }
 		}
 
-		public override string ToString()
-		{
-			return "Video ts: " + this.Header.Timer;
-		}
-
 		#region IStreamData Members
 
+        /// <summary>
+        /// Gets video data buffer.
+        /// </summary>
 		public ByteBuffer Data
 		{
 			get{ return _data; }
 		}
 
 		#endregion
+
+        /// <summary>
+        /// Returns a string that represents the current object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the members.</param>
+        /// <returns>A string that represents the current object fields.</returns>
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = base.ToStringFields(indentLevel);
+            value += sep + "frame = " + Enum.GetName(typeof(FrameType), this.FrameType);
+            value += sep + "data = " + (_data != null ? "buffer(" + _data.Length + ")" : "(null)");
+            return value;
+        }
 	}
 }

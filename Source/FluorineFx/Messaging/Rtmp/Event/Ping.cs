@@ -137,12 +137,19 @@ namespace FluorineFx.Messaging.Rtmp.Event
 			set{ _value4 = value; }
 		}
         /// <summary>
-        /// Returns a string that represents the current Ping object.
+        /// Returns a string that represents the current object fields.
         /// </summary>
-        /// <returns>A string that represents the current Ping object.</returns>
-        public override string ToString()
-		{
-			return "Ping: " + _value1 + ", " + _value2 + ", " + _value3 + ", " + _value4;
-		}
+        /// <param name="indentLevel">The indentation level used for tracing the members.</param>
+        /// <returns>A string that represents the current object fields.</returns>
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = base.ToStringFields(indentLevel);
+            value += sep + "value1 = " + _value1;
+            value += sep + "value2 = " + _value2;
+            value += sep + "value3 = " + _value3;
+            value += sep + "value4 = " + _value4;
+            return value;
+        }
 	}
 }

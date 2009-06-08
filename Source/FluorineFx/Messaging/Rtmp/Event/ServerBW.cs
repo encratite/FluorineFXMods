@@ -44,12 +44,16 @@ namespace FluorineFx.Messaging.Rtmp.Event
 			set{ _bandwidth = value; }
 		}
         /// <summary>
-        /// Returns a string that represents the current ServerBW object.
+        /// Returns a string that represents the current object fields.
         /// </summary>
-        /// <returns>A string that represents the current ServerBW object.</returns>
-		public override string ToString()
-		{
-			return "ServerBW: " + _bandwidth;
-		}
+        /// <param name="indentLevel">The indentation level used for tracing the members.</param>
+        /// <returns>A string that represents the current object fields.</returns>
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = base.ToStringFields(indentLevel);
+            value += sep + "bandwidth = " + _bandwidth;
+            return value;
+        }
 	}
 }

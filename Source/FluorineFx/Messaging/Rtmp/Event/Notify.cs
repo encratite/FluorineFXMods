@@ -107,5 +107,26 @@ namespace FluorineFx.Messaging.Rtmp.Event
 			get{ return _connectionParameters; }
 			set{ _connectionParameters = value; }
 		}
+        /// <summary>
+        /// Returns a string that represents the current object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the members.</param>
+        /// <returns>A string that represents the current object fields.</returns>
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = base.ToStringFields(indentLevel);
+            value += sep + "invokeId = " + _invokeId;
+            if (_serviceCall != null)
+            {
+                value += sep + "service = " + _serviceCall.ServiceName;
+                value += sep + "operation = " + _serviceCall.ServiceMethodName;
+                if (_serviceCall.Arguments != null)
+                    value += sep + "parameters = " + BodyToString(_serviceCall.Arguments, indentLevel + 1);
+            }
+            if (_connectionParameters != null)
+                value += sep + "connectionParameters = " + BodyToString(_connectionParameters, indentLevel + 1);
+            return value;
+        }
 	}
 }

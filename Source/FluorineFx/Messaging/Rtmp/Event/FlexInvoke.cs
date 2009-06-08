@@ -35,7 +35,6 @@ namespace FluorineFx.Messaging.Rtmp.Event
 		string _cmd;
 		object _cmdData;
 		object[] _parameters;
-		//IMessage	_response;
 		object	_response;
 
         internal FlexInvoke()
@@ -58,38 +57,65 @@ namespace FluorineFx.Messaging.Rtmp.Event
 		{
             _dataType = Constants.TypeFlexInvoke;
 		}
-
+        /// <summary>
+        /// Gets or sets the parameters.
+        /// </summary>
 		public object[] Parameters
 		{ 
 			get{ return _parameters; } 
 			set{ _parameters = value; } 
 		}
-
+        /// <summary>
+        /// Gets or sets the command.
+        /// </summary>
 		public string Cmd
 		{ 
 			get{ return _cmd; } 
 			set{ _cmd = value; }
 		}
-		
+		/// <summary>
+		/// Gets or sets the command data.
+		/// </summary>
 		public object CmdData
 		{ 
 			get{ return _cmdData; } 
 		}
-
+        /// <summary>
+        /// Gets or sets the response object.
+        /// </summary>
 		public object Response
 		{
 			get{ return _response; } 
 			set{ _response = value; } 
 		}
-		
+		/// <summary>
+		/// Sets success response.
+		/// </summary>
 		public void SetResponseSuccess()
 		{
 			_cmd = "_result";
 		}
-
+        /// <summary>
+        /// Sets failure response.
+        /// </summary>
 		public void SetResponseFailure()
 		{
 			_cmd = "_error";
-		}		
+		}
+        /// <summary>
+        /// Returns a string that represents the current object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the members.</param>
+        /// <returns>A string that represents the current object fields.</returns>
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = base.ToStringFields(indentLevel);
+            value += sep + "cmd = " + BodyToString(_cmd, indentLevel + 1);
+            value += sep + "cmdData = " + _cmdData;
+            value += sep + "parameters = " + BodyToString(_parameters, indentLevel + 1);
+            value += sep + "response = " + BodyToString(_response, indentLevel + 1);
+            return value;
+        }
 	}
 }

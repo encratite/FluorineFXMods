@@ -86,6 +86,7 @@ namespace FluorineFx
         internal const string Rtmp_BeginDisconnect = "Rtmp_BeginDisconnect";
         internal const string Rtmp_WritePacket = "Rtmp_WritePacket";
         internal const string Rtmp_SocketSend = "Rtmp_SocketSend";
+        internal const string Rtmp_HandlerError = "Rtmp_HandlerError";
 
         internal const string PushNotSupported = "PushNotSupported";
 
@@ -243,6 +244,9 @@ namespace FluorineFx
         internal const string Invocation_ParameterType = "Invocation_ParameterType";
         internal const string Invocation_Failed = "Invocation_Failed";
 
+        internal const string ServiceInvoker_Resolve = "ServiceInvoker_Resolve";
+        internal const string ServiceInvoker_ResolveFail = "ServiceInvoker_ResolveFail";
+
         internal const string Reflection_MemberNotFound = "Reflection_MemberNotFound";
         internal const string Reflection_PropertyReadOnly = "Reflection_PropertyReadOnly";
         internal const string Reflection_PropertySetFail = "Reflection_PropertySetFail";
@@ -290,6 +294,8 @@ namespace FluorineFx
         internal const string Optimizer_Fatal = "Optimizer_Fatal";
         internal const string Optimizer_Warning = "Optimizer_Warning";
         internal const string Optimizer_FileLocation = "Optimizer_FileLocation";
+
+        internal const string Error_ContextDump  = "Error_ContextDump";
 
 		internal static string GetString(string key)
 		{

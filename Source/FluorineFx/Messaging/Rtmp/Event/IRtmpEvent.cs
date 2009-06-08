@@ -38,5 +38,11 @@ namespace FluorineFx.Messaging.Rtmp.Event
         /// Gets or sets the event timestamp.
         /// </summary>
 		int Timestamp{ get; set; }
+        /// <summary>
+        /// Returns a string that represents the current event object.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the event members.</param>
+        /// <returns>A string that represents the current event object.</returns>
+        string ToString(int indentLevel);
 	}
 }
