@@ -135,8 +135,14 @@ namespace FluorineFx.Messaging
                 if (serviceConfiguration != null)
                 {
                     AdapterDefinition adapter = serviceConfiguration.GetAdapterByClass(typeof(FluorineFx.Remoting.RemotingAdapter).FullName);
-                    if( adapter != null )
+                    if (adapter != null)
                         InstallServiceBrowserDestinations(serviceConfiguration, adapter);
+                    else
+                    {
+                        adapter = serviceConfiguration.GetDefaultAdapter();
+                        if (adapter != null)
+                            InstallServiceBrowserDestinations(serviceConfiguration, adapter);
+                    }
                 }
             }
             if (_servicesConfiguration.Services.ServiceDefinitions != null)

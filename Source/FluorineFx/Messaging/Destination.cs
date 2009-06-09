@@ -49,6 +49,7 @@ namespace FluorineFx.Messaging
         /// </summary>
 		protected ServiceAdapter		_adapter;
 		private FactoryInstance			_factoryInstance;
+        private bool _initialized;
 
         private Destination()
         {
@@ -58,6 +59,7 @@ namespace FluorineFx.Messaging
 		{
 			_service = service;
             _destinationDefinition = destinationDefinition;
+            _initialized = false;
 		}
         /// <summary>
         /// Gets the Destination identity.
@@ -83,24 +85,35 @@ namespace FluorineFx.Messaging
         /// </summary>
 		public IService Service{ get{ return _service; } }
 
-        internal void Init(AdapterDefinition adapterDefinition)
+        /// <summary>
+        /// Initializes the current Destination.
+        /// </summary>
+        /// <param name="adapterDefinition">Adapter definition.</param>
+        public virtual void Init(AdapterDefinition adapterDefinition)
 		{
+            if (_initialized)
+                throw new NotSupportedException(__Res.GetString(__Res.Destination_Reinit, this.Id, this.GetType().Name));
+            _initialized = true;
             if (adapterDefinition != null)
-			{
+            {
                 string typeName = adapterDefinition.Class;
-				Type type = ObjectFactory.Locate(typeName);
-				if( type != null )
-				{
+                Type type = ObjectFactory.Locate(typeName);
+                if (type != null)
+                {
                     _adapter = ObjectFactory.CreateInstance(type) as ServiceAdapter;
-					_adapter.SetDestination(this);
+                    _adapter.SetDestination(this);
                     _adapter.SetAdapterSettings(adapterDefinition);
                     _adapter.SetDestinationSettings(_destinationDefinition);
-					_adapter.Init();
+                    _adapter.Init();
 
-				}
+                }
                 else
                     log.Error(__Res.GetString(__Res.Type_InitError, adapterDefinition.Class));
-			}
+            }
+            else
+            {
+                log.Error(__Res.GetString(__Res.MessageServer_MissingAdapter, this.Id, this.GetType().Name));
+            }
             MessageBroker messageBroker = this.Service.GetMessageBroker();
             messageBroker.RegisterDestination(this, _service);
 

@@ -762,4 +762,10 @@
   <data name="ServiceInvoker_ResolveFail" xml:space="preserve">
     <value>Requested service {0} was not found  in scope {1}</value>
   </data>
+  <data name="Destination_Reinit" xml:space="preserve">
+    <value>Destination '{0}'({1}) already initialized</value>
+  </data>
+  <data name="MessageServer_MissingAdapter" xml:space="preserve">
+    <value>Destination '{0}'({1}) initialized with invalid adapter</value>
+  </data>
 </root>

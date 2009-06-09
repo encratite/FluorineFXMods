@@ -116,6 +116,7 @@ namespace FluorineFx
         internal const string Wsdl_ProxyGenFail = "Wsdl_ProxyGenFail";
 
         internal const string Destination_NotFound = "Destination_NotFound";
+        internal const string Destination_Reinit = "Destination_Reinit";
 
         internal const string MessageBroker_NotAvailable = "MessageBroker_NotAvailable";
         internal const string MessageBroker_RegisterError = "MessageBroker_RegisterError";
@@ -132,6 +133,7 @@ namespace FluorineFx
         internal const string MessageServer_Stop = "MessageServer_Stop";
         internal const string MessageServer_AccessFail = "MessageServer_AccessFail";
         internal const string MessageServer_Create = "MessageServer_Create";
+        internal const string MessageServer_MissingAdapter = "MessageServer_MissingAdapter";
 
         internal const string MessageClient_Disconnect = "MessageClient_Disconnect";
         internal const string MessageClient_Unsubscribe = "MessageClient_Unsubscribe";
