@@ -768,4 +768,10 @@
   <data name="MessageServer_MissingAdapter" xml:space="preserve">
     <value>Destination '{0}'({1}) initialized with invalid adapter</value>
   </data>
+  <data name="Context_Initialized" xml:space="preserve">
+    <value>Execution context initialized for connection {0} client {1} session {2}</value>
+  </data>
+  <data name="Context_MissingError" xml:space="preserve">
+    <value>Execution context is missing</value>
+  </data>
 </root>

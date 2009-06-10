@@ -291,10 +291,7 @@ namespace FluorineFx.Messaging.Rtmp
             }
             log4net.ThreadContext.Properties["ClientIP"] = this.RemoteEndPoint;
             if (log.IsDebugEnabled)
-            {
                 log.Debug(__Res.GetString(__Res.Rtmp_SocketReadProcessing, _connectionId));
-                log.Debug(__Res.GetString(__Res.Rtmp_BeginHandlePacket, _connectionId));
-            }
             if (!IsTunnelingDetected)
             {
                 IsTunnelingDetected = true;
@@ -352,6 +349,8 @@ namespace FluorineFx.Messaging.Rtmp
                     {
                         foreach (object obj in result)
                         {
+                            if (log.IsDebugEnabled)
+                                log.Debug(__Res.GetString(__Res.Rtmp_BeginHandlePacket, _connectionId));
                             if (obj is ByteBuffer)
                             {
                                 ByteBuffer buf = obj as ByteBuffer;
@@ -365,6 +364,8 @@ namespace FluorineFx.Messaging.Rtmp
                             {
                                 _rtmpServer.RtmpHandler.MessageReceived(this, obj);
                             }
+                            if (log.IsDebugEnabled)
+                                log.Debug(__Res.GetString(__Res.Rtmp_EndHandlePacket, _connectionId));
                         }
                     }
                 }
@@ -380,8 +381,6 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 HandleError(ex);
             }
-            if (log.IsDebugEnabled)
-                log.Debug(__Res.GetString(__Res.Rtmp_EndHandlePacket, _connectionId));
             //Ready to receive again
             BeginReceive(false);
         }

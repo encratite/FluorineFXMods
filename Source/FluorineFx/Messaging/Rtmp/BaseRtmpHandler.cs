@@ -144,6 +144,7 @@ namespace FluorineFx.Messaging.Rtmp
 
                 // Support stream ids
 #if !SILVERLIGHT
+                FluorineContext.ValidateContext();
                 FluorineContext.Current.Connection.SetAttribute(FluorineContext.FluorineStreamIdKey, header.StreamId);
 #endif
                 // Increase number of received messages
@@ -234,7 +235,7 @@ namespace FluorineFx.Messaging.Rtmp
                 {
                     log.Error(__Res.GetString(__Res.Rtmp_HandlerError), ex);
                     log.Error(__Res.GetString(__Res.Error_ContextDump));
-                    log.Error(Environment.NewLine);
+                    //log.Error(Environment.NewLine);
                     log.Error(packet);
                 }
 #endif

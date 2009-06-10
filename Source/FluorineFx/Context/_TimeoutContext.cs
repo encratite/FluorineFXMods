@@ -26,6 +26,7 @@ using System.Collections.Specialized;
 using System.Security.Principal;
 using System.Threading;
 using System.Security.Cryptography;
+using log4net;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging;
 using FluorineFx.Messaging.Messages;
@@ -35,6 +36,8 @@ namespace FluorineFx.Context
 {
     sealed class _TimeoutContext : FluorineContext
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(_TimeoutContext));
+
         private _TimeoutContext()
 		{
 		}
@@ -53,6 +56,8 @@ namespace FluorineFx.Context
         {
             _session = messageClient.Session;
             _client = messageClient.Client;
+            if (log.IsDebugEnabled)
+                log.Debug(__Res.GetString(__Res.Context_Initialized, "[not available]", _client != null ? _client.Id : "[not available]", _session != null ? _session.Id : "[not available]"));
         }
 
         public override string RootPath

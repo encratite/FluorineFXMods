@@ -266,5 +266,14 @@ namespace FluorineFx.Context
         {
             return new FileSystemResource(location);
         }
+
+        public static void ValidateContext()
+        {
+            if (Current == null)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn(__Res.GetString(__Res.Context_MissingError));
+            }
+        }
 	}
 }

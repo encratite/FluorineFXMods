@@ -36,6 +36,9 @@ namespace FluorineFx
         internal const string Amf_SerializationFail = "Amf_SerializationFail";
         internal const string Amf_ResponseFail = "Amf_ResponseFail";
 
+        internal const string Context_MissingError = "Context_MissingError";
+        internal const string Context_Initialized = "Context_Initialized";
+
         internal const string Rtmpt_Begin = "Rtmpt_Begin";
         internal const string Rtmpt_End = "Rtmpt_End";
         internal const string Rtmpt_Fatal = "Rtmpt_Fatal";

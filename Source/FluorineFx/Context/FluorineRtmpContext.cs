@@ -23,7 +23,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Security.Principal;
 using System.Threading;
-
+using log4net;
 using FluorineFx.Messaging;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Messages;
@@ -37,6 +37,8 @@ namespace FluorineFx.Context
 	/// </summary>
 	sealed class FluorineRtmpContext : FluorineContext
 	{
+        private static readonly ILog log = LogManager.GetLogger(typeof(FluorineRtmpContext));
+
         private FluorineRtmpContext(IConnection connection)
         {
             _connection = connection;
@@ -50,6 +52,8 @@ namespace FluorineFx.Context
         {
             FluorineRtmpContext fluorineContext = new FluorineRtmpContext(connection);
             WebSafeCallContext.SetData(FluorineContext.FluorineContextKey, fluorineContext);
+            if (log.IsDebugEnabled)
+                log.Debug(__Res.GetString(__Res.Context_Initialized, connection.ConnectionId, connection.Client != null ? connection.Client.Id : "[not set]", connection.Session != null ? connection.Session.Id : "[not set]"));
         }
 
         public FluorineRtmpContext()
