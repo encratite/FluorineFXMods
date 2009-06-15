@@ -197,22 +197,37 @@ namespace FluorineFx.Context
 
         #region ISession Members
 
+        /// <summary>
+        /// Adds a new item to the session-state collection
+        /// </summary>
+        /// <param name="name">The name of the item to add to the session-state collection.</param>
+        /// <param name="value">The value of the item to add to the session-state collection.</param>
         public virtual void Add(string name, object value)
         {
         }
-
+        /// <summary>
+        /// Removes all keys and values from the session-state collection. 
+        /// </summary>
         public virtual void Clear()
         {
         }
-
+        /// <summary>
+        /// Deletes an item from the session-state collection.
+        /// </summary>
+        /// <param name="name">The name of the item to delete from the session-state collection.</param>
+        /// <remarks>If the session-state collection does not contain an element with the specified name, the collection remains unchanged. No exception is thrown.</remarks>
         public virtual void Remove(string name)
         {
         }
-
+        /// <summary>
+        /// Removes all keys and values from the session-state collection. 
+        /// </summary>
         public virtual void RemoveAll()
         {
         }
-
+        /// <summary>
+        /// Gets the unique identifier for the session. 
+        /// </summary>
         public /*virtual*/ string Id
         {
             get
@@ -220,17 +235,22 @@ namespace FluorineFx.Context
                 return _id;
             }
         }
-
+        /// <summary>
+        /// Gets whether this is a newly created session.
+        /// </summary>
         public bool IsNew
         {
             get { return (__fields & 4) == 4; }
-        } 
-
+        }
+        /// <summary>
+        /// Gets or sets a session value by name.
+        /// </summary>
+        /// <param name="name">The key name of the session value.</param>
+        /// <returns>The session-state value with the specified name.</returns>
         public abstract object this[string name]
         {
             get ; set ;
         }
-
         /// <summary>
         /// Invalidates session upon timeout.
         /// </summary>
@@ -298,16 +318,24 @@ namespace FluorineFx.Context
         #endregion
 
         #region ICollection Members
-
+        /// <summary>
+        /// Copies the elements of the Session to an Array, starting at a particular Array index.
+        /// </summary>
+        /// <param name="array">The one-dimensional Array that is the destination of the elements copied from Session. The Array must have zero-based indexing.</param>
+        /// <param name="index">The zero-based index in array at which copying begins.</param>
         public virtual void CopyTo(Array array, int index)
         {
         }
-
+        /// <summary>
+        /// Gets the number of elements contained in the Session.
+        /// </summary>
         public abstract int Count
         {
             get ;
         }
-
+        /// <summary>
+        /// Gets a value indicating whether access to the Session is synchronized (thread safe).
+        /// </summary>
         public virtual bool IsSynchronized
         {
             get { return false; }
@@ -340,6 +368,10 @@ namespace FluorineFx.Context
 
         #region IEnumerable Members
 
+        /// <summary>
+        /// Returns an enumerator that iterates through a Session.
+        /// </summary>
+        /// <returns>An IEnumerator object that can be used to iterate through the Session.</returns>
         public virtual IEnumerator GetEnumerator()
         {
             return null;
@@ -352,12 +384,15 @@ namespace FluorineFx.Context
         /// <summary>
         /// Notification that a Client was created.
         /// </summary>
-        /// <param name="client"></param>
+        /// <param name="client">The Client instance.</param>
         public void ClientCreated(IClient client)
         {
             //NOP
         }
-
+        /// <summary>
+        /// Notification that a Client was destroyed.
+        /// </summary>
+        /// <param name="client">The Client instance.</param>
         public void ClientDestroyed(IClient client)
         {
             UnregisterClient(client);
@@ -370,12 +405,15 @@ namespace FluorineFx.Context
         /// <summary>
         /// Notification that a MessageClient was created.
         /// </summary>
-        /// <param name="client"></param>
+        /// <param name="messageClient">The MessageClient instance.</param>
         public void MessageClientCreated(IMessageClient messageClient)
         {
             //NOP
         }
-
+        /// <summary>
+        /// Notification that a MessageClient was destroyed.
+        /// </summary>
+        /// <param name="messageClient">The MessageClient instance.</param>
         public void MessageClientDestroyed(IMessageClient messageClient)
         {
             UnregisterMessageClient(messageClient);
@@ -437,7 +475,9 @@ namespace FluorineFx.Context
                 messageClient.RemoveMessageClientDestroyedListener(this);
             }
         }
-
+        /// <summary>
+        /// Notifies listeners that a new Session was created.
+        /// </summary>
         public void NotifyCreated()
         {
             if (this.IsNew)

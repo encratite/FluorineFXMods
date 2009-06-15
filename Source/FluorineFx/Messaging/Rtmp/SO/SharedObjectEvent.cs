@@ -29,6 +29,12 @@ namespace FluorineFx.Messaging.Rtmp.SO
 		private string _key;
 		private object _value;
 
+        /// <summary>
+        /// Initializes a new instance of the SharedObjectEvent class with the given initial value.
+        /// </summary>
+        /// <param name="type">Type of the event.</param>
+        /// <param name="key">Key of the event.</param>
+        /// <param name="value">Value of the event.</param>
 		public SharedObjectEvent(SharedObjectEventType type, String key, Object value)
 		{
 			_type = type;
@@ -38,23 +44,30 @@ namespace FluorineFx.Messaging.Rtmp.SO
 
 		#region ISharedObjectEvent Members
 
-		public SharedObjectEventType Type
+        /// <summary>
+        /// Gets the type of the event.
+        /// </summary>
+        public SharedObjectEventType Type
 		{
 			get
 			{
 				return _type;
 			}
 		}
-
-		public string Key
+        /// <summary>
+        /// Gets the key of the event.
+        /// </summary>
+        public string Key
 		{
 			get
 			{
 				return _key;
 			}
 		}
-
-		public object Value
+        /// <summary>
+        /// Gets the value of the event.
+        /// </summary>
+        public object Value
 		{
 			get
 			{
@@ -64,6 +77,12 @@ namespace FluorineFx.Messaging.Rtmp.SO
 
 		#endregion
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
 		public override string ToString() 
 		{
 			return "SOEvent(" + _type + ", " + _key + ", " + _value + ")";

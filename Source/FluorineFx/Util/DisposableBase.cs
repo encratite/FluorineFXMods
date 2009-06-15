@@ -97,7 +97,7 @@ namespace FluorineFx.Util
 		}
 
 		/// <summary>
-		/// Free managed resources.
+		/// Free unmanaged resources.
 		/// </summary>
 		protected virtual void FreeUnmanaged()
 		{

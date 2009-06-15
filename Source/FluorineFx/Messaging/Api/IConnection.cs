@@ -94,10 +94,6 @@ namespace FluorineFx.Messaging.Api
         /// <returns>A String that represents the current Object.</returns>
 		string ToString();
         /// <summary>
-        /// Gets an object that can be used to synchronize access to the connection.
-        /// </summary>
-        //object SyncRoot { get; }
-        /// <summary>
         /// Start measuring the roundtrip time for a packet on the connection.
         /// </summary>
         void Ping();

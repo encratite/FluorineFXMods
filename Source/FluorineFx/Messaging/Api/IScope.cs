@@ -120,21 +120,26 @@ namespace FluorineFx.Messaging.Api
         /// <returns></returns>
         ICollection GetClients();
         /// <summary>
-        /// Get a connection iterator. You can call remove, and the connection will be closed.
+        /// Get a connection iterator.
         /// </summary>
         /// <returns></returns>
         IEnumerator GetConnections();
         /// <summary>
-        /// Checks whether scope has handler or not.
+        /// Gets a value indicating whether this instance has handler.
         /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has context; otherwise, <c>false</c>.
+        /// </value>
         bool HasHandler { get; }
         /// <summary>
-        /// Gets handler of the scope.
+        /// Gets or sets handler of the scope.
         /// </summary>
+        /// <value>Scope handler object.</value>
         IScopeHandler Handler { get; }
         /// <summary>
         /// Gets context path.
         /// </summary>
+        /// <value>The context path.</value>
         string ContextPath { get; }
         /// <summary>
         /// Returns collection of connections for the specified client.

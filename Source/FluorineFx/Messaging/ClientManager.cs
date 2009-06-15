@@ -228,6 +228,10 @@ namespace FluorineFx.Messaging
             }
         }
 
+        /// <summary>
+        /// Cancels the timeout.
+        /// </summary>
+        /// <param name="client">The client.</param>
         public void CancelTimeout(IClient client)
         {
             HttpRuntime.Cache.Remove(client.Id);

@@ -21,6 +21,9 @@ using System.IO;
 
 namespace FluorineFx.Context
 {
+    /// <summary>
+    /// Provides a common interface to describe and access data from diverse resource locations.
+    /// </summary>
     public interface IResource
     {
         /// <summary>

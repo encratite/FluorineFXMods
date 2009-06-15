@@ -47,6 +47,10 @@ namespace FluorineFx.Messaging.Rtmp
         /// </summary>
         private bool _resultSent = false;
 
+        /// <summary>
+        /// Sets the result.
+        /// </summary>
+        /// <value>The result.</value>
         public object Result
         {
             set
@@ -67,23 +71,39 @@ namespace FluorineFx.Messaging.Rtmp
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether result was sent.
+        /// </summary>
+        /// <value><c>true</c> if result was sent; otherwise, <c>false</c>.</value>
         public bool ResultSent
         {
             get { return _resultSent; }
         }
 
+        /// <summary>
+        /// Gets or sets the invoke id.
+        /// </summary>
+        /// <value>The invoke id.</value>
         public int InvokeId
         {
             get { return _invokeId; }
             set { _invokeId = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the service call.
+        /// </summary>
+        /// <value>The service call.</value>
         public IPendingServiceCall ServiceCall
         {
             get { return _call; }
             set { _call = value; }
         }
 
+        /// <summary>
+        /// Sets the channel.
+        /// </summary>
+        /// <value>The channel.</value>
         public RtmpChannel Channel
         {
             set 

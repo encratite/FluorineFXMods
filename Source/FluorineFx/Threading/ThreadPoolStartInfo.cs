@@ -107,18 +107,30 @@ namespace FluorineFx.Threading
 			set { _maxWorkerThreads = value; }
 		}
 
+        /// <summary>
+        /// Gets or sets the thread priority.
+        /// </summary>
+        /// <value>The thread priority.</value>
 		public ThreadPriority ThreadPriority
 		{
 			get { return _threadPriority; }
 			set { _threadPriority = value; }
 		}
 
+        /// <summary>
+        /// Gets or sets the name of the performance counter instance.
+        /// </summary>
+        /// <value>The name of the performance counter instance.</value>
 		public string PerformanceCounterInstanceName
 		{
 			get { return _perfCounterInstanceName; }
 			set { _perfCounterInstanceName = value; }
 		}
 
+        /// <summary>
+        /// Gets or sets a value indicating whether start suspended until the Start() method is called.
+        /// </summary>
+        /// <value><c>true</c> if start suspended; otherwise, <c>false</c>.</value>
 		public bool StartSuspended
 		{
 			get { return _startSuspended; }

@@ -96,8 +96,17 @@ namespace FluorineFx.Context
 
         static ApplicationState AppState = new ApplicationState();
 
+        /// <summary>
+        /// The current session object.
+        /// </summary>
         protected ISession _session;
+        /// <summary>
+        /// The current client object.
+        /// </summary>
         protected IClient _client;
+        /// <summary>
+        /// The current connection object.
+        /// </summary>
         protected IConnection _connection;
 
 		internal FluorineContext()
@@ -174,6 +183,10 @@ namespace FluorineFx.Context
             }
         }
 
+        /// <summary>
+        /// Logs out the current user.
+        /// </summary>
+        /// <returns><c>true</c> if logging out succeeded; otherwise, <c>false</c>.</returns>
         public bool Logout()
         {
             MessageBroker messageBroker = MessageBroker.GetMessageBroker(MessageBroker.DefaultMessageBrokerId);
@@ -267,6 +280,9 @@ namespace FluorineFx.Context
             return new FileSystemResource(location);
         }
 
+        /// <summary>
+        /// Validates the context.
+        /// </summary>
         public static void ValidateContext()
         {
             if (Current == null)

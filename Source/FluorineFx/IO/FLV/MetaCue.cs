@@ -75,7 +75,11 @@ namespace FluorineFx.IO.FLV
 
 
         #region IComparable Members
-
+        /// <summary>
+        /// Compares the current instance with another object of MetaCue type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+        /// </summary>
+        /// <param name="obj">A MetaCue object to compare with this instance.</param>
+        /// <returns>A 32-bit signed integer that indicates the relative order of the objects being compared.</returns>
         public int CompareTo(object obj)
         {
             MetaCue cp = obj as MetaCue;

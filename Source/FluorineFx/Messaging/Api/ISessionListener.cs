@@ -54,12 +54,12 @@ namespace FluorineFx.Messaging.Api
         /// <summary>
         /// Notification that a session was created.
         /// </summary>
-        /// <param name="client">The session that was created.</param>
+        /// <param name="session">The session that was created.</param>
         void SessionCreated(ISession session);
         /// <summary>
         /// Notification that a session is about to be destroyed.
         /// </summary>
-        /// <param name="client">The session that will be destroyed.</param>
+        /// <param name="session">The session that will be destroyed.</param>
         void SessionDestroyed(ISession session);
 	}
 }

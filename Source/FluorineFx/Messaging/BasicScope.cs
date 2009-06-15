@@ -28,9 +28,9 @@ using FluorineFx.Messaging.Api.Event;
 
 namespace FluorineFx.Messaging
 {
-	/// <summary>
-	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
-	/// </summary>
+    /// <summary>
+    /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// </summary>
     [CLSCompliant(false)]
 	public class BasicScope : PersistableAttributeStore, IBasicScope
 	{
@@ -46,6 +46,13 @@ namespace FluorineFx.Messaging
         /// </summary>
         protected bool _keepOnDisconnect = false;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicScope"/> class.
+        /// </summary>
+        /// <param name="parent">The parent scope.</param>
+        /// <param name="type">The scope type.</param>
+        /// <param name="name">The scope name.</param>
+        /// <param name="persistent">A value indicating whether this instance is a persistent scope.</param>
 		public BasicScope(IScope parent, string type, string name, bool persistent) : base(type, name, null, persistent)
 		{
 			_parent = parent;
@@ -106,11 +113,19 @@ namespace FluorineFx.Messaging
 
 		#endregion
 
+        /// <summary>
+        /// Add event listener to this observable.
+        /// </summary>
+        /// <param name="listener">Event listener.</param>
 		public virtual void AddEventListener(IEventListener listener) 
 		{
 			_listeners.Add(listener);
 		}
 
+        /// <summary>
+        /// Remove event listener from this observable.
+        /// </summary>
+        /// <param name="listener">Event listener.</param>
 		public virtual void RemoveEventListener(IEventListener listener) 
 		{
 			_listeners.Remove(listener);
@@ -121,33 +136,53 @@ namespace FluorineFx.Messaging
 			}
 		}
 
+        /// <summary>
+        /// Get the event listeners collection.
+        /// </summary>
+        /// <returns>Collection of event listeners.</returns>
 		public ICollection GetEventListeners()
 		{
 			return _listeners;
 		}
-
-		public bool HandleEvent(IEvent evt) 
+        /// <summary>
+        /// Handle an event.
+        /// </summary>
+        /// <param name="event">Event to handle.</param>
+        /// <returns>true if event was handled, false if it should bubble.</returns>
+        public bool HandleEvent(IEvent @event) 
 		{
 			return false;
 		}
-
-		public void NotifyEvent(IEvent evt) 
+        /// <summary>
+        /// Notifies the event.
+        /// </summary>
+        /// <param name="event">The event.</param>
+        public void NotifyEvent(IEvent @event) 
 		{
 		}
-
-		public virtual void DispatchEvent(IEvent evt) 
+        /// <summary>
+        /// Dispatches an event.
+        /// </summary>
+        /// <param name="event">Event to dispatch.</param>
+        public virtual void DispatchEvent(IEvent @event) 
 		{
 			foreach(IEventListener listener in _listeners) 
 			{
-				if(evt.Source == null || evt.Source != listener) 
+                if (@event.Source == null || @event.Source != listener) 
 				{
-					listener.NotifyEvent(evt);
+                    listener.NotifyEvent(@event);
 				}
 			}
 		}
 
 		#region IEnumerable Members
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the BasicScope.
+        /// </summary>
+        /// <returns>
+        /// An IEnumerator object that can be used to iterate through the collection.
+        /// </returns>
 		public new virtual IEnumerator GetEnumerator()
 		{
 			return null;
@@ -155,6 +190,12 @@ namespace FluorineFx.Messaging
 
 		#endregion
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
 		public override string ToString()
 		{
 			return this.Name;

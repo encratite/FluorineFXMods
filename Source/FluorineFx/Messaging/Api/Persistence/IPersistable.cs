@@ -35,24 +35,29 @@ namespace FluorineFx.Messaging.Api.Persistence
 	public interface IPersistable
 	{
         /// <summary>
-        /// Gets or sets whether the object is persistent.
+        /// Gets or sets a value indicating whether the object is persistent.
         /// </summary>
+        /// <value>A value indicating whether the object is persistent.</value>
 		bool IsPersistent{ get; set; }
         /// <summary>
         /// Gets or sets the name of the persistent object.
         /// </summary>
+        /// <value>The name of the persistent object.</value>
 		string Name{ get; set; }
         /// <summary>
         /// Gets or sets the path of the persistent object.
         /// </summary>
+        /// <value>The path of the persistent object.</value>
 		string Path{ get; set; }
         /// <summary>
         /// Gets the timestamp when the object was last modified.
         /// </summary>
+        /// <value>The timestamp when the object was last modified.</value>
 		long LastModified{ get; }
         /// <summary>
         /// Gets or sets the persistence store this object is stored in.
         /// </summary>
+        /// <value>The persistence store this object is stored in.</value>
 		IPersistenceStore Store{ get; set; }
         /// <summary>
         /// Writes the object to the specified output stream.

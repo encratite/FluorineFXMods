@@ -30,7 +30,26 @@ namespace FluorineFx.Messaging.Rtmp.Stream
     /// </summary>
     public enum State
     {
-        UNINIT, CLOSED, STOPPED, PLAYING, PAUSED
+        /// <summary>
+        /// Uninitialized state.
+        /// </summary>
+        UNINIT, 
+        /// <summary>
+        /// Closed state.
+        /// </summary>
+        CLOSED, 
+        /// <summary>
+        /// Stopped state.
+        /// </summary>
+        STOPPED, 
+        /// <summary>
+        /// Playing state.
+        /// </summary>
+        PLAYING, 
+        /// <summary>
+        /// Paused state.
+        /// </summary>
+        PAUSED
     }
 
     /// <summary>

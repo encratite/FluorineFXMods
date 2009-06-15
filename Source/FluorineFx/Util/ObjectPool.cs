@@ -33,8 +33,9 @@ namespace FluorineFx.Util
     /// </summary>
     abstract class ObjectPool : DisposableBase
     {
+#if !SILVERLIGHT
         private static ILog log = LogManager.GetLogger(typeof(ObjectPool));
-
+#endif
         private bool _forceGC = true;
         private int _growth = 10;
 #if SILVERLIGHT
@@ -115,7 +116,9 @@ namespace FluorineFx.Util
         {
             if (!IsDisposed)
             {
+#if !SILVERLIGHT
                 log.Debug(string.Format("ObjectPool creating {0} pooled objects", count));
+#endif
                 if (_forceGC)
                     GC.Collect();
                 for (int i = 1; i <= count; i++)

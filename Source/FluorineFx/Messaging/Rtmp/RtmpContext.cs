@@ -84,7 +84,11 @@ namespace FluorineFx.Messaging.Rtmp
         /// Handshake as sent to the client
         /// </summary>
         byte[] _handshake; 
-
+        
+        /// <summary>
+        /// Initializes a new instance of the RtmpContext class.
+        /// </summary>
+        /// <param name="mode"></param>
         public RtmpContext(RtmpMode mode)
 		{
 			_mode = mode;
@@ -386,6 +390,9 @@ namespace FluorineFx.Messaging.Rtmp
 
         #region IDisposable Members
 
+        /// <summary>
+        /// Disposes the resources used by the RtmpContext.
+        /// </summary>
         public void Dispose()
         {
             _handshake = null;

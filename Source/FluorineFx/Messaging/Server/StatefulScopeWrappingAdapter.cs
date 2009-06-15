@@ -213,6 +213,12 @@ namespace FluorineFx.Messaging.Adapter
         }
 #endif
 
+        /// <summary>
+        /// Returns an enumerator that iterates through children scopes.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
         public IEnumerator GetEnumerator()
         {
             return _scope.GetEnumerator();

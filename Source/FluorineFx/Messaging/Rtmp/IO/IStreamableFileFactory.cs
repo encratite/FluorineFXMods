@@ -32,6 +32,11 @@ namespace FluorineFx.Messaging.Rtmp.IO
     [CLSCompliant(false)]
     public interface IStreamableFileFactory : IScopeService
     {
+        /// <summary>
+        /// Returns a streamable file service.
+        /// </summary>
+        /// <param name="file">File to be streamed.</param>
+        /// <returns>A streamable file service.</returns>
         IStreamableFileService GetService(FileInfo file);
 
         /// <summary>

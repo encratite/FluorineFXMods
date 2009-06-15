@@ -89,27 +89,29 @@ namespace FluorineFx.Messaging.Rtmp.SO
 		/// </summary>
 		SharedObjectEventType Type{ get; }
 		/// <summary>
-		/// Returns the key of the event.
-		/// 
-		/// Depending on the type this contains:
-		/// <ul>
-		/// <li>the attribute name to set for SET_ATTRIBUTE</li>
-		/// <li>the attribute name to delete for DELETE_ATTRIBUTE</li>
-		/// <li>the handler name to call for SEND_MESSAGE</li>
-		/// </ul>
-		/// In all other cases the key is <code>null</code>.
+		/// Gets the key of the event.
 		/// </summary>
+        /// <remarks>
+        /// Depending on the type this contains:
+        /// <ul>
+        /// <li>The attribute name to set for SET_ATTRIBUTE</li>
+        /// <li>The attribute name to delete for DELETE_ATTRIBUTE</li>
+        /// <li>The handler name to call for SEND_MESSAGE</li>
+        /// </ul>
+        /// In all other cases the key is <code>null</code>.
+        /// </remarks>
 		string Key{ get; }
 		/// <summary>
-		/// Returns the value of the event.
-		/// 
-		/// Depending on the type this contains:
-		/// <ul>
-		/// <li>the attribute value to set for SET_ATTRIBUTE</li>
-		/// <li>a list of parameters to pass to the handler for SEND_MESSAGE</li>
-		/// </ul>
-		/// In all other cases the value is <code>null</code>.
+		/// Gets the value of the event.
 		/// </summary>
+        /// <remarks>
+        /// Depending on the type this contains:
+        /// <ul>
+        /// <li>The attribute value to set for SET_ATTRIBUTE</li>
+        /// <li>A list of parameters to pass to the handler for SEND_MESSAGE</li>
+        /// </ul>
+        /// In all other cases the value is <code>null</code>.
+        /// </remarks>
 		object Value{ get; }
 	}
 }

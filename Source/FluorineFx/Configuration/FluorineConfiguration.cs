@@ -39,10 +39,16 @@ namespace FluorineFx.Configuration
 	/// </summary>
 	public enum RemotingServiceAttributeConstraint
 	{
+        /// <summary>
+        /// All public .NET classes are accessible to clients (can act as a remoting service).
+        /// </summary>
 #if !SILVERLIGHT
 		[XmlEnum(Name = "browse")]
 #endif
         Browse = 1,
+        /// <summary>
+        /// Only classes marked [FluorineFx.RemotingServiceAttribute] are accessible to clients.
+        /// </summary>
 #if !SILVERLIGHT
 		[XmlEnum(Name = "access")]
 #endif
@@ -54,18 +60,30 @@ namespace FluorineFx.Configuration
     /// </summary>
 	public enum TimezoneCompensation
 	{
+        /// <summary>
+        /// No timezone compensation.
+        /// </summary>
 #if !SILVERLIGHT
 		[XmlEnum(Name = "none")]
 #endif
 		None = 0,
+        /// <summary>
+        /// Auto timezone compensation.
+        /// </summary>
 #if !SILVERLIGHT
 		[XmlEnum(Name = "auto")]
 #endif
         Auto = 1,
+        /// <summary>
+        /// Convert to the server timezone.
+        /// </summary>
 #if !SILVERLIGHT
         [XmlEnum(Name = "server")]
 #endif
         Server = 2,
+        /// <summary>
+        /// Ignore UTCKind for DateTimes received from the client code.
+        /// </summary>
 #if !SILVERLIGHT
         [XmlEnum(Name = "ignoreUTCKind")]
 #endif
@@ -90,7 +108,9 @@ namespace FluorineFx.Configuration
 		private FluorineConfiguration()
 		{
 		}
-
+        /// <summary>
+        /// Gets the current Fluorine configuration object.
+        /// </summary>
 		static public FluorineConfiguration Instance
 		{
 			get
@@ -131,7 +151,9 @@ namespace FluorineFx.Configuration
 				return _instance;
 			}
 		}
-
+        /// <summary>
+        /// Gets the Fluorine settings object.
+        /// </summary>
 		public FluorineSettings FluorineSettings
 		{ 
 			get
@@ -205,7 +227,9 @@ namespace FluorineFx.Configuration
 			}
 		}
 
-
+        /// <summary>
+        /// Gets a value indicating whether to generate proxy classes for wsdl (web service) requests.
+        /// </summary>
         public bool WsdlGenerateProxyClasses
 		{ 
 			get
@@ -215,7 +239,9 @@ namespace FluorineFx.Configuration
 				return false;
 			}
 		}
-
+        /// <summary>
+        /// Gets the namespace used for wsdl proxy classes.
+        /// </summary>
         public string WsdlProxyNamespace
 		{
 			get
@@ -225,7 +251,9 @@ namespace FluorineFx.Configuration
 				return "FluorineFx.Proxy"; 
 			}
 		}
-
+        /// <summary>
+        /// Gets the collection of namespaces imported in wsdl proxy class.
+        /// </summary>
         public ImportNamespaceCollection ImportNamespaces
 		{ 
 			get
@@ -236,7 +264,9 @@ namespace FluorineFx.Configuration
 			}
 		}
 #endif
-
+        /// <summary>
+        /// Gets the collection of nullable value definitions.
+        /// </summary>
         public NullableTypeCollection NullableValues
 		{ 
 			get
@@ -246,7 +276,9 @@ namespace FluorineFx.Configuration
 				return null;
 			}
 		}
-
+        /// <summary>
+        /// Gets a value indicating whether to accept null value types.
+        /// </summary>
 		public bool AcceptNullValueTypes
 		{ 
 			get
@@ -258,6 +290,9 @@ namespace FluorineFx.Configuration
         }
 
 #if !FXCLIENT
+        /// <summary>
+        /// Gets the remoting service constraint.
+        /// </summary>
         public RemotingServiceAttributeConstraint RemotingServiceAttributeConstraint
 		{
 			get
@@ -268,7 +303,9 @@ namespace FluorineFx.Configuration
 			}
 		}
 #endif
-
+        /// <summary>
+        /// Gets the timezone compensation setting.
+        /// </summary>
         public TimezoneCompensation TimezoneCompensation
         {
             get 
@@ -279,6 +316,9 @@ namespace FluorineFx.Configuration
             }
         }
 #if !FXCLIENT
+        /// <summary>
+        /// Gets the Htpp compression settings.
+        /// </summary>
         public HttpCompressSettings HttpCompressSettings
         {
             get
@@ -302,7 +342,9 @@ namespace FluorineFx.Configuration
             }
         }
 #endif
-
+        /// <summary>
+        /// Gets the optimizer settings.
+        /// </summary>
         public OptimizerSettings OptimizerSettings
 		{
 			get
@@ -324,7 +366,9 @@ namespace FluorineFx.Configuration
 			}
 		}
 #endif
-
+        /// <summary>
+        /// Gets a value indicating whether the gateway is running under full trust.
+        /// </summary>
         public bool FullTrust
 		{
 			get{ return _fullTrust; }

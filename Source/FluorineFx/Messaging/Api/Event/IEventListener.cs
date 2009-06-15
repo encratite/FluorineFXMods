@@ -28,7 +28,7 @@ namespace FluorineFx.Messaging.Api.Event
         /// <summary>
         /// Event notification. 
         /// </summary>
-        /// <param name="evt">The event object.</param>
-		void NotifyEvent(IEvent evt);
+        /// <param name="event">The event object.</param>
+		void NotifyEvent(IEvent @event);
 	}
 }

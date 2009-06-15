@@ -28,13 +28,19 @@ using log4net;
 
 namespace FluorineFx.Messaging.Config
 {
-    [XmlRootAttribute("services-config")]
+    /// <summary>
+    /// Services configuration files handling.
+    /// </summary>
+    [XmlRootAttribute("services-config")]    
     public sealed class ServicesConfiguration
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(ServicesConfiguration));
 
         Services _services;
 
+        /// <summary>
+        /// Gets or sets services defined in the services configuration file.
+        /// </summary>
         [XmlElement("services")]
         public Services Services
         {
@@ -48,7 +54,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         FlexClient _flexClient;
-
+        /// <summary>
+        /// Gets or sets Flex client settings.
+        /// </summary>
         [XmlElement("flex-client")]
         public FlexClient FlexClient
         {
@@ -68,7 +76,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         SecurityConfiguration _security;
-
+        /// <summary>
+        /// Gets or sets the security configuration instance.
+        /// </summary>
         [XmlElement("security")]
         public SecurityConfiguration Security
         {
@@ -77,7 +87,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         ChannelDefinition[] _channels;
-
+        /// <summary>
+        /// Gets or sets channel definitions in the services configuration file.
+        /// </summary>
         [XmlArray("channels")]
         [XmlArrayItem("channel-definition")]
         public ChannelDefinition[] Channels
@@ -87,7 +99,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         Factory[] _factories;
-
+        /// <summary>
+        /// Gets or sets factory definitions in the services configuration file.
+        /// </summary>
         [XmlArray("factories")]
         [XmlArrayItem("factory")]
         public Factory[] Factories
@@ -99,7 +113,11 @@ namespace FluorineFx.Messaging.Config
         internal ServicesConfiguration()
         {
         }
-
+        /// <summary>
+        /// Loads a service configuration file from the specified path.
+        /// </summary>
+        /// <param name="path">Path to a services-config.xml file.</param>
+        /// <returns>Deserialized services configuration instance.</returns>
         public static ServicesConfiguration Load(string path)
         {
             if (!File.Exists(path))
@@ -130,13 +148,21 @@ namespace FluorineFx.Messaging.Config
                 return sc;
             }
         }
-
+        /// <summary>
+        /// Loads a service configuration file from the specified path.
+        /// </summary>
+        /// <param name="configPath">Path to a services-config.xml file.</param>
+        /// <param name="configFileName">Configuration file name.</param>
+        /// <returns>Deserialized services configuration instance.</returns>
         public static ServicesConfiguration Load(string configPath, string configFileName)
         {
             string servicesConfigFile = Path.Combine(configPath, configFileName);
             return Load(servicesConfigFile);
         }
-
+        /// <summary>
+        /// Creates a default services configuration instance.
+        /// </summary>
+        /// <returns>Services configuration instance.</returns>
         public static ServicesConfiguration CreateDefault()
         {
             ServicesConfiguration sc = new ServicesConfiguration();
@@ -192,7 +218,11 @@ namespace FluorineFx.Messaging.Config
             sc.FlexClient = flexClient;
             return sc;
         }
-
+        /// <summary>
+        /// Gets a service definition by class name.
+        /// </summary>
+        /// <param name="class">Class name.</param>
+        /// <returns>Service definition instance.</returns>
         public ServiceDefinition GetServiceByClass(string @class)
         {
             if (this.Services != null)
@@ -216,7 +246,11 @@ namespace FluorineFx.Messaging.Config
             }
             return null;
         }
-
+        /// <summary>
+        /// Gets a security constraint by id.
+        /// </summary>
+        /// <param name="id">The security constraint id.</param>
+        /// <returns>Security constraint instance.</returns>
         public SecurityConstraint GetSecurityConstraintById(string id)
         {
             if (this.Security != null && this.Security.SecurityConstraints != null)
@@ -230,12 +264,14 @@ namespace FluorineFx.Messaging.Config
             return null;
         }
     }
-
+    /// <summary>
+    /// Factory configuration.
+    /// </summary>
     public sealed class Factory
     {
         string _id;
         /// <summary>
-        /// Gets the identity of the factory.
+        /// Gets or sets the identity of the factory.
         /// </summary>
         [XmlAttribute("id")]
         public string Id
@@ -245,7 +281,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _class;
-
+        /// <summary>
+        /// Gets or sets the class of the factory.
+        /// </summary>
         [XmlAttribute("class")]
         public string Class
         {
@@ -270,11 +308,15 @@ namespace FluorineFx.Messaging.Config
             set { _timeoutMinutes = value; }
         }
     }
-
+    /// <summary>
+    /// Services configuration.
+    /// </summary>
     public sealed class Services
     {
         ChannelRef[] _defaultChannels;
-
+        /// <summary>
+        /// Gets or sets the default channels used by the service.
+        /// </summary>
         [XmlArray("default-channels")]
         [XmlArrayItem("channel")]
         public ChannelRef[] DefaultChannels
@@ -284,7 +326,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         ServiceDefinition[] _services;
-
+        /// <summary>
+        /// Gets or sets service definitions.
+        /// </summary>
         [XmlElement("service")]
         public ServiceDefinition[] ServiceDefinitions
         {
@@ -293,7 +337,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         ServiceInclude[] _includedServices;
-
+        /// <summary>
+        /// Gets or sets service includes.
+        /// </summary>
         [XmlElement("service-include")]
         public ServiceInclude[] Includes
         {
@@ -301,7 +347,10 @@ namespace FluorineFx.Messaging.Config
             set { _includedServices = value; }
         }
 
-
+        /// <summary>
+        /// Adds a new service definition to the services element.
+        /// </summary>
+        /// <param name="service">A service definition instance.</param>
         public void AddService(ServiceDefinition service)
         {
             if (_services == null)
@@ -311,7 +360,9 @@ namespace FluorineFx.Messaging.Config
             _services[_services.Length - 1] = service;
         }
     }
-
+    /// <summary>
+    /// Included service configuration.
+    /// </summary>
     public sealed class ServiceInclude
     {
         string _filePath;
@@ -326,7 +377,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         ServiceDefinition _serviceDefinition;
-
+        /// <summary>
+        /// Gets the service definition.
+        /// </summary>
         public ServiceDefinition ServiceDefinition
         {
             get { return _serviceDefinition; }
@@ -337,7 +390,9 @@ namespace FluorineFx.Messaging.Config
             _serviceDefinition = ServiceDefinition.Load(parent, Path.Combine(rootPath, this.FilePath));
         }
     }
-
+    /// <summary>
+    /// Service definition configuration.
+    /// </summary>
     [XmlRootAttribute("service")]
     public sealed class ServiceDefinition
     {
@@ -364,7 +419,9 @@ namespace FluorineFx.Messaging.Config
         }
         
         string _class;
-
+        /// <summary>
+        /// Gets or sets the class attribute.
+        /// </summary>
         [XmlAttribute("class")]
         public string Class
         {
@@ -373,7 +430,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _messageTypes;
-
+        /// <summary>
+        /// Gets or sets the messageTypes attribute.
+        /// </summary>
         [XmlAttribute("messageTypes")]
         public string MessageTypes
         {
@@ -382,7 +441,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         ChannelRef[] _defaultChannels;
-
+        /// <summary>
+        /// Gets or sets the default channels.
+        /// </summary>
         [XmlArray("default-channels")]
         [XmlArrayItem("channel")]
         public ChannelRef[] DefaultChannels
@@ -392,7 +453,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         AdapterDefinition[] _adapters;
-
+        /// <summary>
+        /// Gets or sets the adapter definitions.
+        /// </summary>
         [XmlArray("adapters")]
         [XmlArrayItem("adapter-definition")]
         public AdapterDefinition[] Adapters
@@ -402,7 +465,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         DestinationDefinition[] _destinations;
-
+        /// <summary>
+        /// Gets or sets the destination definitions.
+        /// </summary>
         [XmlElement("destination")]
         public DestinationDefinition[] Destinations
         {
@@ -437,7 +502,11 @@ namespace FluorineFx.Messaging.Config
                 return serviceDefinition;
             }
         }
-
+        /// <summary>
+        /// Returns an adapter by class name.
+        /// </summary>
+        /// <param name="class">The class attribute.</param>
+        /// <returns>An adapter definition instance.</returns>
         public AdapterDefinition GetAdapterByClass(string @class)
         {
             if (this.Adapters != null)
@@ -450,7 +519,11 @@ namespace FluorineFx.Messaging.Config
             }
             return null;
         }
-
+        /// <summary>
+        /// Returns an adapter by reference.
+        /// </summary>
+        /// <param name="ref">Adapter reference.</param>
+        /// <returns>An adapter definition instance.</returns>
         public AdapterDefinition GetAdapterByRef(string @ref)
         {
             if (this.Adapters != null)
@@ -463,7 +536,10 @@ namespace FluorineFx.Messaging.Config
             }
             return null;
         }
-
+        /// <summary>
+        /// Gets the default adapter if any.
+        /// </summary>
+        /// <returns>An adapter definition instance.</returns>
         public AdapterDefinition GetDefaultAdapter()
         {
             if (this.Adapters != null)
@@ -480,7 +556,10 @@ namespace FluorineFx.Messaging.Config
             }
             return null;
         }
-
+        /// <summary>
+        /// Adds a new adapter definition.
+        /// </summary>
+        /// <param name="adapter">Adapter definition instance.</param>
         public void AddAdapter(AdapterDefinition adapter)
         {
             if (_adapters == null)
@@ -489,7 +568,10 @@ namespace FluorineFx.Messaging.Config
                 _adapters = ArrayUtils.Resize(_adapters, _adapters.Length + 1) as AdapterDefinition[];
             _adapters[_adapters.Length - 1] = adapter;
         }
-
+        /// <summary>
+        /// Adds a new destination.
+        /// </summary>
+        /// <param name="destination">Destination definition instance.</param>
         public void AddDestination(DestinationDefinition destination)
         {
             if (_destinations == null)
@@ -502,7 +584,7 @@ namespace FluorineFx.Messaging.Config
         /// <summary>
         /// Returns whether this Service is capable of handling messages of a given type.
         /// </summary>
-        /// <param name="@class">The message type.</param>
+        /// <param name="class">The message type.</param>
         /// <returns>true if the Service is capable of handling messages of a given type; otherwise, false.</returns>
         public bool IsSupportedMessageType(string @class)
         {
@@ -521,11 +603,15 @@ namespace FluorineFx.Messaging.Config
             return false;
         }
     }
-
+    /// <summary>
+    /// Security configuration.
+    /// </summary>
     public sealed class SecurityConfiguration
     {
         SecurityConstraint[] _securityConstraints;
-
+        /// <summary>
+        /// Gets or sets the security constraints.
+        /// </summary>
         [XmlElement("security-constraint")]
         public SecurityConstraint[] SecurityConstraints
         {
@@ -534,7 +620,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         LoginCommand[] _loginCommands;
-
+        /// <summary>
+        /// Gets or sets the login commands.
+        /// </summary>
         [XmlElement("login-command")]
         public LoginCommand[] LoginCommands
         {
@@ -558,7 +646,9 @@ namespace FluorineFx.Messaging.Config
             return null;
         }
     }
-
+    /// <summary>
+    /// Adapter definition configuration.
+    /// </summary>
     public sealed class AdapterDefinition
     {
         string _id;
@@ -573,7 +663,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _class;
-
+        /// <summary>
+        /// Gets or sets the class attribute.
+        /// </summary>
         [XmlAttribute("class")]
         public string Class
         {
@@ -582,7 +674,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         bool _default;
-
+        /// <summary>
+        /// Gets or sets the default attribute.
+        /// </summary>
         [XmlAttribute("default")]
         public bool Default
         {
@@ -602,22 +696,31 @@ namespace FluorineFx.Messaging.Config
         }
 
     }
-
+    /// <summary>
+    /// Adapter reference configuration.
+    /// </summary>
     public sealed class AdapterRef
     {
         string _ref;
-
+        /// <summary>
+        /// Gets or sets the ref attribute.
+        /// </summary>
         [XmlAttribute("ref")]
         public string Ref
         {
             get { return _ref; }
             set { _ref = value; }
         }
-
+        /// <summary>
+        /// Initializes a new instance of the AdapterRef class.
+        /// </summary>
         public AdapterRef()
         {
         }
-
+        /// <summary>
+        /// Initializes a new instance of the AdapterRef class.
+        /// </summary>
+        /// <param name="adapter">The referenced adapter definition.</param>
         public AdapterRef(AdapterDefinition adapter)
         {
             _ref = adapter.Id;
@@ -675,7 +778,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         AdapterRef _adapterRef;
-
+        /// <summary>
+        /// Gets or sets the adapter reference.
+        /// </summary>
         [XmlElement("adapter")]
         public AdapterRef AdapterRef
         {
@@ -684,7 +789,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         ChannelRef[] _channels;
-
+        /// <summary>
+        /// Gets or sets the channel references.
+        /// </summary>
         [XmlArray("channels")]
         [XmlArrayItem("channel")]
         public ChannelRef[] Channels
@@ -710,7 +817,9 @@ namespace FluorineFx.Messaging.Config
         */
         
         private XmlNode _propertiesXml;
-
+        /// <summary>
+        /// Gets or sets the properties Xml node.
+        /// </summary>
         [XmlAnyElement("properties")]
         public XmlNode PropertiesXml
         {
@@ -719,6 +828,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         DestinationProperties _properties;
+        /// <summary>
+        /// Gets or sets the destination properties.
+        /// </summary>
         [XmlIgnore]
         public DestinationProperties Properties
         {
@@ -756,7 +868,9 @@ namespace FluorineFx.Messaging.Config
 
 
         SecurityConstraint[] _securityConstraints;
-
+        /// <summary>
+        /// Gets or sets the security constraints.
+        /// </summary>
         [XmlArray("security")]
         [XmlArrayItem("security-constraint")]
         public SecurityConstraint[] Security
@@ -773,7 +887,11 @@ namespace FluorineFx.Messaging.Config
         {
             _service = service;
         }
-
+        /// <summary>
+        /// Gets the required roles for a destination.
+        /// </summary>
+        /// <returns>List of the roles.</returns>
+        /// <remarks>The roles are cached for subsequent access.</remarks>
         public string[] GetRoles()
         {
             if (!_hasCachedRoles)
@@ -814,12 +932,16 @@ namespace FluorineFx.Messaging.Config
             return _cachedRoles;
         }
     }
-
+    /// <summary>
+    /// Destination properties configuration.
+    /// </summary>
     [XmlRoot("properties")]
     public sealed class DestinationProperties
     {
         string _source;
-
+        /// <summary>
+        /// Gets or sets the source.
+        /// </summary>
         [XmlElement("source")]
         public string Source
         {
@@ -828,7 +950,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _scope;
-
+        /// <summary>
+        /// Gets or sets the scope.
+        /// </summary>
         [XmlElement("scope")]
         public string Scope
         {
@@ -837,7 +961,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _factory;
-
+        /// <summary>
+        /// Gets or sets the factory.
+        /// </summary>
         [XmlElement("factory")]
         public string Factory
         {
@@ -846,7 +972,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _attributeId;
-
+        /// <summary>
+        /// Gets or sets the attribute-id.
+        /// </summary>
         [XmlElement("attribute-id")]
         public string AttributeId
         {
@@ -855,7 +983,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         NetworkProperties _networkProperties;
-
+        /// <summary>
+        /// Gets or sets the network properties.
+        /// </summary>
         [XmlElement("network")]
         public NetworkProperties Network
         {
@@ -864,7 +994,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         MetadataProperties _metadataProperties;
-
+        /// <summary>
+        /// Gets or sets the metadata properties.
+        /// </summary>
         [XmlElement("metadata")]
         public MetadataProperties Metadata
         {
@@ -873,7 +1005,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         MsmqProperties _msmqProperties;
-
+        /// <summary>
+        /// Gets or sets MSMQ properties.
+        /// </summary>
         [XmlElement("msmq")]
         public MsmqProperties Msmq
         {
@@ -882,7 +1016,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         ServerProperties _serverProperties;
-
+        /// <summary>
+        /// Gets or sets server properties.
+        /// </summary>
         [XmlElement("server")]
         public ServerProperties Server
         {
@@ -910,7 +1046,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         PagingProperties _paging;
-
+        /// <summary>
+        /// Gets or sets paging properties.
+        /// </summary>
         [XmlElement("paging")]
         public PagingProperties Paging
         {
@@ -918,7 +1056,9 @@ namespace FluorineFx.Messaging.Config
             set { _paging = value; }
         }
     }
-
+    /// <summary>
+    /// Paging properties configuration.
+    /// </summary>
     public sealed class PagingProperties
     {
         int _pageSize = 10;
@@ -953,7 +1093,9 @@ namespace FluorineFx.Messaging.Config
     public sealed class MetadataProperties
     {
         IdentityConfiguration[] _identity;
-
+        /// <summary>
+        /// Gets or sets the identity configurations.
+        /// </summary>
         [XmlElement("identity")]
         public IdentityConfiguration[] Identity
         {
@@ -961,13 +1103,17 @@ namespace FluorineFx.Messaging.Config
             set { _identity = value; }
         }
     }
-
+    /// <summary>
+    /// Metadata identity configuration.
+    /// </summary>
     public sealed class IdentityConfiguration
     {
         internal static IdentityConfiguration[] Empty = new IdentityConfiguration[0];
 
         string _property;
-
+        /// <summary>
+        /// Gets or sets the property attribute.
+        /// </summary>
         [XmlAttribute("property")]
         public string Property
         {
@@ -975,7 +1121,9 @@ namespace FluorineFx.Messaging.Config
             set { _property = value; }
         }
     }
-
+    /// <summary>
+    /// MSQM properties configuration.
+    /// </summary>
     public sealed class MsmqProperties
     {
         /// <summary>
@@ -988,7 +1136,9 @@ namespace FluorineFx.Messaging.Config
         public const string XmlMessageFormatter = "XmlMessageFormatter";
 
         string _name;
-
+        /// <summary>
+        /// Gets or sets the name value.
+        /// </summary>
         [XmlElement("name")]
         public string Name
         {
@@ -997,7 +1147,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _label;
-
+        /// <summary>
+        /// Gets or sets the label value.
+        /// </summary>
         [XmlElement("label")]
         public string Label
         {
@@ -1006,7 +1158,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _formatter;
-
+        /// <summary>
+        /// Gets or sets the formatter value.
+        /// </summary>
         [XmlElement("formatter")]
         public string Formatter
         {
@@ -1065,7 +1219,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _ref;
-
+        /// <summary>
+        /// Gets or sets the ref attribute.
+        /// </summary>
         [XmlAttribute("ref")]
         public string Ref
         {
@@ -1084,7 +1240,9 @@ namespace FluorineFx.Messaging.Config
             get { return _roles; }
             set { _roles = value; }
         }
-
+        /// <summary>
+        /// Initializes a new instance of the SecurityConstraint class.
+        /// </summary>
         public SecurityConstraint()
         {
         }
@@ -1096,13 +1254,20 @@ namespace FluorineFx.Messaging.Config
             _roles = roles;
         }
     }
-
+    /// <summary>
+    /// LoginCommand configuration.
+    /// </summary>
     public sealed class LoginCommand
     {
+        /// <summary>
+        /// FluorineFx login command.
+        /// </summary>
         public const string FluorineLoginCommand = "asp.net";
 
         string _class;
-
+        /// <summary>
+        /// Gets or sets the class attribute.
+        /// </summary>
         [XmlAttribute("class")]
         public string Class
         {
@@ -1111,7 +1276,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _server;
-
+        /// <summary>
+        /// Gets or sets the server attibute.
+        /// </summary>
         [XmlAttribute("server")]
         public string Server
         {
@@ -1130,11 +1297,15 @@ namespace FluorineFx.Messaging.Config
             set { _perClientAuthentication = value; }
         }
     }
-
+    /// <summary>
+    /// Channel reference configuration.
+    /// </summary>
     public sealed class ChannelRef
     {
         string _ref;
-
+        /// <summary>
+        /// Gets or sets the ref attribute.
+        /// </summary>
         [XmlAttribute("ref")]
         public string Ref
         {
@@ -1155,7 +1326,9 @@ namespace FluorineFx.Messaging.Config
         public const string ContextRoot = "{context.root}";
 
         string _id;
-
+        /// <summary>
+        /// Gets or sets the id attribute.
+        /// </summary>
         [XmlAttribute("id")]
         public string Id
         {
@@ -1164,7 +1337,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _class;
-
+        /// <summary>
+        /// Gets or sets the class attribute.
+        /// </summary>
         [XmlAttribute("class")]
         public string Class
         {
@@ -1173,7 +1348,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         Endpoint _endpoint;
-
+        /// <summary>
+        /// Gets or sets the endpoint instance.
+        /// </summary>
         [XmlElement("endpoint")]
         public Endpoint Endpoint
         {
@@ -1182,7 +1359,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         ChannelProperties _properties;
-
+        /// <summary>
+        /// Gets or sets the channel properties.
+        /// </summary>
         [XmlElement("properties")]
         public ChannelProperties Properties
         {
@@ -1275,11 +1454,15 @@ namespace FluorineFx.Messaging.Config
                 return "Channel id = " + _id + " (uri not available)";
         }
     }
-
+    /// <summary>
+    /// Endpoint configuration.
+    /// </summary>
     public sealed class Endpoint
     {
         string _url;
-
+        /// <summary>
+        /// Gets or sets the url attribute.
+        /// </summary>
         [XmlAttribute("url")]
         public string Url
         {
@@ -1288,7 +1471,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _uri;
-
+        /// <summary>
+        /// Gets or sets the uri attribute.
+        /// </summary>
         [XmlAttribute("uri")]
         public string Uri
         {
@@ -1297,7 +1482,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _class;
-
+        /// <summary>
+        /// Gets or sets the class attribute.
+        /// </summary>
         [XmlAttribute("class")]
         public string Class
         {
@@ -1305,11 +1492,15 @@ namespace FluorineFx.Messaging.Config
             set { _class = value; }
         }
     }
-
+    /// <summary>
+    /// Channel properties configuration.
+    /// </summary>
     public sealed class ChannelProperties
     {
         bool _pollingEnabled = false;
-
+        /// <summary>
+        /// Gets or sets if polling is enabled for the channel.
+        /// </summary>
         [XmlElement("polling-enabled")]
         public bool IsPollingEnabled
         {
@@ -1433,16 +1624,20 @@ namespace FluorineFx.Messaging.Config
             get { return _bindAddress; }
             set { _bindAddress = value; }
         }
-
         Serialization _serialization;
+        /// <summary>
+        /// Gets or sets the serialization configuration.
+        /// </summary>
         [XmlElement("serialization")]
         public Serialization Serialization
         {
             get { return _serialization; }
             set { _serialization = value; }
         }
-
         UserAgentSettings _userAgentSettings;
+        /// <summary>
+        /// Gets or sets user agent settings.
+        /// </summary>
         [XmlElement("user-agent-settings")]
         public UserAgentSettings UserAgentSettings
         {
@@ -1500,12 +1695,15 @@ namespace FluorineFx.Messaging.Config
     }
 
     /// <summary>
+    /// Server certificate configuration.
     /// Example: <serverCertificate storeLocation="LocalMachine" storeName="My" x509FindType="FindBySubjectDistinguishedName" findValue="CN=MyCert"/>
     /// </summary>
     public sealed class ServerCertificate
     {
         string _storeLocation;
-
+        /// <summary>
+        /// Gets or sets the storeLocation attribute.
+        /// </summary>
         [XmlAttribute("storeLocation")]
         public string StoreLocation
         {
@@ -1514,7 +1712,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _storeName;
-
+        /// <summary>
+        /// Gets or sets the storeName attribute.
+        /// </summary>
         [XmlAttribute("storeName")]
         public string StoreName
         {
@@ -1523,7 +1723,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _x509FindType;
-
+        /// <summary>
+        /// Gets or sets the find type attribute.
+        /// </summary>
         [XmlAttribute("x509FindType")]
         public string X509FindType
         {
@@ -1532,7 +1734,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         string _findValue;
-
+        /// <summary>
+        /// Gets or sets the find value attribute.
+        /// </summary>
         [XmlAttribute("findValue")]
         public string FindValue
         {
@@ -1540,18 +1744,26 @@ namespace FluorineFx.Messaging.Config
             set { _findValue = value; }
         }
     }
-
+    /// <summary>
+    /// UserAgentSettings configuration.
+    /// </summary>
     public sealed class UserAgentSettings
     {
         UserAgent[] _userAgents;
-
+        /// <summary>
+        /// Gets or sets the user agent configurations.
+        /// </summary>
         [XmlElement("user-agent")]
         public UserAgent[] UserAgents
         {
             get { return _userAgents; }
             set { _userAgents = value; }
         }
-
+        /// <summary>
+        /// Gets a user agent configuration by name.
+        /// </summary>
+        /// <param name="value">Value used to search for user agent based on the matchOn attribute.</param>
+        /// <returns>A UserAgent instance.</returns>
         public UserAgent this[string value]
         {
             get
@@ -1564,7 +1776,10 @@ namespace FluorineFx.Messaging.Config
                 return null;
             }
         }
-
+        /// <summary>
+        /// Adds a new user agent configuration.
+        /// </summary>
+        /// <param name="userAgent">The user agent configuration to add.</param>
         public void AddUserAgent(UserAgent userAgent)
         {
             if (_userAgents == null)
@@ -1574,11 +1789,15 @@ namespace FluorineFx.Messaging.Config
             _userAgents[_userAgents.Length - 1] = userAgent;
         }
     }
-
+    /// <summary>
+    /// Serialization configuration.
+    /// </summary>
     public sealed class Serialization
     {
         bool _legacyCollection;
-
+        /// <summary>
+        /// Gets or sets the legacy collection value.
+        /// </summary>
         [XmlElement("legacy-collection")]
         public bool IsLegacyCollection
         {
@@ -1598,14 +1817,24 @@ namespace FluorineFx.Messaging.Config
             set { _legacyThrowable = value; }
         }
     }
-
+    /// <summary>
+    /// User agent configuration.
+    /// </summary>
     public sealed class UserAgent
     {
+        /// <summary>
+        /// Microsft Internet Explorer UserAgent.
+        /// </summary>
         public static UserAgent UserAgentMSIE = new UserAgent("IE", 2048, 3);
+        /// <summary>
+        /// Firefox UserAgent.
+        /// </summary>
         public static UserAgent UserAgentFirefox = new UserAgent("Firefox", 0, 7);
 
         string _matchOn;
-
+        /// <summary>
+        /// Gets or sets the match-on attribute.
+        /// </summary>
         [XmlAttribute("match-on")]
         public string MatchOn
         {
@@ -1614,7 +1843,9 @@ namespace FluorineFx.Messaging.Config
         }
 
         int _kickstartBytes;
-
+        /// <summary>
+        /// Gets or sets the kickstart-bytes attribute.
+        /// </summary>
         [XmlAttribute("kickstart-bytes")]
         public int KickstartBytes
         {
@@ -1623,20 +1854,29 @@ namespace FluorineFx.Messaging.Config
         }
 
         int _maxStreamingConnectionsPerSession;
-
+        /// <summary>
+        /// Gets or sets the max-streaming-connections-per-session attribute.
+        /// </summary>
         [XmlAttribute("max-streaming-connections-per-session")]
         public int MaxStreamingConnectionsPerSession
         {
             get { return _maxStreamingConnectionsPerSession; }
             set { _maxStreamingConnectionsPerSession = value; }
         }
-
+        /// <summary>
+        /// Initializes a new instance of the UserAgent class.
+        /// </summary>
         public UserAgent()
         {
             _kickstartBytes = 0;
             _maxStreamingConnectionsPerSession = 1;
         }
-
+        /// <summary>
+        /// Initializes a new instance of the UserAgent class.
+        /// </summary>
+        /// <param name="matchOn">The match-on attribute.</param>
+        /// <param name="kickstartBytes">The kickstart-bytes attribute.</param>
+        /// <param name="maxStreamingConnectionsPerSession">The max-streaming-connections-per-session attribute.</param>
         public UserAgent(string matchOn, int kickstartBytes, int maxStreamingConnectionsPerSession)
         {
             _matchOn = matchOn;

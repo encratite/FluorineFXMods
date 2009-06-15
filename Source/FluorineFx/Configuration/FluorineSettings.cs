@@ -502,6 +502,9 @@ namespace FluorineFx.Configuration
 		private string _server;
         bool _perClientAuthentication = false;
 
+        /// <summary>
+        /// Login Command implementation for ASP.NET ("server" attribute).
+        /// </summary>
         public const string FluorineLoginCommand = "asp.net";
         /// <summary>
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
@@ -691,6 +694,11 @@ namespace FluorineFx.Configuration
             _customClassToType[value.CustomClass] = value.Type;
             base.Add(value);
         }
+        /// <summary>
+        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
         public override void Insert(int index, ClassMapping value)
         {
             _typeToCustomClass[value.Type] = value.CustomClass;
@@ -1911,10 +1919,12 @@ namespace FluorineFx.Configuration
 			get { return _compressionLevel; }
 			set { _compressionLevel = value; }
 		}
-
+        /// <summary>
+        /// Mime types to exclude from compression.
+        /// Mime types can include wildcards like image/* or */xml.
+        /// </summary>
 		[XmlArray("excludedMimeTypes")]
 		[XmlArrayItem("add",typeof(MimeTypeEntry))]
-		//[XmlArrayItem("remove",typeof(MimeTypeEntry))]
 		public MimeTypeEntryCollection ExcludedMimeTypes 
 		{
 			get 
@@ -1925,10 +1935,11 @@ namespace FluorineFx.Configuration
 			}
 			//set { _excludedTypes = value; }
 		}
-
+        /// <summary>
+        /// Paths to exclude from compression.
+        /// </summary>
 		[XmlArray("excludedPaths")]
 		[XmlArrayItem("add",typeof(PathEntry))]
-		//[XmlArrayItem("remove",typeof(PathEntry))]
 		public PathEntryCollection ExcludedPaths 
 		{
 			get 
@@ -2261,7 +2272,8 @@ namespace FluorineFx.Configuration
 		private string _path;
 
         /// <summary>
-        /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// Gets or sets the to exclude from compression.
+        /// The path is a relative url.
         /// </summary>
         [XmlAttribute(AttributeName = "path")]
 		public string Path
@@ -2964,6 +2976,9 @@ namespace FluorineFx.Configuration
     /// </summary>
     public sealed class Debug
     {
+        /// <summary>
+        /// Debug mode off.
+        /// </summary>
         public const string Off = "Off";
 
         private string _mode;

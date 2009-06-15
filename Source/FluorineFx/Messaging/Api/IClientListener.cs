@@ -29,12 +29,12 @@ namespace FluorineFx.Messaging.Api
         /// <summary>
         /// Notification that a Client instance was created.
         /// </summary>
-        /// <param name="messageClient">The Client that was created.</param>
+        /// <param name="client">The Client that was created.</param>
         void ClientCreated(IClient client);
         /// <summary>
         /// Notification that a Client is about to be destroyed.
         /// </summary>
-        /// <param name="messageClient">The Client that will be destroyed.</param>
+        /// <param name="client">The Client that will be destroyed.</param>
         void ClientDestroyed(IClient client);
     }
 }

@@ -53,8 +53,7 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
         IClientRegistry ClientRegistry { get; }
 		/// <summary>
-		/// Gets persistence store object, a storage for persistent objects like
-		/// persistent SharedObjects.
+		/// Gets persistence store object, a storage for persistent objects like persistent Shared objects.
 		/// </summary>
         IPersistenceStore PersistenceStore { get; }
 		/// <summary>
@@ -69,14 +68,15 @@ namespace FluorineFx.Messaging.Api
         /// </summary>
         IServiceInvoker ServiceInvoker { get; }
         /// <summary>
-        /// Returns an <see cref="FluorineFx.Context.IResource"/> handle for the
+        /// Returns an <see cref="FluorineFx.Context.IResource"/> handle for the specified path.
         /// </summary>
-        /// <param name="location">The resource location.</param>
+        /// <param name="path">The resource location.</param>
         /// <returns>An appropriate <see cref="FluorineFx.Context.IResource"/> handle.</returns>
-        IResource GetResource(string location);
+        IResource GetResource(string path);
         /// <summary>
-        /// Gets the scope resolverobject.
+        /// Gets the scope resolver object.
         /// </summary>
+        /// <value>The scope resolver object.</value>
         IScopeResolver ScopeResolver { get; }
 	}
 }

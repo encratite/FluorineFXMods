@@ -26,13 +26,13 @@ namespace FluorineFx.Scheduling
     public enum SchedulerInstruction
     {
         /// <summary>
-        /// Instructs the <see cref="IScheduler" /> that the <see cref="Trigger" />
+        /// Instructs the <see cref="ISchedulingService" /> that the <see cref="Trigger" />
         /// has no further instructions.
         /// </summary>
         NoInstruction,
 
         /// <summary>
-        /// Instructs the <see cref="IScheduler" /> that the <see cref="Trigger" />
+        /// Instructs the <see cref="ISchedulingService" /> that the <see cref="Trigger" />
         /// wants the <see cref="JobDetail" /> to re-Execute
         /// immediately. If not in a 'RECOVERING' or 'FAILED_OVER' situation, the
         /// execution context will be re-used (giving the <see cref="IJob" /> the
@@ -41,33 +41,33 @@ namespace FluorineFx.Scheduling
         ReExecuteJob,
 
         /// <summary>
-        /// Instructs the <see cref="IScheduler" /> that the <see cref="Trigger" />
+        /// Instructs the <see cref="ISchedulingService" /> that the <see cref="Trigger" />
         /// should be put in the <see cref="TriggerState.Complete" /> state.
         /// </summary>
         SetTriggerComplete,
 
         /// <summary>
-        /// Instructs the <see cref="IScheduler" /> that the <see cref="Trigger" />
+        /// Instructs the <see cref="ISchedulingService" /> that the <see cref="Trigger" />
         /// wants itself deleted.
         /// </summary>
         DeleteTrigger,
 
         /// <summary>
-        /// Instructs the <see cref="IScheduler" /> that all <see cref="Trigger" />
+        /// Instructs the <see cref="ISchedulingService" /> that all <see cref="Trigger" />
         /// s referencing the same <see cref="JobDetail" /> as
         /// this one should be put in the <see cref="TriggerState.Complete" /> state.
         /// </summary>
         SetAllJobTriggersComplete,
 
         /// <summary>
-        /// Instructs the <see cref="IScheduler" /> that all <see cref="Trigger" />
+        /// Instructs the <see cref="ISchedulingService" /> that all <see cref="Trigger" />
         /// s referencing the same <see cref="JobDetail" /> as
         /// this one should be put in the <see cref="TriggerState.Error" /> state.
         /// </summary>
         SetAllJobTriggersError,
 
         /// <summary>
-        /// Instructs the <see cref="IScheduler" /> that the <see cref="Trigger" />
+        /// Instructs the <see cref="ISchedulingService" /> that the <see cref="Trigger" />
         /// should be put in the <see cref="TriggerState.Error" /> state.
         /// </summary>
         SetTriggerError

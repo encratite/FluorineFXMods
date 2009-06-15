@@ -84,10 +84,17 @@ namespace FluorineFx.Messaging
         private CopyOnWriteDictionary _clients = new CopyOnWriteDictionary();
 #endif
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Scope"/> class.
+        /// </summary>
         protected Scope():this(string.Empty)
 		{
 		}
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Scope"/> class.
+        /// </summary>
+        /// <param name="name">The scope name.</param>
         public Scope(string name)
             : base(null, ScopeType, name, false)
 		{
@@ -99,23 +106,45 @@ namespace FluorineFx.Messaging
             get { return _serviceContainer; }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is enabled.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is enabled; otherwise, <c>false</c>.
+        /// </value>
 		public bool IsEnabled
 		{
 			get{ return _enabled; }
 			set{ _enabled = value; }
 		}
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is running.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is running; otherwise, <c>false</c>.
+        /// </value>
 		public bool IsRunning
 		{
 			get{ return _running; }
 		}
 
+        /// <summary>
+        /// Gets or sets a value indicating whether automatically start the scope.
+        /// </summary>
+        /// <value><c>true</c> if automatically start the scope; otherwise, <c>false</c>.</value>
 		public bool AutoStart
 		{
 			get{ return _autoStart; }
 			set{ _autoStart = value; }
 		}
 
+        /// <summary>
+        /// Gets a value indicating whether this instance has context.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has context; otherwise, <c>false</c>.
+        /// </value>
 		public bool HasContext
 		{
 			get{ return _context != null; }
@@ -126,6 +155,9 @@ namespace FluorineFx.Messaging
         /// </summary>
         public virtual IEndpoint Endpoint { get { return null; } }
 
+        /// <summary>
+        /// Inits this instance.
+        /// </summary>
 		public void Init()
 		{
 			if(HasParent) 
@@ -280,6 +312,9 @@ namespace FluorineFx.Messaging
             }
         }
 
+        /// <summary>
+        /// Free managed resources.
+        /// </summary>
 		protected override void Free()
 		{
 			if(HasParent) 
@@ -295,11 +330,26 @@ namespace FluorineFx.Messaging
 
 		#region IScope Members
 
+        /// <summary>
+        /// Adds given connection to the scope.
+        /// </summary>
+        /// <param name="connection">Connection object.</param>
+        /// <returns>
+        /// true on success, false if the specified connection already belongs to this scope.
+        /// </returns>
 		public bool Connect(IConnection connection)
 		{
 			return Connect(connection, null);
 		}
 
+        /// <summary>
+        /// Adds given connection to the scope.
+        /// </summary>
+        /// <param name="connection">Connection object.</param>
+        /// <param name="parameters">Parameters passed.</param>
+        /// <returns>
+        /// true on success, false if the specified connection already belongs to this scope.
+        /// </returns>
 		public bool Connect(IConnection connection, object[] parameters)
 		{
 			if(HasParent && !this.Parent.Connect(connection, parameters)) 
@@ -347,6 +397,10 @@ namespace FluorineFx.Messaging
 			return true;
 		}
 
+        /// <summary>
+        /// Disconnects the specified connection.
+        /// </summary>
+        /// <param name="connection">The connection.</param>
 		public void Disconnect(IConnection connection)
 		{
 			// We call the disconnect handlers in reverse order they were called
@@ -403,6 +457,10 @@ namespace FluorineFx.Messaging
 				this.Parent.Disconnect(connection);
 		}
 
+        /// <summary>
+        /// Returns scope context.
+        /// </summary>
+        /// <value>The scope context object.</value>
 		public IScopeContext Context
 		{
 			get
@@ -418,16 +476,38 @@ namespace FluorineFx.Messaging
 			}
 		}
 
+        /// <summary>
+        /// Check to see if this scope has a child scope matching a given name.
+        /// </summary>
+        /// <param name="name">The name of the child scope.</param>
+        /// <returns>
+        /// true if a child scope exists, otherwise false.
+        /// </returns>
 		public bool HasChildScope(string name)
 		{
 			return _children.ContainsKey(ScopeType + Separator + name);
 		}
 
+        /// <summary>
+        /// Checks whether scope has a child scope with given name and type.
+        /// </summary>
+        /// <param name="type">Child scope type.</param>
+        /// <param name="name">Child scope name.</param>
+        /// <returns>
+        /// true if a child scope exists, otherwise false.
+        /// </returns>
 		public bool HasChildScope(string type, string name)
 		{
 			return _children.ContainsKey(type + Separator + name);
 		}
 
+        /// <summary>
+        /// Creates child scope with name given and returns success value.
+        /// </summary>
+        /// <param name="name">New child scope name.</param>
+        /// <returns>
+        /// true if child scope was successfully creates, false otherwise.
+        /// </returns>
 		public bool CreateChildScope(string name)
 		{
 			Scope scope = new Scope(name);
@@ -435,6 +515,13 @@ namespace FluorineFx.Messaging
 			return AddChildScope(scope);
 		}
 
+        /// <summary>
+        /// Adds scope as a child scope.
+        /// </summary>
+        /// <param name="scope">Add the specified scope.</param>
+        /// <returns>
+        /// true if child scope was successfully added, false otherwise.
+        /// </returns>
 		public bool AddChildScope(IBasicScope scope)
 		{
 			if(HasHandler && !Handler.AddChildScope(scope)) 
@@ -470,6 +557,10 @@ namespace FluorineFx.Messaging
 			return true;
 		}
 
+        /// <summary>
+        /// Removes scope from the children scope list.
+        /// </summary>
+        /// <param name="scope">Removes the specified scope.</param>
 		public void RemoveChildScope(IBasicScope scope)
 		{
 			if (scope is IScope) 
@@ -495,11 +586,20 @@ namespace FluorineFx.Messaging
             }
 		}
 
+        /// <summary>
+        /// Gets the child scope names.
+        /// </summary>
+        /// <returns>Collection of child scope names.</returns>
 		public ICollection GetScopeNames()
 		{
 			return _children.Keys;
 		}
 
+        /// <summary>
+        /// Returns an iterator of basic scope names.
+        /// </summary>
+        /// <param name="type">Child scope type.</param>
+        /// <returns>An iterator of basic scope names.</returns>
         public IEnumerator GetBasicScopeNames(string type)
 		{
 			if (type == null) 
@@ -508,6 +608,12 @@ namespace FluorineFx.Messaging
 				return new PrefixFilteringStringEnumerator(_children.Keys, type + Separator);
 		}
 
+        /// <summary>
+        /// Gets a child scope by name.
+        /// </summary>
+        /// <param name="type">Child scope type.</param>
+        /// <param name="name">Name of the child scope.</param>
+        /// <returns>Scope object.</returns>
         public IBasicScope GetBasicScope(string type, string name)
         {
             string child = type + Separator + name;
@@ -516,6 +622,11 @@ namespace FluorineFx.Messaging
             return null;
         }
 
+        /// <summary>
+        /// Returns scope by name.
+        /// </summary>
+        /// <param name="name">Scope name.</param>
+        /// <returns>Scope with the specified name.</returns>
 		public IScope GetScope(string name)
 		{
             string child = ScopeType + Separator + name;
@@ -524,11 +635,20 @@ namespace FluorineFx.Messaging
             return null;
         }
 
+        /// <summary>
+        /// Gets a set of connected clients.
+        /// </summary>
+        /// <returns>Collection of connected clients.</returns>
 		public ICollection GetClients()
 		{
 			return _clients.Keys;
 		}
-
+        /// <summary>
+        /// Gets a value indicating whether this instance has handler.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has context; otherwise, <c>false</c>.
+        /// </value>
 		public bool HasHandler
 		{
 			get
@@ -536,7 +656,10 @@ namespace FluorineFx.Messaging
 				return (_handler != null || (this.HasParent && this.Parent.HasHandler));
 			}
 		}
-
+        /// <summary>
+        /// Gets or sets handler of the scope.
+        /// </summary>
+        /// <value>Scope handler object.</value>
 		public IScopeHandler Handler
 		{
 			get
@@ -559,7 +682,10 @@ namespace FluorineFx.Messaging
 					(_handler as IScopeAware).SetScope(this);
 			}
 		}
-
+        /// <summary>
+        /// Gets context path.
+        /// </summary>
+        /// <value>The context path.</value>
 		public virtual string ContextPath
 		{
 			get
@@ -575,6 +701,10 @@ namespace FluorineFx.Messaging
 			}
 		}
 
+        /// <summary>
+        /// Returns an enumerator that iterates through connections.
+        /// </summary>
+        /// <returns>An IEnumerator object that can be used to iterate through the connections.</returns>
 		public IEnumerator GetConnections()
 		{
             return new ConnectionIterator(this);
@@ -592,6 +722,11 @@ namespace FluorineFx.Messaging
 				return _context;
 		}
 
+        /// <summary>
+        /// Returns collection of connections for the specified client.
+        /// </summary>
+        /// <param name="client">The client object.</param>
+        /// <returns>Collection of connections.</returns>
 		public ICollection LookupConnections(IClient client)
 		{
 			if( _clients.ContainsKey(client) )
@@ -608,6 +743,10 @@ namespace FluorineFx.Messaging
 
         #region IEnumerable Members
 
+        /// <summary>
+        /// Returns an enumerator that iterates through children scopes.
+        /// </summary>
+        /// <returns>An IEnumerator object that can be used to iterate through children scopes.</returns>
         public override IEnumerator GetEnumerator()
         {
             return _children.Values.GetEnumerator();
@@ -748,7 +887,11 @@ namespace FluorineFx.Messaging
 
             #endregion
         }
-
+        /// <summary>
+        /// Returns an <see cref="FluorineFx.Context.IResource"/> handle for the specified path.
+        /// </summary>
+        /// <param name="path">The resource location.</param>
+        /// <returns>An appropriate <see cref="FluorineFx.Context.IResource"/> handle.</returns>
         public IResource GetResource(string path)
         {
             if (HasContext)

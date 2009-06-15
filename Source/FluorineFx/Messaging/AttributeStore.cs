@@ -247,6 +247,10 @@ namespace FluorineFx.Messaging
             _attributes.Values.CopyTo(array, index);
         }
 #endif
+        /// <summary>
+        /// Returns an enumerator that iterates through an AttributeStore.
+        /// </summary>
+        /// <returns>An IEnumerator object that can be used to iterate through the collection.</returns>
         public IEnumerator GetEnumerator()
         {
             return _attributes.GetEnumerator();

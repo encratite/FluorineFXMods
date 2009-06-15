@@ -62,6 +62,11 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// </summary>
         private CopyOnWriteArraySet _listeners = new CopyOnWriteArraySet();
 
+        /// <summary>
+        /// Initializes a new instance of the BroadcastStream.
+        /// </summary>
+        /// <param name="name">The name of the stream.</param>
+        /// <param name="scope">The scope this stream is associated with.</param>
         public BroadcastStream(string name, IScope scope)
         {
             _publishedName = name;
@@ -75,16 +80,31 @@ namespace FluorineFx.Messaging.Rtmp.Stream
 
         #region IBroadcastStream Members
 
+        /// <summary>
+        /// Saves the broadcast stream as a file.
+        /// </summary>
+        /// <param name="filePath">The path of the file relative to the scope.</param>
+        /// <param name="isAppend">Whether to append to the end of file.</param>
         public void SaveAs(string filePath, bool isAppend)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException("The method or operation is not implemented.");
         }
-
+        /// <summary>
+        /// Gets the filename the stream is being saved as.
+        /// </summary>
+        /// <value>
+        /// The filename relative to the scope or null if the stream is not being saved.
+        /// </value>
         public string SaveFilename
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException("The method or operation is not implemented."); }
         }
 
+        /// <summary>
+        /// Gets or sets stream publish name. Publish name is the value of the first parameter
+        /// had been passed to <code>NetStream.publish</code> on client side in SWF.
+        /// </summary>
+        /// <value>The stream publish name.</value>
         public string PublishedName
         {
             get
@@ -97,6 +117,10 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             }
         }
 
+        /// <summary>
+        /// Gets the provider corresponding to this stream.
+        /// </summary>
+        /// <value></value>
         public IProvider Provider
         {
             get { return this; }
@@ -130,16 +154,29 @@ namespace FluorineFx.Messaging.Rtmp.Stream
 
         #region IStream Members
 
+        /// <summary>
+        /// Gets the name of the stream. The name is unique across the server. This is
+        /// just an id of the stream and NOT the name that is used at client side to
+        /// subscribe to the stream. For that name, use IBroadcastStream.PublishedName.
+        /// </summary>
+        /// <value>The name of the stream.</value>
         public string Name
         {
             get { return _publishedName; }
         }
 
+        /// <summary>
+        /// Gets the scope this stream is associated with.
+        /// </summary>
+        /// <value>The scope this stream is associated with.</value>
         public IScope Scope
         {
             get { return _scope; }
         }
 
+        /// <summary>
+        /// Starts the stream.
+        /// </summary>
         public void Start()
         {
             try
@@ -153,19 +190,33 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             }
         }
 
+        /// <summary>
+        /// Stops the stream.
+        /// </summary>
         public void Stop()
         {
         }
 
+        /// <summary>
+        /// Closes the stream.
+        /// </summary>
         public void Close()
         {
         }
 
+        /// <summary>
+        /// Gets Codec info for a stream.
+        /// </summary>
+        /// <value>Codec info for a stream.</value>
         public IStreamCodecInfo CodecInfo
         {
             get { return _codecInfo; }
         }
 
+        /// <summary>
+        /// Gets an object that can be used to synchronize access.
+        /// </summary>
+        /// <value>An object that can be used to synchronize access.</value>
         public object SyncRoot
         {
             get { return _syncLock; }
@@ -175,6 +226,12 @@ namespace FluorineFx.Messaging.Rtmp.Stream
 
         #region IMessageComponent Members
 
+        /// <summary>
+        /// Handles out-of-band control message.
+        /// </summary>
+        /// <param name="source">Message component source.</param>
+        /// <param name="pipe">Connection pipe.</param>
+        /// <param name="oobCtrlMsg">Out-of-band control message</param>
         public void OnOOBControlMessage(IMessageComponent source, IPipe pipe, OOBControlMessage oobCtrlMsg)
         {
             //NA
@@ -184,6 +241,10 @@ namespace FluorineFx.Messaging.Rtmp.Stream
 
         #region IPipeConnectionListener Members
 
+        /// <summary>
+        /// Pipe connection event handler.
+        /// </summary>
+        /// <param name="evt">Pipe connection event.</param>
         public void OnPipeConnectionEvent(PipeConnectionEvent evt)
         {
             switch (evt.Type)
@@ -213,6 +274,10 @@ namespace FluorineFx.Messaging.Rtmp.Stream
 
         #region IEventDispatcher Members
 
+        /// <summary>
+        /// Dispatches the event.
+        /// </summary>
+        /// <param name="event">The event.</param>
         public void DispatchEvent(IEvent @event)
         {
             if (@event is IRtmpEvent)

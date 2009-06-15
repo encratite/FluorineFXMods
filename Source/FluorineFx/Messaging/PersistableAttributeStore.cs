@@ -32,67 +32,117 @@ namespace FluorineFx.Messaging
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
     [CLSCompliant(false)]
-	public class PersistableAttributeStore : AttributeStore, IPersistable
-	{
-		protected bool		_persistent = true;
-		protected string	_name;
-		protected string	_path;
-		protected string	_type;
-		protected long		_lastModified = -1;
-		protected IPersistenceStore _store = null;
+    public class PersistableAttributeStore : AttributeStore, IPersistable
+    {
+        /// <summary>
+        /// Persistence flag
+        /// </summary>
+        protected bool _persistent = true;
+        /// <summary>
+        /// Attribute store name
+        /// </summary>
+        protected string _name;
+        /// <summary>
+        /// Attribute store path (on local hard drive)
+        /// </summary>
+        protected string _path;
+        /// <summary>
+        /// Attribute store type
+        /// </summary>
+        protected string _type;
+        /// <summary>
+        /// Last modified timestamp
+        /// </summary>
+        protected long _lastModified = -1;
+        /// <summary>
+        /// Store object that deals with save/load routines.
+        /// </summary>
+        protected IPersistenceStore _store = null;
 
-		public PersistableAttributeStore(string type, string name, string path, bool persistent)
-		{
-			_name = name;
-			_path = path;
-			_type = type;
-			_persistent = persistent;
-		}
+        /// <summary>
+        /// Initializes a new instance of the PersistableAttributeStore.
+        /// </summary>
+        /// <param name="type">Attribute store type.</param>
+        /// <param name="name">Attribute store name.</param>
+        /// <param name="path">Attribute store path.</param>
+        /// <param name="persistent">Whether store is persistent or not.</param>
+        public PersistableAttributeStore(string type, string name, string path, bool persistent)
+        {
+            _name = name;
+            _path = path;
+            _type = type;
+            _persistent = persistent;
+        }
 
-		public virtual string Type
-		{
-			get{ return _type; }
-			set{ _type = value; }
-		}
+        /// <summary>
+        /// Gets or sets the attribute store type.
+        /// </summary>
+        /// <value>The attribute store type.</value>
+        public virtual string Type
+        {
+            get { return _type; }
+            set { _type = value; }
+        }
 
-		#region IPersistable Members
+        #region IPersistable Members
 
-		public virtual bool IsPersistent
-		{
-			get{ return _persistent; }
-			set{ _persistent = value; }
-		}
+        /// <summary>
+        /// Gets or sets a value indicating whether the object is persistent.
+        /// </summary>
+        /// <value>A value indicating whether the object is persistent.</value>
+        public virtual bool IsPersistent
+        {
+            get { return _persistent; }
+            set { _persistent = value; }
+        }
+        /// <summary>
+        /// Gets or sets the name of the persistent object.
+        /// </summary>
+        /// <value>The name of the persistent object.</value>
+        public virtual string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
 
-		public virtual string Name
-		{
-			get{ return _name; }
-			set{ _name = value; }
-		}
+        /// <summary>
+        /// Gets or sets the path of the persistent object.
+        /// </summary>
+        /// <value>The path of the persistent object.</value>
+        public virtual string Path
+        {
+            get { return _path; }
+            set { _path = value; }
+        }
+        /// <summary>
+        /// Gets the timestamp when the object was last modified.
+        /// </summary>
+        /// <value>The timestamp when the object was last modified.</value>
+        public virtual long LastModified
+        {
+            get { return _lastModified; }
+        }
+        /// <summary>
+        /// Gets or sets the persistence store this object is stored in.
+        /// </summary>
+        /// <value>The persistence store this object is stored in.</value>
+        public virtual IPersistenceStore Store
+        {
+            get { return _store; }
+            set
+            {
+                _store = value;
+                if (_store != null)
+                    _store.Load(this);
+            }
+        }
 
-		public virtual string Path
-		{
-			get{ return _path; }
-			set{ _path = value; }
-		}
-
-		public virtual long LastModified
-		{
-			get{ return _lastModified; }
-		}
-
-		public virtual IPersistenceStore Store
-		{
-			get{ return _store; }
-			set
-			{
-				_store = value;
-				if( _store != null )
-					_store.Load(this);
-			}
-		}
-
+        /// <summary>
+        /// Writes the object to the specified output stream.
+        /// </summary>
+        /// <param name="writer">Writer to write to.</param>
         public void Serialize(AMFWriter writer)
-		{
+        {
 #if !(NET_1_1)
             Dictionary<string, object> persistentAttributes = new Dictionary<string, object>();
 #else
@@ -105,51 +155,77 @@ namespace FluorineFx.Messaging
                 persistentAttributes.Add(attribute, this[attribute]);
             }
             writer.WriteData(ObjectEncoding.AMF0, persistentAttributes);
-		}
+        }
 
+        /// <summary>
+        /// Loads the object from the specified input stream.
+        /// </summary>
+        /// <param name="reader">Reader to load from.</param>
         public void Deserialize(AMFReader reader)
-		{
+        {
             this.RemoveAttributes();
             IDictionary persistentAttributes = reader.ReadData() as IDictionary;
             this.SetAttributes(persistentAttributes);
-		}
+        }
 
-		#endregion
+        #endregion
 
-		protected void OnModified()
-		{
-			_lastModified = System.Environment.TickCount;
-			if(_store != null) 
-				_store.Save(this);
-		}
+        /// <summary>
+        /// Set last modified flag to current system time.
+        /// </summary>
+        protected void OnModified()
+        {
+            _lastModified = System.Environment.TickCount;
+            if (_store != null)
+                _store.Save(this);
+        }
 
-		public override bool RemoveAttribute(string name)
-		{
-			bool result = base.RemoveAttribute (name);
-			if(result && !name.StartsWith(Constants.TransientPrefix))
-				OnModified();
-			return result;
-		}
-
-		public override void RemoveAttributes()
-		{
-			base.RemoveAttributes();
-			OnModified();
-		}
-
-		public override bool SetAttribute(string name, object value)
-		{
-			bool result = base.SetAttribute (name, value);
+        /// <summary>
+        /// Removes an attribute.
+        /// </summary>
+        /// <param name="name">The attribute name.</param>
+        /// <returns>
+        /// true if the attribute was found and removed otherwise false.
+        /// </returns>
+        public override bool RemoveAttribute(string name)
+        {
+            bool result = base.RemoveAttribute(name);
             if (result && !name.StartsWith(Constants.TransientPrefix))
-				OnModified();
-			return result;
-		}
-
-		public override void SetAttributes(IAttributeStore values)
-		{
-			base.SetAttributes (values);
-			OnModified();
-		}
+                OnModified();
+            return result;
+        }
+        /// <summary>
+        /// Removes all attributes.
+        /// </summary>
+        public override void RemoveAttributes()
+        {
+            base.RemoveAttributes();
+            OnModified();
+        }
+        /// <summary>
+        /// Sets an attribute on this object.
+        /// </summary>
+        /// <param name="name">The attribute name.</param>
+        /// <param name="value">The attribute value.</param>
+        /// <returns>
+        /// true if the attribute value changed otherwise false.
+        /// </returns>
+        public override bool SetAttribute(string name, object value)
+        {
+            bool result = base.SetAttribute(name, value);
+            if (result && !name.StartsWith(Constants.TransientPrefix))
+                OnModified();
+            return result;
+        }
+        /// <summary>
+        /// Sets multiple attributes on this object.
+        /// </summary>
+        /// <param name="values">Attribute store.</param>
+        public override void SetAttributes(IAttributeStore values)
+        {
+            base.SetAttributes(values);
+            OnModified();
+        }
 
 #if !(NET_1_1)
         /// <summary>

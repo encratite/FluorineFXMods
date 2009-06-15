@@ -79,7 +79,7 @@ namespace FluorineFx.Messaging.Services
         /// <summary>
         /// Creates a new Destination.
         /// </summary>
-        /// <param name="destinationSettings">Destination settings.</param>
+        /// <param name="destinationDefinition">Destination settings.</param>
         /// <returns>The new Destination instance.</returns>
         protected virtual Destination NewDestination(DestinationDefinition destinationDefinition)
 		{

@@ -21,6 +21,9 @@ using FluorineFx.Messaging.Messages;
 
 namespace FluorineFx.Messaging.Rtmp.Stream.Messages
 {
+    /// <summary>
+    /// Status message.
+    /// </summary>
     [CLSCompliant(false)]
     public class StatusMessage : AsyncMessage
     {

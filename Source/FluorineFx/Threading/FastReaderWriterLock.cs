@@ -38,16 +38,26 @@ namespace FluorineFx.Threading
 
         int _owningThreadId;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FastReaderWriterLock"/> class.
+        /// </summary>
         public FastReaderWriterLock()
         {
             // All state can start out zeroed. 
         }
 
+        /// <summary>
+        /// Acquires a reader lock.
+        /// </summary>
         public void AcquireReaderLock()
         {
             AcquireReaderLock(Timeout.Infinite);
         }
 
+        /// <summary>
+        /// Acquires a reader lock.
+        /// </summary>
+        /// <param name="millisecondsTimeout">The timeout in milliseconds.</param>
         public void AcquireReaderLock(int millisecondsTimeout)
         {
             EnterLock();
@@ -74,11 +84,18 @@ namespace FluorineFx.Threading
             ExitLock();
         }
 
+        /// <summary>
+        /// Acquires a writer lock.
+        /// </summary>
         public void AcquireWriterLock()
         {
             AcquireWriterLock(Timeout.Infinite);
         }
 
+        /// <summary>
+        /// Acquires a writer lock.
+        /// </summary>
+        /// <param name="millisecondsTimeout">The timeout in milliseconds.</param>
         public void AcquireWriterLock(int millisecondsTimeout)
         {
             EnterLock();
@@ -110,11 +127,18 @@ namespace FluorineFx.Threading
             ExitLock();
         }
 
+        /// <summary>
+        /// Upgrades to writer lock.
+        /// </summary>
         public void UpgradeToWriterLock()
         {
             UpgradeToWriterLock(Timeout.Infinite);
         }
 
+        /// <summary>
+        /// Upgrades to writer lock.
+        /// </summary>
+        /// <param name="millisecondsTimeout">The timeout in milliseconds.</param>
         public void UpgradeToWriterLock(int millisecondsTimeout)
         {
             EnterLock();
@@ -147,6 +171,9 @@ namespace FluorineFx.Threading
             ExitLock();
         }
 
+        /// <summary>
+        /// Releases the reader lock.
+        /// </summary>
         public void ReleaseReaderLock()
         {
             EnterLock();
@@ -155,6 +182,9 @@ namespace FluorineFx.Threading
             ExitAndWakeUpAppropriateWaiters();
         }
 
+        /// <summary>
+        /// Releases the writer lock.
+        /// </summary>
         public void ReleaseWriterLock()
         {
             EnterLock();
@@ -168,6 +198,9 @@ namespace FluorineFx.Threading
             ExitAndWakeUpAppropriateWaiters();
         }
 
+        /// <summary>
+        /// Downgrades to reader lock.
+        /// </summary>
         public void DowngradeToReaderLock()
         {
             EnterLock();

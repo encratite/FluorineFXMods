@@ -120,7 +120,7 @@ namespace FluorineFx.IO.Mp3
         /// <summary>
         /// Size of side information (only for Layer III)
         /// 1. index = LSF, 2. index = mono
-        ///
+        /// </summary>
         static int[,] SideInfoSizes = new int[,]
         {
 	        // MPEG 1

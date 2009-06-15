@@ -150,7 +150,9 @@ namespace FluorineFx.Messaging
         {
             __fields = (value) ? (byte)(__fields | 2) : (byte)(__fields & ~2);
         }
-
+        /// <summary>
+        /// Gets a value indicating whether the MessageClient has timed out.
+        /// </summary>
         public bool IsTimingOut
         {
             get { return (__fields & 4) == 4; }
@@ -408,16 +410,24 @@ namespace FluorineFx.Messaging
         }
         */
 
+        /// <summary>
+        /// Inform the object that it has timed out.
+        /// </summary>
         public void Timeout()
         {
             Invalidate(true /* notify client */);
         }
-
+        /// <summary>
+        /// Invalidates the MessageClient.
+        /// </summary>
         public void Invalidate()
         {
             Invalidate(false /* don't attempt to notify the client */);
         }
-
+        /// <summary>
+        /// Invalidates the MessageClient.
+        /// </summary>
+        /// <param name="notifyClient">Push a subscription invalidation message to the client.</param>
         public void Invalidate(bool notifyClient)
         {
             lock (this.SyncRoot)

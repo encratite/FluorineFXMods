@@ -11,8 +11,7 @@ using NullableDateTime = System.Nullable<System.DateTime>;
 namespace FluorineFx.Scheduling
 {
     /// <summary>
-    /// A context bundle containing handles to various environment information, that
-    /// is given to a <see cref="ScheduledJobDetail" /> instance as it is
+    /// A context bundle that is given to an <see cref="IScheduledJob" /> instance as it is
     /// executed, and to a <see cref="Trigger" /> instance after the
     /// execution completes.
     /// </summary>

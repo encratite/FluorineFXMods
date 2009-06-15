@@ -942,6 +942,10 @@ namespace FluorineFx
 #if !(NET_1_1)
         #region IRegisteredObject Members
 
+        /// <summary>
+        /// Requests a registered object to unregister.
+        /// </summary>
+        /// <param name="immediate">true to indicate the registered object should unregister from the hosting environment before returning; otherwise, false.</param>
         public void Stop(bool immediate)
         {
             try

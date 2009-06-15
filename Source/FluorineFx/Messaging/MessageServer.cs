@@ -306,6 +306,9 @@ namespace FluorineFx.Messaging
 
 		#region IDisposable Members
 
+        /// <summary>
+        /// Free managed resources.
+        /// </summary>
 		protected override void Free()
 		{
             lock (this.SyncRoot)
@@ -317,6 +320,9 @@ namespace FluorineFx.Messaging
             }
 		}
 
+        /// <summary>
+        /// Free unmanaged resources.
+        /// </summary>
 		protected override void FreeUnmanaged()
 		{
             lock (this.SyncRoot)

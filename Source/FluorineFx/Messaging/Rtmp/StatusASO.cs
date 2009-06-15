@@ -215,7 +215,6 @@ namespace FluorineFx.Messaging.Rtmp
         /// The persistence parameter passed to SharedObject.getRemote() is different from the one used when the shared object was created.
         /// </summary>
 	    public const string SO_PERSISTENCE_MISMATCH = "SharedObject.BadPersistence";
-        public const string SO_NOT_FOUND = "SharedObject.NoObjectFound";
 
 		/// <summary>
 		/// Initializes a new instance of the StatusASO class.

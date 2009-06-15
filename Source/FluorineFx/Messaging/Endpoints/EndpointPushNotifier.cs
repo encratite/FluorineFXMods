@@ -113,7 +113,7 @@ namespace FluorineFx.Messaging.Endpoints
         /// <summary>
         /// Notification that a session was created.
         /// </summary>
-        /// <param name="client">The session that was created.</param>
+        /// <param name="session">The session that was created.</param>
         public void SessionCreated(ISession session)
         {
             //We are only concerned in the session's destruction.
@@ -122,7 +122,7 @@ namespace FluorineFx.Messaging.Endpoints
         /// <summary>
         /// Notification that a session is about to be destroyed.
         /// </summary>
-        /// <param name="client">The session that will be destroyed.</param>
+        /// <param name="session">The session that will be destroyed.</param>
         public void SessionDestroyed(ISession session)
         {
             if (log.IsInfoEnabled)

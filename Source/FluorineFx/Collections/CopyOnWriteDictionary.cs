@@ -144,6 +144,11 @@ namespace FluorineFx.Collections
             }
         }
 
+        /// <summary>
+        /// Removes and returns the item with the provided key.
+        /// </summary>
+        /// <param name="key">The key to locate.</param>
+        /// <returns>The item if the <see cref="T:CopyOnWriteDictionary"></see> contains an element with the key; otherwise, null.</returns>
         public object RemoveAndGet(object key)
         {
             lock (this.SyncRoot)
@@ -235,6 +240,13 @@ namespace FluorineFx.Collections
 
         #endregion
 
+        /// <summary>
+        /// Determines whether the CopyOnWriteDictionary contains a specific key.
+        /// </summary>
+        /// <param name="key">The key to locate in the CopyOnWriteDictionary.</param>
+        /// <returns>
+        /// 	<c>true</c> if the CopyOnWriteDictionary contains key; otherwise, <c>false</c>.
+        /// </returns>
         public bool ContainsKey(object key)
         {
             return _dictionary.ContainsKey(key);
@@ -262,6 +274,17 @@ namespace FluorineFx.Collections
             }
         }
 
+        /// <summary>
+        /// Gets the value associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key whose value to get.</param>
+        /// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.</param>
+        /// <returns>
+        /// true if the CopyOnWriteDictionary contains an element with the specified key; otherwise, false.
+        /// </returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// 	<paramref name="key"/> is null.
+        /// </exception>
         public bool TryGetValue(object key, out object value)
         {
             value = null;

@@ -28,8 +28,8 @@ namespace FluorineFx.Messaging.Api.Event
         /// <summary>
         /// Handle an event.
         /// </summary>
-        /// <param name="evt">Event to handle.</param>
+        /// <param name="event">Event to handle.</param>
         /// <returns>true if event was handled, false if it should bubble.</returns>
-		bool HandleEvent(IEvent evt);
+		bool HandleEvent(IEvent @event);
 	}
 }
