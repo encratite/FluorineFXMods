@@ -84,6 +84,9 @@
     <Compile Include="..\FluorineFx\Collections\Generic\CollectionBase.cs">
       <Link>Collections\Generic\CollectionBase.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Collections\Generic\ConcurrentLinkedQueue.cs">
+      <Link>Collections\Generic\ConcurrentLinkedQueue.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Collections\Generic\CopyOnWriteArray.cs">
       <Link>Collections\Generic\CopyOnWriteArray.cs</Link>
     </Compile>
@@ -92,6 +95,9 @@
     </Compile>
     <Compile Include="..\FluorineFx\Collections\Generic\CopyOnWriteDictionary.cs">
       <Link>Collections\Generic\CopyOnWriteDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Collections\Generic\IQueue.cs">
+      <Link>Collections\Generic\IQueue.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Configuration\FluorineConfiguration.cs">
       <Link>Configuration\FluorineConfiguration.cs</Link>
@@ -815,6 +821,9 @@
     </Compile>
     <Compile Include="..\FluorineFx\Util\StringUtils.cs">
       <Link>Util\StringUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Util\ThreadingUtils.cs">
+      <Link>Util\ThreadingUtils.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Util\ValidationUtils.cs">
       <Link>Util\ValidationUtils.cs</Link>
