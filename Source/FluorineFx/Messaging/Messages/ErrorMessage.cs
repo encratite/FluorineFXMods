@@ -115,6 +115,13 @@ namespace FluorineFx.Messaging.Messages
 			return errorMessage;
 		}
 
+        /// <summary>
+        /// Returns a string that represents the current ErrorMessage object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>
+        /// A string that represents the current ErrorMessage object fields.
+        /// </returns>
         protected override string ToStringFields(int indentLevel)
         {
             string sep = GetFieldSeparator(indentLevel);

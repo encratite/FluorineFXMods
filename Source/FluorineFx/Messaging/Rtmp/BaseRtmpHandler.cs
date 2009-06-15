@@ -29,6 +29,7 @@ using FluorineFx.Messaging.Api.Service;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Messaging.Messages;
+using FluorineFx.Messaging.Rtmp.Service;
 using FluorineFx.IO;
 
 namespace FluorineFx.Messaging.Rtmp
@@ -397,9 +398,11 @@ namespace FluorineFx.Messaging.Rtmp
 
                 RtmpChannel channel = connection.GetChannel(3);
                 FlexInvoke reply = new FlexInvoke();
-                reply.Cmd = "receive";
+                Call call = new Call("receive", new object[] { response });
+                reply.ServiceCall = call;
+                //reply.Cmd = "receive";
+                //reply.Response = response;
                 reply.InvokeId = connection.InvokeId;
-                reply.Response = response;
                 channel.Write(reply);
             }
         }

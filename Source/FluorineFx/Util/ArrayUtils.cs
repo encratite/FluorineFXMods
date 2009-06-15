@@ -17,6 +17,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 
 namespace FluorineFx.Util
 {
@@ -71,7 +74,12 @@ namespace FluorineFx.Util
             }
         }
         */
-
+        /// <summary>
+        /// Compares two byte arrays.
+        /// </summary>
+        /// <param name="a1">First byte array.</param>
+        /// <param name="a2">Second byte array.</param>
+        /// <returns><c>true</c> if the byte arrays have the same length and the elemtns are identical; otherwise, <c>false</c>.</returns>
         public static bool Equals(byte[] a1, byte[] a2)
         {
             if (a1 == a2)
@@ -87,6 +95,68 @@ namespace FluorineFx.Util
                 return true;
             }
             return false;
+        }
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents a list.
+        /// </summary>
+        /// <param name="array">A list instance.</param>
+        /// <returns>A <see cref="System.String"/> that represents the list instance.</returns>
+        public static string ArrayToString(IList array)
+        {
+            return ArrayToString(array, ",");
+        }
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents a list.
+        /// </summary>
+        /// <param name="array">A list instance.</param>
+        /// <param name="delimeter">String delimiter.</param>
+        /// <returns>A <see cref="System.String"/> that represents the list instance.</returns>
+        public static string ArrayToString(IList array, string delimeter)
+        {
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < array.Count; i++)
+            {
+                if( i > 0 )
+                    sb.Append(delimeter);
+                object obj = array[i];
+                if( obj != null )
+                    sb.Append(obj.ToString());
+                else
+                    sb.Append("null");
+            }
+            return sb.ToString();
+        }
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents a list.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the list.</typeparam>
+        /// <param name="array">A list instance.</param>
+        /// <returns>A <see cref="System.String"/> that represents the list instance.</returns>
+        public static string ArrayToString<T>(IList<T> array)
+        {
+            return ArrayToString<T>(array, ",");
+        }
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents a list.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the list.</typeparam>
+        /// <param name="array">A list instance.</param>
+        /// <param name="delimeter">String delimiter.</param>
+        /// <returns>A <see cref="System.String"/> that represents the list instance.</returns>
+        public static string ArrayToString<T>(IList<T> array, string delimeter)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < array.Count; i++)
+            {
+                if (i > 0)
+                    sb.Append(delimeter);
+                T obj = array[i];
+                if (obj != null)
+                    sb.Append(obj.ToString());
+                else
+                    sb.Append("null");
+            }
+            return sb.ToString();
         }
     }
 }

@@ -66,7 +66,14 @@ namespace FluorineFx.Messaging.Rtmp
 
         public virtual bool DataAvailable 
         {
-            get { return (this.InnerStream as NetworkStream).DataAvailable; }
+            get 
+            { 
+#if !SILVERLIGHT
+                return (this.InnerStream as NetworkStream).DataAvailable; 
+#else
+                return false;
+#endif
+            }
         }
     }
 }

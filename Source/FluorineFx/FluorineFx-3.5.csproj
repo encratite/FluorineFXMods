@@ -82,9 +82,11 @@
     <Compile Include="Collections\CopyOnWriteArraySet.cs" />
     <Compile Include="Collections\CopyOnWriteDictionary.cs" />
     <Compile Include="Collections\Generic\CollectionBase.cs" />
+    <Compile Include="Collections\Generic\ConcurrentLinkedQueue.cs" />
     <Compile Include="Collections\Generic\CopyOnWriteArray.cs" />
     <Compile Include="Collections\Generic\CopyOnWriteArraySet.cs" />
     <Compile Include="Collections\Generic\CopyOnWriteDictionary.cs" />
+    <Compile Include="Collections\Generic\IQueue.cs" />
     <Compile Include="Collections\IModifiableCollection.cs" />
     <Compile Include="Collections\Inserter.cs" />
     <Compile Include="Collections\IOutputIterator.cs" />
@@ -720,6 +722,7 @@
     <Compile Include="Collections\ReadOnlyList.cs" />
     <Compile Include="Util\ReflectionUtils.cs" />
     <Compile Include="Util\StringUtils.cs" />
+    <Compile Include="Util\ThreadingUtils.cs" />
     <Compile Include="Util\UriBase.cs" />
     <Compile Include="Util\ValidationUtils.cs" />
     <Compile Include="Util\WsdlHelper.cs" />

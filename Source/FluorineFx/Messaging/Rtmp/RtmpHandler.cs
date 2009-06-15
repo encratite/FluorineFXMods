@@ -20,6 +20,8 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Net;
+using System.Security;
+using System.Security.Permissions;
 using log4net;
 using FluorineFx.Context;
 using FluorineFx.Util;
@@ -424,7 +426,7 @@ channel.Write(flexInvoke);
                         break;
                 }
             }
-
+            /*
 			if(invoke is FlexInvoke) 
 			{
 				FlexInvoke reply = new FlexInvoke();
@@ -439,6 +441,8 @@ channel.Write(flexInvoke);
 				channel.Write(reply);
 			}
 			else if(invoke is Invoke) 
+            */
+            if (invoke is Invoke) 
 			{
 				if((header.StreamId != 0)
 					&& (serviceCall.Status == Call.STATUS_SUCCESS_VOID || serviceCall.Status == Call.STATUS_SUCCESS_NULL)) 
@@ -473,14 +477,8 @@ channel.Write(flexInvoke);
             bool persistent = message.IsPersistent;
 			if(scope == null) 
 			{
-				// The scope already has been deleted.
-				SharedObjectMessage msg;
-                if (connection.ObjectEncoding == ObjectEncoding.AMF0)
-                    msg = new SharedObjectMessage(name, 0, persistent);
-                else
-                    msg = new FlexSharedObjectMessage(name, 0, persistent);
-                msg.AddEvent(new SharedObjectEvent(SharedObjectEventType.CLIENT_STATUS, StatusASO.SO_NOT_FOUND, "error"));
-				connection.GetChannel((byte)3).Write(msg);
+                // The scope already has been deleted.
+                SendSOCreationFailed(connection, name, persistent);
 				return;
 			}
             ISharedObjectService sharedObjectService = ScopeUtils.GetScopeService(scope, typeof(ISharedObjectService)) as ISharedObjectService;
@@ -543,8 +541,8 @@ channel.Write(flexInvoke);
         protected override void OnFlexInvoke(RtmpConnection connection, RtmpChannel channel, RtmpHeader header, FlexInvoke invoke)
 		{
             IMessage message = null;
-            if( invoke.Parameters != null && invoke.Parameters.Length > 0 )
-                message = invoke.Parameters[0] as IMessage;
+            if (invoke.ServiceCall.Arguments != null && invoke.ServiceCall.Arguments.Length > 0)
+                message = invoke.ServiceCall.Arguments[0] as IMessage;
 			if( message != null )
 			{
                 MessageBroker messageBroker = this.Endpoint.GetMessageBroker();
@@ -568,14 +566,20 @@ channel.Write(flexInvoke);
 					*/
 				}
                 IMessage response = messageBroker.RouteMessage(message, this.Endpoint);
+                invoke.ServiceCall.Status = response is ErrorMessage ? Call.STATUS_INVOCATION_EXCEPTION : Call.STATUS_SUCCESS_RESULT;
+                if (invoke.ServiceCall is IPendingServiceCall)
+                    (invoke.ServiceCall as IPendingServiceCall).Result = response;
 
 				FlexInvoke reply = new FlexInvoke();
 				reply.InvokeId = invoke.InvokeId;
+                reply.ServiceCall = invoke.ServiceCall;
+                /*
                 if( response is ErrorMessage )
                     reply.SetResponseFailure();
                 else
 				    reply.SetResponseSuccess();
 				reply.Response = response;
+                */
 				channel.Write(reply);
 			}
 			else

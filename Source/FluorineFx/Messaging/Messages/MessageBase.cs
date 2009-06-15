@@ -23,6 +23,9 @@ using System.Collections;
 using System.Collections.Generic;
 #endif
 using System.Text;
+#if !SILVERLIGHT
+using FluorineFx.Data;
+#endif
 
 namespace FluorineFx.Messaging.Messages
 {
@@ -284,24 +287,39 @@ namespace FluorineFx.Messaging.Messages
                 indent = " ";
             return indent;
         }
-
+        /// <summary>
+        /// Returns a string that represents the current MessageBase object.
+        /// </summary>
+        /// <returns>A string that represents the current MessageBase object.</returns>
         public override string ToString()
         {
             return ToString(1);
         }
-
+        /// <summary>
+        /// Returns a string that represents the current MessageBase object.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>A string that represents the current MessageBase object.</returns>
         public virtual string ToString(int indentLevel)
         {
             return ToStringHeader(indentLevel) + ToStringFields(indentLevel + 1);
         }
-
+        /// <summary>
+        /// Returns a header string that represents the current MessageBase object.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>A header string that represents the current MessageBase object.</returns>
         protected string ToStringHeader(int indentLevel)
         {
             string value = "Flex Message";
             value += " (" + GetType().Name + ") ";
             return value;
         }
-
+        /// <summary>
+        /// Returns a string that represents the current MessageBase object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>A string that represents the current MessageBase object fields.</returns>
         protected virtual string ToStringFields(int indentLevel)
         {
             if (_headers != null)
@@ -318,12 +336,23 @@ namespace FluorineFx.Messaging.Messages
             }
             return string.Empty;
         }
-
+        /// <summary>
+        /// Returns a string that represents body object.
+        /// </summary>
+        /// <param name="body">An object to trace.</param>
+        /// <param name="indentLevel">The indentation level used for tracing object members.</param>
+        /// <returns>A string that represents body object.</returns>
         protected string BodyToString(object body, int indentLevel) 
         {
             return BodyToString(body, indentLevel, null);
         }
-
+        /// <summary>
+        /// Returns a string that represents body object.
+        /// </summary>
+        /// <param name="body">An object to trace.</param>
+        /// <param name="indentLevel">The indentation level used for tracing object members.</param>
+        /// <param name="visited">Dictionary to handle circular references.</param>
+        /// <returns>A string that represents body object.</returns>
         protected string BodyToString(object body, int indentLevel, IDictionary visited)
         {
             try
@@ -338,7 +367,12 @@ namespace FluorineFx.Messaging.Messages
                 return "Exception in BodyToString: " + ex.Message;
             }
         }
-
+        /// <summary>
+        /// Returns a string that represents body object.
+        /// </summary>
+        /// <param name="body">An object to trace.</param>
+        /// <param name="indentLevel">The indentation level used for tracing object members.</param>
+        /// <returns>A string that represents body object.</returns>
         protected string InternalBodyToString(object body, int indentLevel)
         {
             return InternalBodyToString(body, indentLevel, null);
@@ -352,12 +386,18 @@ namespace FluorineFx.Messaging.Messages
 #else
                 visited = new Hashtable();
 #endif
-            else if (!visited.Contains(obj))
+            else if (visited.Contains(obj))
                 return null;
             visited.Add(obj, true);
             return visited;
         }
-
+        /// <summary>
+        /// Returns a string that represents body object.
+        /// </summary>
+        /// <param name="body">An object to trace.</param>
+        /// <param name="indentLevel">The indentation level used for tracing object members.</param>
+        /// <param name="visited">Dictionary to handle circular references.</param>
+        /// <returns>A string that represents body object.</returns>
         protected string InternalBodyToString(object body, int indentLevel, IDictionary visited)
         {
             if (body is object[])
@@ -368,19 +408,23 @@ namespace FluorineFx.Messaging.Messages
                 string sep = GetFieldSeparator(indentLevel);
                 StringBuilder sb = new StringBuilder();
                 object[] arr = body as object[];
-                sb.Append(GetFieldSeparator(indentLevel - 1));
+                if (arr.Length > 0)
+                    sb.Append(GetFieldSeparator(indentLevel - 1));
                 sb.Append("[");
-                sb.Append(sep);
-                for (int i = 0; i < arr.Length; i++)
+                if (arr.Length > 0)
                 {
-                    if (i != 0)
+                    sb.Append(sep);
+                    for (int i = 0; i < arr.Length; i++)
                     {
-                        sb.Append(",");
-                        sb.Append(sep);
+                        if (i != 0)
+                        {
+                            sb.Append(",");
+                            sb.Append(sep);
+                        }
+                        sb.Append(BodyToString(arr[i], indentLevel, visited));
                     }
-                    sb.Append(BodyToString(arr[i], indentLevel, visited));
+                    sb.Append(GetFieldSeparator(indentLevel - 1));
                 }
-                sb.Append(GetFieldSeparator(indentLevel - 1));
                 sb.Append("]");
                 return sb.ToString();
             }
@@ -411,6 +455,17 @@ namespace FluorineFx.Messaging.Messages
             {
                 return (body as MessageBase).ToString(indentLevel);
             }
+#if !SILVERLIGHT
+            else if (body is UpdateCollectionRange)
+            {
+                UpdateCollectionRange ucr = body as UpdateCollectionRange;
+                string value = (ucr.updateType != 0 ? "delete" : "insert") + "@" + "position = " + ucr.position;
+                string sep = GetFieldSeparator(indentLevel - 1);
+                value += sep + "identities = ";
+                value += BodyToString(ucr.identities, indentLevel, visited);
+                return value;
+            }
+#endif
             else if (body != null)
                 return body.ToString();
             else return "null";

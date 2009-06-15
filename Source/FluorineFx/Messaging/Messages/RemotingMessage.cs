@@ -59,11 +59,16 @@ namespace FluorineFx.Messaging.Messages
 			get{ return _operation; }
 			set{ _operation = value; }
 		}
-
+        /// <summary>
+        /// Returns a string that represents the current RemotingMessage object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>A string that represents the current RemotingMessage object fields.</returns>
         protected override string ToStringFields(int indentLevel)
         {
             string sep = GetFieldSeparator(indentLevel);
-            return sep + "operation = " + operation + base.ToStringFields(indentLevel);
+            string value = sep + "operation = " + operation + base.ToStringFields(indentLevel);
+            return value;
         }
 	}
 }

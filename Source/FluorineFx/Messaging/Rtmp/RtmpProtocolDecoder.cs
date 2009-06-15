@@ -472,10 +472,12 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 context.SetLastReadPacket(channelId, null);
             }
+#if !SILVERLIGHT
             if (log.IsDebugEnabled)
             {
                 log.Debug("Decoded " + packet.ToString());
             }
+#endif
 			return packet;
 		}
         /// <summary>
@@ -689,31 +691,33 @@ namespace FluorineFx.Messaging.Rtmp
 		{
 			int version = stream.ReadByte();
 			RtmpReader reader = new RtmpReader(stream);
-			string cmd = reader.ReadData() as string;
+            string action = reader.ReadData() as string;
 			int invokeId = System.Convert.ToInt32(reader.ReadData());
 			object cmdData = reader.ReadData();
 
+            object[] parameters = Call.EmptyArguments;
+            if (stream.HasRemaining)
+            {
 #if !(NET_1_1)
-            List<object> paramList = new List<object>();
+                List<object> paramList = new List<object>();
 #else
             ArrayList paramList = new ArrayList();
 #endif
-            while (stream.HasRemaining)
-			{
-				object obj = reader.ReadData();
-				paramList.Add(obj);
-			}
-			object[] parameters = paramList.ToArray();
-			//return DecodeNotifyOrInvoke(new FlexInvoke(), stream, null) as FlexInvoke;
-
-			FlexInvoke invoke = new FlexInvoke(cmd, invokeId, cmdData, parameters);
-
-			int dotIndex = cmd == null ? -1 : cmd.LastIndexOf(".");
-			string serviceName = (dotIndex == -1) ? null : cmd.Substring(0, dotIndex);
-            string serviceMethod = (dotIndex == -1) ? cmd : cmd.Substring(dotIndex + 1, cmd.Length - dotIndex - 1);
-
-			PendingCall call = new PendingCall(serviceName, serviceMethod, parameters);
-			invoke.ServiceCall = call;
+                while (stream.HasRemaining)
+                {
+                    object obj = reader.ReadData();
+                    paramList.Add(obj);
+                }
+                parameters = paramList.ToArray();
+            }
+            /*
+            int dotIndex = action == null ? -1 : action.LastIndexOf(".");
+            string serviceName = (action == -1) ? null : action.Substring(0, dotIndex);
+            string serviceMethod = (dotIndex == -1) ? action : action.Substring(dotIndex + 1, action.Length - dotIndex - 1);
+            */
+            PendingCall call = new PendingCall(null, action, parameters);
+            FlexInvoke invoke = new FlexInvoke(invokeId, cmdData);
+            invoke.ServiceCall = call;
 			return invoke;
 		}
 
@@ -738,6 +742,8 @@ namespace FluorineFx.Messaging.Rtmp
 			{
 				//Don't decode "NetStream.send" requests
 				stream.Position = start;
+                notify.Data = ByteBuffer.Allocate(stream.Remaining);
+                notify.Data.Put(stream);
 				//notify.setData(in.asReadOnlyBuffer());
 				return notify;
 			}
@@ -748,7 +754,7 @@ namespace FluorineFx.Messaging.Rtmp
 				notify.InvokeId = (int)invokeId;
 			}
 
-			object[] parameters = new object[]{};
+            object[] parameters = Call.EmptyArguments;
 			if(stream.HasRemaining)
 			{
 #if !(NET_1_1)
@@ -782,7 +788,7 @@ namespace FluorineFx.Messaging.Rtmp
 			if (notify is Invoke)
 			{
 				PendingCall call = new PendingCall(serviceName, serviceMethod, parameters);
-				(notify as Invoke).ServiceCall = call;
+                notify.ServiceCall = call;
 			} 
 			else 
 			{

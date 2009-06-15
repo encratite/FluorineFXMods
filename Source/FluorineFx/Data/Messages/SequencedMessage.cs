@@ -78,5 +78,33 @@ namespace FluorineFx.Data.Messages
 			get{ return _sequenceProxies; }
 			set{ _sequenceProxies = value; }
 		}
+
+        /// <summary>
+        /// Returns a string that represents the current SequencedMessage object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>
+        /// A string that represents the current SequencedMessage object fields.
+        /// </returns>
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = sep + "sequenceId = " + sequenceId + sep + "sequenceSize = " + sequenceSize;
+            if (sequenceProxies == null || sequenceProxies.Length == 0)
+            {
+                value += sep + "(no sequence proxies)";
+            }
+            else
+            {
+                string sep2 = GetFieldSeparator(indentLevel + 1);
+                value += sep + sequenceProxies.Length + " sequenceProxies ";
+                for (int i = 0; i < sequenceProxies.Length; i++)
+                    value += sep2 + "[" + i + "] = " + BodyToString(sequenceProxies[i], indentLevel + 1);
+            }
+            if (dataMessage != null)
+                value += sep + "dataMessage = " + dataMessage.ToString(indentLevel + 1);
+            value += base.ToStringFields(indentLevel);
+            return value;
+        }
 	}
 }

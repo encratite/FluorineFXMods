@@ -52,7 +52,11 @@ namespace FluorineFx.Messaging.Messages
 			get{ return _correlationId; }
 			set{ _correlationId = value; }
 		}
-
+        /// <summary>
+        /// Returns a string that represents the current AsyncMessage object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>A string that represents the current AsyncMessage object fields.</returns>
         protected override string ToStringFields(int indentLevel)
         {
             String sep = GetFieldSeparator(indentLevel);

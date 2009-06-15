@@ -32,24 +32,30 @@ namespace FluorineFx.Messaging.Rtmp.Event
     [CLSCompliant(false)]
     public sealed class FlexInvoke : Invoke
 	{
-		string _cmd;
+        /// <summary>
+        /// Method name
+        /// </summary>
+		//string _cmd;
+        /// <summary>
+        /// Response
+        /// </summary>
 		object _cmdData;
-		object[] _parameters;
-		object	_response;
+		//object[] _parameters;
+		//object	_response;
 
-        internal FlexInvoke()
+        internal FlexInvoke():base()
 		{
 			_dataType = Constants.TypeFlexInvoke;
-            SetResponseSuccess();
+            //SetResponseSuccess();
 		}
 
-        internal FlexInvoke(string cmd, int invokeId, object cmdData, object[] parameters)
+        internal FlexInvoke(int invokeId, object cmdData)
             : this()
 		{
-			_cmd = cmd;
+			//_cmd = cmd;
 			this.InvokeId = invokeId;
 			_cmdData = cmdData;
-			_parameters = parameters;
+			//_parameters = parameters;
 		}
 
         internal FlexInvoke(ByteBuffer data)
@@ -57,6 +63,7 @@ namespace FluorineFx.Messaging.Rtmp.Event
 		{
             _dataType = Constants.TypeFlexInvoke;
 		}
+        /*
         /// <summary>
         /// Gets or sets the parameters.
         /// </summary>
@@ -72,13 +79,6 @@ namespace FluorineFx.Messaging.Rtmp.Event
 		{ 
 			get{ return _cmd; } 
 			set{ _cmd = value; }
-		}
-		/// <summary>
-		/// Gets or sets the command data.
-		/// </summary>
-		public object CmdData
-		{ 
-			get{ return _cmdData; } 
 		}
         /// <summary>
         /// Gets or sets the response object.
@@ -102,6 +102,14 @@ namespace FluorineFx.Messaging.Rtmp.Event
 		{
 			_cmd = "_error";
 		}
+        */
+        /// <summary>
+		/// Gets or sets the command data.
+		/// </summary>
+		public object CmdData
+		{ 
+			get{ return _cmdData; } 
+		}
         /// <summary>
         /// Returns a string that represents the current object fields.
         /// </summary>
@@ -111,10 +119,10 @@ namespace FluorineFx.Messaging.Rtmp.Event
         {
             string sep = GetFieldSeparator(indentLevel);
             string value = base.ToStringFields(indentLevel);
-            value += sep + "cmd = " + BodyToString(_cmd, indentLevel + 1);
+            //value += sep + "cmd = " + BodyToString(_cmd, indentLevel + 1);
             value += sep + "cmdData = " + _cmdData;
-            value += sep + "parameters = " + BodyToString(_parameters, indentLevel + 1);
-            value += sep + "response = " + BodyToString(_response, indentLevel + 1);
+            //value += sep + "parameters = " + BodyToString(_parameters, indentLevel + 1);
+            //value += sep + "response = " + BodyToString(_response, indentLevel + 1);
             return value;
         }
 	}

@@ -130,6 +130,11 @@ namespace FluorineFx.Messaging.Rtmp.Event
         {
             return MessageBase.GetFieldSeparator(indentLevel);
         }
+
+        internal String GetIndent(int indentLevel)
+        {
+            return MessageBase.GetIndent(indentLevel);
+        }
         /// <summary>
         /// Returns a string that represents the current event object.
         /// </summary>
@@ -159,10 +164,10 @@ namespace FluorineFx.Messaging.Rtmp.Event
             return value;
         }
         /// <summary>
-        /// Returns a string that represents the current RtmpHeader object fields.
+        /// Returns a string that represents the current event object fields.
         /// </summary>
         /// <param name="indentLevel">The indentation level used for tracing the header members.</param>
-        /// <returns>A string that represents the current RtmpHeader object fields.</returns>
+        /// <returns>A string that represents the current event object fields.</returns>
         protected virtual string ToStringFields(int indentLevel)
         {
             String sep = GetFieldSeparator(indentLevel);
@@ -242,7 +247,8 @@ namespace FluorineFx.Messaging.Rtmp.Event
                 string sep = GetFieldSeparator(indentLevel);
                 StringBuilder sb = new StringBuilder();
                 object[] arr = body as object[];
-                sb.Append(GetFieldSeparator(indentLevel - 1));
+                if (arr.Length > 0)
+                    sb.Append(GetFieldSeparator(indentLevel - 1));
                 sb.Append("[");
                 if (arr.Length > 0)
                 {

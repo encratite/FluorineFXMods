@@ -125,5 +125,36 @@ namespace FluorineFx.Data.Messages
 			}
 			this.body = bodyArray;
 		}
+
+        /// <summary>
+        /// Returns a string that represents the current UpdateCollectionMessage object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>
+        /// A string that represents the current UpdateCollectionMessage object fields.
+        /// </returns>
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = base.ToStringFields(indentLevel);
+            value += sep + "collectionId = " + BodyToString(collectionId, indentLevel + 1);
+            value += sep + "replace = " + replace;
+            value += sep + "updateMode = " + UpdateModeToString(updateMode);
+            return value;
+        }
+
+        /// <summary>
+        /// Converts updateMode code to string.
+        /// </summary>
+        /// <param name="operation">The updateMode code.</param>
+        /// <returns>A string representing the updateMode code.</returns>
+        public static string UpdateModeToString(int updateMode)
+        {
+            if (updateMode < 0 || updateMode >= UpdateModes.Length)
+                return "invalid mode " + updateMode;
+            return UpdateModes[updateMode];
+        }
+
+        static string[] UpdateModes = { "client_update", "server_update", "server_override" };
 	}
 }

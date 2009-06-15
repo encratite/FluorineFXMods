@@ -20,6 +20,7 @@
 using System;
 using System.Collections;
 using FluorineFx.Messaging.Messages;
+using FluorineFx.Util;
 
 namespace FluorineFx.Data
 {
@@ -87,11 +88,18 @@ namespace FluorineFx.Data
             get { return _size; }
             set { _size = value; }
         }
-
+        /*
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
-            string value = "UpdateCollectionRange " + "updateType = " + (updateType != 0 ? "delete" : "insert") + " " + "position = " + position;
+            string value = (updateType != 0 ? "delete" : "insert") + "@" + "position = " + position + " [" + ArrayUtils.ArrayToString((IList)identities) + "]";
             return value;
         }
+        */ 
 	}
 }

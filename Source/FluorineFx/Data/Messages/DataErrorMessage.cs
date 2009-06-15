@@ -42,5 +42,22 @@ namespace FluorineFx.Data.Messages
 			serverObject = dataSyncException.ServerObject;
 			propertyNames = dataSyncException.PropertyNames;
 		}
+
+        /// <summary>
+        /// Returns a string that represents the current DataErrorMessage object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>
+        /// A string that represents the current DataErrorMessage object fields.
+        /// </returns>
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = base.ToStringFields(indentLevel);
+            value += sep + "cause = " + (cause != null ? cause.ToString(indentLevel) : null);
+            value += sep + "serverObject = " + serverObject;
+            value += sep + "propertyNames = " + BodyToString(propertyNames, indentLevel);
+            return value;
+        }
 	}
 }

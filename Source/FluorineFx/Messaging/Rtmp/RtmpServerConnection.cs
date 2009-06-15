@@ -611,36 +611,25 @@ namespace FluorineFx.Messaging.Rtmp
             get{ return _readBytes.Value; }
         }
 
+        /// <summary>
+        /// Start waiting for a valid handshake.
+        /// </summary>
         internal override void StartWaitForHandshake()
         {
-            if (FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.MaxHandshakeTimeout > 0)
+            _lock.AcquireWriterLock();
+            try
             {
-                //ISchedulingService schedulingService = this.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
-                //_waitForHandshakeJob = schedulingService.AddScheduledOnceJob(FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.MaxHandshakeTimeout, new WaitForHandshakeJob(this));
+                if (FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.MaxHandshakeTimeout > 0)
+                {
+                    ISchedulingService schedulingService = _endpoint.GetMessageBroker().GlobalScope.GetService(typeof(ISchedulingService)) as ISchedulingService;
+                    _waitForHandshakeJob = schedulingService.AddScheduledOnceJob(FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpConnectionSettings.MaxHandshakeTimeout, new WaitForHandshakeJob(this));
+                }
             }
+            finally
+            {
+                _lock.ReleaseWriterLock();
+            }            
         }
-
-        /*
-        internal class WaitForHandshakeJob : ScheduledJobBase
-        {
-            RtmpConnection _connection;
-
-            public WaitForHandshakeJob(RtmpConnection connection)
-            {
-                _connection = connection;
-            }
-
-            public override void Execute(ScheduledJobContext context)
-            {
-                FluorineRtmpContext.Initialize(_connection);
-                _connection._waitForHandshakeJob = null;
-                // Client didn't send a valid handshake, disconnect.
-                _connection.OnInactive();
-            }
-        }
-        */
-
-
 
         #region RTMPT Handling
 

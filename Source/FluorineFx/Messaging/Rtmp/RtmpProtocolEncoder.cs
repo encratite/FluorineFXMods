@@ -450,12 +450,48 @@ namespace FluorineFx.Messaging.Rtmp
             writer.UseLegacyThrowable = context.UseLegacyThrowable;
 			
 			writer.WriteByte(0);
-			writer.WriteData(context.ObjectEncoding, invoke.Cmd);
+			//writer.WriteData(context.ObjectEncoding, invoke.Cmd);
+            IServiceCall serviceCall = invoke.ServiceCall;
+            bool isPending = serviceCall.Status == Call.STATUS_PENDING;
+            if (!isPending)
+            {
+                //log.debug("Call has been executed, send result");
+                if (serviceCall.IsSuccess)
+                    writer.WriteData(context.ObjectEncoding, "_result");
+                else
+                    writer.WriteData(context.ObjectEncoding, "_error");
+            }
+            else
+            {
+                //log.debug("This is a pending call, send request");
+                writer.WriteData(context.ObjectEncoding, serviceCall.ServiceMethodName);
+            }
 			writer.WriteData(context.ObjectEncoding, invoke.InvokeId);
 			writer.WriteData(context.ObjectEncoding, invoke.CmdData);
-			object response = invoke.Response;
-			writer.WriteData(context.ObjectEncoding, response);
-
+			//object response = invoke.Response;
+			//writer.WriteData(context.ObjectEncoding, response);
+            if (!isPending)
+            {
+                IPendingServiceCall pendingCall = (IPendingServiceCall)serviceCall;
+                if (!serviceCall.IsSuccess)
+                {
+                    StatusASO status = GenerateErrorResult(StatusASO.NC_CALL_FAILED, serviceCall.Exception);
+                    pendingCall.Result = status;
+                }
+                writer.WriteData(context.ObjectEncoding, pendingCall.Result);
+            }
+            else
+            {
+                //log.debug("Writing params");
+                object[] args = invoke.ServiceCall.Arguments;
+                if (args != null)
+                {
+                    foreach (object element in args)
+                    {
+                        writer.WriteData(context.ObjectEncoding, element);
+                    }
+                }
+            }
 			return output;
 		}
 

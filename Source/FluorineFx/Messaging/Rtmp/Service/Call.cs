@@ -35,6 +35,8 @@ namespace FluorineFx.Messaging.Rtmp.Service
     [CLSCompliant(false)]
     public class Call : IServiceCall
     {
+        internal static readonly object[] EmptyArguments;
+
         /// <summary>
         /// Pending status constant.
         /// </summary>
@@ -96,6 +98,11 @@ namespace FluorineFx.Messaging.Rtmp.Service
         /// Call exception if any, null by default.
         /// </summary>
         protected Exception _exception;
+
+        static Call()
+        {
+            EmptyArguments = new object[0];
+        }
 
         /// <summary>
         /// Initializes a new instance of the Call class.

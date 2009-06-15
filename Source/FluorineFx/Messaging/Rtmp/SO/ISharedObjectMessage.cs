@@ -23,11 +23,12 @@ using System.Collections.Generic;
 #endif
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Rtmp.Event;
+using FluorineFx.Collections.Generic;
 
 namespace FluorineFx.Messaging.Rtmp.SO
 {
 	/// <summary>
-	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
+    /// Shared object message.
 	/// </summary>
 	interface ISharedObjectMessage : IRtmpEvent
 	{
@@ -40,24 +41,32 @@ namespace FluorineFx.Messaging.Rtmp.SO
 		/// </summary>
 		int Version{ get; }
 		/// <summary>
-		/// Gets whether the message affects a persistent shared object.
+        /// Gets a value indicating whether the message affects a persistent shared object.
 		/// </summary>
 		bool IsPersistent{ get; }
-
-#if !(NET_1_1)
         /// <summary>
         /// Returns a set of ISharedObjectEvent objects containing informations what to change.
         /// </summary>
-        IList<ISharedObjectEvent> Events { get; }
-#else
-		/// <summary>
-		/// Returns a set of ISharedObjectEvent objects containing informations what to change.
-		/// </summary>
-		IList Events{ get; }
-#endif
+        IQueue<ISharedObjectEvent> Events { get; }
+        /// <summary>
+        /// Add a shared object event.
+        /// </summary>
+        /// <param name="type">Event type.</param>
+        /// <param name="key">Handler key.</param>
+        /// <param name="value">Event value.</param>
         void AddEvent(SharedObjectEventType type, string key, object value);
+        /// <summary>
+        /// Add a shared object event.
+        /// </summary>
+        /// <param name="sharedObjectEvent">Shared object event.</param>
 		void AddEvent(ISharedObjectEvent sharedObjectEvent);
+        /// <summary>
+        /// Clear shared object.
+        /// </summary>
 		void Clear();
+        /// <summary>
+        /// Gets a value indicating whether the shared object is empty.
+        /// </summary>
 		bool IsEmpty{ get; }
 	}
 }

@@ -85,14 +85,14 @@ namespace FluorineFx.Data.Messages
 		/// several messages instead of in a single message.
 		/// </summary>
 		public const int PageOperation = 8;
-		/// <summary>
+        /// <summary>
+        /// This operation requests that a configured &lt;count-method&gt; be invoked on a remote destination.
+        /// </summary>
+        public const int CountOperation = 9;
+        /// <summary>
 		/// This operation requests an item with the specified identity from the remote destination.
 		/// </summary>
-		public const int GetOrCreateOperation = 9;
-		/// <summary>
-		/// This operation requests that a configured &lt;count-method&gt; be invoked on a remote destination.
-		/// </summary>
-		public const int CountOperation = 10;
+		public const int GetOrCreateOperation = 10;
 		/// <summary>
 		/// This operation requests a create of the specified item from a remote destination.
 		/// </summary>
@@ -178,5 +178,35 @@ namespace FluorineFx.Data.Messages
 			get{ return _identity; }
 			set{ _identity = value; }
 		}
+
+        static string[] OperationNames = { "create", "fill", "get", "update", "delete", "batched", "multi_batch", "transacted", "page", "count", "get_or_create", "create_and_sequence", "get_sequence_id", "association_add", "association_remove", "fillids", "refresh_fill", "update_collection", "release_collection", "release_item", "page_items" };
+
+        /// <summary>
+        /// Converts operation code to string.
+        /// </summary>
+        /// <param name="operation">The operation code.</param>
+        /// <returns>A string representing the operation code.</returns>
+        public static string OperationToString(int operation)
+        {
+            if (operation < 0 || operation >= OperationNames.Length)
+                return "invalid operation " + operation;
+            return OperationNames[operation];
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current DataMessage object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>
+        /// A string that represents the current DataMessage object fields.
+        /// </returns>
+        protected override string ToStringFields(int indentLevel)
+        {
+            string sep = GetFieldSeparator(indentLevel);
+            string value = base.ToStringFields(indentLevel);
+            value += sep + "operation = " + OperationToString(operation);
+            value += sep + "id = " + BodyToString(identity, indentLevel);
+            return value;
+        }
 	}
 }

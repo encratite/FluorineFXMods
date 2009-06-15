@@ -143,6 +143,11 @@ namespace FluorineFx.Messaging.Messages
 
         static string[] OperationNames = { "subscribe", "unsubscribe", "poll", "unused3", "client_sync", "client_ping", "unused6", "cluster_request", "login", "logout", "subscription_invalidate", "multi_subscribe", "disconnect", "trigger_connect" };
 
+        /// <summary>
+        /// Converts operation code to string.
+        /// </summary>
+        /// <param name="operation">The operation code.</param>
+        /// <returns>A string representing the operation code.</returns>
         public static string OperationToString(int operation)
         {
             if (operation < 0 || operation >= OperationNames.Length)
@@ -150,6 +155,13 @@ namespace FluorineFx.Messaging.Messages
             return OperationNames[operation];
         }
 
+        /// <summary>
+        /// Returns a string that represents the current CommandMessage object fields.
+        /// </summary>
+        /// <param name="indentLevel">The indentation level used for tracing the message members.</param>
+        /// <returns>
+        /// A string that represents the current CommandMessage object fields.
+        /// </returns>
         protected override string ToStringFields(int indentLevel)
         {
             string sep = GetFieldSeparator(indentLevel);

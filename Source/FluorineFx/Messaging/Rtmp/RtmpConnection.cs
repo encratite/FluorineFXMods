@@ -77,6 +77,10 @@ namespace FluorineFx.Messaging.Rtmp
         /// Name of job that keeps connection alive.
         /// </summary>
         protected string _keepAliveJobName;
+        /// <summary>
+        /// Name of job that is waiting for a valid handshake.
+        /// </summary>
+        protected string _waitForHandshakeJob;
 
 #if !(NET_1_1)
         /// <summary>
@@ -167,6 +171,9 @@ namespace FluorineFx.Messaging.Rtmp
         /// </summary>
         protected int _nextBytesRead = 120 * 1024;
 
+        /// <summary>
+        /// Rtmp handler.
+        /// </summary>
         protected IRtmpHandler _handler;
 
         /// <summary>
@@ -232,14 +239,7 @@ namespace FluorineFx.Messaging.Rtmp
                             IBWControlService bwController = this.Scope.GetService(typeof(IBWControlService)) as IBWControlService;
                             _bwContext = bwController.RegisterBWControllable(this);
                         }
-                        /*
-                        if (_waitForHandshakeJob != null)
-                        {
-                            ISchedulingService service = this.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
-                            service.RemoveScheduledJob(_waitForHandshakeJob);
-                            _waitForHandshakeJob = null;
-                        }
-                        */
+                        UnscheduleWaitForHandshakeJob();
                     }
                     finally
                     {
@@ -250,8 +250,31 @@ namespace FluorineFx.Messaging.Rtmp
             }
             catch (ClientRejectedException)
             {
+                UnscheduleWaitForHandshakeJob();
                 throw;
             }
+        }
+
+        private void UnscheduleWaitForHandshakeJob()
+        {
+#if !FXCLIENT
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
+                if (_waitForHandshakeJob != null)
+                {
+                    ISchedulingService service = this.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
+                    service.RemoveScheduledJob(_waitForHandshakeJob);
+                    _waitForHandshakeJob = null;
+                    if( log.IsDebugEnabled )
+                        log.Debug(string.Format("{0} Removed WaitForHandshakeJob", this.ConnectionId));
+                }
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+#endif
         }
 
         /// <summary>
@@ -264,9 +287,11 @@ namespace FluorineFx.Messaging.Rtmp
                 if (this.IsFlexClient)
                 {
                     FlexInvoke flexInvoke = new FlexInvoke();
-                    flexInvoke.Cmd = "onstatus";
                     StatusASO statusASO = new StatusASO(StatusASO.NC_CONNECT_CLOSED, StatusASO.STATUS, "Connection Timed Out", null, this.ObjectEncoding);
-                    flexInvoke.Parameters = new object[] { statusASO };
+                    Call call = new Call("onstatus", new object[] { statusASO });
+                    flexInvoke.ServiceCall = call;
+                    //flexInvoke.Cmd = "onstatus";
+                    //flexInvoke.Parameters = new object[] { statusASO };
                     RtmpChannel channel = this.GetChannel(3);
                     channel.Write(flexInvoke);
                 }
@@ -341,8 +366,12 @@ namespace FluorineFx.Messaging.Rtmp
             base.Close();
             _context.State = RtmpState.Disconnected;
         }
-        
 
+
+        /// <summary>
+        /// Gets the RTMP state.
+        /// </summary>
+        /// <value>The RTMP state.</value>
         public RtmpState State
         {
             get { return _context.State; }
@@ -360,6 +389,10 @@ namespace FluorineFx.Messaging.Rtmp
 		}
 
 
+        /// <summary>
+        /// Gets the RTMP context.
+        /// </summary>
+        /// <value>The RTMP context.</value>
 		public RtmpContext Context
 		{
 			get{ return _context; }
@@ -440,8 +473,16 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="packet">The RTMP packet.</param>
 		public abstract void Write(RtmpPacket packet);
 
+        /// <summary>
+        /// Writes the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
         public abstract void Write(ByteBuffer buffer);
 
+        /// <summary>
+        /// Writes the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
         public abstract void Write(byte[] buffer);
 
 
@@ -470,8 +511,10 @@ namespace FluorineFx.Messaging.Rtmp
         public override void Ping()
         {
             int newPingTime = Environment.TickCount;
+#if !SILVERLIGHT
             if( log.IsDebugEnabled )
                 log.Debug(string.Format("{0} Pinging connection at {1}, last ping sent at {2}", _connectionId, newPingTime, _lastPingSent.Value));
+#endif
             if(_lastPingSent.Value == 0)
                 _lastPongReceived.Value = newPingTime;
             Ping pingRequest = new Ping();
@@ -502,7 +545,7 @@ namespace FluorineFx.Messaging.Rtmp
         /// <summary>
         /// Get a stream by its id.
         /// </summary>
-        /// <param name="streamId">Stream id.</param>
+        /// <param name="id">Stream id.</param>
         /// <returns>Stream with given id.</returns>
         public IClientStream GetStreamById(int id)
         {
@@ -702,6 +745,10 @@ namespace FluorineFx.Messaging.Rtmp
             _streams.Remove(stream.StreamId);
         }
 
+        /// <summary>
+        /// Adds the client stream.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
         public void AddClientStream(IClientStream stream)
         {
             int streamId = stream.StreamId;
@@ -722,6 +769,10 @@ namespace FluorineFx.Messaging.Rtmp
             _streamCount.Increment();
         }
 
+        /// <summary>
+        /// Removes the client stream.
+        /// </summary>
+        /// <param name="streamId">The stream id.</param>
         public void RemoveClientStream(int streamId)
         {
             UnreserveStreamId(streamId);
@@ -741,6 +792,10 @@ namespace FluorineFx.Messaging.Rtmp
             return stream;
         }
 
+        /// <summary>
+        /// Gets the stream count.
+        /// </summary>
+        /// <value>The stream count.</value>
         protected int StreamCount
         {
             get { return _streamCount.Value; }
@@ -856,8 +911,10 @@ namespace FluorineFx.Messaging.Rtmp
         {
             int now = Environment.TickCount;
             int previousReceived = _lastPongReceived.Value;
+#if !SILVERLIGHT
             if( log.IsDebugEnabled )
                 log.Debug(string.Format("{0} Ping received at {1} with value {2}, previous received at {3}", _connectionId, now, pong.Value2, previousReceived ));
+#endif
             if (_lastPongReceived.CompareAndSet(previousReceived, now))
             {
                 _lastPingTime.Value = ((int)(previousReceived & 0xffffffff)) - pong.Value2;
@@ -935,6 +992,7 @@ namespace FluorineFx.Messaging.Rtmp
 				call.RegisterCallback(callback);
 			Invoke(call);
 		}
+#if !SILVERLIGHT
         /// <summary>
         /// Begins an asynchronous operation to invoke a service using service call object and channel.
         /// </summary>
@@ -1101,6 +1159,7 @@ namespace FluorineFx.Messaging.Rtmp
             // Wait for operation to complete, then return result or throw exception
             ar.EndInvoke();
         }
+#endif
         /// <summary>
         /// Notifies service using service call object.
         /// </summary>
@@ -1289,11 +1348,42 @@ namespace FluorineFx.Messaging.Rtmp
                 ReaderWriterLock.ReleaseWriterLock();
             }
         }
-
+        /// <summary>
+        /// Start waiting for a valid handshake.
+        /// </summary>
         internal virtual void StartWaitForHandshake()
         {
         }
 
+#if !FXCLIENT
+        internal class WaitForHandshakeJob : ScheduledJobBase
+        {
+            RtmpConnection _connection;
+
+            public WaitForHandshakeJob(RtmpConnection connection)
+            {
+                _connection = connection;
+            }
+
+            public override void Execute(ScheduledJobContext context)
+            {
+                _connection.ReaderWriterLock.AcquireWriterLock();
+                try
+                {
+                    FluorineRtmpContext.Initialize(_connection);
+                    _connection._waitForHandshakeJob = null;
+                    if (log.IsWarnEnabled)
+                        log.Warn(string.Format("{0} Closing due to long handshake", _connection.ConnectionId));
+                }
+                finally
+                {
+                    _connection.ReaderWriterLock.ReleaseWriterLock();
+                }
+                // Client didn't send a valid handshake, disconnect.
+                _connection.OnInactive();
+            }
+        }
+#endif
         /// <summary>
         /// Starts measurement.
         /// </summary>
@@ -1331,6 +1421,11 @@ namespace FluorineFx.Messaging.Rtmp
         /// </summary>
         protected abstract void OnInactive();
 
+        /// <summary>
+        /// Pushes the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="messageClient">The message client.</param>
         public abstract void Push(IMessage message, IMessageClient messageClient);
 
 #if !FXCLIENT
@@ -1396,6 +1491,8 @@ namespace FluorineFx.Messaging.Rtmp
     }
 
     #region InvokeData
+
+#if !SILVERLIGHT
     class InvokeData
     {
         FluorineContext _context;
@@ -1465,6 +1562,7 @@ namespace FluorineFx.Messaging.Rtmp
             _channel = channel;
         }
     }
+#endif
     #endregion InvokeData
 
 }

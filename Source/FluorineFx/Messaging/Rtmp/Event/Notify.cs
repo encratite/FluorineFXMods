@@ -123,6 +123,8 @@ namespace FluorineFx.Messaging.Rtmp.Event
                 value += sep + "operation = " + _serviceCall.ServiceMethodName;
                 if (_serviceCall.Arguments != null)
                     value += sep + "parameters = " + BodyToString(_serviceCall.Arguments, indentLevel + 1);
+                if (_serviceCall is IPendingServiceCall)
+                    value += sep + "response = " + BodyToString((_serviceCall as IPendingServiceCall).Result, indentLevel + 1);
             }
             if (_connectionParameters != null)
                 value += sep + "connectionParameters = " + BodyToString(_connectionParameters, indentLevel + 1);

@@ -59,9 +59,17 @@ namespace FluorineFx.Messaging.Rtmp.SO
 
 		[NonSerialized]
 		public const string TYPE = "SharedObject";
-
+        /// <summary>
+        /// Shared object name (identifier).
+        /// </summary>
 		protected string _name = string.Empty;
+        /// <summary>
+        /// Shared object path.
+        /// </summary>
 		protected string _path = string.Empty;
+        /// <summary>
+        /// Last modified timestamp.
+        /// </summary>
 		protected long _lastModified = -1;
         /// <summary>
         /// Timestamp the scope was created.
@@ -78,23 +86,41 @@ namespace FluorineFx.Messaging.Rtmp.SO
 		protected Hashtable _hashes = new Hashtable();
 
 		protected IPersistenceStore _storage = null;
-		protected int _version = 1;
-		protected int _updateCounter = 0;
+        /// <summary>
+        /// Version. Used on synchronization purposes.
+        /// </summary>
+        protected AtomicInteger _version = new AtomicInteger(1);
+        /// <summary>
+        /// Number of pending update operations.
+        /// </summary>
+        protected AtomicInteger _updateCounter = new AtomicInteger();
 		protected bool _modified = false;
         protected SharedObjectMessage _ownerMessage;
-        //Synchronization events (ISharedObjectEvent)
-#if !(NET_1_1)
-        private List<ISharedObjectEvent> _syncEvents = new List<ISharedObjectEvent>();
-#else
-        private ArrayList _syncEvents = new ArrayList();
-#endif
-
-        //Listeners (IEventListener)
+        /// <summary>
+        /// Synchronization events.
+        /// </summary>
+        ConcurrentLinkedQueue<ISharedObjectEvent> _syncEvents = new ConcurrentLinkedQueue<ISharedObjectEvent>();
+        /// <summary>
+        /// Listeners (IEventListener)
+        /// </summary>
         protected CopyOnWriteArray _listeners = new CopyOnWriteArray();
         /// <summary>
         /// Event listener, actually RTMP connection
         /// </summary>
 		protected IEventListener _source = null;
+
+        /// <summary>
+        /// Counts number of "change" events.
+        /// </summary>
+        protected AtomicInteger _changeStats = new AtomicInteger();
+        /// <summary>
+        /// Counts number of "delete" events.
+        /// </summary>
+        protected AtomicInteger _deleteStats = new AtomicInteger();
+        /// <summary>
+        /// Counts number of "send message" events.
+        /// </summary>
+        protected AtomicInteger _sendStats = new AtomicInteger();
 
 		/// <summary>
         /// Initializes a new instance of the SharedObject class. This is used by the persistence framework.
@@ -258,7 +284,7 @@ namespace FluorineFx.Messaging.Rtmp.SO
 		[Transient]
 		internal int UpdateCounter
 		{
-			get{ return _updateCounter; }
+			get{ return _updateCounter.Value; }
 		}
 
 		public bool IsPersistentObject
@@ -279,8 +305,16 @@ namespace FluorineFx.Messaging.Rtmp.SO
         /// </summary>
 		private void SendUpdates() 
 		{
-			if(_ownerMessage.Events.Count!=0) 
+            int currentVersion = _version.Value;
+            bool persist = this.IsPersistentObject;
+            //Get read-only version of events
+            ConcurrentLinkedQueue<ISharedObjectEvent> events = new ConcurrentLinkedQueue<ISharedObjectEvent>(_ownerMessage.Events);
+            //clear out previous events
+            _ownerMessage.Events.Clear();
+
+            if (events.Count != 0) 
 			{
+                //Send update to "owner" of this update request
 				if(_source != null) 
 				{
                     RtmpConnection connection = _source as RtmpConnection;
@@ -290,10 +324,10 @@ namespace FluorineFx.Messaging.Rtmp.SO
                     // Send update to "owner" of this update request
                     SharedObjectMessage syncOwner;
                     if (connection.ObjectEncoding == ObjectEncoding.AMF0)
-                        syncOwner = new SharedObjectMessage(null, _name, _version, this.IsPersistentObject);
+                        syncOwner = new SharedObjectMessage(null, _name, currentVersion, persist);
                     else
-                        syncOwner = new FlexSharedObjectMessage(null, _name, _version, this.IsPersistentObject);
-                    syncOwner.AddEvents(_ownerMessage.Events);
+                        syncOwner = new FlexSharedObjectMessage(null, _name, currentVersion, persist);
+                    syncOwner.AddEvents(events);
 
 					if(channel != null) 
 					{
@@ -304,10 +338,14 @@ namespace FluorineFx.Messaging.Rtmp.SO
 						log.Warn(__Res.GetString(__Res.Channel_NotFound));
 					}
 				}
-				_ownerMessage.Events.Clear();
 			}
-
-			if(_syncEvents.Count!=0) 
+            //Clear owner events
+            events.Clear();
+            //Get read-only version of sync events
+            events.AddRange(_syncEvents);
+            //Clear out previous events
+            _syncEvents.Clear();
+            if (events.Count != 0) 
 			{
 				// Synchronize updates with all registered clients of this shared
 				foreach(IEventListener listener in _listeners) 
@@ -328,23 +366,21 @@ namespace FluorineFx.Messaging.Rtmp.SO
                     RtmpConnection connection = listener as RtmpConnection;
                     SharedObjectMessage syncMessage;
                     if (connection.ObjectEncoding == ObjectEncoding.AMF0)
-                        syncMessage = new SharedObjectMessage(null, _name, _version, this.IsPersistentObject);
+                        syncMessage = new SharedObjectMessage(null, _name, currentVersion, persist);
                     else
-                        syncMessage = new FlexSharedObjectMessage(null, _name, _version, this.IsPersistentObject);
-					syncMessage.AddEvents(_syncEvents);
+                        syncMessage = new FlexSharedObjectMessage(null, _name, currentVersion, persist);
+                    syncMessage.AddEvents(events);
 
                     RtmpChannel channel = connection.GetChannel((byte)3);
 					log.Debug(__Res.GetString(__Res.SharedObject_Sync, channel));
 					channel.Write(syncMessage);
 				}
-				// Clear list of sync events
-				_syncEvents.Clear();
 			}
 		}
 
 		protected void NotifyModified() 
 		{
-			if(_updateCounter > 0) 
+			if(_updateCounter.Value > 0) 
 			{
 				// Inside a BeginUpdate/EndUpdate block
 				return;
@@ -395,8 +431,9 @@ namespace FluorineFx.Messaging.Rtmp.SO
                 // No previous value
                 _modified = true;
                 _ownerMessage.AddEvent(SharedObjectEventType.CLIENT_UPDATE_DATA, name, value);
-                _syncEvents.Add(new SharedObjectEvent(SharedObjectEventType.CLIENT_UPDATE_DATA, name, value));
+                _syncEvents.Enqueue(new SharedObjectEvent(SharedObjectEventType.CLIENT_UPDATE_DATA, name, value));
                 NotifyModified();
+                _changeStats.Increment();
                 result = value;
             }
             return result;
@@ -409,7 +446,8 @@ namespace FluorineFx.Messaging.Rtmp.SO
             {
                 // Setting a null value removes the attribute
                 _modified = true;
-                _syncEvents.Add(new SharedObjectEvent(SharedObjectEventType.CLIENT_DELETE_DATA, name, null));
+                _syncEvents.Enqueue(new SharedObjectEvent(SharedObjectEventType.CLIENT_DELETE_DATA, name, null));
+                _deleteStats.Increment();
                 NotifyModified();
                 return true;
             }
@@ -417,7 +455,8 @@ namespace FluorineFx.Messaging.Rtmp.SO
             {
                 // only sync if the attribute changed
                 _modified = true;
-                _syncEvents.Add(new SharedObjectEvent(SharedObjectEventType.CLIENT_UPDATE_DATA, name, value));
+                _syncEvents.Enqueue(new SharedObjectEvent(SharedObjectEventType.CLIENT_UPDATE_DATA, name, value));
+                _changeStats.Increment();
                 NotifyModified();
                 return true;
             }
@@ -494,7 +533,8 @@ namespace FluorineFx.Messaging.Rtmp.SO
             if (base.RemoveAttribute(name))
             {
                 _modified = true;
-                _syncEvents.Add(new SharedObjectEvent(SharedObjectEventType.CLIENT_DELETE_DATA, name, null));
+                _syncEvents.Enqueue(new SharedObjectEvent(SharedObjectEventType.CLIENT_DELETE_DATA, name, null));
+                _deleteStats.Increment();
                 NotifyModified();
                 return true;
             }
@@ -508,20 +548,21 @@ namespace FluorineFx.Messaging.Rtmp.SO
 		public void SendMessage(string handler, IList arguments) 
 		{
 			_ownerMessage.AddEvent(SharedObjectEventType.CLIENT_SEND_MESSAGE, handler, arguments);
-			_syncEvents.Add(new SharedObjectEvent(SharedObjectEventType.CLIENT_SEND_MESSAGE, handler, arguments));
+			_syncEvents.Enqueue(new SharedObjectEvent(SharedObjectEventType.CLIENT_SEND_MESSAGE, handler, arguments));
+            _sendStats.Increment();
             _modified = true;
             NotifyModified();
 		}
 
 		public int Version
 		{
-			get{ return _version; }
-			set{ _version = value; }
+			get{ return _version.Value; }
+			set{ _version.Value = value; }
 		}
 
 		private void UpdateVersion() 
 		{
-			_version += 1;
+			_version.Increment();
 		}
 
         public override void RemoveAttributes() 
@@ -535,8 +576,9 @@ namespace FluorineFx.Messaging.Rtmp.SO
             foreach (string key in names)
             {
                 _ownerMessage.AddEvent(SharedObjectEventType.CLIENT_DELETE_DATA, key, null);
-                _syncEvents.Add(new SharedObjectEvent(SharedObjectEventType.CLIENT_DELETE_DATA, key, null));
+                _syncEvents.Enqueue(new SharedObjectEvent(SharedObjectEventType.CLIENT_DELETE_DATA, key, null));
             }
+            _deleteStats.Increment(names.Count);
             // Clear data
 		    base.RemoveAttributes();
             // Mark as modified
@@ -600,13 +642,14 @@ namespace FluorineFx.Messaging.Rtmp.SO
 		public void BeginUpdate(IEventListener listener) 
 		{
 			_source = listener;
-			_updateCounter += 1;
+            // Increase number of pending updates
+			_updateCounter.Increment();
 		}
 
 		public void EndUpdate() 
 		{
-			_updateCounter -= 1;
-			if(_updateCounter == 0) 
+            // Decrease number of pending updates
+            if (_updateCounter.Decrement() == 0) 
 			{
 				NotifyModified();
 				_source = null;
@@ -624,6 +667,7 @@ namespace FluorineFx.Messaging.Rtmp.SO
 			// Send confirmation to client
 			_ownerMessage.AddEvent(SharedObjectEventType.CLIENT_CLEAR_DATA, _name, null);
             NotifyModified();
+            _changeStats.Increment();
             return true;
 		}
 
