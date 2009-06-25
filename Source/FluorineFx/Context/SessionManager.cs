@@ -72,7 +72,7 @@ namespace FluorineFx.Context
                         httpSession = new HttpSession(this, context.Session.SessionID);
                         log.Debug(__Res.GetString(__Res.Session_Create, httpSession.Id));
                         httpSession.AddSessionDestroyedListener(this);
-                        context.Session[HttpSession.FluorineSessionAttribute] = httpSession;
+                        context.Session[HttpSession.FluorineSessionAttribute] = httpSession.Id;
                         _sessions[context.Session.SessionID] = httpSession;
                         Renew(httpSession, context.Session.Timeout);
                     }
