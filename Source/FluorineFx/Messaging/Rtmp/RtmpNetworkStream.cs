@@ -69,7 +69,10 @@ namespace FluorineFx.Messaging.Rtmp
             get 
             { 
 #if !SILVERLIGHT
-                return (this.InnerStream as NetworkStream).DataAvailable; 
+                NetworkStream ns = this.InnerStream as NetworkStream;
+                if( ns != null )
+                    return (this.InnerStream as NetworkStream).DataAvailable;
+                return false;
 #else
                 return false;
 #endif
