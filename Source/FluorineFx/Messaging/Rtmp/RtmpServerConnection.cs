@@ -395,20 +395,37 @@ namespace FluorineFx.Messaging.Rtmp
             if (socketException != null && socketException.ErrorCode == 10054)//WSAECONNRESET
             {
                 if (log.IsDebugEnabled)
-                    log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionReset, _connectionId));
+                    log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionReset, _connectionId, socketException.ErrorCode));
                 error = false;
             }
             if (socketException != null && socketException.ErrorCode == 10053)//WSAECONNABORTED
             {
                 if (log.IsDebugEnabled)
-                    log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionAborted, _connectionId));
+                    log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionAborted, _connectionId, socketException.ErrorCode));
                 error = false;
             }
             if (socketException != null && socketException.ErrorCode == 995)
             {
                 //The I/O operation has been aborted because of either a thread exit or an application request
                 if (log.IsDebugEnabled)
-                    log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionAborted, _connectionId));
+                    log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionAborted, _connectionId, socketException.ErrorCode));
+                error = false;
+            }
+            //Both of these error codes indicate that an actual network timeout (WSAETIMEDOUT) or network round-trip (WSAECONNREFUSED) has taken place
+            if (socketException != null && socketException.ErrorCode == 10060)//WSAETIMEDOUT
+            {
+                //WSAETIMEDOUT / 10060 - This happens when trying to connect to a valid address that doesn't respond (e.g., a powered-off server or intermediate router). This may also be caused by a firewall on the remote side.
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionTimeout, _connectionId, socketException.ErrorCode));
+                error = false;
+            }
+            if (socketException != null && socketException.ErrorCode == 10061)//WSAECONNREFUSED
+            {
+                //WSAECONNREFUSED / 10061 - Indicates that the connection request got to a valid address that is powered on, but there is no program listening on that port. 
+                //Usually, this is an indication that the server software is not running, though the computer is on. 
+                //This may also be caused by a firewall, though most firewalls drop the packet (causing WSAETIMEDOUT) instead of actively refusing the connection (causing WSAECONNREFUSED).
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.Rtmp_SocketConnectionTimeout, _connectionId, socketException.ErrorCode));
                 error = false;
             }
 
