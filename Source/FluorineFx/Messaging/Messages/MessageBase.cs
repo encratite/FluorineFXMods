@@ -428,6 +428,34 @@ namespace FluorineFx.Messaging.Messages
                 sb.Append("]");
                 return sb.ToString();
             }
+            if (body is IList)
+            {
+                if ((visited = CheckVisited(visited, body)) == null)
+                    return "<--";
+
+                string sep = GetFieldSeparator(indentLevel);
+                StringBuilder sb = new StringBuilder();
+                IList list = body as IList;
+                if (list.Count > 0)
+                    sb.Append(GetFieldSeparator(indentLevel - 1));
+                sb.Append("[");
+                if (list.Count > 0)
+                {
+                    sb.Append(sep);
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        if (i != 0)
+                        {
+                            sb.Append(",");
+                            sb.Append(sep);
+                        }
+                        sb.Append(BodyToString(list[i], indentLevel, visited));
+                    }
+                    sb.Append(GetFieldSeparator(indentLevel - 1));
+                }
+                sb.Append("]");
+                return sb.ToString();
+            }
             else if (body is IDictionary)
             {
                 IDictionary bodyMap = body as IDictionary;

@@ -80,6 +80,7 @@ namespace FluorineFx
         internal const string Rtmp_SocketBeginSend = "Rtmp_SocketBeginSend";
         internal const string Rtmp_SocketSendProcessing = "Rtmp_SocketSendProcessing";
         internal const string Rtmp_SocketConnectionReset = "Rtmp_SocketConnectionReset";
+        internal const string Rtmp_SocketConnectionTimeout = "Rtmp_SocketConnectionTimeout";
         internal const string Rtmp_SocketConnectionAborted = "Rtmp_SocketConnectionAborted";
         internal const string Rtmp_SocketDisconnectProcessing = "Rtmp_SocketDisconnectProcessing";
         internal const string Rtmp_ConnectionClose = "Rtmp_ConnectionClose";
@@ -110,6 +111,8 @@ namespace FluorineFx
 
         internal const string Endpoint_BindFail = "Endpoint_BindFail";
         internal const string Endpoint_Bind = "Endpoint_Bind";
+        internal const string Endpoint_HandleMessage = "Endpoint_HandleMessage";
+        internal const string Endpoint_Response = "Endpoint_Response";
 
         internal const string Type_InitError = "Type_InitError";
         internal const string Type_Mismatch = "Type_Mismatch";
@@ -125,7 +128,7 @@ namespace FluorineFx
         internal const string MessageBroker_RegisterError = "MessageBroker_RegisterError";
         internal const string MessageBroker_RoutingError = "MessageBroker_RoutingError";
         internal const string MessageBroker_RoutingMessage = "MessageBroker_RoutingMessage";
-        
+        internal const string MessageBroker_Response = "MessageBroker_Response";        
 
         internal const string MessageServer_LoadingConfig = "MessageServer_LoadingConfig";
         internal const string MessageServer_LoadingConfigDefault = "MessageServer_LoadingConfigDefault";

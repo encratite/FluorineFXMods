@@ -505,6 +505,10 @@ namespace FluorineFx.Messaging
             //The only case when we do not have context should be when the server side initiates a push
             if( FluorineContext.Current != null && FluorineContext.Current.Client != null )
                 responseMessage.SetHeader(MessageBase.FlexClientIdHeader, FluorineContext.Current.Client.Id);
+
+            if (log.IsDebugEnabled)
+                log.Debug(__Res.GetString(__Res.MessageBroker_Response, responseMessage.ToString()));
+
 			return responseMessage;
 		}
 

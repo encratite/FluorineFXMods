@@ -376,7 +376,7 @@
     <value>{0} Socket begin send iocp = {1}</value>
   </data>
   <data name="Rtmp_SocketConnectionReset" xml:space="preserve">
-    <value>{0} Connection reset by peer</value>
+    <value>{0} Connection reset by peer, error code was {1}</value>
   </data>
   <data name="Rtmp_SocketDisconnectProcessing" xml:space="preserve">
     <value>{0} Socket disconnect</value>
@@ -679,7 +679,7 @@
     <value>Starting Silverlight policy server, policy file: {0}</value>
   </data>
   <data name="Rtmp_SocketConnectionAborted" xml:space="preserve">
-    <value>{0} An established connection was aborted</value>
+    <value>{0} An established connection was aborted, error code was {1}</value>
   </data>
   <data name="Client_Invalidated" xml:space="preserve">
     <value>Client with id {0} has been invalidated</value>
@@ -773,5 +773,17 @@
   </data>
   <data name="Context_MissingError" xml:space="preserve">
     <value>Execution context is missing</value>
+  </data>
+  <data name="Rtmp_SocketConnectionTimeout" xml:space="preserve">
+    <value>A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond, error code was {1}</value>
+  </data>
+  <data name="MessageBroker_Response" xml:space="preserve">
+    <value>Routing response {0}</value>
+  </data>
+  <data name="Endpoint_HandleMessage" xml:space="preserve">
+    <value>{0} endpoint handling message {1}</value>
+  </data>
+  <data name="Endpoint_Response" xml:space="preserve">
+    <value>{0} endpoint routing response {1}</value>
   </data>
 </root>

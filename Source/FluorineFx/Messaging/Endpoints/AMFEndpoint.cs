@@ -126,6 +126,9 @@ namespace FluorineFx.Messaging.Endpoints
                 {
                     case CommandMessage.PollOperation:
                         {
+                            if (log.IsDebugEnabled)
+                                log.Debug(__Res.GetString(__Res.Endpoint_HandleMessage, this.Id, message.ToString()));
+
                             if (FluorineContext.Current.Client != null)
                                 FluorineContext.Current.Client.Renew();
 
@@ -172,16 +175,20 @@ namespace FluorineFx.Messaging.Endpoints
                             }
 
                             _waitingPollRequests.Decrement();
-
+                            IMessage response = null;
                             if (messages == null || messages.Count == 0)
-                                return new AcknowledgeMessage();
+                                response = new AcknowledgeMessage();
                             else
                             {
                                 CommandMessage resultMessage = new CommandMessage();
                                 resultMessage.operation = CommandMessage.ClientSyncOperation;
                                 resultMessage.body = messages;
-                                return resultMessage;
+                                response = resultMessage;
                             }
+                            if (log.IsDebugEnabled)
+                                log.Debug(__Res.GetString(__Res.Endpoint_Response, this.Id, response.ToString()));
+                            return response;
+
                         }
                     case CommandMessage.SubscribeOperation:
                         {
@@ -223,25 +230,34 @@ namespace FluorineFx.Messaging.Endpoints
                         }
                         break;
                     case CommandMessage.DisconnectOperation:
-                        if (FluorineContext.Current.Client != null && FluorineContext.Current.Client.IsValid)
                         {
-                            IList messageClients = FluorineContext.Current.Client.MessageClients;
-                            if (messageClients != null)
+                            if (log.IsDebugEnabled)
+                                log.Debug(__Res.GetString(__Res.Endpoint_HandleMessage, this.Id, message.ToString()));
+
+                            if (FluorineContext.Current.Client != null && FluorineContext.Current.Client.IsValid)
                             {
-                                foreach (MessageClient messageClient in messageClients)
+                                IList messageClients = FluorineContext.Current.Client.MessageClients;
+                                if (messageClients != null)
                                 {
-                                    messageClient.Invalidate();
+                                    foreach (MessageClient messageClient in messageClients)
+                                    {
+                                        messageClient.Invalidate();
+                                    }
                                 }
+                                FluorineContext.Current.Client.Invalidate();
                             }
-                            FluorineContext.Current.Client.Invalidate();
+                            if (FluorineContext.Current.Session != null)
+                            {
+                                FluorineContext.Current.Session.Invalidate();
+                            }
+                            //Disconnect command is received from a client channel.
+                            //The response returned by this method is not guaranteed to get to the client, which is free to terminate its physical connection at any point.
+                            IMessage response = new AcknowledgeMessage();
+
+                            if (log.IsDebugEnabled)
+                                log.Debug(__Res.GetString(__Res.Endpoint_Response, this.Id, response.ToString()));
+                            return response;
                         }
-                        if (FluorineContext.Current.Session != null)
-                        {
-                            FluorineContext.Current.Session.Invalidate();
-                        }
-                        //Disconnect command is received from a client channel.
-                        //The response returned by this method is not guaranteed to get to the client, which is free to terminate its physical connection at any point.
-                        return new AcknowledgeMessage();
                 }
             }
             return base.ServiceMessage(message);
