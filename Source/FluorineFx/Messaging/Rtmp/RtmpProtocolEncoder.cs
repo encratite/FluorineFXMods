@@ -473,11 +473,13 @@ namespace FluorineFx.Messaging.Rtmp
             if (!isPending)
             {
                 IPendingServiceCall pendingCall = (IPendingServiceCall)serviceCall;
+                /*
                 if (!serviceCall.IsSuccess)
                 {
                     StatusASO status = GenerateErrorResult(StatusASO.NC_CALL_FAILED, serviceCall.Exception);
                     pendingCall.Result = status;
                 }
+                */
                 writer.WriteData(context.ObjectEncoding, pendingCall.Result);
             }
             else
