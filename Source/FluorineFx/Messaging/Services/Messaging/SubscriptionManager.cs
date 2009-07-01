@@ -93,6 +93,7 @@ namespace FluorineFx.Messaging.Services.Messaging
                     MessageClient messageClient = new MessageClient(clientId, _messageDestination, endpointId);
                     messageClient.Subtopic = subtopic;
                     messageClient.Selector = selector;
+                    messageClient.AddSubscription(selector, subtopic);
                     AddSubscriber(messageClient);
                     messageClient.NotifyCreatedListeners();
                     return messageClient;

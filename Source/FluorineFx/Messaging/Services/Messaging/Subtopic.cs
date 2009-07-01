@@ -31,7 +31,7 @@ namespace FluorineFx.Messaging.Services.Messaging
 	/// Configure a Consumer component that subscribes to the destination to receive only messages sent to a specific subtopic or set of subtopics.
 	/// Use wildcard characters (*) to send or receive messages from more than one subtopic.
 	/// </summary>
-	public class Subtopic
+    public class Subtopic : IComparable
 	{
         /// <summary>
         /// Subtopic wildcard character.
@@ -130,5 +130,24 @@ namespace FluorineFx.Messaging.Services.Messaging
 			return true;
 		}
 
-	}
+
+        #region IComparable Members
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Subtopic)
+            {
+                Subtopic other = (Subtopic)obj;
+                return string.Equals(other.Value, _subtopic) ? 0 : -1;
+            }
+            return -1;
+        }
+
+        #endregion
+
+        public override bool Equals(object obj)
+        {
+            return CompareTo(obj) == 0;
+        }
+    }
 }

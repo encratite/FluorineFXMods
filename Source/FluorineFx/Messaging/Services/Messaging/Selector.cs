@@ -30,15 +30,22 @@ namespace FluorineFx.Messaging.Services.Messaging
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	class Selector
+    class Selector : IComparable
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(Selector));
 		private EvaluateInvoker _evaluateMethod;
+        readonly string _expression;
 
-		public Selector(EvaluateInvoker evaluateMethod)
+		public Selector(string expression, EvaluateInvoker evaluateMethod)
 		{
 			_evaluateMethod = evaluateMethod;
+            _expression = expression;
 		}
+
+        public string Expression
+        {
+            get { return _expression; }
+        } 
 
 		public bool Evaluate(object root, IDictionary variables)
 		{
@@ -68,13 +75,32 @@ namespace FluorineFx.Messaging.Services.Messaging
 				expressionGenerator.Emit(ilg);
 				EvaluateInvoker evaluateInvoker = (EvaluateInvoker)method.CreateDelegate(typeof(EvaluateInvoker));
                 */
-				return new Selector( new EvaluateInvoker(expressionObj.Evaluate));
+				return new Selector(expression, new EvaluateInvoker(expressionObj.Evaluate));
 			}
 			else
-				return new Selector( new EvaluateInvoker(expressionObj.Evaluate));
+				return new Selector(expression, new EvaluateInvoker(expressionObj.Evaluate));
 #else
-			return new Selector( new EvaluateInvoker(expressionObj.Evaluate));
+			return new Selector(expression, new EvaluateInvoker(expressionObj.Evaluate));
 #endif
-		}
-	}
+        }
+
+        #region IComparable Members
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Selector)
+            {
+                Selector other = (Selector)obj;
+                return string.Equals(other.Expression, _expression) ? 0 : -1;
+            }
+            return -1;            
+        }
+
+        #endregion
+
+        public override bool Equals(object obj)
+        {
+            return CompareTo(obj) == 0;
+        }
+    }
 }

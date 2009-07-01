@@ -499,6 +499,9 @@ namespace FluorineFx.Messaging
                 }
             }
 
+            //TODO
+            RemoveSubscription(this.Selector, this.Subtopic);
+
             lock (this.SyncRoot)
             {
                 // If we didn't clean up all subscriptions log an error and continue with shutdown.
@@ -525,25 +528,36 @@ namespace FluorineFx.Messaging
         {
             _messageDestination.SubscriptionManager.GetSubscriber(_clientId);
         }
+
+        internal void AddSubscription(Selector selector, Subtopic subtopic)
+        {
+            _subscriptions.Add(new SubscriptionInfo(selector, subtopic));
+        }
+
+        internal void RemoveSubscription(Selector selector, Subtopic subtopic)
+        {
+            _subscriptions.Remove(new SubscriptionInfo(selector, subtopic));
+        }
+
 	}
 
     class SubscriptionInfo : IComparable
     {
-        readonly string _selector;
+        readonly Selector _selector;
 
-        public string Selector
+        public Selector Selector
         {
             get { return _selector; }
         }
 
-        readonly string _subtopic;
+        readonly Subtopic _subtopic;
 
-        public string Subtopic
+        public Subtopic Subtopic
         {
             get { return _subtopic; }
-        } 
+        }
 
-        SubscriptionInfo(string selector, string subtopic)
+        public SubscriptionInfo(Selector selector, Subtopic subtopic)
         {
             _selector = selector;
             _subtopic = subtopic;
@@ -556,11 +570,20 @@ namespace FluorineFx.Messaging
             if (obj is SubscriptionInfo)
             {
                 SubscriptionInfo other = (SubscriptionInfo)obj;
-                return (string.Equals(other.Selector, _selector) && string.Equals(other.Subtopic, _subtopic)) ? 0 : -1;
+                //return (string.Equals(other.Selector, _selector) && string.Equals(other.Subtopic, _subtopic)) ? 0 : -1;
+                int result = CompareUtils.Compare(other.Selector, _selector) * -1;
+                if (result == 0) 
+                    result = CompareUtils.Compare(other.Subtopic, _subtopic);
+                return result;
             }
             return -1;
         }
 
         #endregion
+
+        public override bool Equals(object obj)
+        {
+            return CompareTo(obj) == 0;
+        }
     }
 }
