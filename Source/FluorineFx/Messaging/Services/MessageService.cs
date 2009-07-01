@@ -143,7 +143,8 @@ namespace FluorineFx.Messaging.Services
                             messageClient.Unsubscribe();
 						}
                         */
-                        messageDestination.SubscriptionManager.RemoveSubscriber(messageClient);
+                        if (messageClient != null)
+                            messageDestination.SubscriptionManager.RemoveSubscriber(messageClient);
                         if( acknowledgeMessage == null )
                             acknowledgeMessage = new AcknowledgeMessage();
                         return acknowledgeMessage;
