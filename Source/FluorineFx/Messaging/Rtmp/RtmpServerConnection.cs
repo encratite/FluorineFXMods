@@ -218,6 +218,10 @@ namespace FluorineFx.Messaging.Rtmp
                 buffer = SocketBufferPool.CheckOut();
                 _rtmpNetworkStream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginReadCallbackProcessing), buffer);
             }
+            catch (ObjectDisposedException)
+            {
+                //The underlying socket may be closed
+            }
             catch (Exception ex)
             {
                 SocketBufferPool.CheckIn(buffer);
@@ -266,6 +270,10 @@ namespace FluorineFx.Messaging.Rtmp
                     // No data to read
                     //Close();
                     BeginDisconnect();
+            }
+            catch (ObjectDisposedException)
+            {
+                //The underlying socket may be closed
             }
             catch (Exception ex)
             {
@@ -520,6 +528,10 @@ namespace FluorineFx.Messaging.Rtmp
                 //No need to lock, RtmpNetworkStream will handle Write locking
                 _rtmpNetworkStream.Write(buffer, 0, buffer.Length);
                 _writtenBytes.Increment(buffer.Length);
+            }
+            catch (ObjectDisposedException)
+            {
+                //After EndWrite, the underlying socket may be closed
             }
             catch (Exception ex)
             {
