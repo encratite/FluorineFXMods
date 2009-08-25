@@ -456,7 +456,7 @@ namespace FluorineFx.Messaging
                     {
                         if (log.IsDebugEnabled)
                             log.Debug(exception.Message);
-                        responseMessage = ErrorMessage.GetErrorMessage(message, exception);
+                        result = ErrorMessage.GetErrorMessage(message, exception);
                     }
                     catch (ServiceException exception)
                     {
