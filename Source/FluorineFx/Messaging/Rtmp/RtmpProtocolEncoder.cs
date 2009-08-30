@@ -402,7 +402,7 @@ namespace FluorineFx.Messaging.Rtmp
 			if (!isPending) 
 			{
 				//log.debug("Call has been executed, send result");
-				writer.WriteData(context.ObjectEncoding, "_result");
+                writer.WriteData(context.ObjectEncoding, serviceCall.IsSuccess ? "_result" : "_error");
 			}
 			else
 			{
