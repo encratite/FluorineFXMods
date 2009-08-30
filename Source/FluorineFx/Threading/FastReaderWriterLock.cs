@@ -308,11 +308,15 @@ namespace FluorineFx.Threading
         {
             for (int i = 0; ; i++)
             {
+#if !SILVERLIGHT
                 if (i < 3 && Environment.ProcessorCount > 1)
                     Thread.SpinWait(20);    // Wait a few dozen instructions to let another processor release lock. 
                 else
                     Thread.Sleep(0);        // Give up my quantum.  
-
+#else
+                //Environment.ProcessorCount EnvironmentPermission required (SecurityCritical in Silverlight)
+                Thread.Sleep(0);
+#endif
                 if (Interlocked.CompareExchange(ref _lock, 1, 0) == 0)
                     return;
             }
