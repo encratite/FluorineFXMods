@@ -391,6 +391,14 @@ namespace FluorineFx.Net
             }
         }
 
+        internal void RaiseNetStatus(string code, Exception exception)
+        {
+            if (_netStatusHandler != null)
+            {
+                _netStatusHandler(this, new NetStatusEventArgs(code, exception));
+            }
+        }
+
         internal void RaiseNetStatus(ASObject info)
         {
             if (_netStatusHandler != null)

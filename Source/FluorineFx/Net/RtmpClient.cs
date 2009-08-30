@@ -173,7 +173,7 @@ namespace FluorineFx.Net
                     reply.InvokeId = invoke.InvokeId;                    
                     channel.Write(reply);
                 }
-                */                
+                */
                 MethodInfo mi = MethodHandler.GetMethod(_netConnection.Client.GetType(), call.ServiceMethodName, call.Arguments, false, false);
                 if (mi != null)
                 {
@@ -205,6 +205,8 @@ namespace FluorineFx.Net
                     string msg = __Res.GetString(__Res.Invocation_NoSuitableMethod, call.ServiceMethodName);
                     call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_METHOD_NOT_FOUND;
                     call.Exception = new FluorineException(msg);
+                    _netConnection.RaiseNetStatus(call.Exception);
+
                     //log.Error(msg, call.Exception);
                 }
                 if (call.Status == FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_VOID || call.Status == FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_NULL)
@@ -261,6 +263,7 @@ namespace FluorineFx.Net
 #if !SILVERLIGHT
             socket.Connect(uri.Host, uri.Port);
             _connection = new RtmpClientConnection(this, socket);
+            _connection.Context.ObjectEncoding = _netConnection.ObjectEncoding;
             _connection.BeginHandshake();
 #else
             DnsEndPoint endPoint = new DnsEndPoint(uri.Host, uri.Port);
@@ -281,12 +284,13 @@ namespace FluorineFx.Net
                 Socket socket = (Socket)e.UserToken;
                 if (e.SocketError != SocketError.Success)
                 {
-                    _netConnection.RaiseNetStatus(new SocketException((int)e.SocketError));
+                    _netConnection.RaiseNetStatus(StatusASO.NC_CONNECT_FAILED, new SocketException((int)e.SocketError));
                     socket.Close();
                 }
                 else
                 {
                     _connection = new RtmpClientConnection(this, socket);
+                     _connection.Context.ObjectEncoding = _netConnection.ObjectEncoding;
                     _connection.BeginHandshake();
                 }
             }

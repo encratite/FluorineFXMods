@@ -17,6 +17,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+using FluorineFx.Messaging.Rtmp;
 
 namespace FluorineFx.Net
 {
@@ -34,7 +35,16 @@ namespace FluorineFx.Net
             _exception = exception;
             _info = new ASObject();
             _info["level"] = "error";
-            _info["code"] = "NetConnection.Call.BadVersion";
+            _info["code"] = StatusASO.NC_CALL_FAILED;
+            _info["description"] = exception.Message;
+        }
+
+        internal NetStatusEventArgs(string code, Exception exception)
+        {
+            _exception = exception;
+            _info = new ASObject();
+            _info["level"] = "error";
+            _info["code"] = code;
             _info["description"] = exception.Message;
         }
 
@@ -42,7 +52,7 @@ namespace FluorineFx.Net
         {
             _info = new ASObject();
             _info["level"] = "error";
-            _info["code"] = "NetConnection.Call.BadVersion";
+            _info["code"] = StatusASO.NC_CALL_FAILED;
             _info["description"] = message;
         }
 
