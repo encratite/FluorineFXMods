@@ -149,6 +149,37 @@ namespace FluorineFx.Net
                 if (call.ServiceMethodName == "_result")
                     call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_RESULT;
                 HandlePendingCallResult(connection, invoke);
+
+                //Notify via NetConnection if no IPendingServiceCallback was defined but the call failed
+                if (call.ServiceMethodName == "_error")
+                {
+                    object[] args = call.Arguments;
+                    ASObject statusASO = null;
+                    if ((args != null) && (args.Length > 0))
+                        statusASO = args[0] as ASObject;
+                    bool raiseError = false;
+                    IPendingServiceCall pendingCall = connection.RetrievePendingCall(invoke.InvokeId);
+                    if (pendingCall != null)
+                    {
+                        IPendingServiceCallback[] callbacks = pendingCall.GetCallbacks();
+                        if (callbacks == null || callbacks.Length == 0)
+                        {
+                            raiseError = true;
+                        }
+                    }
+                    else
+                        raiseError = true;
+                    if (raiseError)
+                    {
+                        if (statusASO != null)
+                            _netConnection.RaiseNetStatus(statusASO);
+                        else
+                        {
+                            string msg = __Res.GetString(__Res.Invocation_Failed, pendingCall.ServiceMethodName, "Invocation failed");
+                            _netConnection.RaiseNetStatus(msg);
+                        }
+                    }
+                }
                 return;
             }
 

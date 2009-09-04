@@ -141,15 +141,5 @@ namespace FluorineFx.Context
 			return formsCookieName;
 		}
         */
-
-        /// <summary>
-        /// Return an <see cref="FluorineFx.Context.IResource"/> handle for the
-        /// </summary>
-        /// <param name="location">The resource location.</param>
-        /// <returns>An appropriate <see cref="FluorineFx.Context.IResource"/> handle.</returns>
-        public override IResource GetResource(string location)
-        {
-            return new FileSystemResource(location);
-        }
 	}
 }

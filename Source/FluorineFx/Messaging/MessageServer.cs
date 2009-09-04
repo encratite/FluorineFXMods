@@ -204,7 +204,11 @@ namespace FluorineFx.Messaging
                 if (FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings != null &&
                     FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings.Enable)
                 {
-                    IResource resource = FluorineContext.Current.GetResource(FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings.PolicyFile);
+                    IResource resource = null;
+                    if (FluorineContext.Current != null)
+                        resource = FluorineContext.Current.GetResource(FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings.PolicyFile);
+                    else
+                        resource = new FileSystemResource(FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings.PolicyFile);
                     if (resource.Exists)
                     {
                         log.Info(__Res.GetString(__Res.Silverlight_StartPS, resource.File.FullName));
