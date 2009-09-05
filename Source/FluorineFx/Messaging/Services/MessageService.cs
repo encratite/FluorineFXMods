@@ -76,16 +76,16 @@ namespace FluorineFx.Messaging.Services
 				string clientId = commandMessage.clientId as string;
                 MessageClient messageClient = messageDestination.SubscriptionManager.GetSubscriber(clientId);
                 AcknowledgeMessage acknowledgeMessage = null;
-				switch(commandMessage.operation)
-				{
-					case CommandMessage.SubscribeOperation:
+                switch (commandMessage.operation)
+                {
+                    case CommandMessage.SubscribeOperation:
                         if (messageClient == null)
-						{
-							if( clientId == null )
-								clientId = Guid.NewGuid().ToString("D");
+                        {
+                            if (clientId == null)
+                                clientId = Guid.NewGuid().ToString("D");
 
-							if (log.IsDebugEnabled)
-								log.Debug(__Res.GetString(__Res.MessageServiceSubscribe, messageDestination.Id, clientId));
+                            if (log.IsDebugEnabled)
+                                log.Debug(__Res.GetString(__Res.MessageServiceSubscribe, messageDestination.Id, clientId));
 
                             string endpointId = commandMessage.GetHeader(MessageBase.EndpointHeader) as string;
                             if (_messageBroker.GetEndpoint(endpointId) == null)
@@ -94,11 +94,29 @@ namespace FluorineFx.Messaging.Services
                                 serviceException.FaultCode = "Server.Processing.MissingEndpoint";
                                 throw serviceException;
                             }
-							commandMessage.clientId = clientId;
+                            commandMessage.clientId = clientId;
 
                             if (messageDestination.ServiceAdapter != null && messageDestination.ServiceAdapter.HandlesSubscriptions)
                             {
-                                messageDestination.ServiceAdapter.Manage(commandMessage);
+                                try
+                                {
+                                    acknowledgeMessage = messageDestination.ServiceAdapter.Manage(commandMessage) as AcknowledgeMessage;
+                                }
+                                catch (MessageException me)
+                                {
+                                    acknowledgeMessage = me.GetErrorMessage();
+                                    //Leave, do not subscribe
+                                    return acknowledgeMessage;
+                                }
+                                catch (Exception ex)
+                                {
+                                    //Guard against service adapter failure
+                                    acknowledgeMessage = ErrorMessage.GetErrorMessage(commandMessage, ex);
+                                    if (log.IsErrorEnabled)
+                                        log.Error(__Res.GetString(__Res.ServiceAdapter_ManageFail, this.id, messageDestination.Id, commandMessage), ex);
+                                    //Leave, do not subscribe
+                                    return acknowledgeMessage;
+                                }
                             }
 
                             Subtopic subtopic = null;
@@ -117,36 +135,41 @@ namespace FluorineFx.Messaging.Services
                             IClient client = FluorineContext.Current.Client;
                             client.Renew();
                             messageClient = messageDestination.SubscriptionManager.AddSubscriber(clientId, endpointId, subtopic, selector);
-                            //client.RegisterMessageClient(client);
-							acknowledgeMessage = new AcknowledgeMessage();
-							acknowledgeMessage.clientId = clientId;
-						}
-						else
-						{
-							acknowledgeMessage = new AcknowledgeMessage();
-							acknowledgeMessage.clientId = clientId;
-						}
-						return acknowledgeMessage;
-					case CommandMessage.UnsubscribeOperation:
-						if (log.IsDebugEnabled)
-							log.Debug(__Res.GetString(__Res.MessageServiceUnsubscribe, messageDestination.Id, clientId));
+                            if (acknowledgeMessage == null)
+                                acknowledgeMessage = new AcknowledgeMessage();
+                            acknowledgeMessage.clientId = clientId;
+                        }
+                        else
+                        {
+                            acknowledgeMessage = new AcknowledgeMessage();
+                            acknowledgeMessage.clientId = clientId;
+                        }
+                        return acknowledgeMessage;
+                    case CommandMessage.UnsubscribeOperation:
+                        if (log.IsDebugEnabled)
+                            log.Debug(__Res.GetString(__Res.MessageServiceUnsubscribe, messageDestination.Id, clientId));
 
                         if (messageDestination.ServiceAdapter != null && messageDestination.ServiceAdapter.HandlesSubscriptions)
                         {
-                            acknowledgeMessage = messageDestination.ServiceAdapter.Manage(commandMessage) as AcknowledgeMessage;
+                            try
+                            {
+                                acknowledgeMessage = messageDestination.ServiceAdapter.Manage(commandMessage) as AcknowledgeMessage;
+                            }
+                            catch (MessageException me)
+                            {
+                                acknowledgeMessage = me.GetErrorMessage();
+                            }
+                            catch (Exception ex)
+                            {
+                                //Guard against service adapter failure
+                                acknowledgeMessage = ErrorMessage.GetErrorMessage(commandMessage, ex);
+                                if (log.IsErrorEnabled)
+                                    log.Error(__Res.GetString(__Res.ServiceAdapter_ManageFail, this.id, messageDestination.Id, commandMessage), ex);
+                            }
                         }
-                        /*
-                        if (messageClient != null)
-						{
-                            //IClient flexClient = this.GetMessageBroker().GetCurrentFlexClient();
-                            //if (flexClient != null)
-                            //    flexClient.UnregisterMessageClient(client);
-                            messageClient.Unsubscribe();
-						}
-                        */
                         if (messageClient != null)
                             messageDestination.SubscriptionManager.RemoveSubscriber(messageClient);
-                        if( acknowledgeMessage == null )
+                        if (acknowledgeMessage == null)
                             acknowledgeMessage = new AcknowledgeMessage();
                         return acknowledgeMessage;
                     case CommandMessage.PollOperation:
@@ -159,22 +182,67 @@ namespace FluorineFx.Messaging.Services
                             }
                             IClient client = FluorineContext.Current.Client;
                             client.Renew();
-                            messageDestination.ServiceAdapter.Manage(commandMessage);
-                            return new AcknowledgeMessage();
+                            try
+                            {
+                                acknowledgeMessage = messageDestination.ServiceAdapter.Manage(commandMessage) as AcknowledgeMessage;
+                            }
+                            catch (MessageException me)
+                            {
+                                acknowledgeMessage = me.GetErrorMessage();
+                            }
+                            catch (Exception ex)
+                            {
+                                //Guard against service adapter failure
+                                acknowledgeMessage = ErrorMessage.GetErrorMessage(commandMessage, ex);
+                                if (log.IsErrorEnabled)
+                                    log.Error(__Res.GetString(__Res.ServiceAdapter_ManageFail, this.id, messageDestination.Id, commandMessage), ex);
+                            }
+                            if (acknowledgeMessage == null)
+                                acknowledgeMessage = new AcknowledgeMessage();
+                            return acknowledgeMessage;
                         }
-					case CommandMessage.ClientPingOperation:
+                    case CommandMessage.ClientPingOperation:
                         if (messageDestination.ServiceAdapter != null && messageDestination.ServiceAdapter.HandlesSubscriptions)
                         {
-                            messageDestination.ServiceAdapter.Manage(commandMessage);
+                            try
+                            {
+                                messageDestination.ServiceAdapter.Manage(commandMessage);
+                            }
+                            catch (MessageException)
+                            {
+                                return false;
+                            }
+                            catch (Exception ex)
+                            {
+                                //Guard against service adapter failure
+                                if (log.IsErrorEnabled)
+                                    log.Error(__Res.GetString(__Res.ServiceAdapter_ManageFail, this.id, messageDestination.Id, commandMessage), ex);
+                                return false;
+                            }
                         }
-						return true;
-					default:
-						//Just acknowledge everything
-						if (log.IsDebugEnabled)
-							log.Debug(__Res.GetString(__Res.MessageServiceUnknown, commandMessage.operation, messageDestination.Id));
-                        messageDestination.ServiceAdapter.Manage(commandMessage);
-                        return new AcknowledgeMessage();
-				}
+                        return true;
+                    default:
+                        if (log.IsDebugEnabled)
+                            log.Debug(__Res.GetString(__Res.MessageServiceUnknown, commandMessage.operation, messageDestination.Id));
+                        try
+                        {
+                            acknowledgeMessage = messageDestination.ServiceAdapter.Manage(commandMessage) as AcknowledgeMessage;
+                        }
+                        catch (MessageException me)
+                        {
+                            acknowledgeMessage = me.GetErrorMessage();
+                        }
+                        catch (Exception ex)
+                        {
+                            //Guard against service adapter failure
+                            acknowledgeMessage = ErrorMessage.GetErrorMessage(commandMessage, ex);
+                            if (log.IsErrorEnabled)
+                                log.Error(__Res.GetString(__Res.ServiceAdapter_ManageFail, this.id, messageDestination.Id, commandMessage), ex);
+                        }
+                        if (acknowledgeMessage == null)
+                            acknowledgeMessage = new AcknowledgeMessage();
+                        return acknowledgeMessage;
+                }
 			}
 			else
 			{
