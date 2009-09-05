@@ -234,6 +234,8 @@ namespace FluorineFx
         internal const string SequenceManager_RemoveSubscriberSeq = "SequenceManager_RemoveSubscriberSeq";
 
         internal const string Service_NotFound = "Service_NotFound";
+        internal const string Service_Mapping = "Service_Mapping";
+        internal const string ServiceHandler_InvocationFailed = "ServiceHandler_InvocationFailed";
 
         internal const string Identity_Failed = "Identity_Failed";
 
@@ -241,7 +243,6 @@ namespace FluorineFx
 
         internal const string Channel_NotFound = "Channel_NotFound";
 
-        internal const string Service_Mapping = "Service_Mapping";
 
         internal const string TypeHelper_Probing = "TypeHelper_Probing";
         internal const string TypeHelper_LoadDllFail = "TypeHelper_LoadDllFail";
@@ -287,6 +288,7 @@ namespace FluorineFx
 
         internal const string ServiceAdapter_MissingSettings = "ServiceAdapter_MissingSettings";
         internal const string ServiceAdapter_Stop = "ServiceAdapter_Stop";
+        internal const string ServiceAdapter_ManageFail = "ServiceAdapter_ManageFail";
 
         internal const string Msmq_StartQueue = "Msmq_StartQueue";
         internal const string Msmq_InitFormatter = "Msmq_InitFormatter";
