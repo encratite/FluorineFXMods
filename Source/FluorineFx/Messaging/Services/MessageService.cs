@@ -28,6 +28,7 @@ using FluorineFx.Messaging.Services.Messaging;
 using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Messaging.Api;
 using FluorineFx.IO;
+using FluorineFx.Util;
 
 namespace FluorineFx.Messaging.Services
 {
@@ -234,8 +235,19 @@ namespace FluorineFx.Messaging.Services
 			if( subscribers != null && subscribers.Count > 0 )
 			{
 				PushMessageToClients(subscribers, message);
+
+                //Asynchronous invocation sample:
+                //BeginPushMessageToClients(new AsyncCallback(OnPushEnd), subscribers, message);
 			}
 		}
+
+        /*
+        void OnPushEnd(IAsyncResult result)
+        {
+            EndPushMessageToClients(result);
+        }
+        */
+
         /// <summary>
         /// Pushes a message to the specified clients (subscribers).
         /// </summary>
@@ -296,5 +308,112 @@ namespace FluorineFx.Messaging.Services
 				}
 			}
 		}
+
+        /// <summary>
+        /// Begins an asynchronous operation to push a message to the specified clients (subscribers).
+        /// </summary>
+        /// <param name="asyncCallback">The AsyncCallback delegate.</param>
+        /// <param name="subscribers">Collection of subscribers.</param>
+        /// <param name="message">The Message to push to the subscribers.</param>
+        /// <returns>An IAsyncResult that references the asynchronous invocation.</returns>
+        /// <remarks>
+        /// <para>
+        /// The Collection of subscribers is a collection of client Id strings.
+        /// </para>
+        /// <para>
+        /// You can create a callback method that implements the AsyncCallback delegate and pass its name to the BeginPushMessageToClients method.
+        /// </para>
+        /// <para>
+        /// Your callback method should invoke the EndPushMessageToClients method. When your application calls EndPushMessageToClients, the system will use a separate thread to execute the specified callback method, and will block on EndPushMessageToClients until the message is pushed successfully or throws an exception.
+        /// </para>
+        /// </remarks>
+        public IAsyncResult BeginPushMessageToClients(AsyncCallback asyncCallback, ICollection subscribers, IMessage message)
+        {
+            // Create IAsyncResult object identifying the asynchronous operation
+            AsyncResultNoResult ar = new AsyncResultNoResult(asyncCallback, new PushData(FluorineContext.Current, subscribers, message));
+            // Use a thread pool thread to perform the operation
+            FluorineFx.Threading.ThreadPoolEx.Global.QueueUserWorkItem(new System.Threading.WaitCallback(OnBeginPushMessageToClients), ar);
+            // Return the IAsyncResult to the caller
+            return ar;
+        }
+
+        private void OnBeginPushMessageToClients(object asyncResult)
+        {
+            AsyncResultNoResult ar = asyncResult as AsyncResultNoResult;
+            try
+            {
+                // Perform the operation; if sucessful set the result
+                PushData pushData = ar.AsyncState as PushData;
+                //Restore context
+                FluorineWebSafeCallContext.SetData(FluorineContext.FluorineContextKey, pushData.Context);
+                PushMessageToClients(pushData.Subscribers, pushData.Message);
+                ar.SetAsCompleted(null, false);
+            }
+            catch (Exception ex)
+            {
+                // If operation fails, set the exception
+                ar.SetAsCompleted(ex, false);
+            }
+            finally
+            {
+                FluorineWebSafeCallContext.FreeNamedDataSlot(FluorineContext.FluorineContextKey);
+            }
+        }
+        /// <summary>
+        /// Ends a pending asynchronous message push.
+        /// </summary>
+        /// <param name="asyncResult">An IAsyncResult that stores state information and any user defined data for this asynchronous operation.</param>
+        /// <remarks>
+        /// <para>
+        /// EndInvoke is a blocking method that completes the asynchronous message push request started in the BeginPushMessageToClients method.
+        /// </para>
+        /// <para>
+        /// Before calling BeginPushMessageToClients, you can create a callback method that implements the AsyncCallback delegate. This callback method executes in a separate thread and is called by the system after BeginPushMessageToClients returns. 
+        /// The callback method must accept the IAsyncResult returned by the BeginPushMessageToClients method as a parameter.
+        /// </para>
+        /// <para>Within the callback method you can call the EndPushMessageToClients method to successfully complete the invocation attempt.</para>
+        /// <para>The BeginPushMessageToClients enables to use the fire and forget pattern too (by not implementing an AsyncCallback delegate), however if the invocation fails the EndPushMessageToClients method is responsible to throw an appropriate exception.
+        /// Implementing the callback and calling EndPushMessageToClients also allows early garbage collection of the internal objects used in the asynchronous call.</para>
+        /// </remarks>
+        public void EndPushMessageToClients(IAsyncResult asyncResult)
+        {
+            AsyncResultNoResult ar = asyncResult as AsyncResultNoResult;
+            // Wait for operation to complete, then return result or throw exception
+            ar.EndInvoke();
+        }
 	}
+
+    #region PushData
+
+#if !SILVERLIGHT
+    class PushData
+    {
+        FluorineContext _context;
+        ICollection _subscribers;
+        IMessage _message;
+
+        public FluorineContext Context
+        {
+            get { return _context; }
+        }
+
+        public ICollection Subscribers
+        {
+            get { return _subscribers; }
+        }
+
+        public IMessage Message
+        {
+            get { return _message; }
+        }
+
+        public PushData(FluorineContext context, ICollection subscribers, IMessage message)
+        {
+            _context = context;
+            _subscribers = subscribers;
+            _message = message;
+        }
+    }
+#endif
+    #endregion PushData
 }
