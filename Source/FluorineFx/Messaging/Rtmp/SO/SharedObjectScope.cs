@@ -28,6 +28,7 @@ using log4net;
 using FluorineFx.Configuration;
 using FluorineFx.Util;
 using FluorineFx.Collections;
+using FluorineFx.Collections.Generic;
 using FluorineFx.Invocation;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Persistence;
@@ -55,7 +56,7 @@ namespace FluorineFx.Messaging.Rtmp.SO
         /// <summary>
         /// Event handlers (String, Object)
         /// </summary>
-        private Hashtable _handlers = new Hashtable();
+        private CopyOnWriteDictionary<string, object> _handlers = new CopyOnWriteDictionary<string, object>();
         /// <summary>
         /// Security handlers (ISharedObjectSecurity)
         /// </summary>
@@ -139,9 +140,12 @@ namespace FluorineFx.Messaging.Rtmp.SO
 				IScopeContext context = this.Parent.Context;
 				try 
 				{
-					// The type must have a name of "<SharedObjectName>.<DottedServiceName>"
-					//soHandler = ObjectFactory.CreateInstance(_so.Name + "." + serviceName + ".soservice");
-					soHandler = ObjectFactory.CreateInstance(_so.Name + "." + serviceName);
+                    //Search for a handler only if there is a service name specified
+                    if (serviceName != string.Empty)
+                    {
+                        // The type must have a name of "SharedObjectName.DottedServiceName"
+                        soHandler = ObjectFactory.CreateInstance(_so.Name + "." + serviceName);
+                    }
 				} 
 				catch(Exception) 
 				{
@@ -166,7 +170,7 @@ namespace FluorineFx.Messaging.Rtmp.SO
 					} 
 					catch(Exception exception) 
 					{
-						log.Error("Error while invoking method " + serviceMethod + " on shared object handler " + handler, exception);
+						log.Error(__Res.GetString(__Res.ServiceHandler_InvocationFailed, serviceMethod, handler), exception);
 					}
 				}
 			}
@@ -592,41 +596,50 @@ namespace FluorineFx.Messaging.Rtmp.SO
 
 		#endregion
 
-		public void RegisterServiceHandler(object handler) 
-		{
-			RegisterServiceHandler("", handler);
-		}
+        #region ISharedObjectHandlerProvider Members
 
-		public void RegisterServiceHandler(string name, object handler) 
-		{
-			if(name == null) 
-				name = string.Empty;
-			_handlers.Add(name, handler);
-		}
-
-		public void UnregisterServiceHandler() 
-		{
-			UnregisterServiceHandler(string.Empty);
-		}
-
-		public void UnregisterServiceHandler(string name) 
-		{
-			if (name == null) 
-				name = string.Empty;
-			_handlers.Remove(name);
-		}
-
-		public object GetServiceHandler(string name)
-		{
-			if (name == null) 
-				name = string.Empty;
-			return _handlers[name];
-		}
-
-		public ICollection GetServiceHandlerNames()
-		{
-            return new ReadOnlyCollection(_handlers.Keys);
+        public void RegisterServiceHandler(object handler)
+        {
+            RegisterServiceHandler(string.Empty, handler);
         }
+
+        public void UnregisterServiceHandler()
+        {
+            UnregisterServiceHandler(string.Empty);
+        }
+
+        #endregion ISharedObjectHandlerProvider Members
+
+        #region IServiceHandlerProvider Members
+
+        public void RegisterServiceHandler(string name, object handler)
+        {
+            if (name == null)
+                name = string.Empty;
+            _handlers.Add(name, handler);
+        }
+
+        public void UnregisterServiceHandler(string name)
+        {
+            if (name == null)
+                name = string.Empty;
+            if( _handlers.ContainsKey(name) )
+                _handlers.Remove(name);
+        }
+
+        public object GetServiceHandler(string name)
+        {
+            if (name == null)
+                name = string.Empty;
+            return _handlers.ContainsKey(name) ? _handlers[name] : null;
+        }
+
+        public ICollection<String> GetServiceHandlerNames()
+        {
+            return new ReadOnlyCollection<string>(_handlers.Keys);
+        }
+
+        #endregion IServiceHandlerProvider Members
 
         #region ISharedObjectSecurityService Members
 

@@ -97,6 +97,7 @@
     <Compile Include="Collections\Generic\CopyOnWriteArraySet.cs" />
     <Compile Include="Collections\Generic\CopyOnWriteDictionary.cs" />
     <Compile Include="Collections\Generic\IQueue.cs" />
+    <Compile Include="Collections\Generic\ReadOnlyCollection.cs" />
     <Compile Include="Collections\IModifiableCollection.cs" />
     <Compile Include="Collections\Inserter.cs" />
     <Compile Include="Collections\IOutputIterator.cs" />
@@ -216,6 +217,8 @@
     <Compile Include="Messaging\Api\IMessageClient.cs" />
     <Compile Include="Messaging\Api\ISession.cs" />
     <Compile Include="Messaging\Api\ISessionListener.cs" />
+    <Compile Include="Messaging\Api\Service\IServiceHandlerProvider.cs" />
+    <Compile Include="Messaging\Api\SO\ISharedObjectHandlerProvider.cs" />
     <Compile Include="Messaging\Api\Statistics\IStatisticsCounter.cs" />
     <Compile Include="Messaging\Api\Stream\IServerStream.cs" />
     <Compile Include="Messaging\Api\Stream\IStreamListener.cs" />

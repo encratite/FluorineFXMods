@@ -44,7 +44,7 @@ namespace FluorineFx.Messaging.Api.SO
 	/// using one notification event.
 	/// </summary>
     [CLSCompliant(false)]
-    public interface ISharedObject : IBasicScope, ISharedObjectSecurityService
+    public interface ISharedObject : IBasicScope, ISharedObjectSecurityService, ISharedObjectHandlerProvider
 	{
 		/// <summary>
 		/// Returns the version of the shared object. The version is incremented

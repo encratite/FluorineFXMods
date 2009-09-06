@@ -18,6 +18,7 @@
 */
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Security;
 using log4net;
@@ -36,14 +37,17 @@ namespace FluorineFx.Messaging.Rtmp.Service
 	{
 		public static string SERVICE_NAME = "serviceInvoker";
         static ILog log = LogManager.GetLogger(typeof(ServiceInvoker));
-		//IServiceResolver
-		private ArrayList _serviceResolvers = new ArrayList();
+        /// <summary>
+        /// Service resolvers.
+        /// </summary>
+		private ICollection<IServiceResolver> _serviceResolvers;
 
 		public ServiceInvoker()
 		{
 		}
 
-		public void SetServiceResolvers(ArrayList resolvers) 
+        //TODO
+        public void SetServiceResolvers(ICollection<IServiceResolver> resolvers) 
 		{
 			_serviceResolvers = resolvers;
 		}
@@ -110,60 +114,6 @@ namespace FluorineFx.Messaging.Rtmp.Service
 
 		public bool Invoke(IServiceCall call, object service)
 		{
-            /*
-            IConnection connection = FluorineFx.Context.FluorineContext.Current.Connection;
-			string serviceMethod = call.ServiceMethodName;
-
-			object[] args = call.Arguments;
-			object[] argsWithConnection = null;
-			if(args != null) 
-			{
-				argsWithConnection = new object[args.Length + 1];
-				argsWithConnection[0] = connection;
-				Array.Copy(args, 0, argsWithConnection, 1, args.Length);
-			} 
-			else 
-			{
-				argsWithConnection = new object[] { connection };
-			}
-
-			object[] arguments = null;
-            // First, search for method with the connection as first parameter, exact parameter type match
-            MethodInfo mi = MethodHandler.GetMethod(service.GetType(), serviceMethod, argsWithConnection, true, false, false);
-            if (mi == null)
-            {
-                // Second, search for method without the connection as first parameter.
-                mi = MethodHandler.GetMethod(service.GetType(), serviceMethod, args, true, false, false);
-                if (mi == null)
-                {
-                    // Third, search for method with the connection as first parameter
-                    mi = MethodHandler.GetMethod(service.GetType(), serviceMethod, argsWithConnection, false, false, false);
-                    if (mi == null)
-                    {
-                        // Forth, search for method without the connection as first parameter.
-                        mi = MethodHandler.GetMethod(service.GetType(), serviceMethod, args, false, false, false);
-                        if (mi == null)
-                        {
-                            string msg = __Res.GetString(__Res.Invocation_NoSuitableMethod, serviceMethod);
-                            call.Status = Call.STATUS_METHOD_NOT_FOUND;
-                            call.Exception = new FluorineException(msg);//MissingMethodException(service.GetType().Name, serviceMethod);
-                            //_log.Error("Method " + serviceMethod + " not found in " + service);
-                            _log.Error(msg, call.Exception);
-                            return false;
-                        }
-                        else
-                            arguments = args;
-                    }
-                    else
-                        arguments = argsWithConnection;
-                }
-                else
-                    arguments = args;
-            }
-            else
-                arguments = argsWithConnection;
-            */
-
             string serviceMethod = call.ServiceMethodName;
             object[] arguments = call.Arguments;
 

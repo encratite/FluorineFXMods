@@ -618,7 +618,7 @@ namespace FluorineFx.Messaging.Rtmp.SO
         {
             if (!this.IsPersistentObject && _listeners.Count == 0)
             {
-                log.Info(__Res.GetString(__Res.SharedObject_Delete, _name));
+                log.Debug(__Res.GetString(__Res.SharedObject_Delete, _name));
                 if (_storage != null)
                 {
                     if (!_storage.Remove(this))
