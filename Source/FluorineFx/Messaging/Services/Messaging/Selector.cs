@@ -102,5 +102,10 @@ namespace FluorineFx.Messaging.Services.Messaging
         {
             return CompareTo(obj) == 0;
         }
+
+        public override int GetHashCode()
+        {
+            return _expression.GetHashCode();
+        }
     }
 }
