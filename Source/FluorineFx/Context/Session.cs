@@ -268,8 +268,8 @@ namespace FluorineFx.Context
                 if (!IsValid || IsInvalidating)
                     return; // Already shutting down.
                 SetIsInvalidating(true);
-                _sessionManager.CancelTimeout(this);
             }
+            _sessionManager.CancelTimeout(this);
             // Unregister all Clients.
             if (_clients != null && _clients.Count != 0)
             {

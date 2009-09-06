@@ -675,8 +675,8 @@ namespace FluorineFx.Messaging
                     return; // Already shutting down.
 
                 SetIsInvalidating(true);
-                _clientManager.RemoveSubscriber(this);
             }
+            _clientManager.RemoveSubscriber(this);
 
             // Unregister from all Sessions.
             if (_sessions != null && _sessions.Count != 0)
