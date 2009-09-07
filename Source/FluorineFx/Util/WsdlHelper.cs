@@ -45,9 +45,10 @@ namespace FluorineFx.Util
 	/// </summary>
 	sealed public class WsdlHelper
 	{
+        private static readonly ILog log = LogManager.GetLogger(typeof(WsdlHelper));
+
         static Hashtable _webserviceTypeCache = new Hashtable();
         static object _objLock = new object();
-
 		/// <summary>
 		/// Initializes a new instance of the WsdlHelper class.
 		/// </summary>
@@ -206,14 +207,48 @@ namespace FluorineFx.Util
                         codeNamespace.Types.Remove(codeType);
                     }
                 }
-
-                if (FluorineConfiguration.Instance.ImportNamespaces != null)
+            }
+            else
+            {
+                foreach (CodeNamespace cns in codeCompileUnit.Namespaces)
                 {
-                    for (int i = 0; i < FluorineConfiguration.Instance.ImportNamespaces.Count; i++)
+                    foreach (CodeTypeDeclaration codeType in cns.Types)
                     {
-						ImportNamespace importNamespace = FluorineConfiguration.Instance.ImportNamespaces[i];
-                        codeNamespace.Imports.Add(new CodeNamespaceImport(importNamespace.Namespace));
+                        bool webDerived = false;
+                        foreach (CodeTypeReference baseType in codeType.BaseTypes)
+                        {
+                            if (baseType.BaseType == "System.Web.Services.Protocols.SoapHttpClientProtocol")
+                            {
+                                webDerived = true;
+                                break;
+                            }
+                        }
+                        if (webDerived)
+                        {
+                            CodeAttributeDeclaration codeAttributeDeclaration = new CodeAttributeDeclaration(typeof(FluorineFx.RemotingServiceAttribute).FullName);
+                            codeType.CustomAttributes.Add(codeAttributeDeclaration);
+                            foreach (CodeTypeMember member in codeType.Members)
+                            {
+                                CodeConstructor ctor = member as CodeConstructor;
+                                if (ctor != null)
+                                {
+                                    // We got a constructor
+                                    // Add CookieContainer code
+                                    // this.CookieContainer = new System.Net.CookieContainer(); //Session Cookie
+                                    CodeSnippetStatement statement = new CodeSnippetStatement("this.CookieContainer = new System.Net.CookieContainer(); //Session Cookie");
+                                    ctor.Statements.Add(statement);
+                                }
+                            }
+                        }
                     }
+                }
+            }
+            if (FluorineConfiguration.Instance.ImportNamespaces != null)
+            {
+                for (int i = 0; i < FluorineConfiguration.Instance.ImportNamespaces.Count; i++)
+                {
+                    ImportNamespace importNamespace = FluorineConfiguration.Instance.ImportNamespaces[i];
+                    codeNamespace.Imports.Add(new CodeNamespaceImport(importNamespace.Namespace));
                 }
             }
 
@@ -279,12 +314,6 @@ namespace FluorineFx.Util
 #endif
             if (cr.Errors.Count > 0)
             {
-                ILog log = null;
-                try
-                {
-                    log = LogManager.GetLogger(typeof(WsdlHelper));
-                }
-                catch { }
                 StringBuilder sbMessage = new StringBuilder();
                 sbMessage.Append(string.Format("Build failed: {0} errors", cr.Errors.Count));
                 if (log.IsErrorEnabled)
@@ -295,6 +324,14 @@ namespace FluorineFx.Util
                     sbMessage.Append("\n");
                     sbMessage.Append(e.ErrorText);
                 }
+                StringBuilder sbSourceTrace = new StringBuilder();
+                sbSourceTrace.Append("Attempt to compile the generated source code:");
+                sbSourceTrace.Append(Environment.NewLine);
+                StringWriter swSourceTrace = new StringWriter(sbSourceTrace);
+                IndentedTextWriter itw = new IndentedTextWriter(swSourceTrace, "    ");
+                provider.GenerateCodeFromCompileUnit(codeCompileUnit, itw, new CodeGeneratorOptions());
+                itw.Close();
+                log.Error(sbSourceTrace.ToString());
                 throw new FluorineException(sbMessage.ToString());
             }
 
