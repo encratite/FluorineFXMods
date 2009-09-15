@@ -18,6 +18,8 @@
 */
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace FluorineFx.IO.Writers
 {
@@ -43,6 +45,17 @@ namespace FluorineFx.IO.Writers
 				writer.WriteArray(ObjectEncoding.AMF0, array);
 				return;
 			}
+#if !(SILVERLIGHT)
+            IListSource listSource = data as IListSource;
+            if (listSource != null)
+            {
+                IList list = listSource.GetList();
+                object[] array = new object[list.Count];
+                list.CopyTo(array, 0);
+                writer.WriteArray(ObjectEncoding.AMF0, array);
+                return;
+            }
+#endif
 			if(data is IDictionary)
 			{
 				writer.WriteAssociativeArray(ObjectEncoding.AMF0, data as IDictionary);
@@ -53,6 +66,16 @@ namespace FluorineFx.IO.Writers
 				writer.WriteASO(ObjectEncoding.AMF0, new ExceptionASO(data as Exception) );
 				return;
 			}
+            if (data is IEnumerable)
+            {
+                List<object> tmp = new List<object>();
+                foreach (object element in (data as IEnumerable))
+                {
+                    tmp.Add(element);
+                }
+                writer.WriteArray(ObjectEncoding.AMF0, tmp.ToArray());
+                return;
+            }
 			writer.WriteObject(ObjectEncoding.AMF0, data);
 		}
 
