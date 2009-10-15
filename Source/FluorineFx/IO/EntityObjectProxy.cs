@@ -45,9 +45,13 @@ namespace FluorineFx.IO
             for (int i = 0; i < memberInfos.Length; i++)
             {
                 MemberInfo memberInfo = memberInfos[i];
+                PropertyInfo pi = memberInfo as PropertyInfo;
+                //Do not serialize EntityReferences
+                if (pi.PropertyType.IsSubclassOf(typeof(System.Data.Objects.DataClasses.EntityReference)))
+                    continue;
                 object[] attributes = memberInfo.GetCustomAttributes(false);
                 ClassMember classMember = new ClassMember(memberInfo.Name, flags, memberInfo.MemberType, attributes);
-                classMemberList.Add(classMember);               
+                classMemberList.Add(classMember);
             }
             string customClassName = type.FullName;
             customClassName = FluorineConfiguration.Instance.GetCustomClass(customClassName);
