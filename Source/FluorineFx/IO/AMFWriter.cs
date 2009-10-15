@@ -678,52 +678,26 @@ namespace FluorineFx.IO
 #endif
 			WriteUTF( customClass );
 
-			PropertyInfo[] propertyInfos = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-#if !(NET_1_1)
-            List<PropertyInfo> properties = new List<PropertyInfo>(propertyInfos);
-#else
-            ArrayList properties = new ArrayList(propertyInfos);
-#endif
-            for (int i = properties.Count - 1; i >=0 ; i--)
-			{
-				PropertyInfo propertyInfo = properties[i] as PropertyInfo;
+            ClassDefinition classDefinition = GetClassDefinition(obj);
+            if (classDefinition == null)
+            {
+                //Something went wrong in our reflection?
+                string msg = __Res.GetString(__Res.Fluorine_Fatal, "serializing " + obj.GetType().FullName);
 #if !SILVERLIGHT
-                if( propertyInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0 )
-					properties.RemoveAt(i);
+                if (log.IsFatalEnabled)
+                    log.Fatal(msg);
 #endif
-				if( propertyInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0 )
-					properties.RemoveAt(i);
-			}
-			foreach(PropertyInfo propertyInfo in properties)
-			{
-				WriteUTF(propertyInfo.Name);
-				object value = propertyInfo.GetValue(obj, null);
-				WriteData( objectEncoding, value);
-			}
-
-			FieldInfo[] fieldInfos = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-#if !(NET_1_1)
-            List<FieldInfo> fields = new List<FieldInfo>(fieldInfos);
-#else
-            ArrayList fields = new ArrayList(fieldInfos);
-#endif
-			for(int i = fields.Count - 1; i >=0 ; i--)
-			{
-				FieldInfo fieldInfo = fields[i] as FieldInfo;
-#if !SILVERLIGHT
-                if( fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0 )
-					fields.RemoveAt(i);
-#endif
-				if( fieldInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0 )
-					fields.RemoveAt(i);
-			}
-			for(int i = 0; i < fields.Count; i++)
-			{
-                FieldInfo fieldInfo = fields[i] as FieldInfo;
-				WriteUTF(fieldInfo.Name);
-				WriteData( objectEncoding, fieldInfo.GetValue(obj));
-			}
-
+                System.Diagnostics.Debug.Assert(false, msg);
+                return;
+            }
+            IObjectProxy proxy = ObjectProxyRegistry.Instance.GetObjectProxy(type);
+            for (int i = 0; i < classDefinition.MemberCount; i++)
+            {
+                ClassMember cm = classDefinition.Members[i];
+                WriteUTF(cm.Name);
+                object memberValue = proxy.GetValue(obj, cm);
+                WriteData(objectEncoding, memberValue);
+            }
 			WriteEndMarkup();
 		}
 
