@@ -388,7 +388,6 @@ namespace FluorineFx.Messaging.Rtmp.SO
 
 			if(_modified) 
 			{
-                _modified = false;
 				// The client sent at least one update -> increase version of SO
 				UpdateVersion();
 				_lastModified = System.Environment.TickCount;
@@ -399,9 +398,9 @@ namespace FluorineFx.Messaging.Rtmp.SO
                         log.Error(__Res.GetString(__Res.SharedObject_StoreError));
                 }
 			}
-
 			SendUpdates();
-		}
+            _modified = false;
+        }
 
         /// <summary>
         /// Return an error message to the client.
@@ -684,5 +683,19 @@ namespace FluorineFx.Messaging.Rtmp.SO
 			_syncEvents.Clear();
             _ownerMessage.Events.Clear();
 		}
+
+        /// <summary>
+        /// Indicates that the value of a property in the shared object has changed.
+        /// In most cases, such as when the value of a property is a primitive type like String or Number, you can call SetAttribute() instead of calling SetDirty(). However, when the value of a property is an object that contains its own properties, call SetDirty() to indicate when a value within the object has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property that has changed.</param>
+        public void SetDirty(string propertyName)
+        {
+            //Force sync
+            _modified = true;
+            _syncEvents.Enqueue(new SharedObjectEvent(SharedObjectEventType.CLIENT_UPDATE_DATA, propertyName, GetAttribute(propertyName)));
+            _changeStats.Increment();
+            NotifyModified();
+        }
 	}
 }

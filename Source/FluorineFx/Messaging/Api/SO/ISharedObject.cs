@@ -100,5 +100,11 @@ namespace FluorineFx.Messaging.Api.SO
 		/// shared object any longer.
 		/// </summary>
 		void Close();
+        /// <summary>
+        /// Indicates that the value of a property in the shared object has changed.
+        /// In most cases, such as when the value of a property is a primitive type like String or Number, you can call SetAttribute() instead of calling SetDirty(). However, when the value of a property is an object that contains its own properties, call SetDirty() to indicate when a value within the object has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property that has changed.</param>
+        void SetDirty(string propertyName);
 	}
 }
