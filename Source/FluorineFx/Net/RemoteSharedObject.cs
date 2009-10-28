@@ -388,6 +388,7 @@ namespace FluorineFx.Net
             ArrayList notifications = null;
             ArrayList messages = null;
 #endif
+            bool raiseOnConnect = false;
             foreach (ISharedObjectEvent sharedObjectEvent in message.Events)
             {
                 switch (sharedObjectEvent.Type)
@@ -397,7 +398,9 @@ namespace FluorineFx.Net
                             _version = message.Version;
                         _attributes.Clear();
                         _initialSyncReceived = true;
-                        RaiseOnConnect();
+                        //Delay the connection notification until the attribute store has been populated
+                        //RaiseOnConnect();
+                        raiseOnConnect = true;
                         break;
                     case FluorineFx.Messaging.Rtmp.SO.SharedObjectEventType.CLIENT_UPDATE_DATA:
                     case FluorineFx.Messaging.Rtmp.SO.SharedObjectEventType.CLIENT_UPDATE_ATTRIBUTE:
@@ -406,7 +409,9 @@ namespace FluorineFx.Net
                             infoObject["code"] = "change";
                             infoObject["name"] = sharedObjectEvent.Key;
                             infoObject["oldValue"] = this.GetAttribute(sharedObjectEvent.Key);
-                            _attributes[sharedObjectEvent.Key] = sharedObjectEvent.Value;
+                            //Do not update the attribute store if this is a notification that the SetAttribute is accepted
+                            if (sharedObjectEvent.Type != FluorineFx.Messaging.Rtmp.SO.SharedObjectEventType.CLIENT_UPDATE_ATTRIBUTE)
+                                _attributes[sharedObjectEvent.Key] = sharedObjectEvent.Value;
                             if (changeList == null)
 #if !(NET_1_1)
                                 changeList = new List<ASObject>();
@@ -500,6 +505,10 @@ namespace FluorineFx.Net
                         break;
                 }
             }
+
+            if (raiseOnConnect)
+                RaiseOnConnect();
+
             if (changeList != null && changeList.Count > 0)
             {
 #if !(NET_1_1)
