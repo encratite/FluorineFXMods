@@ -815,13 +815,13 @@ namespace FluorineFx.Messaging.Config
             set { _properties = value; }
         }
         */
-        
-        private XmlNode _propertiesXml;
+
+        private XmlElement _propertiesXml;
         /// <summary>
         /// Gets or sets the properties Xml node.
         /// </summary>
         [XmlAnyElement("properties")]
-        public XmlNode PropertiesXml
+        public XmlElement PropertiesXml
         {
             get { return _propertiesXml; }
             set { _propertiesXml = value; }
