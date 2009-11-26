@@ -59,6 +59,19 @@ namespace FluorineFx.Messaging.Messages
 			get{ return _operation; }
 			set{ _operation = value; }
 		}
+
+        protected override MessageBase CopyImpl(MessageBase clone)
+        {
+            // Instantiate the clone, if a derived type hasn't already.
+            if (clone == null) clone = new RemotingMessage();
+            // Allow base type(s) to copy their state into the new clone.
+            base.CopyImpl(clone);
+            // Copy our state into the clone.
+            ((RemotingMessage)clone)._source = _source;
+            ((RemotingMessage)clone)._operation = _operation;
+            return clone;
+        }
+
         /// <summary>
         /// Returns a string that represents the current RemotingMessage object fields.
         /// </summary>

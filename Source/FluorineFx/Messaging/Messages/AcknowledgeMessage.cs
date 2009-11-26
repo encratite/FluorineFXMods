@@ -35,5 +35,12 @@ namespace FluorineFx.Messaging.Messages
 			_messageId = Guid.NewGuid().ToString("D");
 			_timestamp = System.Environment.TickCount;
 		}
+
+        protected override MessageBase CopyImpl(MessageBase clone)
+        {
+            // Instantiate the clone, if a derived type hasn't already.
+            if (clone == null) clone = new AcknowledgeMessage();
+            return base.CopyImpl(clone);
+        }
 	}
 }

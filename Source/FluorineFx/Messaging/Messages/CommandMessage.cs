@@ -141,6 +141,18 @@ namespace FluorineFx.Messaging.Messages
 			set{ _operation = value; }
 		}
 
+        protected override MessageBase CopyImpl(MessageBase clone)
+        {
+            // Instantiate the clone, if a derived type hasn't already.
+            if (clone == null) clone = new CommandMessage();
+            // Allow base type(s) to copy their state into the new clone.
+            base.CopyImpl(clone);
+            // Copy our state into the clone.
+            ((CommandMessage)clone)._messageRefType = _messageRefType;
+            ((CommandMessage)clone)._operation = _operation;
+            return clone;
+        }
+
         static string[] OperationNames = { "subscribe", "unsubscribe", "poll", "unused3", "client_sync", "client_ping", "unused6", "cluster_request", "login", "logout", "subscription_invalidate", "multi_subscribe", "disconnect", "trigger_connect" };
 
         /// <summary>

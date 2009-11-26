@@ -115,6 +115,21 @@ namespace FluorineFx.Messaging.Messages
 			return errorMessage;
 		}
 
+        protected override MessageBase CopyImpl(MessageBase clone)
+        {
+            // Instantiate the clone, if a derived type hasn't already.
+            if (clone == null) clone = new ErrorMessage();
+            // Allow base type(s) to copy their state into the new clone.
+            base.CopyImpl(clone);
+            // Copy our state into the clone.
+            ((ErrorMessage)clone)._faultCode = _faultCode;
+            ((ErrorMessage)clone)._faultString = _faultString;
+            ((ErrorMessage)clone)._faultDetail = _faultDetail;
+            ((ErrorMessage)clone)._rootCause = _rootCause;
+            ((ErrorMessage)clone)._extendedData = _extendedData;
+            return clone;
+        }
+
         /// <summary>
         /// Returns a string that represents the current ErrorMessage object fields.
         /// </summary>

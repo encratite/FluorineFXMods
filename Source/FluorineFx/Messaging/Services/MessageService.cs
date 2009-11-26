@@ -330,7 +330,7 @@ namespace FluorineFx.Messaging.Services
 			SubscriptionManager subscriptionManager = destination.SubscriptionManager;
 			if( subscribers != null && subscribers.Count > 0 )
 			{
-				IMessage messageClone = message.Clone() as IMessage;
+				IMessage messageClone = message.Copy() as IMessage;
                 /*
 				if( subscribers.Count > 1 )
 				{

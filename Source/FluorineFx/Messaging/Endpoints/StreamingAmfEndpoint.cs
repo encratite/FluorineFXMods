@@ -62,7 +62,7 @@ namespace FluorineFx.Messaging.Endpoints
         /// This is the token at the end of the HTTP request line that indicates that it's
         /// a stream connection that we should close.
         /// </summary>
-        private const string CloseCommand = "close";
+        internal const string CloseCommand = "close";
         /// <summary>
         /// Parameter name for the stream id; passed with commands for an existing streaming connection.
         /// </summary>
@@ -576,7 +576,7 @@ namespace FluorineFx.Messaging.Endpoints
             IEndpointPushHandler handler = messageClient.Client.GetEndpointPushHandler(this.Id);
             if (handler != null)
             {
-                IMessage messageClone = message.Clone() as IMessage;
+                IMessage messageClone = message.Copy() as IMessage;
                 messageClone.SetHeader(MessageBase.DestinationClientIdHeader, messageClient.ClientId);
                 messageClone.clientId = messageClient.ClientId;
                 handler.PushMessage(messageClone);

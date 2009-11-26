@@ -270,7 +270,7 @@ namespace FluorineFx.Messaging.Endpoints
                 IEndpointPushHandler handler = messageClient.Client.GetEndpointPushHandler(this.Id);
                 if (handler != null)
                 {
-                    IMessage messageClone = message.Clone() as IMessage;
+                    IMessage messageClone = message.Copy() as IMessage;
                     messageClone.SetHeader(MessageBase.DestinationClientIdHeader, messageClient.ClientId);
                     messageClone.clientId = messageClient.ClientId;
                     handler.PushMessage(messageClone);

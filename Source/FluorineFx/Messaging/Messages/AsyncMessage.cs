@@ -52,6 +52,17 @@ namespace FluorineFx.Messaging.Messages
 			get{ return _correlationId; }
 			set{ _correlationId = value; }
 		}
+
+        protected override MessageBase CopyImpl(MessageBase clone)
+        {
+            // Instantiate the clone, if a derived type hasn't already.
+            if (clone == null) clone = new AsyncMessage();
+            // Allow base type(s) to copy their state into the new clone.
+            base.CopyImpl(clone);
+            // Copy our state into the clone.
+            ((AsyncMessage)clone)._correlationId = _correlationId;
+            return clone;
+        }
         /// <summary>
         /// Returns a string that represents the current AsyncMessage object fields.
         /// </summary>

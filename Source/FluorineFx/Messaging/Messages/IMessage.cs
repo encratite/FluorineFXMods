@@ -31,7 +31,7 @@ namespace FluorineFx.Messaging.Messages
 #if SILVERLIGHT
     public interface IMessage
 #else
-    public interface IMessage : ICloneable
+    public interface IMessage //: ICloneable
 #endif
 	{
         /// <summary>
@@ -90,13 +90,18 @@ namespace FluorineFx.Messaging.Messages
         /// <summary>
         /// Retrieves whether for the specified header name an associated value exists.
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">Header name.</param>
+        /// <returns>The associated value with the header name.</returns>
 		bool HeaderExists(string name);
         /// <summary>
         /// Gets the Flex client id specified in the message headers ("DSId").
         /// </summary>
         /// <returns>The Flex client id.</returns>
         string GetFlexClientId();
+        /// <summary>
+        /// Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>A new object that is a copy of this instance.</returns>
+        IMessage Copy();
 	}
 }

@@ -500,6 +500,12 @@ namespace FluorineFx
             if (httpApplication.Request.ContentType == ContentType.XForm 
                 /* && httpApplication.Request.Params["HTTP_CONTENT_TYPE"] == ContentType.AMF*/ )
             {
+                string command = httpApplication.Request.Params[FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint.CommandParameterName];
+                if (!FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint.OpenCommand.Equals(command) && !FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint.CloseCommand.Equals(command))
+                    return;
+                if (httpApplication.Request.UrlReferrer != null && !httpApplication.Request.UrlReferrer.ToString().EndsWith(".swf"))
+                    return;
+
                 //CompressContent(httpApplication);
                 httpApplication.Response.Clear();
                 //httpApplication.Response.BufferOutput = false;

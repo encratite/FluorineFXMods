@@ -43,7 +43,7 @@ namespace FluorineFx.Messaging.Messages
 #if SILVERLIGHT
     public class MessageBase : IMessage
 #else
-    public class MessageBase : IMessage, ICloneable
+    public class MessageBase : IMessage//, ICloneable
 #endif
 	{
         /// <summary>
@@ -220,29 +220,43 @@ namespace FluorineFx.Messaging.Messages
         /// <summary>
         /// Retrieves whether for the specified header name an associated value exists.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">Header name.</param>
         /// <returns></returns>
-		public bool HeaderExists(string name)
+        public bool HeaderExists(string name)
 		{
 			if( _headers != null )
 				return _headers.ContainsKey(name);
 			return false;
 		}
+
         /// <summary>
         /// Creates a new object that is a copy of the current instance.
         /// </summary>
-        /// <returns></returns>
-		public virtual object Clone()
-		{
-			MessageBase message = base.MemberwiseClone() as MessageBase;
-			if( _headers != null )
+        /// <returns>A new object that is a copy of this instance.</returns>
+        public IMessage Copy()
+        {
+            // Allow most-derived type to instantiate the new clone, and all other derived types to copy state into it.
+            return CopyImpl(null);
+        }
+
+        protected virtual MessageBase CopyImpl(MessageBase clone)
+        {
+            // Instantiate the clone, if a derived type hasn't already.
+            if (clone == null) clone = new MessageBase();
+            // Copy our state into the clone.
+            clone._body = _body;
+            clone._clientId = _clientId;
+            clone._destination = _destination;
+            clone._messageId = _messageId;
+            clone._timestamp = _timestamp;
+            clone._timeToLive = _timeToLive;
 #if !(NET_1_1)
-                message.headers = new Dictionary<string, object>(_headers);
+            clone.headers = new Dictionary<string, object>(_headers);
 #else
-				message.headers = _headers.Clone() as Hashtable;
+			clone.headers = _headers.Clone() as Hashtable;
 #endif
-			return message;
-		}
+            return clone;
+        }
 
         /// <summary>
         /// Gets the Flex client id specified in the message headers ("DSId").
