@@ -17,6 +17,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+using System.Collections.Generic;
 #if !FXCLIENT
 using System.Web;
 #endif
@@ -80,9 +81,22 @@ namespace FluorineFx.Context
     /// </summary>
     public sealed class FluorineWebSafeCallContext
     {
+        [ThreadStatic]
+        private static Dictionary<string, object> _data;
+
         private FluorineWebSafeCallContext()
         {
         }
+
+        private static Dictionary<string, object> Data
+        {
+            get
+            {
+                if (_data == null) _data = new Dictionary<string, object>();
+                return _data;
+            }
+        }
+
         /// <summary>
         /// Retrieves an object with the specified name from the FluorineWebSafeCallContext.
         /// </summary>
@@ -90,27 +104,25 @@ namespace FluorineFx.Context
         /// <returns>The object in the call context associated with the specified name.</returns>
         public static object GetData(string name)
         {
+#if !FXCLIENT
             HttpContext ctx = HttpContext.Current;
             if (ctx != null)
                 return ctx.Items[name];
-            return WebSafeCallContext.GetData(name);
+#endif
+            //return WebSafeCallContext.GetData(name);
 
-            /*
             object value = null;
             try
             {
                 // See if we're running in full trust
-                new SecurityPermission(PermissionState.Unrestricted).Demand();
+                new SecurityPermission(SecurityPermissionFlag.Infrastructure).Demand();
                 value = WebSafeCallContext.GetData(name);
             }
             catch (SecurityException)
             {
-                HttpContext ctx = HttpContext.Current;
-                if (ctx != null)
-                    value = ctx.Items[name];
+                value = Data[name];
             }
             return value;
-            */
         }
         /// <summary>
         /// Stores a given object and associates it with the specified name. 
@@ -119,26 +131,24 @@ namespace FluorineFx.Context
         /// <param name="value">The object to store in the call context.</param>
         public static void SetData(string name, object value)
         {
+#if !FXCLIENT
             HttpContext ctx = HttpContext.Current;
             if (ctx != null)
                 ctx.Items[name] = value;
             else
-                WebSafeCallContext.SetData(name, value);
+#endif
+            //WebSafeCallContext.SetData(name, value);
 
-            /*
             try
             {
                 // See if we're running in full trust
-                new SecurityPermission(PermissionState.Unrestricted).Demand();
+                new SecurityPermission(SecurityPermissionFlag.Infrastructure).Demand();
                 WebSafeCallContext.SetData(name, value);
             }
             catch (SecurityException)
             {
-                HttpContext ctx = HttpContext.Current;
-                if (ctx != null)
-                    ctx.Items[name] = value;
+                Data[name] = value;
             }
-            */
         }
         /// <summary>
         /// Empties a data slot with the specified name.
@@ -146,26 +156,24 @@ namespace FluorineFx.Context
         /// <param name="name">The name of the data slot to empty.</param>
         public static void FreeNamedDataSlot(string name)
         {
+#if !FXCLIENT
             HttpContext ctx = HttpContext.Current;
             if (ctx != null)
                 ctx.Items.Remove(name);
             else
-                WebSafeCallContext.FreeNamedDataSlot(name);
+#endif
+            WebSafeCallContext.FreeNamedDataSlot(name);
 
-            /*
             try
             {
                 // See if we're running in full trust
-                new SecurityPermission(PermissionState.Unrestricted).Demand();
+                new SecurityPermission(SecurityPermissionFlag.Infrastructure).Demand();
                 WebSafeCallContext.FreeNamedDataSlot(name);
             }
             catch (SecurityException)
             {
-                HttpContext ctx = HttpContext.Current;
-                if (ctx != null)
-                    ctx.Items.Remove(name);
+                Data.Remove(name);
             }
-            */
         }
     }
 }

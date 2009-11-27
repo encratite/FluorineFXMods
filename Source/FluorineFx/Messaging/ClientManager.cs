@@ -257,6 +257,7 @@ namespace FluorineFx.Messaging
                                 FluorineWebSafeCallContext.SetData(FluorineContext.FluorineContextKey, context);
                                 client.Timeout();
                                 RemoveSubscriber(client);
+                                FluorineWebSafeCallContext.FreeNamedDataSlot(FluorineContext.FluorineContextKey);
                             }
                         }
                         catch (Exception ex)

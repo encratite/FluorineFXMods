@@ -248,6 +248,7 @@ namespace FluorineFx.Messaging.Services.Messaging
                                     _TimeoutContext context = new _TimeoutContext(messageClient);
                                     FluorineWebSafeCallContext.SetData(FluorineContext.FluorineContextKey, context);
                                     messageClient.Timeout();
+                                    FluorineWebSafeCallContext.FreeNamedDataSlot(FluorineContext.FluorineContextKey);
                                 }
                             }
 						}
