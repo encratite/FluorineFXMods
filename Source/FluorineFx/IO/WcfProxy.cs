@@ -47,7 +47,7 @@ namespace FluorineFx.IO
 
         #region IObjectProxy Members
 
-        public ClassDefinition GetClassDefinition(object instance)
+        public override ClassDefinition GetClassDefinition(object instance)
         {
             ClassDefinition classDefinition = null;
             Type type = instance.GetType();
@@ -96,7 +96,8 @@ namespace FluorineFx.IO
                 {
                     bf = BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance;
                 }
-                ClassMember classMember = new ClassMember(name, bf, propertyInfo.MemberType);
+                object[] attributes = propertyInfo.GetCustomAttributes(false);
+                ClassMember classMember = new ClassMember(name, bf, propertyInfo.MemberType, attributes);
                 classMemberList.Add(classMember);
             }
             FieldInfo[] fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
@@ -120,7 +121,8 @@ namespace FluorineFx.IO
                     if (!type.IsSerializable && type.Assembly != typeof(AMFWriter).Assembly)
                         continue;
                 }
-                ClassMember classMember = new ClassMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType);
+                object[] attributes = fieldInfo.GetCustomAttributes(false);
+                ClassMember classMember = new ClassMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType, attributes);
                 classMemberList.Add(classMember);
             }
             ClassMember[] classMembers = classMemberList.ToArray();
