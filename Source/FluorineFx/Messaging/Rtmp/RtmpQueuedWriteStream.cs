@@ -29,6 +29,7 @@ using System.Threading;
 #if !SILVERLIGHT
 using log4net;
 #endif
+using FluorineFx.Threading;
 
 namespace FluorineFx.Messaging.Rtmp
 {
@@ -37,31 +38,92 @@ namespace FluorineFx.Messaging.Rtmp
     /// </summary>
     class RtmpQueuedWriteStream : System.IO.Stream
     {
+#if !SILVERLIGHT
+        private static ILog log = LogManager.GetLogger(typeof(RtmpQueuedWriteStream));
+#endif
+
         private System.IO.Stream _innerStream;
 #if !(NET_1_1)
         private Queue<RtmpAsyncResult> _outgoingQueue = new Queue<RtmpAsyncResult>();
 #else
         private Queue _outgoingQueue = new Queue();
 #endif
-        private volatile bool _isWriting;
+        //private volatile bool _isWriting;
 
+        FastReaderWriterLock _lock;
+        /// <summary>
+        /// State bit field.
+        /// 1 IsClosed
+        /// 2 IsWriting
+        /// 4 
+        /// </summary>
+        protected byte __fields;
 
         public RtmpQueuedWriteStream(System.IO.Stream innerStream)
         {
             _innerStream = innerStream;
+            _lock = new FastReaderWriterLock();
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is closed.
+        /// </summary>
+        /// <value><c>true</c> if this instance is closed; otherwise, <c>false</c>.</value>
+        public bool IsClosed
+        {
+            get { return (__fields & 1) == 1; }
+        }
+
+        internal void SetIsClosed(bool value)
+        {
+            __fields = (value) ? (byte)(__fields | 1) : (byte)(__fields & ~1);
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is writing.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is writing; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsWriting
+        {
+            get { return (__fields & 2) == 2; }
+        }
+
+        internal void SetIsWriting(bool value)
+        {
+            __fields = (value) ? (byte)(__fields | 2) : (byte)(__fields & ~2);
         }
 
         public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
+            _lock.AcquireReaderLock();
+            try
+            {
+                if (this.IsClosed)
+                    throw new ObjectDisposedException(null);
+            }
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
             return _innerStream.BeginRead(buffer, offset, count, callback, state);
         }
 
         public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
-            RtmpAsyncResult asyncResult = new RtmpAsyncResult(callback, state, buffer, offset, count);
-            lock (_outgoingQueue)
+            RtmpAsyncResult asyncResult = null;
+            _lock.AcquireWriterLock();
+            try
             {
+                if (this.IsClosed)
+                    throw new ObjectDisposedException(null);
+                asyncResult = new RtmpAsyncResult(callback, state, buffer, offset, count);
                 _outgoingQueue.Enqueue(asyncResult);
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
             }
             TryBeginWrite();
             return asyncResult;
@@ -79,36 +141,41 @@ namespace FluorineFx.Messaging.Rtmp
 
         private void TryBeginWrite()
         {
-            if(!_isWriting)
+            RtmpAsyncResult asyncResult = null;
+            _lock.AcquireWriterLock();
+            try
             {
-                RtmpAsyncResult asyncResult;
-                lock (_outgoingQueue)
+                if (this.IsWriting)
+                    return;
+                if (_outgoingQueue.Count > 0)
                 {
-                    if (_isWriting)
-                        return;
-                    if (_outgoingQueue.Count > 0)
-                    {
-                        asyncResult = _outgoingQueue.Dequeue() as RtmpAsyncResult;
-                        _isWriting = true;
-                    }
-                    else
-                        asyncResult = null;
+                    asyncResult = _outgoingQueue.Dequeue() as RtmpAsyncResult;
+                    SetIsWriting(true);
                 }
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
+            }
+            try
+            {
+                if (asyncResult != null)
+                    this.InternalBeginWrite(asyncResult.Buffer, asyncResult.Offset, asyncResult.Count, new AsyncCallback(this.BeginWriteCallback), asyncResult);
+            }
+            catch (Exception exception)
+            {
+                _lock.AcquireWriterLock();
                 try
                 {
-                    if (asyncResult != null)
-                        this.InternalBeginWrite(asyncResult.Buffer, asyncResult.Offset, asyncResult.Count, new AsyncCallback(this.BeginWriteCallback), asyncResult);
+                    SetIsWriting(false);
                 }
-                catch (Exception exception)
+                finally
                 {
-                    lock (_outgoingQueue)
-                    {
-                        _isWriting = false;
-                    }
-                    if(asyncResult != null)
-                        asyncResult.SetComplete(exception);
-                    throw;
+                    _lock.ReleaseWriterLock();
                 }
+                if (asyncResult != null)
+                    asyncResult.SetComplete(exception);
+                throw;
             }
         }
 
@@ -120,17 +187,27 @@ namespace FluorineFx.Messaging.Rtmp
                 try
                 {
                     this.InternalEndWrite(asyncResult);
-                    lock (_outgoingQueue)
+                    _lock.AcquireWriterLock();
+                    try
                     {
-                        _isWriting = false;
+                        SetIsWriting(false);
+                    }
+                    finally
+                    {
+                        _lock.ReleaseWriterLock();
                     }
                     asyncState.SetComplete(null);
                 }
                 catch (Exception exception)
                 {
-                    lock (_outgoingQueue)
+                    _lock.AcquireWriterLock();
+                    try
                     {
-                        _isWriting = false;
+                        SetIsWriting(false);
+                    }
+                    finally
+                    {
+                        _lock.ReleaseWriterLock();
                     }
                     asyncState.SetComplete(exception);
                 }
@@ -176,8 +253,17 @@ namespace FluorineFx.Messaging.Rtmp
 
         public override void Close()
         {
+            _lock.AcquireWriterLock();
+            try
+            {
+                SetIsClosed(true);
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
+            }
             _innerStream.Close();
-            base.Close();
+            base.Close();//Calls Dispose(true);
         }
 
 #if !(NET_1_1)
@@ -185,9 +271,23 @@ namespace FluorineFx.Messaging.Rtmp
         {
             if (disposing)
             {
-                lock (_outgoingQueue)
+                _lock.AcquireWriterLock();
+                try
                 {
-                    _outgoingQueue.Clear();
+
+                    {
+                        while (_outgoingQueue.Count > 0)
+                        {
+                            RtmpAsyncResult asyncResult = _outgoingQueue.Dequeue() as RtmpAsyncResult;
+                            if (asyncResult != null)
+                                asyncResult.SetComplete(new ObjectDisposedException(null));
+                        }
+                        _outgoingQueue.Clear();
+                    }
+                }
+                finally
+                {
+                    _lock.ReleaseWriterLock();
                 }
             }
             base.Dispose(disposing);
