@@ -96,7 +96,7 @@ namespace FluorineFx.Configuration
 	public sealed class FluorineConfiguration
 	{
 		static object _objLock = new object();
-		static FluorineConfiguration _instance;
+		static volatile FluorineConfiguration _instance;
 
 		static FluorineSettings		_fluorineSettings;
 #if !FXCLIENT

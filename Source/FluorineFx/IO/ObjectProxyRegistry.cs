@@ -32,10 +32,13 @@ using FluorineFx.Exceptions;
 
 namespace FluorineFx.IO
 {
-    class ObjectProxyRegistry
+    sealed class ObjectProxyRegistry
     {
         static object _objLock = new object();
-        static ObjectProxyRegistry _instance;
+        /// <summary>
+        /// Volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed.
+        /// </summary>
+        static volatile ObjectProxyRegistry _instance;
         static IObjectProxy _defaultObjectProxy;
 
 #if !(NET_1_1)
@@ -63,8 +66,9 @@ namespace FluorineFx.IO
 #else
                             _defaultObjectProxy = new ObjectProxy();
 #endif
-                            _instance = new ObjectProxyRegistry();
-                            _instance.Init();
+                            ObjectProxyRegistry instance = new ObjectProxyRegistry();
+                            instance.Init();
+                            _instance = instance;
                         }
                     }
                 }
