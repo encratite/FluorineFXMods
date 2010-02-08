@@ -140,22 +140,18 @@ namespace FluorineFx.Messaging.Rtmp
             set { __fields = (value) ? (byte)(__fields | 16) : (byte)(__fields & ~16); }
         }
 
-        /*
-        public bool IsActive
-        {
-            get { return _state == RtmpConnectionState.Active; }
-        }
-
+        /// <summary>
+        /// Gets whether the connection is being closed.
+        /// </summary>
         public bool IsDisconnecting
         {
-            get { return _state == RtmpConnectionState.Disconnectig; }
+            get { return (__fields & 64) == 64; }
         }
 
-        public bool IsDisconnected
+        internal void SetIsDisconnecting(bool value)
         {
-            get { return _state == RtmpConnectionState.Inactive; }
+            __fields = (value) ? (byte)(__fields | 64) : (byte)(__fields & ~64);
         }
-        */
 
         public DateTime LastAction
         {
@@ -178,7 +174,7 @@ namespace FluorineFx.Messaging.Rtmp
             _lock.AcquireReaderLock();
             try
             {
-                if (IsClosed || IsClosing)
+                if (IsClosed || IsClosing || IsDisconnecting)
                     return; // Already shutting down.
             }
             finally
@@ -201,7 +197,7 @@ namespace FluorineFx.Messaging.Rtmp
             _lock.AcquireReaderLock();
             try
             {
-                if (IsClosed || IsClosing)
+                if (IsClosed || IsClosing || IsDisconnecting)
                     return; // Already shutting down.
             }
             finally
@@ -235,7 +231,7 @@ namespace FluorineFx.Messaging.Rtmp
             _lock.AcquireReaderLock();
             try
             {
-                if (IsClosed || IsClosing)
+                if (IsClosed || IsClosing || IsDisconnecting)
                 {
                     SocketBufferPool.CheckIn(buffer);
                     return; // Already shutting down.
@@ -290,7 +286,7 @@ namespace FluorineFx.Messaging.Rtmp
             _lock.AcquireReaderLock();
             try
             {
-                if (IsClosed || IsClosing)
+                if (IsClosed || IsClosing || IsDisconnecting)
                     return; // Already shutting down.
             }
             finally
@@ -452,8 +448,9 @@ namespace FluorineFx.Messaging.Rtmp
             _lock.AcquireReaderLock();
             try
             {
-                if (IsClosed || IsClosing)
+                if (IsClosed || IsClosing || IsDisconnecting)
                     return; // Already shutting down.
+                SetIsDisconnecting(true);
             }
             finally
             {
@@ -494,13 +491,13 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 FluorineRtmpContext.Initialize(this);
                 _rtmpServer.RtmpHandler.ConnectionClosed(this);
+                //BaseRtmpHandler -> Close();
             }
             catch (Exception ex)
             {
                 if (log.IsErrorEnabled)
                     log.Error(this.ConnectionId.ToString(), ex);
             }
-            //Close(); -> IRtmpHandler
         }
 
         public override void Write(ByteBuffer buffer)
@@ -514,7 +511,7 @@ namespace FluorineFx.Messaging.Rtmp
             _lock.AcquireReaderLock();
             try
             {
-                if (IsClosed || IsClosing)
+                if (IsClosed || IsClosing || IsDisconnecting)
                     return; // Already shutting down.
             }
             finally
@@ -564,6 +561,7 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 SetIsClosed(true);
                 SetIsClosing(false);
+                SetIsDisconnecting(false);
             }
             finally
             {
@@ -576,7 +574,7 @@ namespace FluorineFx.Messaging.Rtmp
             _lock.AcquireReaderLock();
             try
             {
-                if (IsClosed || IsClosing)
+                if (IsClosed || IsClosing || IsDisconnecting)
                     return; // Already shutting down.
             }
             finally
@@ -590,7 +588,16 @@ namespace FluorineFx.Messaging.Rtmp
             {
                 //encode
                 WritingMessage(packet);
-                ByteBuffer outputStream = RtmpProtocolEncoder.Encode(this.Context, packet);
+                ByteBuffer outputStream = null;
+                _lock.AcquireWriterLock();
+                try
+                {
+                    outputStream = RtmpProtocolEncoder.Encode(this.Context, packet);
+                }
+                finally
+                {
+                    _lock.ReleaseWriterLock();
+                }
                 Write(outputStream);
                 _rtmpServer.RtmpHandler.MessageSent(this, packet);
             }
@@ -606,7 +613,7 @@ namespace FluorineFx.Messaging.Rtmp
             _lock.AcquireReaderLock();
             try
             {
-                if (IsClosed || IsClosing)
+                if (IsClosed || IsClosing || IsDisconnecting)
                     return; // Already shutting down.
             }
             finally

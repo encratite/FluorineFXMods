@@ -37,5 +37,12 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Messages
             get { return _body as IRtmpEvent; }
             set { _body = value; }
         }
+
+        protected override MessageBase CopyImpl(MessageBase clone)
+        {
+            // Instantiate the clone, if a derived type hasn't already.
+            if (clone == null) clone = new RtmpMessage();
+            return base.CopyImpl(clone);
+        }
     }
 }

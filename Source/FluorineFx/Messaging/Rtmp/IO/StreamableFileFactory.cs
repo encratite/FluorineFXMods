@@ -28,6 +28,7 @@ using FluorineFx.Configuration;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Rtmp.IO.Flv;
 using FluorineFx.Messaging.Rtmp.IO.Mp3;
+using FluorineFx.Messaging.Rtmp.IO.Mp4;
 
 namespace FluorineFx.Messaging.Rtmp.IO
 {
@@ -42,6 +43,7 @@ namespace FluorineFx.Messaging.Rtmp.IO
         {
             _services.Add(new FlvService());
             _services.Add(new Mp3Service());
+            _services.Add(new Mp4Service());
         }
 
         /// <summary>

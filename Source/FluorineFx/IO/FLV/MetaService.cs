@@ -34,7 +34,7 @@ namespace FluorineFx.IO.FLV
         /// Source file.
         /// </summary>
         private FileInfo _file;
-        /*
+
         /// <summary>
         /// File input stream
         /// </summary>
@@ -45,9 +45,8 @@ namespace FluorineFx.IO.FLV
         public Stream Input
         {
             get { return _input; }
-            //set { _input = value; }
+            set { _input = value; }
         }
-        */
         /// <summary>
         /// File output stream.
         /// </summary>

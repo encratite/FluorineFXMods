@@ -18,6 +18,7 @@
 */
 using System;
 using System.Collections;
+using FluorineFx.Messaging.Rtmp.Stream;
 
 namespace FluorineFx.Messaging.Api.Stream
 {
@@ -84,5 +85,18 @@ namespace FluorineFx.Messaging.Api.Stream
         /// </summary>
         /// <returns></returns>
         ICollection GetStreams();
+        /// <summary>
+        /// Adds the client stream.
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        void AddClientStream(IClientStream stream);
+        /// <summary>
+        /// Creates output stream object from stream id. Output stream consists of audio, data and video channels.
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="streamId">Stream id.</param>
+        /// <returns>Output stream object.</returns>
+        OutputStream CreateOutputStream(int streamId);
     }
 }

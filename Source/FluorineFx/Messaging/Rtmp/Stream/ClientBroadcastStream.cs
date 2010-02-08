@@ -80,10 +80,6 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// </summary>
         private IMessageOutput _connMsgOut;
         /// <summary>
-        /// Timestamp the stream was created.
-        /// </summary>
-        private long _creationTime;
-        /// <summary>
         /// Stores absolute time for data stream.
         /// </summary>
         private int _dataTime = -1;
@@ -815,11 +811,6 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         #endregion
 
         #region IStatisticsBase Members
-
-        public long CreationTime
-        {
-            get { return _creationTime; }
-        }
 
         #endregion
 

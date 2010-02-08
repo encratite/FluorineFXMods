@@ -134,34 +134,32 @@ channel.Write(flexInvoke);
 
         protected override void OnPing(RtmpConnection connection, RtmpChannel channel, RtmpHeader source, Ping ping)
         {
-            switch (ping.Value1)
+            switch (ping.PingType)
             {
                 case Ping.ClientBuffer:
-                    if (ping.Value2 != 0)
+                    IClientStream stream = null;
+                    // Get the stream id
+                    int streamId = ping.Value2;
+                    // Get requested buffer size in milliseconds
+                    int buffer = ping.Value3;
+                    if (streamId != 0)
                     {
                         // The client wants to set the buffer time
-                        IClientStream stream = null;
-                        if (connection is IStreamCapableConnection)
-                            stream = (connection as IStreamCapableConnection).GetStreamById(ping.Value2);
-                        int buffer = ping.Value3;
+                        stream = connection.GetStreamById(streamId);
                         if (stream != null)
                         {
                             stream.SetClientBufferDuration(buffer);
-                            if (log.IsInfoEnabled)
-                                log.Info("Setting client buffer on stream: " + buffer);
-                        }
-                        else
-                        {
-                            // Remember buffer time to set until stream will be created
-                            connection.RememberStreamBufferDuration(ping.Value2, buffer);
-                            if (log.IsInfoEnabled)
-                                log.Info("Remembering client buffer on stream: " + buffer);
+                            if (log.IsDebugEnabled)
+                                log.Debug(string.Format("Client sent a buffer size: {0} ms for stream id: {1}", buffer, streamId ));
                         }
                     }
-                    else
+                    // Catch-all to make sure buffer size is set
+                    if (stream == null)
                     {
-                        // Should we store the buffer time for future streams?
-                        log.Warn("Unhandled ping: " + ping);
+                        // Remember buffer time until stream is created
+                        connection.RememberStreamBufferDuration(streamId, buffer);
+                        if (log.IsDebugEnabled)
+                            log.Debug(string.Format("Remembering client buffer size: {0} on stream id: {1} ", buffer, streamId));
                     }
                     break;
                 case Ping.PongServer:
@@ -331,7 +329,7 @@ channel.Write(flexInvoke);
                                                         (serviceCall as IPendingServiceCall).Result = statusASO;
                                                     }
                                                     // Measure initial roundtrip time after connecting
-                                                    connection.GetChannel((byte)2).Write(new Ping(Ping.StreamClear, 0, -1));
+                                                    connection.GetChannel((byte)2).Write(new Ping(Ping.StreamBegin, 0, -1));
                                                     connection.StartRoundTripMeasurement();
                                                 }
                                                 else

@@ -516,6 +516,18 @@ namespace FluorineFx.Messaging.Rtmp
 			header.ChannelId = channelId;
 			header.IsTimerRelative = (HeaderType)headerSize != HeaderType.HeaderNew;
 
+            if ((HeaderType)headerSize != HeaderType.HeaderNew && lastHeader == null)
+            {
+#if !SILVERLIGHT
+                if(log.IsErrorEnabled)
+                    log.Error(string.Format("Last header null not new, headerSize: {0}, channelId {1}", headerSize, channelId));
+#endif
+                lastHeader = new RtmpHeader();
+                lastHeader.ChannelId = channelId;
+                lastHeader.IsTimerRelative = (HeaderType)headerSize != HeaderType.HeaderNew;
+            }
+
+
 #if !SILVERLIGHT
             if( log.IsDebugEnabled )
 				log.Debug(__Res.GetString(__Res.Rtmp_DecodeHeader, Enum.GetName(typeof(HeaderType), (HeaderType)headerSize)));
@@ -638,7 +650,7 @@ namespace FluorineFx.Messaging.Rtmp
 		static Ping DecodePing(ByteBuffer stream)
 		{
 			Ping ping = new Ping();
-			ping.Value1 = stream.GetShort();
+			ping.PingType = stream.GetShort();
 			ping.Value2 = stream.GetInt();
 			if(stream.HasRemaining)
 				ping.Value3 = stream.GetInt();
@@ -664,7 +676,7 @@ namespace FluorineFx.Messaging.Rtmp
 
 		static BytesRead DecodeBytesRead(ByteBuffer stream)
 		{
-			return new BytesRead(stream.ReadReverseInt());
+            return new BytesRead(stream.GetInt());
 		}
 
 		static ServerBW DecodeServerBW(ByteBuffer stream) 
@@ -723,7 +735,17 @@ namespace FluorineFx.Messaging.Rtmp
 
 		static Notify DecodeStreamMetadata(ByteBuffer stream) 
 		{
-			return new Notify(stream);
+            RtmpReader reader = new RtmpReader(stream);
+            string action = reader.ReadData() as string;
+            object obj = reader.ReadData();
+            Notify notify = new Notify();
+			int dotIndex = action.LastIndexOf(".");
+			string serviceName = (dotIndex == -1) ? null : action.Substring(0, dotIndex);
+            string serviceMethod = (dotIndex == -1) ? action : action.Substring(dotIndex + 1, action.Length - dotIndex - 1);
+            object[] parameters = new object[1]{obj};
+			Call call = new Call(serviceName, serviceMethod, parameters);
+			notify.ServiceCall = call;
+            return notify;
 		}
 
 		static Notify DecodeNotify(ByteBuffer stream, RtmpHeader header)

@@ -113,10 +113,6 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             set { _underrunTrigger = value; }
         }
         /// <summary>
-        /// Timestamp this stream was created.
-        /// </summary>
-	    private long _creationTime;
-        /// <summary>
         /// Number of bytes sent.
         /// </summary>
 	    private long _bytesSent = 0;
@@ -125,13 +121,45 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
             _defaultController = new SimplePlaylistController();
             _items = new ArrayList();
-            _engine = new PlayEngine(this);
+            //_engine = new PlayEngine(this);
             _currentItemIndex = 0;
             _creationTime = System.Environment.TickCount;
         }
 
+
+        /// <summary>
+        /// Creates a play engine based on current services (scheduling service, consumer service, and provider service).
+        /// </summary>
+        /// <param name="schedulingService">The scheduling service.</param>
+        /// <param name="consumerService">The consumer service.</param>
+        /// <param name="providerService">The provider service.</param>
+        /// <returns>Play engine.</returns>
+        PlayEngine CreateEngine(ISchedulingService schedulingService, IConsumerService consumerService, IProviderService providerService)
+        {
+            _engine = new PlayEngine.Builder(this, schedulingService, consumerService, providerService).Build();
+            return _engine;
+        }
+
         public override void Start()
         {
+            // Ensure the play engine exists
+            if (_engine == null)
+            {
+                IScope scope = this.Scope;
+                if (scope != null)
+                {
+                    ISchedulingService schedulingService = scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
+                    IConsumerService consumerService = scope.GetService(typeof(IConsumerService)) as IConsumerService;
+                    IProviderService providerService = scope.GetService(typeof(IProviderService)) as IProviderService;
+                    _engine = new PlayEngine.Builder(this, schedulingService, consumerService, providerService).Build();
+                }
+                else
+                {
+                    if( log.IsErrorEnabled )
+                        log.Error("Scope was null on start");
+                }
+            }
+
             // Create bw control service and register myself
             // Bandwidth control service should not be bound to a specific scope because it's designed to control
             // the bandwidth system-wide.
@@ -143,7 +171,6 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             _engine.BufferCheckInterval = _bufferCheckInterval;
             //Set underrun trigger
             _engine.UnderrunTrigger = _underrunTrigger;
-
             // Start playback engine
             _engine.Start();
             // Notify subscribers on start
@@ -616,11 +643,6 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         #endregion
 
         #region IStatisticsBase Members
-
-        public long CreationTime
-        {
-            get { return _creationTime; }
-        }
 
         #endregion
 

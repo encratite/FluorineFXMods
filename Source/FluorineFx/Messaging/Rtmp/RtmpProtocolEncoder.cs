@@ -332,7 +332,7 @@ namespace FluorineFx.Messaging.Rtmp
                 len += 4;
             }
             ByteBuffer output = ByteBuffer.Allocate(len);
-            output.PutShort(ping.Value1);
+            output.PutShort(ping.PingType);
             output.PutInt(ping.Value2);
             if (ping.Value3 != Ping.Undefined)
             {

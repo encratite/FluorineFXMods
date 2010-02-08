@@ -20,16 +20,20 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using log4net;
 
 namespace FluorineFx.Silverlight
 {
     class PolicyConnection
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(PolicyServer));
+
         private PolicyServer _policyServer;
         private Socket _connection;
         private byte[] _buffer;
         private int _received;
         private byte[] _policy;
+        private EndPoint _endpoint;
         /// <summary>
         /// The request that we're expecting from the client
         /// </summary>
@@ -44,6 +48,7 @@ namespace FluorineFx.Silverlight
         {
             _policyServer = policyServer;
             _connection = client;
+            _endpoint = _connection.RemoteEndPoint;
             _policy = policy;
             _buffer = new byte[_policyRequestString.Length];
             _received = 0;
@@ -52,9 +57,16 @@ namespace FluorineFx.Silverlight
                 // Receive the request from the client                
                 _connection.BeginReceive(_buffer, 0, _policyRequestString.Length, SocketFlags.None, new AsyncCallback(OnReceive), null);
             }
-            catch (SocketException)
+            catch (SocketException ex)
             {
+                if (log.IsDebugEnabled)
+                    log.Debug("Socket exception", ex);
                 _connection.Close();
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("Failed starting a policy connection", ex);
             }
         }
 
@@ -62,9 +74,15 @@ namespace FluorineFx.Silverlight
         {
             try
             {
+                if (log.IsDebugEnabled)
+                    log.Debug("Policy connection receiving request");
+
                 _received += _connection.EndReceive(res);
                 if (_received < _policyRequestString.Length)
                 {
+                    if (log.IsDebugEnabled)
+                        log.Debug(string.Format("Policy connection received partial request: {0} bytes", _received));
+
                     _connection.BeginReceive(_buffer, _received, _policyRequestString.Length - _received, SocketFlags.None, new AsyncCallback(OnReceive), null);
                     return;
                 }
@@ -75,22 +93,35 @@ namespace FluorineFx.Silverlight
 				if (request != _policyRequestString)
 #endif
                 {
+                    if (log.IsDebugEnabled)
+                        log.Debug(string.Format("Policy connection could not handle request: {0}", request));
+
+                    _policyServer.RaiseDisconnect(_endpoint);
                     _connection.Close();
-                    _policyServer.RaiseDisconnect(this);
                     return;
                 }
                 // Sending the policy                
+                if (log.IsDebugEnabled)
+                    log.Debug("Policy connection sending policy stream");
                 _connection.BeginSend(_policy, 0, _policy.Length, SocketFlags.None, new AsyncCallback(OnSend), null);
             }
             catch (ObjectDisposedException)
             {
                 //The underlying socket may be closed
-                _policyServer.RaiseDisconnect(this);
+                _policyServer.RaiseDisconnect(_endpoint);
             }
-            catch (SocketException)
+            catch (SocketException ex)
             {
+                if (log.IsDebugEnabled)
+                    log.Debug("Socket exception", ex);
+
+                _policyServer.RaiseDisconnect(_endpoint);
                 _connection.Close();
-                _policyServer.RaiseDisconnect(this);
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("Policy connection failed", ex);
             }
         }
 
@@ -105,13 +136,20 @@ namespace FluorineFx.Silverlight
             {
                 //The underlying socket may be closed
             }
-            catch (SocketException)
+            catch (SocketException ex)
             {
+                if (log.IsDebugEnabled)
+                    log.Debug("Socket exception", ex);
                 _connection.Close();
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("Policy connection failed", ex);
             }
             finally
             {
-                _policyServer.RaiseDisconnect(this);
+                _policyServer.RaiseDisconnect(_endpoint);
             }
         }
     }
@@ -157,6 +195,8 @@ namespace FluorineFx.Silverlight
     /// </summary>
     public class PolicyServer
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(PolicyServer));
+
         private Socket _listener;
         private byte[] _policy;
 
@@ -182,16 +222,29 @@ namespace FluorineFx.Silverlight
         public PolicyServer(string policyFile)
         {
             // Load the policy file            
-            FileStream policyStream = new FileStream(policyFile, FileMode.Open);
-            _policy = new byte[policyStream.Length];
-            policyStream.Read(_policy, 0, _policy.Length);
-            policyStream.Close();
-            // Create the Listening Socket            
-            _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _listener.SetSocketOption(SocketOptionLevel.Tcp, (SocketOptionName)SocketOptionName.NoDelay, 0);
-            _listener.Bind(new IPEndPoint(IPAddress.Any, 943));
-            _listener.Listen(10);
-            _listener.BeginAccept(new AsyncCallback(OnConnection), null);
+            try
+            {
+	            if (log.IsDebugEnabled)
+                    log.Debug("Starting FluorineFx Silverlight Policy Server");
+				
+                FileStream policyStream = new FileStream(policyFile, FileMode.Open);
+                _policy = new byte[policyStream.Length];
+                policyStream.Read(_policy, 0, _policy.Length);
+                policyStream.Close();
+                // Create the Listening Socket            
+                _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                _listener.SetSocketOption(SocketOptionLevel.Tcp, (SocketOptionName)SocketOptionName.NoDelay, 0);
+                _listener.Bind(new IPEndPoint(IPAddress.Any, 943));
+                _listener.Listen(10);
+                _listener.BeginAccept(new AsyncCallback(OnConnection), null);
+                if (log.IsDebugEnabled)
+                    log.Debug("Started FluorineFx Silverlight Policy Server");
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("Error starting FluorineFx Silverlight Policy Server", ex);
+            }
         }
 
         public void OnConnection(IAsyncResult res)
@@ -203,8 +256,10 @@ namespace FluorineFx.Silverlight
                 if (_connectHandler != null)
                     _connectHandler(this, new ConnectEventArgs(client.RemoteEndPoint));
             }
-            catch (SocketException)
+            catch (SocketException ex)
             {
+                if (log.IsDebugEnabled)
+                    log.Debug("Socket exception", ex);
                 return;
             }
             catch (ObjectDisposedException)
@@ -217,14 +272,33 @@ namespace FluorineFx.Silverlight
 
         public void Close()
         {
-            _listener.Close();
+            try
+            {
+                if (_listener != null)
+                    _listener.Close();
+                if (log.IsDebugEnabled)
+                    log.Debug("Stopped FluorineFx Silverlight Policy Server");
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("Error stopping FluorineFx Silverlight Policy Server", ex);
+            }
         }
 
-        internal void RaiseDisconnect(PolicyConnection connection)
+        internal void RaiseDisconnect(EndPoint endpoint)
         {
-            if (_disconnectHandler != null)
+            try
             {
-                _disconnectHandler(this, new DisconnectEventArgs(connection.Socket.RemoteEndPoint));
+                if (_disconnectHandler != null)
+                {
+                    _disconnectHandler(this, new DisconnectEventArgs(endpoint));
+                }
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("RaiseDisconnect exception", ex);
             }
         }
     }

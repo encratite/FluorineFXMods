@@ -56,5 +56,10 @@ namespace FluorineFx.Messaging.Api.Stream
         /// Gets an object that can be used to synchronize access. 
         /// </summary>
         object SyncRoot { get; }
+        /// <summary>
+        /// Gets the timestamp at which the stream was created.
+        /// </summary>
+        /// <value>The creation time.</value>
+        long CreationTime { get; }
 	}
 }

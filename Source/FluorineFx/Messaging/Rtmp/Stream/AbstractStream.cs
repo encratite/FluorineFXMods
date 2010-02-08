@@ -76,6 +76,10 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// Current state.
         /// </summary>
         protected State _state = State.UNINIT;
+        /// <summary>
+        /// Timestamp the stream was created.
+        /// </summary>
+        protected long _creationTime;
 
         internal State State
         {
@@ -96,6 +100,12 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// Gets an object that can be used to synchronize access. 
         /// </summary>
         public object SyncRoot { get { return _syncLock; } }
+
+        /// <summary>
+        /// Gets the timestamp at which the stream was created.
+        /// </summary>
+        /// <value>The creation time.</value>
+        public long CreationTime { get { return _creationTime; } }
 
         #region IStream Members
 

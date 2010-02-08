@@ -35,12 +35,13 @@ namespace FluorineFx.Messaging.Rtmp.IO
 
         public string PrepareFilename(string name)
         {
-            if (name.StartsWith(this.Prefix + ':'))
+            string prefix = this.Prefix + ':';
+            if (name.StartsWith(prefix))
             {
-                name = name.Substring(this.Prefix.Length + 1);
-                if (!name.EndsWith(this.Extension))
+                name = name.Substring(prefix.Length);
+                if (name.LastIndexOf('.') != name.Length - 4)
                 {
-                    name = name + this.Extension;
+                    name = name + this.Extension.Split(new char[] { ',' })[0];
                 }
             }
             return name;
@@ -48,7 +49,20 @@ namespace FluorineFx.Messaging.Rtmp.IO
 
         public bool CanHandle(FileInfo file)
         {
-            return file.FullName.ToLower().EndsWith(this.Extension.ToLower());
+            bool valid = false;
+            if (file.Exists)
+            {
+                string[] extensions = this.Extension.Split(new char[] { ',' });
+                foreach (string extension in extensions)
+                {
+                    if (extension == file.Extension)
+                    {
+                        valid = true;
+                        break;
+                    }
+                }
+            }
+            return valid;
         }
 
         public abstract IStreamableFile GetStreamableFile(FileInfo file);

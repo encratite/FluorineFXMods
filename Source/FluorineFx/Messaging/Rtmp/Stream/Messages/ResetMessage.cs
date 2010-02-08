@@ -27,5 +27,12 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Messages
     [CLSCompliant(false)]
     public class ResetMessage : AsyncMessage
     {
+        protected override MessageBase CopyImpl(MessageBase clone)
+        {
+            // Instantiate the clone, if a derived type hasn't already.
+            if (clone == null) clone = new ResetMessage();
+            return base.CopyImpl(clone);
+        }
+
     }
 }

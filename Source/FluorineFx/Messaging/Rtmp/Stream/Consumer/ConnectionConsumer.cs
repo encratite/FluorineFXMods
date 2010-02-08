@@ -19,7 +19,9 @@
 using System;
 using System.Collections;
 using System.IO;
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Util;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Messaging;
@@ -27,7 +29,7 @@ using FluorineFx.Messaging.Api.Stream;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.Stream;
 using FluorineFx.Messaging.Rtmp.Stream.Messages;
-using FluorineFx.Messaging.Rtmp.IO;
+//using FluorineFx.Messaging.Rtmp.IO;
 using FluorineFx.Messaging.Messages;
 
 namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
@@ -37,8 +39,9 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
     /// </summary>
     class ConnectionConsumer : IPushableConsumer, IPipeConnectionListener
     {
+#if !SILVERLIGHT
         private static ILog log = LogManager.GetLogger(typeof(ConnectionConsumer));
-
+#endif
         /// <summary>
         /// Connection object.
         /// </summary>
@@ -58,19 +61,28 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
         /// <summary>
         /// Chunk size. Packets are sent chunk-by-chunk.
         /// </summary>
-        private int _chunkSize = -1;
+        private int _chunkSize = 1024; //TODO: Not sure of the best value here
         /// <summary>
-        /// Stream tracker.
+        /// Whether or not the chunk size has been sent. This seems to be required for h264.
         /// </summary>
-        private StreamTracker _streamTracker;
+        private bool _chunkSizeSent;
+
+        /// <summary>
+        /// Modifies time stamps on messages as needed.
+        /// </summary>
+        private TimeStamper _timeStamper;
 
         public ConnectionConsumer(RtmpConnection connection, int videoChannel, int audioChannel, int dataChannel)
         {
+#if !SILVERLIGHT
+            if (log.IsDebugEnabled)
+                log.Debug(string.Format("Channel ids - video: {0} audio: {1} data: {2}", videoChannel, audioChannel, dataChannel));
+#endif
             _connection = connection;
             _video = connection.GetChannel(videoChannel);
             _audio = connection.GetChannel(audioChannel);
             _data = connection.GetChannel(dataChannel);
-            _streamTracker = new StreamTracker();
+            _timeStamper = new TimeStamper();
         }
 
 
@@ -80,7 +92,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
         {
 		    if (message is ResetMessage) 
             {
-			    _streamTracker.Reset();
+			    _timeStamper.Reset();
             } 
             else if (message is StatusMessage) 
             {
@@ -89,17 +101,29 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
 		    }
             else if (message is RtmpMessage)
             {
-                FluorineFx.Messaging.Rtmp.Stream.Messages.RtmpMessage rtmpMsg = message as FluorineFx.Messaging.Rtmp.Stream.Messages.RtmpMessage;
+                // Make sure chunk size has been sent
+                if (!_chunkSizeSent)
+                    SendChunkSize();
+
+                RtmpMessage rtmpMsg = message as RtmpMessage;
                 IRtmpEvent msg = rtmpMsg.body;
-                RtmpHeader header = new RtmpHeader();
-                int timestamp = _streamTracker.Add(msg);
-                if (timestamp < 0)
+
+                int eventTime = msg.Timestamp;
+#if !SILVERLIGHT
+                if(log.IsDebugEnabled)
+                    log.Debug(string.Format("Message timestamp: {0}", eventTime));
+#endif
+                if (eventTime < 0)
                 {
-                    log.Warn("Skipping message with negative timestamp.");
+#if !SILVERLIGHT
+                    if (log.IsDebugEnabled)
+                        log.Debug(string.Format("Message has negative timestamp: {0}", eventTime));
+#endif
                     return;
                 }
-                header.IsTimerRelative = _streamTracker.IsRelative;
-                header.Timer = timestamp;
+                byte dataType = msg.DataType;
+                // Create a new header for the consumer
+                RtmpHeader header = _timeStamper.GetTimeStamp(dataType, eventTime);
 
                 switch (msg.DataType)
                 {
@@ -129,17 +153,12 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
                         _audio.Write(audioData);
                         break;
                     case Constants.TypePing:
-                        Ping ping = new Ping((msg as Ping).Value1, (msg as Ping).Value2, (msg as Ping).Value3, (msg as Ping).Value4);
-                        header.IsTimerRelative = false;
-                        header.Timer = 0;
+                        Ping ping = new Ping((msg as Ping).PingType, (msg as Ping).Value2, (msg as Ping).Value3, (msg as Ping).Value4);
                         ping.Header = header;
-                        ping.Timestamp = header.Timer;
                         _connection.Ping(ping);
                         break;
                     case Constants.TypeBytesRead:
                         BytesRead bytesRead = new BytesRead((msg as BytesRead).Bytes);
-                        header.IsTimerRelative = false;
-                        header.Timer = 0;
                         bytesRead.Header = header;
                         bytesRead.Timestamp = header.Timer;
                         _connection.GetChannel((byte)2).Write(bytesRead);
@@ -212,8 +231,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
                 if (newSize != _chunkSize)
                 {
                     _chunkSize = newSize;
-                    ChunkSize chunkSizeMsg = new ChunkSize(_chunkSize);
-                    _connection.GetChannel((byte)2).Write(chunkSizeMsg);
+                    SendChunkSize();
                 }
             }
         }
@@ -238,5 +256,158 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Consumer
         }
 
         #endregion
+
+        private class TimeStamper
+        {
+            /// <summary>
+            /// Stores timestamp for last event.
+            /// </summary>
+            private int _lastEventTime = 0;
+            /// <summary>
+            /// Timestamp of last audio packet.
+            /// </summary>
+            private int _lastAudioTime = 0;
+            /// <summary>
+            /// Timestamp of last video packet.
+            /// </summary>
+            private int _lastVideoTime = 0;
+            /// <summary>
+            /// Timestamp of last notify or invoke.
+            /// </summary>
+            private int _lastNotifyTime = 0;
+
+            /// <summary>
+            /// Reset timestamps.
+            /// </summary>
+            public void Reset()
+            {
+#if !SILVERLIGHT
+                if( log.IsDebugEnabled )
+                    log.Debug("Reset timestamps");
+#endif
+                _lastEventTime = 0;
+                _lastAudioTime = 0;
+                _lastNotifyTime = 0;
+                _lastVideoTime = 0;
+            }
+
+            /// <summary>
+            /// Gets a header with the appropriate timestamp.
+            /// </summary>
+            /// <param name="dataType">Type of the event.</param>
+            /// <param name="eventTime">The event time.</param>
+            /// <returns></returns>
+            public RtmpHeader GetTimeStamp(byte dataType, int eventTime)
+            {
+                RtmpHeader header = new RtmpHeader();
+#if !SILVERLIGHT
+                if( log.IsDebugEnabled )
+                    log.Debug(string.Format("GetTimeStamp - event time: {0} last event: {1} audio: {2} video: {3} data: {4}", eventTime, _lastEventTime, _lastAudioTime, _lastVideoTime, _lastNotifyTime));
+#endif
+                switch (dataType)
+                {
+                    case Constants.TypeAudioData:
+                        if (_lastAudioTime > 0)
+                        {
+                            //set a relative value
+                            header.Timer = eventTime - _lastAudioTime;
+#if !SILVERLIGHT
+                            if (log.IsDebugEnabled)
+                                log.Debug("Relative audio");
+#endif
+                        }
+                        else
+                        {
+                            //use absolute value
+                            header.Timer = eventTime;
+                            header.IsTimerRelative = false;
+#if !SILVERLIGHT
+                            if (log.IsDebugEnabled)
+                                log.Debug("Absolute audio");
+#endif
+                        }
+                        _lastAudioTime = eventTime;
+                        break;
+                    case Constants.TypeVideoData:
+                        if (_lastVideoTime > 0)
+                        {
+                            //set a relative value
+                            header.Timer = eventTime - _lastVideoTime;
+#if !SILVERLIGHT
+                            if (log.IsDebugEnabled)
+                                log.Debug("Relative video");
+#endif
+                        }
+                        else
+                        {
+                            //use absolute value
+                            header.Timer = eventTime;
+                            header.IsTimerRelative = false;
+#if !SILVERLIGHT
+                            if (log.IsDebugEnabled)
+                                log.Debug("Absolute video");
+#endif
+                        }
+                        _lastVideoTime = eventTime;
+                        break;
+                    case Constants.TypeNotify:
+                    case Constants.TypeInvoke:
+                    case Constants.TypeFlexStreamEnd:
+                        if (_lastNotifyTime > 0)
+                        {
+                            //set a relative value
+                            header.Timer = eventTime - _lastNotifyTime;
+#if !SILVERLIGHT
+                            if (log.IsDebugEnabled)
+                                log.Debug("Relative notify");
+#endif
+                        }
+                        else
+                        {
+                            //use absolute value
+                            header.Timer = eventTime;
+                            header.IsTimerRelative = false;
+#if !SILVERLIGHT
+                            if (log.IsDebugEnabled)
+                                log.Debug("Absolute notify");
+#endif
+                        }
+                        _lastNotifyTime = eventTime;
+                        break;
+                    case Constants.TypeBytesRead:
+                    case Constants.TypePing:
+                        header.Timer = eventTime;
+                        header.IsTimerRelative = false;
+                        break;
+                    default:
+                        // ignore other types
+#if !SILVERLIGHT
+                        if (log.IsDebugEnabled)
+                            log.Debug(string.Format("Unmodified type: {0} timestamp: {1}", dataType, eventTime));
+#endif
+                        break;
+                }
+#if !SILVERLIGHT
+                if (log.IsDebugEnabled)
+                    log.Debug(string.Format("Event time: {0} current ts: {1}", eventTime, header.Timer));
+#endif
+                _lastEventTime = eventTime;
+                return header;
+            }
+        }
+
+        /// <summary>
+        /// Send the chunk size.
+        /// </summary>
+        private void SendChunkSize()
+        {
+#if !SILVERLIGHT
+            if(log.IsDebugEnabled )
+                log.Debug(string.Format("Sending chunk size: {0}", _chunkSize));
+#endif
+            ChunkSize chunkSizeMsg = new ChunkSize(_chunkSize);
+            _connection.GetChannel((byte)2).Write(chunkSizeMsg);
+            _chunkSizeSent = true;
+        }    
     }
 }

@@ -518,7 +518,7 @@ namespace FluorineFx.Messaging.Rtmp
             if(_lastPingSent.Value == 0)
                 _lastPongReceived.Value = newPingTime;
             Ping pingRequest = new Ping();
-            pingRequest.Value1 = (short)FluorineFx.Messaging.Rtmp.Event.Ping.PingClient;
+            pingRequest.PingType = (short)FluorineFx.Messaging.Rtmp.Event.Ping.PingClient;
             _lastPingSent.Value = newPingTime;
             int now = (int)(newPingTime & 0xffffffff);
             pingRequest.Value2 = now;
@@ -744,31 +744,6 @@ namespace FluorineFx.Messaging.Rtmp
         {
             _streams.Remove(stream.StreamId);
         }
-
-        /// <summary>
-        /// Adds the client stream.
-        /// </summary>
-        /// <param name="stream">The stream.</param>
-        public void AddClientStream(IClientStream stream)
-        {
-            int streamId = stream.StreamId;
-            try
-            {
-                ReaderWriterLock.AcquireWriterLock();
-                if (_reservedStreams.Length <= streamId - 1 || _reservedStreams[streamId - 1])
-                {
-                    return;
-                }
-                _reservedStreams[streamId - 1] = true;
-            }
-            finally
-            {
-                ReaderWriterLock.ReleaseWriterLock();
-            }
-            _streams[streamId - 1] = stream;
-            _streamCount.Increment();
-        }
-
         /// <summary>
         /// Removes the client stream.
         /// </summary>
@@ -777,7 +752,6 @@ namespace FluorineFx.Messaging.Rtmp
         {
             UnreserveStreamId(streamId);
         }
-
         /// <summary>
         /// Return stream by given channel id.
         /// </summary>
@@ -791,7 +765,15 @@ namespace FluorineFx.Messaging.Rtmp
             _streams.TryGetValue(GetStreamIdForChannel(channelId) - 1, out stream);
             return stream;
         }
-
+        /// <summary>
+        /// Gets the channel for stream id.
+        /// </summary>
+        /// <param name="streamId">The stream id.</param>
+        /// <returns>The channel for this stream id.</returns>
+        public int GetChannelForStreamId(int streamId)
+        {
+            return (streamId - 1) * 5 + 4;
+        }
         /// <summary>
         /// Gets the stream count.
         /// </summary>
@@ -813,6 +795,43 @@ namespace FluorineFx.Messaging.Rtmp
         public ICollection GetStreams()
         {
             return _streams.Values as ICollection;
+        }
+        /// <summary>
+        /// Adds the client stream.
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        public void AddClientStream(IClientStream stream)
+        {
+            int streamId = stream.StreamId;
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
+                if (_reservedStreams.Length > streamId - 1 && _reservedStreams[streamId - 1])
+                    return;//Already reserved
+                if (_reservedStreams.Length <= streamId - 1)
+                    _reservedStreams.Length = streamId;
+                _reservedStreams[streamId - 1] = true;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+            _streams[streamId - 1] = stream;
+            _streamCount.Increment();
+        }
+        /// <summary>
+        /// Creates output stream object from stream id. Output stream consists of audio, data and video channels.
+        /// </summary>
+        /// <param name="streamId">Stream id.</param>
+        /// <returns>Output stream object.</returns>
+        public OutputStream CreateOutputStream(int streamId)
+        {
+            int channelId = (4 + ((streamId - 1) * 5));
+            RtmpChannel data = GetChannel(channelId++);
+            RtmpChannel video = GetChannel(channelId++);
+            RtmpChannel audio = GetChannel(channelId++);
+            return new OutputStream(video, audio, data);
         }
 
         #endregion
@@ -1303,20 +1322,6 @@ namespace FluorineFx.Messaging.Rtmp
         }
 
         /// <summary>
-        /// Creates output stream object from stream id. Output stream consists of audio, data and video channels.
-        /// </summary>
-        /// <param name="streamId">Stream id.</param>
-        /// <returns>Output stream object.</returns>
-        public OutputStream CreateOutputStream(int streamId)
-        {
-            int channelId = (4 + ((streamId - 1) * 5));
-            RtmpChannel data = GetChannel(channelId++);
-            RtmpChannel video = GetChannel(channelId++);
-            RtmpChannel audio = GetChannel(channelId++);
-            return new OutputStream(video, audio, data);
-        }
-
-        /// <summary>
         /// Registers deferred result.
         /// </summary>
         /// <param name="result">Result to register.</param>
@@ -1488,6 +1493,7 @@ namespace FluorineFx.Messaging.Rtmp
             }
         }
 #endif
+
     }
 
     #region InvokeData

@@ -25,12 +25,40 @@ using FluorineFx.Messaging.Api.Stream;
 
 namespace FluorineFx.Messaging.Rtmp.Stream
 {
+
+    /// <summary>
+    /// Input type enumeration.
+    /// </summary>
+	public enum InputType
+    {
+        /// <summary>
+        /// Input type not found.
+        /// </summary>
+        NotFound,
+        /// <summary>
+        /// Live provider.
+        /// </summary>
+        Live,
+        /// <summary>
+        /// Vod provider.
+        /// </summary>
+        Vod
+	};
+
     /// <summary>
     /// Central unit to get access to different types of provider inputs.
     /// </summary>
     [CLSCompliant(false)]
     public interface IProviderService : IScopeService
     {
+        /// <summary>
+        /// Lookups the input type of the provider.
+        /// </summary>
+        /// <param name="scope">The scope.</param>
+        /// <param name="name">The provider name.</param>
+        /// <returns><code>Live</code> if live, <code>Vod</code> if VOD stream, <code>NotFound</code> otherwise.</returns>
+        /// <remarks>Live is checked first and VOD second.</remarks>
+        InputType LookupProviderInputType(IScope scope, string name);
         /// <summary>
         /// Returns a named provider as the source of input. Live stream first, VOD stream second.
         /// </summary>

@@ -17,9 +17,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+#if !SILVERLIGHT
 using log4net;
+#endif
 using FluorineFx.Util;
 using FluorineFx.IO;
 
@@ -30,7 +32,9 @@ namespace FluorineFx.IO.FLV
     /// </summary>
     class FlvReader : ITagReader, IKeyFrameDataAnalyzer
     {
+#if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(FlvReader));
+#endif
         object _syncLock = new object();
 
         private FileInfo _file;
@@ -63,12 +67,12 @@ namespace FluorineFx.IO.FLV
         /// Mapping between file position and timestamp in ms.
         /// (Long, Long)
         /// </summary>
-        private Hashtable _posTimeMap;
+        private Dictionary<long, long> _posTimeMap;
         /// <summary>
         /// Mapping between file position and tag number.
         /// (Long, Integer)
         /// </summary>
-        private Hashtable _posTagMap;
+        private Dictionary<long, int> _posTagMap;
 
         /// <summary>
         /// The header of this FLV file.
@@ -170,10 +174,12 @@ namespace FluorineFx.IO.FLV
             _header.Version = _reader.ReadByte();
             _header.SetTypeFlags(_reader.ReadByte());
             _header.DataOffset = _reader.ReadInt32();
+#if !SILVERLIGHT
 		    if (log.IsDebugEnabled) 
             {
 			    log.Debug("Flv header: " + _header.ToString());
 		    }
+#endif
         }
 
         /// <summary>
@@ -268,17 +274,17 @@ namespace FluorineFx.IO.FLV
                     return _keyframeMeta;
 
                 // Lists of video positions and timestamps
-                ArrayList positionList = new ArrayList();
-                ArrayList timestampList = new ArrayList();
+                List<long> positionList = new List<long>();
+                List<int> timestampList = new List<int>();
                 // Lists of audio positions and timestamps
-                ArrayList audioPositionList = new ArrayList();
-                ArrayList audioTimestampList = new ArrayList();
+                List<long> audioPositionList = new List<long>();
+                List<int> audioTimestampList = new List<int>();
                 long origPos = GetCurrentPosition();
                 // point to the first tag
                 SetCurrentPosition(9);
 
                 // Maps positions to tags
-                _posTagMap = new Hashtable();//<Long, Integer>
+                _posTagMap = new Dictionary<long,int>();
                 int idx = 0;
                 bool audioOnly = true;
                 while (this.HasMoreTags())
@@ -325,6 +331,7 @@ namespace FluorineFx.IO.FLV
                     long newPosition = pos + tmpTag.BodySize + 15;
                     if (newPosition >= GetTotalBytes())
                     {
+#if !SILVERLIGHT
                         log.Info("New position exceeds limit");
                         if (log.IsDebugEnabled)
                         {
@@ -332,6 +339,7 @@ namespace FluorineFx.IO.FLV
                             log.Debug(" data type=" + tmpTag.DataType + " bodysize=" + tmpTag.BodySize);
                             log.Debug(" remaining=" + GetRemainingBytes() + " limit=" + GetTotalBytes() + " new pos=" + newPosition + " pos=" + pos);
                         }
+#endif
                         break;
                     }
                     else
@@ -344,7 +352,7 @@ namespace FluorineFx.IO.FLV
 
                 _keyframeMeta = new KeyFrameMeta();
                 _keyframeMeta.Duration = _duration;
-                _posTimeMap = new Hashtable();
+                _posTimeMap = new Dictionary<long,long>();
                 if (audioOnly)
                 {
                     // The flv only contains audio tags, use their lists to support pause and seeking
@@ -412,7 +420,7 @@ namespace FluorineFx.IO.FLV
 
             // Duration property
             output.WriteString("onMetaData");
-            Hashtable props = new Hashtable();
+            Dictionary<string, object> props = new Dictionary<string,object>();
             props.Add("duration", _duration / 1000.0);
             if (_firstVideoTag != -1)
             {

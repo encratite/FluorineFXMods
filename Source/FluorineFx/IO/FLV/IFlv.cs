@@ -17,7 +17,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using FluorineFx.Util;
 using FluorineFx.IO;
@@ -50,7 +50,7 @@ namespace FluorineFx.IO.FLV
         /// <summary>
         /// Gets or sets the keyframe data.
         /// </summary>
-        Hashtable KeyFrameData { get; set; }
+        Dictionary<string, object> KeyFrameData { get; set; }
         /// <summary>
         /// Refreshes the headers. Usually used after data is added to the flv file.
         /// </summary>

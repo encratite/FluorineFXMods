@@ -43,6 +43,40 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
         }
 
+        /// <summary>
+        /// Lookups the input type of the provider.
+        /// </summary>
+        /// <param name="scope">The scope.</param>
+        /// <param name="name">The provider name.</param>
+        /// <returns><code>Live</code> if live, <code>Vod</code> if VOD stream, <code>NotFound</code> otherwise.</returns>
+        /// <remarks>Live is checked first and VOD second.</remarks>
+        public InputType LookupProviderInputType(IScope scope, string name)
+        {
+            InputType result = InputType.NotFound;
+            if (scope.GetBasicScope(Constants.BroadcastScopeType, name) != null)
+            {
+                //We have live input
+                result = InputType.Live;
+            }
+            else
+            {
+                try
+                {
+                    FileInfo file = GetStreamFile(scope, name);
+                    if (file != null)
+                    {
+                        //We have vod input
+                        result = InputType.Vod;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Warn(string.Format("Exception attempting to lookup file: {0}", name), ex);
+                }
+            }
+            return result;
+        }
+
         public IMessageInput GetProviderInput(IScope scope, string name)
         {
             IMessageInput msgIn = GetLiveProviderInput(scope, name, false);

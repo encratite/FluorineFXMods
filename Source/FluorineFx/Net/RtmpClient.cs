@@ -30,11 +30,17 @@ using log4net;
 using FluorineFx.Configuration;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
+using FluorineFx.Messaging.Api.Stream;
+using FluorineFx.Messaging.Api.Event;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Messaging.Rtmp;
 using FluorineFx.Messaging.Rtmp.Service;
+using FluorineFx.Messaging.Rtmp.Stream;
+using FluorineFx.Messaging.Rtmp.Stream.Consumer;
+using FluorineFx.Messaging.Messages;
 using FluorineFx.Util;
+using FluorineFx.Collections.Generic;
 using FluorineFx.Invocation;
 using FluorineFx.Exceptions;
 
@@ -58,6 +64,8 @@ namespace FluorineFx.Net
 
         RtmpClientConnection _connection;
         object[] _connectArguments;
+        IEventDispatcher _streamEventDispatcher = null;
+
 
         public RtmpClient(NetConnection netConnection)
             : base()
@@ -116,16 +124,65 @@ namespace FluorineFx.Net
 
         protected override void OnPing(RtmpConnection connection, RtmpChannel channel, RtmpHeader source, Ping ping)
         {
-            switch (ping.Value1)
+            switch (ping.PingType)
             {
-                case 6:
+                case Ping.PingClient:
+                case Ping.StreamBegin:
+                case Ping.RecordedStream:
+                case Ping.StreamPlayBufferClear:
                     // The server wants to measure the RTT
                     Ping pong = new Ping();
-                    pong.Value1 = ((short)Ping.PongServer);
+                    pong.PingType = Ping.PongServer;
                     int now = (int)(System.Environment.TickCount & 0xffffffff);
                     pong.Value2 = now;
-                    pong.Value3 = Ping.Undefined;
                     connection.Ping(pong);
+                    break;
+                case Ping.StreamDry:
+#if !SILVERLIGHT
+                    if (log.IsDebugEnabled)
+                        log.Debug("Stream indicates there is no data available");
+#endif
+                    break;
+                case Ping.ClientBuffer:
+                    //Set the client buffer
+                    IClientStream stream = null;
+                    //Get the stream id
+                    int streamId = ping.Value2;
+                    //Get requested buffer size in milliseconds
+                    int buffer = ping.Value3;
+#if !SILVERLIGHT
+                    if (log.IsDebugEnabled)
+                        log.Debug(string.Format("Client sent a buffer size: {0} ms for stream id: {1}", buffer, streamId));
+#endif
+                    if (streamId != 0)
+                    {
+                        // The client wants to set the buffer time
+                        stream = connection.GetStreamById(streamId);
+                        if (stream != null)
+                        {
+                            stream.SetClientBufferDuration(buffer);
+#if !SILVERLIGHT
+                            if (log.IsDebugEnabled)
+                                log.Debug(string.Format("Setting client buffer on stream: {0}", streamId));
+#endif
+                        }
+                    }
+                    //Catch-all to make sure buffer size is set
+                    if (stream == null)
+                    {
+                        // Remember buffer time until stream is created
+                        connection.RememberStreamBufferDuration(streamId, buffer);
+#if !SILVERLIGHT
+                        if (log.IsDebugEnabled)
+                            log.Debug(string.Format("Remembering client buffer on stream: {0}", streamId));
+#endif
+                    }
+                    break;
+                default:
+#if !SILVERLIGHT
+                    if (log.IsDebugEnabled)
+                        log.Debug(string.Format("Unhandled ping: {0}", ping));
+#endif
                     break;
             }
         }
@@ -142,6 +199,15 @@ namespace FluorineFx.Net
         protected override void OnInvoke(RtmpConnection connection, RtmpChannel channel, RtmpHeader header, Notify invoke)
         {
             IServiceCall call = invoke.ServiceCall;
+            if (invoke.EventType == EventType.STREAM_DATA)
+            {
+#if !SILVERLIGHT
+                if (log.IsDebugEnabled)
+                    log.Debug(string.Format("Ignoring stream data notify with header {0}", header));
+#endif
+                return;
+            }
+
             if (call.ServiceMethodName == "_result" || call.ServiceMethodName == "_error")
             {
                 if (call.ServiceMethodName == "_error")
@@ -179,6 +245,39 @@ namespace FluorineFx.Net
                             _netConnection.RaiseNetStatus(msg);
                         }
                     }
+                }
+                return;
+            }
+
+            bool onStatus = call.ServiceMethodName.Equals("onStatus") || call.ServiceMethodName.Equals("onMetaData")
+                || call.ServiceMethodName.Equals("onPlayStatus");
+            if (onStatus)
+            {
+                IDictionary aso = call.Arguments[0] as IDictionary;
+                // Should keep this as an Object to stay compatible with FMS3 etc
+                /*
+                object clientId = null;
+                if( aso.Contains("clientid") )
+                    clientId = aso["clientid"];
+                if (clientId == null)
+                    clientId = header.StreamId;
+#if !SILVERLIGHT
+                if (log.IsDebugEnabled)
+                    log.Debug(string.Format("Client id: {0}", clientId));
+#endif
+                if (clientId != null)
+                {
+                    NetStream stream = _connection.GetStreamById((int)clientId) as NetStream;
+                    if (stream != null)
+                    {
+                        stream.OnStreamEvent(invoke);
+                    }
+                }
+                */
+                NetStream stream = _connection.GetStreamById(header.StreamId) as NetStream;
+                if (stream != null)
+                {
+                    stream.OnStreamEvent(invoke);
                 }
                 return;
             }
@@ -231,7 +330,7 @@ namespace FluorineFx.Net
                         //log.Error("Error while invoking method " + call.ServiceMethodName + " on client", exception);
                     }
                 }
-                else
+                else if (!onStatus)
                 {
                     string msg = __Res.GetString(__Res.Invocation_NoSuitableMethod, call.ServiceMethodName);
                     call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_METHOD_NOT_FOUND;
@@ -252,6 +351,10 @@ namespace FluorineFx.Net
                 reply.ServiceCall = call;
                 reply.InvokeId = invoke.InvokeId;
                 channel.Write(reply);
+            }
+            else
+            {
+                IPendingServiceCall pendingCall = connection.RetrievePendingCall(invoke.InvokeId);
             }
         }
 
@@ -297,7 +400,7 @@ namespace FluorineFx.Net
             _connection.Context.ObjectEncoding = _netConnection.ObjectEncoding;
             _connection.BeginHandshake();
 #else
-            DnsEndPoint endPoint = new DnsEndPoint(uri.Host, uri.Port);
+            DnsEndPoint endPoint = new DnsEndPoint(uri.Host, uri.Port <= 0 ? 1935 : uri.Port);
             SocketAsyncEventArgs args = new SocketAsyncEventArgs();
             args.UserToken = socket;
             args.RemoteEndPoint = endPoint;

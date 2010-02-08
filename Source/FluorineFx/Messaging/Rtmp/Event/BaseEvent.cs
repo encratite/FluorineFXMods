@@ -46,6 +46,10 @@ namespace FluorineFx.Messaging.Rtmp.Event
         /// </summary>
 		protected int _timestamp;
         /// <summary>
+        /// Event extended timestamp.
+        /// </summary>
+        private int _extendedTimestamp = -1;
+        /// <summary>
         /// Event data type.
         /// </summary>
 		protected byte _dataType;
@@ -102,6 +106,15 @@ namespace FluorineFx.Messaging.Rtmp.Event
 			get{ return _timestamp; }
 			set{ _timestamp = value; }
 		}
+        /// <summary>
+        /// Gets or sets the extended timestamp.
+        /// </summary>
+        /// <value>The extended timestamp.</value>
+        public int ExtendedTimestamp
+        {
+            get { return _extendedTimestamp; }
+            set { _extendedTimestamp = value; }
+        }
         /// <summary>
         /// Gets or sets the data type.
         /// </summary>

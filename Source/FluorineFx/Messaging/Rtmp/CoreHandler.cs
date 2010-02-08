@@ -79,6 +79,8 @@ namespace FluorineFx.Messaging.Rtmp
             //Current objects are set notify listeners.
             if (FluorineContext.Current.Session != null && FluorineContext.Current.Session.IsNew)
                 FluorineContext.Current.Session.NotifyCreated();
+            if (FluorineContext.Current.Session == null)
+                return false;
             if (client != null)
             {
                 client.RegisterSession(FluorineContext.Current.Session);

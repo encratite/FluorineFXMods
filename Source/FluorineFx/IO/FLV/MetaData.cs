@@ -18,6 +18,7 @@
 */
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using FluorineFx.Util;
 using FluorineFx.IO;
@@ -27,7 +28,7 @@ namespace FluorineFx.IO.FLV
     /// <summary>
     /// FLV MetaData
     /// </summary>
-    public class MetaData : Hashtable
+    public class MetaData : Dictionary<string, object>
     {
         /// <summary>
         /// Cue points array. Cue points can be injected on fly like any other data even on client-side.
@@ -109,7 +110,7 @@ namespace FluorineFx.IO.FLV
             }
             set 
             {
-                Hashtable cues = new Hashtable();
+                Dictionary<string, object> cues = new Dictionary<string, object>();
                 _cuePoints = value; 
 
                 int j = 0;
@@ -134,7 +135,7 @@ namespace FluorineFx.IO.FLV
         {
             foreach (DictionaryEntry entry in data)
             {
-                this.Add(entry.Key, entry.Value);
+                this.Add(entry.Key.ToString(), entry.Value);
             }
         }
     }

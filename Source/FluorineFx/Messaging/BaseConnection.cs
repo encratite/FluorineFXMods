@@ -102,11 +102,12 @@ namespace FluorineFx.Messaging
         /// State bit field.
         /// 1 IsClosed
         /// 2 IsClosing
-        /// 4
+        /// 4 
         /// 8 IsFlexClient
         /// 16 IsTunnelingDetected
         /// 32 IsTunneled
-        /// 64
+        /// 64 RtmpServerConnection: IsDisconnecting
+        /// 128 
         /// </summary>
         protected byte __fields;
 

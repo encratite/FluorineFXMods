@@ -62,8 +62,11 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         private bool _receiveAudio = true;	
 
         private ISchedulingService _schedulingService;
+        private IConsumerService _consumerService;
+        private IProviderService _providerService;
+
         private string _waitLiveJob;
-        //private bool _isWaiting;
+        private bool _waiting;
         /// <summary>
         /// Timestamp of first sent packet.
         /// </summary>
@@ -72,11 +75,12 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         private ITokenBucket _audioBucket;
         private ITokenBucket _videoBucket;
         private RtmpMessage _pendingMessage;
-        private bool _isWaitingForToken = false;
-        private bool _needCheckBandwidth = true;
+        private bool _waitingForToken = false;
+        private bool _checkBandwidth = true;
 
         IBWControlService _bwController;
         IBWControlContext _bwContext;
+
         /// <summary>
         /// Interval in ms to check for buffer underruns in VOD streams.
         /// </summary>
@@ -107,8 +111,13 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// playbackStart is 1:00:00.
         /// </summary>
         private long _playbackStart;
-        //Scheduled future job that makes sure messages are sent to the client.
-        System.Timers.Timer _pullAndPushTimer;
+        
+        /// <summary>
+        /// Scheduled future job that makes sure messages are sent to the client.
+        /// </summary>
+        //System.Timers.Timer _pullAndPushTimer;
+        private string _pullAndPushJob;
+
         /// <summary>
         /// Offset in ms the stream started.
         /// </summary>
@@ -121,21 +130,90 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// Send blank audio packet next?
         /// </summary>
         private bool _sendBlankAudio;
+        /// <summary>
+        /// Decision: 0 for Live, 1 for File, 2 for Wait, 3 for N/A
+        /// </summary>
+        private int _playDecision = 3;
 
-        PlaylistSubscriberStream _stream;
+        PlaylistSubscriberStream _playlistSubscriberStream;
 
         object _syncLock = new object();
 
-        public PlayEngine(PlaylistSubscriberStream stream)
+        private PlayEngine(Builder builder)
         {
-            _stream = stream;
+            _playlistSubscriberStream = builder.PlaylistSubscriberStream;
+            _schedulingService = builder.SchedulingService;
+            _consumerService = builder.ConsumerService;
+            _providerService = builder.ProviderService;
+            //_playlistSubscriberStream = stream;
+            //_schedulingService = _playlistSubscriberStream.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
+        }
+
+        /// <summary>
+        /// Builder pattern
+        /// </summary>
+        public class Builder
+        {
+            /// <summary>
+            /// Required for play engine.
+            /// </summary>
+            readonly PlaylistSubscriberStream _playlistSubscriberStream;
+
+            internal PlaylistSubscriberStream PlaylistSubscriberStream
+            {
+                get { return _playlistSubscriberStream; }
+            } 
+
+            /// <summary>
+            /// Required for play engine.
+            /// </summary>
+            readonly ISchedulingService _schedulingService;
+
+            public ISchedulingService SchedulingService
+            {
+                get { return _schedulingService; }
+            } 
+
+            /// <summary>
+            /// Required for play engine.
+            /// </summary>
+            readonly IConsumerService _consumerService;
+
+            public IConsumerService ConsumerService
+            {
+                get { return _consumerService; }
+            } 
+
+            /// <summary>
+            /// Required for play engine.
+            /// </summary>
+            readonly IProviderService _providerService;
+
+            public IProviderService ProviderService
+            {
+                get { return _providerService; }
+            } 
+
+
+            public Builder(PlaylistSubscriberStream playlistSubscriberStream, ISchedulingService schedulingService, IConsumerService consumerService, IProviderService providerService)
+            {
+                _playlistSubscriberStream = playlistSubscriberStream;
+                _schedulingService = schedulingService;
+                _consumerService = consumerService;
+                _providerService = providerService;
+            }
+
+            public PlayEngine Build()
+            {
+                return new PlayEngine(this);
+            }
         }
 
         public object SyncRoot { get { return _syncLock; } }
 
         public int StreamId
         {
-            get { return _stream.StreamId; }
+            get { return _playlistSubscriberStream.StreamId; }
         }
 
         public bool SendBlankAudio
@@ -168,7 +246,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
 
         public bool IsPaused
         {
-            get { return _stream.State == State.PAUSED; }
+            get { return _playlistSubscriberStream.State == State.PAUSED; }
         }
 
         public IRtmpEvent LastMessage
@@ -224,15 +302,14 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
             lock (this.SyncRoot)
             {
-                if (_stream.State != State.UNINIT)
-                {
+                if (_playlistSubscriberStream.State != State.UNINIT)
                     throw new IllegalStateException();
+                _playlistSubscriberStream.State = State.STOPPED;
+                if (_msgOut == null)
+                {
+                    _msgOut = _consumerService.GetConsumerOutput(_playlistSubscriberStream);
+                    _msgOut.Subscribe(this, null);
                 }
-                _stream.State = State.STOPPED;
-                _schedulingService = _stream.Scope.GetService(typeof(ISchedulingService)) as ISchedulingService;
-                IConsumerService consumerManager = _stream.Scope.GetService(typeof(IConsumerService)) as IConsumerService;
-                _msgOut = consumerManager.GetConsumerOutput(_stream);
-                _msgOut.Subscribe(this, null);
                 _audioBucket = _bwController.GetAudioBucket(_bwContext);
                 _videoBucket = _bwController.GetVideoBucket(_bwContext);
             }
@@ -245,24 +322,22 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
             lock (this.SyncRoot)
             {
-                if (_stream.State != State.PLAYING && _stream.State != State.PAUSED)
-                {
+                if (_playlistSubscriberStream.State != State.PLAYING && _playlistSubscriberStream.State != State.PAUSED)
                     throw new IllegalStateException();
-                }
-                _stream.State = State.STOPPED;
+                _playlistSubscriberStream.State = State.STOPPED;
                 if (_msgIn != null && !_isPullMode)
                 {
                     _msgIn.Unsubscribe(this);
                     _msgIn = null;
                 }
-                _stream.NotifyItemStop(_currentItem);
+                _playlistSubscriberStream.NotifyItemStop(_currentItem);
                 ClearWaitJobs();
-                if (!_stream.HasMoreItems)
+                if (!_playlistSubscriberStream.HasMoreItems)
                 {
                     ReleasePendingMessage();
                     _bwController.ResetBuckets(_bwContext);
-                    _isWaitingForToken = false;
-                    if (_stream.ItemSize > 0)
+                    _waitingForToken = false;
+                    if (_playlistSubscriberStream.ItemSize > 0)
                         SendCompleteStatus();
                     _bytesSent = 0;
                     SendClearPing();
@@ -272,11 +347,10 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 {
                     if (_lastMessage != null)
                     {
-                        // Remember last timestamp so we can generate correct
-                        // headers in playlists.
+                        // Remember last timestamp so we can generate correct headers in playlists.
                         _timestampOffset = _lastMessage.Timestamp;
                     }
-                    _stream.NextItem();
+                    _playlistSubscriberStream.NextItem();
                 }
             }
         }
@@ -293,7 +367,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     _msgIn.Unsubscribe(this);
                     _msgIn = null;
                 }
-                _stream.State = State.CLOSED;
+                _playlistSubscriberStream.State = State.CLOSED;
                 ClearWaitJobs();
                 ReleasePendingMessage();
                 _lastMessage = null;
@@ -309,16 +383,16 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
             lock (this.SyncRoot)
             {
-                if ((_stream.State != State.PLAYING && _stream.State != State.STOPPED) || _currentItem == null)
+                if ((_playlistSubscriberStream.State != State.PLAYING && _playlistSubscriberStream.State != State.STOPPED) || _currentItem == null)
                 {
                     throw new IllegalStateException();
                 }
-                _stream.State = State.PAUSED;
+                _playlistSubscriberStream.State = State.PAUSED;
                 ReleasePendingMessage();
                 ClearWaitJobs();
                 SendClearPing();
                 SendPauseStatus(_currentItem);
-                _stream.NotifyItemPause(_currentItem, position);
+                _playlistSubscriberStream.NotifyItemPause(_currentItem, position);
             }
         }
         /// <summary>
@@ -329,16 +403,16 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
             lock (this.SyncRoot)
             {
-                if (_stream.State != State.PAUSED)
+                if (_playlistSubscriberStream.State != State.PAUSED)
                     throw new IllegalStateException();
 
-                _stream.State = State.PLAYING;
+                _playlistSubscriberStream.State = State.PLAYING;
                 SendReset();
                 SendResumeStatus(_currentItem);
                 if (_isPullMode)
                 {
                     SendVODSeekCM(_msgIn, position);
-                    _stream.NotifyItemResume(_currentItem, position);
+                    _playlistSubscriberStream.NotifyItemResume(_currentItem, position);
                     _playbackStart = System.Environment.TickCount - position;
                     if (_currentItem.Length >= 0 && (position - _streamOffset) >= _currentItem.Length)
                     {
@@ -352,7 +426,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 }
                 else
                 {
-                    _stream.NotifyItemResume(_currentItem, position);
+                    _playlistSubscriberStream.NotifyItemResume(_currentItem, position);
                     _videoFrameDropper.Reset(FrameDropperState.SEND_KEYFRAMES_CHECK);
                 }
             }
@@ -366,7 +440,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
             lock (this.SyncRoot)
             {
-                if (_stream.State != State.PLAYING && _stream.State != State.PAUSED && _stream.State != State.STOPPED)
+                if (_playlistSubscriberStream.State != State.PLAYING && _playlistSubscriberStream.State != State.PAUSED && _playlistSubscriberStream.State != State.STOPPED)
                 {
                     throw new IllegalStateException();
                 }
@@ -378,7 +452,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 ReleasePendingMessage();
                 ClearWaitJobs();
                 _bwController.ResetBuckets(_bwContext);
-                _isWaitingForToken = false;
+                _waitingForToken = false;
                 SendClearPing();
                 SendReset();
                 SendSeekStatus(_currentItem, position);
@@ -390,10 +464,10 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     seekPos = position;
                 }
                 _playbackStart = System.Environment.TickCount - seekPos;
-                _stream.NotifyItemSeek(_currentItem, seekPos);
+                _playlistSubscriberStream.NotifyItemSeek(_currentItem, seekPos);
                 bool messageSent = false;
                 bool startPullPushThread = false;
-                if ((_stream.State == State.PAUSED || _stream.State == State.STOPPED) && SendCheckVideoCM(_msgIn))
+                if ((_playlistSubscriberStream.State == State.PAUSED || _playlistSubscriberStream.State == State.STOPPED) && SendCheckVideoCM(_msgIn))
                 {
                     // we send a single snapshot on pause.
                     // XXX we need to take BWC into account, for
@@ -460,7 +534,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     EnsurePullAndPushRunning();
                 }
 
-                if (_stream.State != State.STOPPED && _currentItem.Length >= 0 && (position - _streamOffset) >= _currentItem.Length)
+                if (_playlistSubscriberStream.State != State.STOPPED && _currentItem.Length >= 0 && (position - _streamOffset) >= _currentItem.Length)
                 {
                     // Seeked after end of stream
                     Stop();
@@ -499,6 +573,16 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 // We don't need this for live streams
                 return;
             }
+            lock (this.SyncRoot)
+            {
+                if (_pullAndPushJob == null)
+                {
+                    PullAndPushJob job = new PullAndPushJob(this);
+                    _pullAndPushJob = _schedulingService.AddScheduledJob(10, job);
+                    job.Execute(null);
+                }
+            }
+            /*
             if (_pullAndPushTimer == null)
             {
                 lock (this.SyncRoot)
@@ -513,6 +597,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     }
                 }
             }
+            */
         }
 
         void PullAndPushTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -536,7 +621,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
             lock (this.SyncRoot)
             {
-                if (_stream.State == State.PLAYING && _isPullMode && !_isWaitingForToken)
+                if (_playlistSubscriberStream.State == State.PLAYING && _isPullMode && !_waitingForToken)
                 {
                     if (_pendingMessage != null)
                     {
@@ -600,7 +685,8 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                                     body.Timestamp = body.Timestamp + _timestampOffset;
                                     if (OkayToSendMessage(body))
                                     {
-                                        //System.err.println("ts: " + rtmpMessage.getBody().getTimestamp());
+                                        if( log.IsDebugEnabled )
+                                            log.Debug(string.Format("ts: {0}", rtmpMessage.body.Timestamp));
                                         SendMessage(rtmpMessage);
                                         //((IStreamData) body).Data.Release();
                                     }
@@ -626,75 +712,70 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// <returns></returns>
         private bool OkayToSendMessage(IRtmpEvent message)
         {
-            /*
             if (!(message is IStreamData))
             {
-                throw new ApplicationException("Expected IStreamData but got " + message.GetType().ToString());
+                string itemName = "Undefined";
+                //If current item exists get the name to help debug this issue
+                if (_currentItem != null)
+                    itemName = _currentItem.Name;
+                throw new ApplicationException(string.Format("Expected IStreamData but got {0} (type {1}) for {2}" + message.GetType().ToString(), message.EventType, itemName));
             }
-            */
-            if (message is IStreamData)
+            long now = System.Environment.TickCount;
+            // Check client buffer length when we've already sent some messages
+            if (_lastMessage != null)
             {
-                long now = System.Environment.TickCount;
-                // check client buffer length when we've already sent some messages
-                if (_lastMessage != null)
+                // Duration the stream is playing / playback duration
+                long delta = now - _playbackStart;
+                // Buffer size as requested by the client
+                long buffer = _playlistSubscriberStream.ClientBufferDuration;
+                // Expected amount of data present in client buffer
+                long buffered = _lastMessage.Timestamp - delta;
+                if (log.IsDebugEnabled)
                 {
-                    // Duration the stream is playing
-                    long delta = now - _playbackStart;
-                    // Buffer size as requested by the client
-                    long buffer = _stream.ClientBufferDuration;
-
-                    // Expected amount of data present in client buffer
-                    long buffered = _lastMessage.Timestamp - delta;
-
-                    if (log.IsDebugEnabled)
-                    {
-                        log.Debug("OkayToSendMessage: " + _lastMessage.Timestamp + " " + delta + " " + buffered + " " + buffer);
-                    }
-
-                    if (buffer > 0 && buffered > buffer)
-                    {
-                        // Client is likely to have enough data in the buffer
-                        return false;
-                    }
+                    log.Debug(string.Format("OkayToSendMessage timestamp {0} delta {1} buffered {2} buffer {3}", _lastMessage.Timestamp, delta, buffered, buffer));
                 }
-
-                long pending = GetPendingMessagesCount();
-                if (_bufferCheckInterval > 0 && now >= _nextCheckBufferUnderrun)
+                //T his sends double the size of the client buffer
+                if (buffer > 0 && buffered > (buffer*2))
                 {
-                    if (pending > _underrunTrigger)
-                    {
-                        // Client is playing behind speed, notify him
-                        SendInsufficientBandwidthStatus(_currentItem);
-                    }
-                    _nextCheckBufferUnderrun = now + _bufferCheckInterval;
-                }
-
-                if (pending > _underrunTrigger)
-                {
-                    // Too many messages already queued on the connection
+                    // Client is likely to have enough data in the buffer
                     return false;
                 }
+            }
 
-                if (((IStreamData)message).Data == null)
+            long pending = GetPendingMessagesCount();
+            if (_bufferCheckInterval > 0 && now >= _nextCheckBufferUnderrun)
+            {
+                if (pending > _underrunTrigger)
                 {
-                    // TODO: when can this happen?
-                    return true;
+                    // Client is playing behind speed, notify him
+                    SendInsufficientBandwidthStatus(_currentItem);
                 }
+                _nextCheckBufferUnderrun = now + _bufferCheckInterval;
+            }
 
-                int size = ((IStreamData)message).Data.Limit;
+            if (pending > _underrunTrigger)
+            {
+                // Too many messages already queued on the connection
+                return false;
+            }
+
+            ByteBuffer ioBuffer = ((IStreamData)message).Data;
+            if (ioBuffer != null)
+            {
+                int size = ioBuffer.Limit;
                 if (message is VideoData)
                 {
-                    if (_needCheckBandwidth && !_videoBucket.AcquireTokenNonblocking(size, this))
+                    if (_checkBandwidth && !_videoBucket.AcquireTokenNonblocking(size, this))
                     {
-                        _isWaitingForToken = true;
+                        _waitingForToken = true;
                         return false;
                     }
                 }
                 else if (message is AudioData)
                 {
-                    if (_needCheckBandwidth && !_audioBucket.AcquireTokenNonblocking(size, this))
+                    if (_checkBandwidth && !_audioBucket.AcquireTokenNonblocking(size, this))
                     {
-                        _isWaitingForToken = true;
+                        _waitingForToken = true;
                         return false;
                     }
                 }
@@ -708,7 +789,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// <returns></returns>
         private long GetPendingMessagesCount()
         {
-            return _stream.Connection.PendingMessages;
+            return _playlistSubscriberStream.Connection.PendingMessages;
         }
 
         /// <summary>
@@ -758,11 +839,18 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
             lock (this.SyncRoot)
             {
+                /*
                 if (_pullAndPushTimer != null)
                 {
                     _pullAndPushTimer.Enabled = false;
                     _pullAndPushTimer.Elapsed -= new System.Timers.ElapsedEventHandler(PullAndPushTimer_Elapsed);
                     _pullAndPushTimer = null;
+                }
+                */
+                if (_pullAndPushJob != null)
+                {
+                    _schedulingService.RemoveScheduledJob(_pullAndPushJob);
+                    _pullAndPushJob = null;
                 }
                 if (_waitLiveJob != null)
                 {
@@ -781,20 +869,72 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             Play(item, true);
         }
 
-        internal class PlaylistSubscriberStreamJob : ScheduledJobBase
+        internal class PlaylistSubscriberStreamJob1 : ScheduledJobBase
+        {
+            PlayEngine _engine;
+            string _itemName;
+
+            public PlaylistSubscriberStreamJob1(PlayEngine engine, string itemName)
+            {
+                _engine = engine;
+                _itemName = itemName;
+            }
+
+            public override void Execute(ScheduledJobContext context)
+            {
+				//set the msgIn if its null
+				if (_engine._msgIn == null) {
+                    _engine.ConnectToProvider(_itemName);
+				}	
+                _engine._waitLiveJob = null;
+                _engine._waiting = false;
+                _engine._playlistSubscriberStream.OnItemEnd();
+            }
+        }
+
+        internal class PlaylistSubscriberStreamJob2 : ScheduledJobBase
+        {
+            PlayEngine _engine;
+            string _itemName;
+
+            public PlaylistSubscriberStreamJob2(PlayEngine engine, string itemName)
+            {
+                _engine = engine;
+                _itemName = itemName;
+            }
+
+            public override void Execute(ScheduledJobContext context)
+            {
+				//set the msgIn if its null
+				if (_engine._msgIn == null) {
+                    _engine.ConnectToProvider(_itemName);
+				}	
+                _engine._waitLiveJob = null;
+                _engine._waiting = false;
+            }
+        }
+
+        internal class PullAndPushJob : ScheduledJobBase
         {
             PlayEngine _engine;
 
-            public PlaylistSubscriberStreamJob(PlayEngine engine)
+            public PullAndPushJob(PlayEngine engine)
             {
                 _engine = engine;
             }
 
             public override void Execute(ScheduledJobContext context)
             {
-                _engine._waitLiveJob = null;
-                //_engine._isWaiting = false;
-                _engine._stream.OnItemEnd();
+                try
+                {
+                    _engine.PullAndPush();
+                }
+                catch (Exception ex)
+                {
+                    // We couldn't get more data, stop stream.
+                    log.Error("Error while getting message.", ex);
+                    _engine.Stop();
+                }
             }
         }
 
@@ -808,79 +948,64 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             lock (this.SyncRoot)
             {
                 // Can't play if state is not stopped
-                if (_stream.State != State.STOPPED)
-                {
+                if (_playlistSubscriberStream.State != State.STOPPED)
                     throw new IllegalStateException();
-                }
                 if (_msgIn != null)
                 {
                     _msgIn.Unsubscribe(this);
                     _msgIn = null;
                 }
+                // Play type determination
+                // http://livedocs.adobe.com/flex/3/langref/flash/net/NetStream.html#play%28%29
+                // The start time, in seconds. Allowed values are -2, -1, 0, or a positive number. 
+                // The default value is -2, which looks for a live stream, then a recorded stream, 
+                // and if it finds neither, opens a live stream. 
+                // If -1, plays only a live stream. 
+                // If 0 or a positive number, plays a recorded stream, beginning start seconds in.
+                //
+                // -2: live then recorded, -1: live, >=0: recorded
                 int type = (int)(item.Start / 1000);
                 // see if it's a published stream
-                IScope thisScope = _stream.Scope;
-                IScopeContext context = thisScope.Context;
-                //IProviderService providerService = context.GetService(FluorineFx.Configuration.FluorineConfiguration.Instance.FluorineSettings.ProviderService.Type) as IProviderService;
-                IProviderService providerService = ScopeUtils.GetScopeService(thisScope, typeof(IProviderService)) as IProviderService;
-                // Get live input
-                IMessageInput liveInput = providerService.GetLiveProviderInput(thisScope, item.Name, false);
-                // Get VOD input
-                IMessageInput vodInput = providerService.GetVODProviderInput(thisScope, item.Name);
-                bool isPublishedStream = liveInput != null;
-                bool isFileStream = vodInput != null;
+                IScope thisScope = _playlistSubscriberStream.Scope;
+                string itemName = item.Name;
+                //check for input and type
+                InputType sourceType = _providerService.LookupProviderInputType(thisScope, itemName);
+
+                bool isPublishedStream = sourceType == InputType.Live;
+                bool isFileStream = sourceType == InputType.Vod;
                 bool sendNotifications = true;
+
                 // decision: 0 for Live, 1 for File, 2 for Wait, 3 for N/A
-                //start An optional numeric parameter that specifies the start time, in seconds. This parameter can also be used to indicate whether the stream is live or recorded. 
-                //The default value for start is -2, which means that Flash first tries to play the live stream specified in name. If a live stream of that name is not found, Flash plays the recorded stream specified in name. If neither a live nor a recorded stream is found, Flash opens a live stream named name, even though no one is publishing on it. When someone does begin publishing on that stream, Flash begins playing it. 
-                //If you pass -1 for start, Flash plays only the live stream specified in name. If no live stream is found, Flash waits for it indefinitely if len is set to -1; if len is set to a different value, Flash waits for len seconds before it begins playing the next item in the playlist. 
-                //If you pass 0 or a positive number for start, Flash plays only a recorded stream named name, beginning start seconds from the beginning of the stream. If no recorded stream is found, Flash begins playing the next item in the playlist immediately. 
-                //If you pass a negative number other than -1 or -2 for start, Flash interprets the value as if it were -2.
-                int decision = 3;
                 switch (type)
                 {
                     case -2:
                         if (isPublishedStream)
-                        {
-                            decision = 0;
-                        }
+                            _playDecision = 0;
                         else if (isFileStream)
-                        {
-                            decision = 1;
-                        }
+                            _playDecision = 1;
                         else
-                        {
-                            decision = 2;
-                        }
+                            _playDecision = 2;
                         break;
-
                     case -1:
                         if (isPublishedStream)
-                        {
-                            decision = 0;
-                        }
+                            _playDecision = 0;
                         else
-                        {
-                            decision = 2;
-                        }
+                            _playDecision = 2;
                         break;
-
                     default:
                         if (isFileStream)
-                        {
-                            decision = 1;
-                        }
+                            _playDecision = 1;
                         break;
                 }
-                if (decision == 2)
-                {
-                    liveInput = providerService.GetLiveProviderInput(thisScope, item.Name, true);
-                }
+                if (log.IsDebugEnabled)
+                    log.Debug(string.Format("Play decision is {0} (0=Live, 1=File, 2=Wait, 3=N/A)", _playDecision));
                 _currentItem = item;
-                switch (decision)
+                long itemLength = item.Length;
+                switch (_playDecision)
                 {
                     case 0:
-                        _msgIn = liveInput;
+                        //get source input without create
+                        _msgIn = _providerService.GetLiveProviderInput(thisScope, itemName, false);
                         // Drop all frames up to the next keyframe
                         _videoFrameDropper.Reset(FrameDropperState.SEND_KEYFRAMES_CHECK);
                         if (_msgIn is IBroadcastScope)
@@ -892,31 +1017,47 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                                 IVideoStreamCodec videoCodec = stream.CodecInfo.VideoCodec;
                                 if (videoCodec != null)
                                 {
+                                    if (withReset)
+                                    {
+                                        SendReset();
+                                        SendResetStatus(item);
+                                        SendStartStatus(item);
+                                    }
+                                    sendNotifications = false;
+                                    //send decoder configuration if it exists
+                                    ByteBuffer config = videoCodec.GetDecoderConfiguration();
+                                    if (config != null)
+                                    {
+                                        VideoData conf = new VideoData(config);
+                                        try
+                                        {
+                                            conf.Timestamp = 0;
+                                            RtmpMessage confMsg = new RtmpMessage();
+                                            confMsg.body = conf;
+                                            _msgOut.PushMessage(confMsg);
+                                        }
+                                        finally
+                                        {
+                                            //conf.release();
+                                        }
+                                    }
+                                    //Check for a keyframe to send
                                     ByteBuffer keyFrame = videoCodec.GetKeyframe();
                                     if (keyFrame != null)
                                     {
                                         VideoData video = new VideoData(keyFrame);
                                         try
                                         {
-                                            if (withReset)
-                                            {
-                                                SendReset();
-                                                //sendBlankAudio(0);
-                                                //sendBlankVideo(0);
-                                                SendResetStatus(item);
-                                                SendStartStatus(item);
-                                            }
                                             video.Timestamp = 0;
                                             RtmpMessage videoMsg = new RtmpMessage();
                                             videoMsg.body = video;
                                             _msgOut.PushMessage(videoMsg);
-                                            sendNotifications = false;
                                             // Don't wait for keyframe
                                             _videoFrameDropper.Reset();
                                         }
                                         finally
                                         {
-                                            //video.Release();
+                                            //video.release();
                                         }
                                     }
                                 }
@@ -925,43 +1066,57 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                         _msgIn.Subscribe(this, null);
                         break;
                     case 2:
-                        _msgIn = liveInput;
+                        //get source input with create
+                        _msgIn = _providerService.GetLiveProviderInput(thisScope, itemName, true);
                         _msgIn.Subscribe(this, null);
-                        //_isWaiting = true;
-                        if (type == -1 && item.Length >= 0)
+                        _waiting = true;
+                        if (type == -1 && itemLength >= 0)
                         {
+                            //log.debug("Creating wait job");
                             // Wait given timeout for stream to be published
-                            PlaylistSubscriberStreamJob job = new PlaylistSubscriberStreamJob(this);
+                            PlaylistSubscriberStreamJob1 job = new PlaylistSubscriberStreamJob1(this, itemName);
                             _waitLiveJob = _schedulingService.AddScheduledOnceJob(item.Length, job);
+                        }
+                        else if (type == -2)
+                        {
+                            //log.debug("Creating wait job");
+                            // Wait x seconds for the stream to be published
+                            PlaylistSubscriberStreamJob2 job = new PlaylistSubscriberStreamJob2(this, itemName);
+                            _waitLiveJob = _schedulingService.AddScheduledOnceJob(15000, job);
+                        }
+                        else
+                        {
+                            ConnectToProvider(itemName);
                         }
                         break;
                     case 1:
-                        _msgIn = vodInput;
+                        _msgIn = _providerService.GetVODProviderInput(thisScope, itemName);
                         if (_msgIn == null)
                         {
                             SendStreamNotFoundStatus(_currentItem);
-                            throw new StreamNotFoundException(item.Name);
+                            throw new StreamNotFoundException(itemName);
                         }
-                        _msgIn.Subscribe(this, null);
+                        if (!_msgIn.Subscribe(this, null))
+                        {
+                            log.Error("Input source subscribe failed");
+                        }
                         break;
                     default:
                         SendStreamNotFoundStatus(_currentItem);
-                        throw new StreamNotFoundException(item.Name);
+                        throw new StreamNotFoundException(itemName);
                 }
-                _stream.State = State.PLAYING;
+                _playlistSubscriberStream.State = State.PLAYING;
                 IMessage msg = null;
                 _streamOffset = 0;
                 _streamStartTS = -1;
-                if (decision == 1)
+                if (_playDecision == 1)
                 {
                     if (withReset)
                     {
                         ReleasePendingMessage();
                     }
                     SendVODInitCM(_msgIn, item);
-                    _streamStartTS = -1;
-                    // Don't use pullAndPush to detect IOExceptions prior to sending
-                    // NetStream.Play.Start
+                    // Don't use pullAndPush to detect IOExceptions prior to sending NetStream.Play.Start
                     if (item.Start > 0)
                     {
                         _streamOffset = SendVODSeekCM(_msgIn, (int)item.Start);
@@ -975,7 +1130,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     if (msg is RtmpMessage)
                     {
                         IRtmpEvent body = ((RtmpMessage)msg).body;
-                        if (item.Length == 0)
+                        if (itemLength == 0)
                         {
                             // Only send first video frame
                             body = ((RtmpMessage)msg).body;
@@ -984,14 +1139,10 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                                 msg = _msgIn.PullMessage();
                                 if (msg == null)
                                     break;
-
-                                if (!(msg is RtmpMessage))
-                                    continue;
-
-                                body = ((RtmpMessage)msg).body;
+                                if (msg is RtmpMessage)
+                                    body = ((RtmpMessage)msg).body;
                             }
                         }
-
                         if (body != null)
                         {
                             // Adjust timestamp when playing lists
@@ -1006,7 +1157,6 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                         SendReset();
                         SendResetStatus(item);
                     }
-
                     SendStartStatus(item);
                     if (!withReset)
                     {
@@ -1014,17 +1164,47 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     }
                 }
                 if (msg != null)
+                {
                     SendMessage((RtmpMessage)msg);
-                _stream.NotifyItemPlay(_currentItem, !_isPullMode);
+                }
+                _playlistSubscriberStream.NotifyItemPlay(_currentItem, !_isPullMode);
                 if (withReset)
                 {
-                    _playbackStart = System.Environment.TickCount - _streamOffset;
-                    _nextCheckBufferUnderrun = System.Environment.TickCount + _bufferCheckInterval;
+                    long currentTime = System.Environment.TickCount;
+                    _playbackStart = currentTime - _streamOffset;
+                    _nextCheckBufferUnderrun = currentTime + _bufferCheckInterval;
                     if (_currentItem.Length != 0)
                     {
                         EnsurePullAndPushRunning();
                     }
                 }
+            }
+        }
+
+        private void ConnectToProvider(string itemName)
+        {
+            if (log.IsDebugEnabled)
+                log.Debug(string.Format("Attempting connection to {0}", itemName));
+            IScope thisScope = _playlistSubscriberStream.Scope;
+            _msgIn = _providerService.GetLiveProviderInput(thisScope, itemName, true);
+            if (_msgIn != null)
+            {
+                log.Debug(string.Format("Provider: {0}", _msgIn));
+                if (_msgIn.Subscribe(this, null))
+                {
+                    if (log.IsDebugEnabled)
+                        log.Debug(string.Format("Subscribed to {0} provider", itemName));
+                }
+                else
+                {
+                    if (log.IsWarnEnabled)
+                        log.Warn(string.Format("Subscribe to {0} provider failed", itemName));
+                }
+            }
+            else
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn(string.Format("Provider was not found for {0}", itemName));
             }
         }
 
@@ -1079,7 +1259,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
 
                         if (videoCodec == null || videoCodec.CanDropFrames)
                         {
-                            if (_stream.State == State.PAUSED)
+                            if (_playlistSubscriberStream.State == State.PAUSED)
                             {
                                 // The subscriber paused the video
                                 _videoFrameDropper.DropPacket(rtmpMessage);
@@ -1138,7 +1318,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                             }
                             rtmpMessage.body = body;
                         }
-                        else if (_stream.State == State.PAUSED || !_receiveAudio || !_audioBucket.AcquireToken(size, 0))
+                        else if (_playlistSubscriberStream.State == State.PAUSED || !_receiveAudio || !_audioBucket.AcquireToken(size, 0))
                         {
                             return;
                         }
@@ -1164,11 +1344,11 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 case PipeConnectionEvent.PROVIDER_CONNECT_PUSH:
                     if (evt.Provider != this)
                     {
-                        if (_waitLiveJob != null)
+                        if (_waiting)
                         {
                             _schedulingService.RemoveScheduledJob(_waitLiveJob);
                             _waitLiveJob = null;
-                            //_isWaiting = false;
+                            _waiting = false;
                         }
                         SendPublishedStatus(_currentItem);
                     }
@@ -1208,8 +1388,8 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         {
             lock (this.SyncRoot)
             {
-                _isWaitingForToken = false;
-                _needCheckBandwidth = false;
+                _waitingForToken = false;
+                _checkBandwidth = false;
                 try
                 {
                     PullAndPush();
@@ -1218,13 +1398,13 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                 {
                     log.Error("Error while pulling message.", ex);
                 }
-                _needCheckBandwidth = true;
+                _checkBandwidth = true;
             }
         }
 
         public void Reset(ITokenBucket bucket, long tokenCount)
         {
-            _isWaitingForToken = false;
+            _waitingForToken = false;
         }
 
         #endregion
@@ -1247,7 +1427,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
                     }
                 }
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 log.Error("Error while pushing message.", ex);
             }
@@ -1259,15 +1439,26 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// <param name="message"></param>
         private void SendMessage(RtmpMessage message)
         {
+            //TDJ / live relative timestamp
+            if (_playDecision == 0 && _streamStartTS > 0)
+            {
+                message.body.Timestamp = message.body.Timestamp - _streamStartTS;
+            }
+            int ts = message.body.Timestamp;
+            if( log.IsDebugEnabled )
+                log.Debug(string.Format("SendMessage: streamStartTS={0}, length={1}, streamOffset={2}, timestamp={3}", _streamStartTS, _currentItem.Length, _streamOffset, ts));		
             if (_streamStartTS == -1)
             {
-                _streamStartTS = message.body.Timestamp;
+                if (log.IsDebugEnabled)
+                    log.Debug("SendMessage: resetting streamStartTS");
+                _streamStartTS = ts;
+                message.body.Timestamp = 0;
             }
             else
             {
                 if (_currentItem.Length >= 0)
                 {
-                    int duration = message.body.Timestamp - _streamStartTS;
+                    int duration = ts - _streamStartTS;
                     if (duration - _streamOffset >= _currentItem.Length)
                     {
                         // Sent enough data to client
@@ -1286,7 +1477,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         private void SendClearPing()
         {
             Ping ping1 = new Ping();
-            ping1.Value1 = (short)Ping.StreamPlayBufferClear;
+            ping1.PingType = (short)Ping.StreamPlayBufferClear;
             ping1.Value2 = this.StreamId;
             RtmpMessage ping1Msg = new RtmpMessage();
             ping1Msg.body = ping1;
@@ -1301,7 +1492,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             if (_isPullMode)
             {
                 Ping ping1 = new Ping();
-                ping1.Value1 = (short)Ping.StreamReset;
+                ping1.PingType = (short)Ping.RecordedStream;
                 ping1.Value2 = this.StreamId;
 
                 RtmpMessage ping1Msg = new RtmpMessage();
@@ -1310,7 +1501,7 @@ namespace FluorineFx.Messaging.Rtmp.Stream
             }
 
             Ping ping2 = new Ping();
-            ping2.Value1 = (short)Ping.StreamClear;
+            ping2.PingType = (short)Ping.StreamBegin;
             ping2.Value2 = this.StreamId;
 
             RtmpMessage ping2Msg = new RtmpMessage();

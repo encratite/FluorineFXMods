@@ -37,6 +37,10 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Codec
         /// Video codec.
         /// </summary>
         private IVideoStreamCodec _videoCodec;
+        /// <summary>
+        /// Audio codec.
+        /// </summary>
+        private IAudioStreamCodec _audioCodec;
 
         #region IStreamCodecInfo Members
 
@@ -74,6 +78,16 @@ namespace FluorineFx.Messaging.Rtmp.Stream.Codec
         {
             get { return _videoCodec; }
             set { _videoCodec = value; }
+        }
+
+        /// <summary>
+        /// Gets the audio codec used by stream codec.
+        /// </summary>
+        /// <value>The audio codec.</value>
+        public IAudioStreamCodec AudioCodec 
+        {
+            get { return _audioCodec; }
+            set { _audioCodec = value; }
         }
 
         #endregion

@@ -47,5 +47,10 @@ namespace FluorineFx.Messaging.Api.Stream
         /// Gets video codec used by stream codec.
         /// </summary>
         IVideoStreamCodec VideoCodec { get; }
+        /// <summary>
+        /// Gets the audio codec used by stream codec.
+        /// </summary>
+        /// <value>The audio codec.</value>
+        IAudioStreamCodec AudioCodec { get; }
     }
 }

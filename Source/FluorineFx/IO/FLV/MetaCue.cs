@@ -17,8 +17,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using FluorineFx.Util;
 using FluorineFx.IO;
 
@@ -38,16 +39,8 @@ namespace FluorineFx.IO.FLV
     /// 
     /// <p>To add cue point trigger event listener at client-side in Flex/Flash application, use NetStream.onCuePoint event handler.</p>
     /// </summary>
-    public class MetaCue : Hashtable, IComparable
+    public class MetaCue : Dictionary<string, object>, IComparable
     {
-        /// <summary>
-        /// Cue point type of event.
-        /// </summary>
-        public const string EVENT = "event";
-        /// <summary>
-        /// Cue point type of navigation.
-        /// </summary>
-        public const string NAVIGATION = "navigation";
         /// <summary>
         /// Gets or sets the cue point name.
         /// </summary>
@@ -98,5 +91,19 @@ namespace FluorineFx.IO.FLV
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (string key in this.Keys)
+            {
+                if (sb.Length != 0)
+                    sb.Append(", ");
+                sb.Append(key);
+                sb.Append("=");
+                sb.Append(this[key]);
+            }
+            return "MetaCue{" + sb.ToString() + "}";
+        }
     }
 }

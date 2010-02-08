@@ -56,5 +56,10 @@ namespace FluorineFx.Messaging.Api.Stream
         /// </summary>
         /// <returns>Data.</returns>
         ByteBuffer GetKeyframe();
+        /// <summary>
+        /// Gets the decoder configuration.
+        /// </summary>
+        /// <returns>Data for decoder setup.</returns>
+        ByteBuffer GetDecoderConfiguration();
     }
 }

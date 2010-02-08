@@ -205,7 +205,7 @@
     <value>Message was not handled by DotNetAdapter, operation = {0}</value>
   </data>
   <data name="Destination_NotFound" xml:space="preserve">
-    <value>The requested destination {0} is not accessible</value>
+    <value>The requested destination '{0}' is not accessible</value>
   </data>
   <data name="Endpoint_Bind" xml:space="preserve">
     <value>Query endpoint endpointPath {0} contextPath {1}</value>
@@ -226,7 +226,7 @@
     <value>Get identity failed, member {0}</value>
   </data>
   <data name="Invalid_Destination" xml:space="preserve">
-    <value>Invalid Destination {0}</value>
+    <value>Invalid Destination '{0}'</value>
   </data>
   <data name="Invocation_Ambiguity" xml:space="preserve">
     <value>Method ambiguity, could not select the method with name {0}</value>
@@ -295,16 +295,16 @@
     <value>Push binary message {0} to client {1}</value>
   </data>
   <data name="MessageServiceRoute" xml:space="preserve">
-    <value>MessageService adapter servicing message for destination {0} from client {1}</value>
+    <value>MessageService adapter servicing message for destination '{0}' from client {1}</value>
   </data>
   <data name="MessageServiceSubscribe" xml:space="preserve">
-    <value>MessageService servicing subscribe command for destination {0}, new message client {1}</value>
+    <value>MessageService servicing subscribe command for destination '{0}', new message client {1}</value>
   </data>
   <data name="MessageServiceUnknown" xml:space="preserve">
-    <value>MessageService servicing unknown command ({0}) for destination {1}</value>
+    <value>MessageService servicing unknown command ({0}) for destination '{1}'</value>
   </data>
   <data name="MessageServiceUnsubscribe" xml:space="preserve">
-    <value>MessageService servicing unsubscribe command for destination {0}, client {1}</value>
+    <value>MessageService servicing unsubscribe command for destination '{0}', client {1}</value>
   </data>
   <data name="Msmq_Enable" xml:space="preserve">
     <value>MsmqAdapter change enabled state ({0})</value>
@@ -481,7 +481,7 @@
     <value>Removing sequence {0} all clients disconnected</value>
   </data>
   <data name="SequenceManager_RemoveStatus" xml:space="preserve">
-    <value>DataDestination {0} {1} sequences left</value>
+    <value>DataDestination '{0}' {1} sequences left</value>
   </data>
   <data name="SequenceManager_RemoveSubscriber" xml:space="preserve">
     <value>SequenceManager removing subscriber {0}</value>
