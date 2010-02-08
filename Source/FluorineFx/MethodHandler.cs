@@ -21,6 +21,8 @@ using System.ComponentModel;
 using System.Collections;
 using System.Reflection;
 using System.Text;
+using System.Security;
+using System.Security.Permissions;
 #if !(NET_1_1)
 using System.Collections.Generic;
 #endif
@@ -156,6 +158,15 @@ namespace FluorineFx
                         //Trace the issue
                         log.Error(msg);
                         log.Error("Displaying verbose logging information");
+                        try
+                        {
+                            new FileIOPermission(PermissionState.Unrestricted);
+                            log.Error(string.Format("Reflected type was '{0}' location of the loaded file {1}", type.AssemblyQualifiedName, type.Assembly.Location));
+                        }
+                        catch (SecurityException)
+                        {
+                            log.Error(string.Format("Reflected type was '{0}' location of the loaded file cannot be determined", type.AssemblyQualifiedName));
+                        }
 #if !(NET_1_1)
                         List<MethodInfo> suitableMethodInfosTmp = new List<MethodInfo>();
 #else
