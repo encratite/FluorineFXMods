@@ -61,6 +61,11 @@ namespace FluorineFx.Messaging
 		private bool _enabled = true;
 		private bool _running = false;
         private ServiceContainer _serviceContainer;
+        /// <summary>
+        /// Timestamp the scope was created.
+        /// </summary>
+        private long _creationTime;
+
 
 #if !(NET_1_1)
         /// <summary>
@@ -99,6 +104,7 @@ namespace FluorineFx.Messaging
             : base(null, ScopeType, name, false)
 		{
             _serviceContainer = new ServiceContainer();
+            _creationTime = System.Environment.TickCount;
         }
 
         internal ServiceContainer ServiceContainer
@@ -149,6 +155,14 @@ namespace FluorineFx.Messaging
 		{
 			get{ return _context != null; }
 		}
+        /// <summary>
+        /// Gets the creation time.
+        /// </summary>
+        /// <value>The creation time.</value>
+        public long CreationTime
+        {
+            get { return _creationTime; }
+        }
 
         /// <summary>
         /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.

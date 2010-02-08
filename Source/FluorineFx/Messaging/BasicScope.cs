@@ -145,6 +145,16 @@ namespace FluorineFx.Messaging
 			return _listeners;
 		}
         /// <summary>
+        /// Determines whether scope has attached event listeners.
+        /// </summary>
+        /// <returns>
+        /// 	<c>true</c> if scope has event listeners; otherwise, <c>false</c>.
+        /// </returns>
+        public bool HasEventListeners()
+        {
+            return _listeners.Count > 0;
+        }
+        /// <summary>
         /// Handle an event.
         /// </summary>
         /// <param name="event">Event to handle.</param>
