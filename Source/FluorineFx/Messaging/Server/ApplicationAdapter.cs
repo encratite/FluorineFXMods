@@ -18,9 +18,11 @@
 */
 using System;
 using System.Collections;
+using System.IO;
 using log4net;
 using FluorineFx.Collections;
 using FluorineFx.Configuration;
+using FluorineFx.IO;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.SO;
 using FluorineFx.Messaging.Api.Service;
@@ -28,6 +30,7 @@ using FluorineFx.Messaging.Api.Stream;
 using FluorineFx.Messaging.Rtmp;
 using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Messaging.Rtmp.Stream;
+using FluorineFx.Messaging.Rtmp.IO;
 using FluorineFx.Messaging.Server;
 using FluorineFx.Exceptions;
 using FluorineFx.Util;
@@ -830,6 +833,51 @@ namespace FluorineFx.Messaging.Adapter
         protected virtual void CalculateClientBw(IConnection client)
         {
             new BWCheck(client).CalculateClientBw();
+        }
+
+        /// <summary>
+        /// Returns stream length. Method added to get flv player to work.
+        /// </summary>
+        /// <param name="name">Stream name.</param>
+        /// <returns>Returns the length of a stream, in seconds.</returns>
+        public double getStreamLength(string name)
+        {
+            double duration = 0;
+            IProviderService provider = ScopeUtils.GetScopeService(this.Scope, typeof(IProviderService)) as IProviderService;
+            FileInfo file = provider.GetVODProviderFile(this.Scope, name);
+            if (file != null)
+            {
+                IStreamableFileFactory factory = (IStreamableFileFactory)ScopeUtils.GetScopeService(this.Scope, typeof(IStreamableFileFactory)) as IStreamableFileFactory;
+                IStreamableFileService service = factory.GetService(file);
+                if (service != null)
+                {
+                    ITagReader reader = null;
+                    try
+                    {
+                        IStreamableFile streamFile = service.GetStreamableFile(file);
+                        reader = streamFile.GetReader();
+                        duration = (double)reader.Duration / 1000;
+                    }
+                    catch (IOException ex)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error(string.Format("Error reading stream file {0}. {1}", file.FullName, ex.Message));
+                    }
+                    finally
+                    {
+                        if (reader != null)
+                            reader.Close();
+
+                    }
+                }
+                else
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error(string.Format("No service found for {0}", file.FullName));
+                }
+                file = null;
+            }
+            return duration;
         }
     }
 }

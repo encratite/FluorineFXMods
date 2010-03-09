@@ -80,7 +80,7 @@ namespace FluorineFx.Messaging.Rtmp.IO
             {
 			    if (service.CanHandle(file)) 
                 {
-				    log.Info("Found service");
+                    log.Info("Found service for file: " + file.Name);
 				    return service;
 			    }
 		    }
