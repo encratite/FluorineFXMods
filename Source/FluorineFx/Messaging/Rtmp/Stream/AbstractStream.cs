@@ -63,15 +63,15 @@ namespace FluorineFx.Messaging.Rtmp.Stream
         /// <summary>
         /// Stream name.
         /// </summary>
-        private string _name;
+        protected string _name;
         /// <summary>
         /// Stream scope.
         /// </summary>
-        private IScope _scope;
+        protected IScope _scope;
         /// <summary>
         /// Stream audio and video codecs information.
         /// </summary>
-        private IStreamCodecInfo _codecInfo;
+        protected IStreamCodecInfo _codecInfo;
         /// <summary>
         /// Current state.
         /// </summary>
