@@ -23,6 +23,7 @@ using System.Collections.Generic;
 #endif
 using System.ComponentModel;
 using FluorineFx.AMF3;
+using FluorineFx.Util;
 
 namespace FluorineFx.IO.Writers
 {
@@ -46,6 +47,40 @@ namespace FluorineFx.IO.Writers
                 writer.WriteAMF3Object(data);
                 return;
             }
+            //TODO: configure somehow Vector support
+            /*
+            if (CollectionUtils.IsGenericListType(data.GetType()))
+            {
+                Type itemType = ReflectionUtils.GetListItemType(data.GetType());
+                switch (Type.GetTypeCode(itemType))
+                {
+                    case TypeCode.Int32:
+                        writer.WriteByte(AMF3TypeCode.IntVector);
+                        writer.WriteAMF3IntVector(data as IList<int>);
+                        return;
+                    case TypeCode.UInt32:
+                        writer.WriteByte(AMF3TypeCode.UIntVector);
+                        writer.WriteAMF3UIntVector(data as IList<uint>);
+                        return;
+                    case TypeCode.Double:
+                        writer.WriteByte(AMF3TypeCode.NumberVector);
+                        writer.WriteAMF3DoubleVector(data as IList<double>);
+                        return;
+                    case TypeCode.String:
+                        writer.WriteByte(AMF3TypeCode.ObjectVector);
+                        writer.WriteAMF3ObjectVector(data as IList<string>);
+                        return;
+                    case TypeCode.Boolean:
+                        writer.WriteByte(AMF3TypeCode.ObjectVector);
+                        writer.WriteAMF3ObjectVector(data as IList<bool>);
+                        return;
+                    default:
+                        writer.WriteByte(AMF3TypeCode.ObjectVector);
+                        writer.WriteAMF3ObjectVector(data as IList);
+                        return;
+                }
+            }
+            */
             IList list = data as IList;
             if (list != null )
 			{

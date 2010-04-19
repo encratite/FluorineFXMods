@@ -190,6 +190,10 @@ namespace FluorineFx.IO
 			amf3Writers.Add(typeof(ByteArray), new AMF3ByteArrayWriter());
 			amf3Writers.Add(typeof(byte[]), new AMF3ByteArrayWriter());
 
+
+            //amf3Writers.Add(typeof(List<int>), new AMF3IntVectorWriter());
+            //amf3Writers.Add(typeof(IList<int>), new AMF3IntVectorWriter());
+
 #if !(NET_1_1)
             AmfWriterTable = new Dictionary<Type, IAMFWriter>[4] { amf0Writers, null, null, amf3Writers };
             classDefinitions = new CopyOnWriteDictionary<string,ClassDefinition>();
@@ -632,7 +636,6 @@ namespace FluorineFx.IO
         /// </summary>
         /// <param name="objectEncoding">Object encoding used.</param>
         /// <param name="value">An Dictionary object.</param>
-        /// <remarks>No type marker is written in the AMF stream.</remarks>
         public void WriteAssociativeArray(ObjectEncoding objectEncoding, IDictionary value)
 		{
             if (value == null)
@@ -656,7 +659,6 @@ namespace FluorineFx.IO
         /// </summary>
         /// <param name="objectEncoding">Object encoding used.</param>
         /// <param name="obj">The object to serialize.</param>
-        /// <remarks>No type marker is written in the AMF stream.</remarks>
         public void WriteObject(ObjectEncoding objectEncoding, object obj)
 		{
 			if( obj == null )
@@ -917,12 +919,128 @@ namespace FluorineFx.IO
 			WriteAMF3IntegerData(handle);
 			WriteBytes( byteArray.MemoryStream.ToArray() );
 		}
+
+        [CLSCompliant(false)]
+        public void WriteAMF3IntVector(IList<int> value)
+        {
+            if (!_objectReferences.ContainsKey(value))
+            {
+                _objectReferences.Add(value, _objectReferences.Count);
+                int handle = value.Count;
+                handle = handle << 1;
+                handle = handle | 1;
+                WriteAMF3IntegerData(handle);
+                WriteAMF3IntegerData(value.IsReadOnly ? 1 : 0);
+                for (int i = 0; i < value.Count; i++)
+                {
+                    WriteInt32(value[i]);
+                }
+            }
+            else
+            {
+                int handle = (int)_objectReferences[value];
+                handle = handle << 1;
+                WriteAMF3IntegerData(handle);
+            }
+        }
+
+        [CLSCompliant(false)]
+        public void WriteAMF3UIntVector(IList<uint> value)
+        {
+            if (!_objectReferences.ContainsKey(value))
+            {
+                _objectReferences.Add(value, _objectReferences.Count);
+                int handle = value.Count;
+                handle = handle << 1;
+                handle = handle | 1;
+                WriteAMF3IntegerData(handle);
+                WriteAMF3IntegerData(value.IsReadOnly ? 1 : 0);
+                for (int i = 0; i < value.Count; i++)
+                {
+                    WriteInt32((int)value[i]);
+                }
+            }
+            else
+            {
+                int handle = (int)_objectReferences[value];
+                handle = handle << 1;
+                WriteAMF3IntegerData(handle);
+            }
+        }
+
+        [CLSCompliant(false)]
+        public void WriteAMF3DoubleVector(IList<double> value)
+        {
+            if (!_objectReferences.ContainsKey(value))
+            {
+                _objectReferences.Add(value, _objectReferences.Count);
+                int handle = value.Count;
+                handle = handle << 1;
+                handle = handle | 1;
+                WriteAMF3IntegerData(handle);
+                WriteAMF3IntegerData(value.IsReadOnly ? 1 : 0);
+                for (int i = 0; i < value.Count; i++)
+                {
+                    WriteDouble(value[i]);
+                }
+            }
+            else
+            {
+                int handle = (int)_objectReferences[value];
+                handle = handle << 1;
+                WriteAMF3IntegerData(handle);
+            }
+        }
+
+        [CLSCompliant(false)]
+        public void WriteAMF3ObjectVector(IList<string> value)
+        {
+            WriteAMF3ObjectVector(string.Empty, value as IList);
+        }
+
+        [CLSCompliant(false)]
+        public void WriteAMF3ObjectVector(IList<Boolean> value)
+        {
+            WriteAMF3ObjectVector(string.Empty, value as IList);
+        }
+
+        [CLSCompliant(false)]
+        public void WriteAMF3ObjectVector(IList value)
+        {
+            Type listItemType = ReflectionUtils.GetListItemType(value.GetType());
+            WriteAMF3ObjectVector(listItemType.FullName, value);
+        }
+
+        private void WriteAMF3ObjectVector(string typeIdentifier, IList value)
+        {
+            if (!_objectReferences.ContainsKey(value))
+            {
+                _objectReferences.Add(value, _objectReferences.Count);
+                int handle = value.Count;
+                handle = handle << 1;
+                handle = handle | 1;
+                WriteAMF3IntegerData(handle);
+                WriteAMF3IntegerData(value.IsReadOnly ? 1 : 0);
+                WriteAMF3String(typeIdentifier);
+                for (int i = 0; i < value.Count; i++)
+                {
+                    WriteAMF3Data(value[i]);
+                }
+            }
+            else
+            {
+                int handle = (int)_objectReferences[value];
+                handle = handle << 1;
+                WriteAMF3IntegerData(handle);
+            }
+        }
+
         /// <summary>
         /// Writes a UTF-8 string to the current position in the AMF stream.
         /// </summary>
         /// <param name="value">The UTF-8 string.</param>
-        /// <remarks>Standard or long string header is not written.</remarks>
-		public void WriteAMF3UTF(string value)
+        /// <remarks>No type marker is written in the AMF stream.</remarks>
+        public void WriteAMF3UTF(string value)
 		{
 			if( value == string.Empty )
 			{
@@ -955,7 +1073,6 @@ namespace FluorineFx.IO
         /// Writes an UTF-8 string to the current position in the AMF stream.
         /// </summary>
         /// <param name="value">The UTF-8 string.</param>
-        /// <remarks>Standard or long string header is written depending on the string length.</remarks>
         public void WriteAMF3String(string value)
 		{
 			WriteByte(AMF3TypeCode.String);

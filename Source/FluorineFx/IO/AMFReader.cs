@@ -36,6 +36,7 @@ using FluorineFx.Exceptions;
 using FluorineFx.AMF3;
 using FluorineFx.Configuration;
 using FluorineFx.IO.Readers;
+using FluorineFx.Util;
 
 namespace FluorineFx.IO
 {
@@ -113,10 +114,10 @@ namespace FluorineFx.IO
 #endif
 				new AMF3XmlReader(), /*11*/
 				new AMF3ByteArrayReader(), /*12*/
-				new AMFUnknownTagReader(),
-				new AMFUnknownTagReader(),
-				new AMFUnknownTagReader(),
-				new AMFUnknownTagReader(),
+				new AMF3IntVectorReader(), /*13*/
+				new AMF3UIntVectorReader(), /*14*/
+				new AMF3DoubleVectorReader(), /*15*/
+				new AMF3ObjectVectorReader(), /*16*/
 				new AMFUnknownTagReader()
 			};
 
@@ -404,7 +405,7 @@ namespace FluorineFx.IO
 
 #if !(NET_1_1)
         /// <summary>
-        /// Reads an An ECMA or associative Array.
+        /// Reads an ECMA or associative Array.
         /// </summary>
         /// <returns>The associative Array.</returns>
         internal Dictionary<string, Object> ReadAssociativeArray()
@@ -830,6 +831,105 @@ namespace FluorineFx.IO
 				return ReadAMF3ObjectReference(handle);
 			}
 		}
+
+        [CLSCompliant(false)]
+        public IList<int> ReadAMF3IntVector()
+        {
+			int handle = ReadAMF3IntegerData();
+			bool inline = ((handle & 1) != 0 ); handle = handle >> 1;
+            if (inline)
+            {
+                List<int> list = new List<int>(handle);
+                AddAMF3ObjectReference(list);
+                int @fixed = ReadAMF3IntegerData();
+                for (int i = 0; i < handle; i++)
+                {
+                    list.Add(ReadInt32());
+                }
+                return @fixed == 1 ? list.AsReadOnly() as IList<int> : list;
+            }
+            else
+            {
+                return ReadAMF3ObjectReference(handle) as List<int>;
+            }
+        }
+
+        [CLSCompliant(false)]
+        public IList<uint> ReadAMF3UIntVector()
+        {
+            int handle = ReadAMF3IntegerData();
+            bool inline = ((handle & 1) != 0); handle = handle >> 1;
+            if (inline)
+            {
+                List<uint> list = new List<uint>(handle);
+                AddAMF3ObjectReference(list);
+                int @fixed = ReadAMF3IntegerData();
+                for (int i = 0; i < handle; i++)
+                {
+                    list.Add((uint)ReadInt32());
+                }
+                return @fixed == 1 ? list.AsReadOnly() as IList<uint> : list;
+            }
+            else
+            {
+                return ReadAMF3ObjectReference(handle) as List<uint>;
+            }
+        }
+
+        [CLSCompliant(false)]
+        public IList<double> ReadAMF3DoubleVector()
+        {
+            int handle = ReadAMF3IntegerData();
+            bool inline = ((handle & 1) != 0); handle = handle >> 1;
+            if (inline)
+            {
+                List<double> list = new List<double>(handle);
+                AddAMF3ObjectReference(list);
+                int @fixed = ReadAMF3IntegerData();
+                for (int i = 0; i < handle; i++)
+                {
+                    list.Add(ReadDouble());
+                }
+                return @fixed == 1 ? list.AsReadOnly() as IList<double> : list;
+            }
+            else
+            {
+                return ReadAMF3ObjectReference(handle) as List<double>;
+            }
+        }
+
+        [CLSCompliant(false)]
+        public IList ReadAMF3ObjectVector()
+        {
+            int handle = ReadAMF3IntegerData();
+            bool inline = ((handle & 1) != 0); handle = handle >> 1;
+            if (inline)
+            {
+                //List<object> list = new List<object>(handle);
+                int @fixed = ReadAMF3IntegerData();
+                string typeIdentifier = ReadAMF3String();
+                IList list;
+                if (!string.Empty.Equals(typeIdentifier))
+                    list = ReflectionUtils.CreateGeneric(typeof(List<>), ObjectFactory.Locate(typeIdentifier)) as IList;
+                else
+                    list = new List<object>();
+                AddAMF3ObjectReference(list);
+                for (int i = 0; i < handle; i++)
+                {
+                    byte typeCode = this.ReadByte();
+                    object obj = ReadAMF3Data(typeCode);
+                    list.Add(obj);
+                }
+                if (@fixed == 1)
+                    return list.GetType().GetMethod("AsReadOnly").Invoke(list, null) as IList;
+                
+                return list;
+            }
+            else
+            {
+                return ReadAMF3ObjectReference(handle) as IList;
+            }
+        }
 
         internal void AddClassReference(ClassDefinition classDefinition)
         {

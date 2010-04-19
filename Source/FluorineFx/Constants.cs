@@ -159,6 +159,22 @@ namespace FluorineFx
         /// AMF ByteArray data type.
         /// </summary>
         public const byte ByteArray = 12;
+        /// <summary>
+        /// AMF Integer Vector data type.
+        /// </summary>
+        public const byte IntVector = 13;
+        /// <summary>
+        /// AMF Uint Vector data type.
+        /// </summary>
+        public const byte UIntVector = 14;
+        /// <summary>
+        /// AMF Number Vector data type.
+        /// </summary>
+        public const byte NumberVector = 15;
+        /// <summary>
+        /// AMF Object Vector data type.
+        /// </summary>
+        public const byte ObjectVector = 16;
 	}
 
     internal sealed class ContentType

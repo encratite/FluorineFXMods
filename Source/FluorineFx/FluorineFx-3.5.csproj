@@ -195,10 +195,12 @@
     <Compile Include="IO\Mp4\Mp4Reader.cs" />
     <Compile Include="IO\ObjectProxyRegistry.cs" />
     <Compile Include="IO\ObjectProxy.cs" />
+    <Compile Include="IO\Readers\AMF3\AMF3VectorReader.cs" />
     <Compile Include="IO\Tag.cs" />
     <Compile Include="IO\WcfProxy.cs" />
     <Compile Include="IO\Writers\AMF0\AMF0XElementWriter.cs" />
     <Compile Include="IO\Writers\AMF0\AMF0XDocumentWriter.cs" />
+    <Compile Include="IO\Writers\AMF3\AMF3VectorWriter.cs" />
     <Compile Include="IO\Writers\AMF3\AMF3XDocumentWriter.cs" />
     <Compile Include="IO\Writers\AMF3\AMF3XElementWriter.cs" />
     <Compile Include="IO\Writers\RawBinaryWriter.cs" />
@@ -243,6 +245,7 @@
     <Compile Include="Messaging\Rtmp\RtmpHandshake.cs" />
     <Compile Include="Messaging\Rtmp\RtmptProtocolDecoder.cs" />
     <Compile Include="Messaging\Rtmp\RtmptProtocolEncoder.cs" />
+    <Compile Include="Messaging\Rtmp\Stream\BroadcastStream.cs" />
     <Compile Include="Messaging\Rtmp\Stream\Codec\AVCVideo.cs" />
     <Compile Include="Messaging\Rtmp\Stream\Codec\ScreenVideo.cs" />
     <Compile Include="Messaging\Rtmp\Stream\Codec\SorensonVideo.cs" />
