@@ -82,7 +82,6 @@ namespace FluorineFx.Net
 
         NetConnection _connection;
         object _client;
-        string _name;
         int _start;
         int _length;
 

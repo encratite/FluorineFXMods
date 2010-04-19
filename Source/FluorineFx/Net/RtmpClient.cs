@@ -64,7 +64,7 @@ namespace FluorineFx.Net
 
         RtmpClientConnection _connection;
         object[] _connectArguments;
-        IEventDispatcher _streamEventDispatcher = null;
+        //IEventDispatcher _streamEventDispatcher = null;
 
 
         public RtmpClient(NetConnection netConnection)

@@ -287,7 +287,7 @@ namespace FluorineFx.Net
                                 call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_INVOCATION_EXCEPTION;
                                 requestData.Callback.ResultReceived(call);
                             }
-                            if (result is AcknowledgeMessage)
+                            else if (result is AcknowledgeMessage)
                             {
                                 AcknowledgeMessage ack = result as AcknowledgeMessage;
                                 if (_netConnection.ClientId == null && ack.HeaderExists(MessageBase.FlexClientIdHeader))
