@@ -471,4 +471,7 @@
   <data name="Fluorine_Fatal" xml:space="preserve">
     <value>Fatal problem detected {0}</value>
   </data>
+  <data name="Invocation_Failed" xml:space="preserve">
+    <value>Exception has been thrown by the invoked method {0}: {1}</value>
+  </data>
 </root>

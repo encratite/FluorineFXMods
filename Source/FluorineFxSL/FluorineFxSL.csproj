@@ -273,6 +273,9 @@
     <Compile Include="..\FluorineFx\IO\Readers\AMF3\AMF3TypedASObjectReader.cs">
       <Link>IO\Readers\AMF3\AMF3TypedASObjectReader.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\IO\Readers\AMF3\AMF3VectorReader.cs">
+      <Link>IO\Readers\AMF3\AMF3VectorReader.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\IO\Readers\AMF3\AMF3XmlReader.cs">
       <Link>IO\Readers\AMF3\AMF3XmlReader.cs</Link>
     </Compile>
@@ -371,6 +374,9 @@
     </Compile>
     <Compile Include="..\FluorineFx\IO\Writers\AMF3\AMF3StringWriter.cs">
       <Link>IO\Writers\AMF3\AMF3StringWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\IO\Writers\AMF3\AMF3VectorWriter.cs">
+      <Link>IO\Writers\AMF3\AMF3VectorWriter.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\IO\Writers\AMF3\AMF3XDocumentWriter.cs">
       <Link>IO\Writers\AMF3\AMF3XDocumentWriter.cs</Link>
@@ -489,6 +495,9 @@
     <Compile Include="..\FluorineFx\Messaging\Api\Messaging\IProvider.cs">
       <Link>Messaging\Api\Messaging\IProvider.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\Messaging\IPushableConsumer.cs">
+      <Link>Messaging\Api\Messaging\IPushableConsumer.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\Messaging\OOBControlMessage.cs">
       <Link>Messaging\Api\Messaging\OOBControlMessage.cs</Link>
     </Compile>
@@ -525,6 +534,9 @@
     <Compile Include="..\FluorineFx\Messaging\Api\Statistics\IStreamStatistics.cs">
       <Link>Messaging\Api\Statistics\IStreamStatistics.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\Stream\IAudioStreamCodec.cs">
+      <Link>Messaging\Api\Stream\IAudioStreamCodec.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\Stream\IBroadcastStream.cs">
       <Link>Messaging\Api\Stream\IBroadcastStream.cs</Link>
     </Compile>
@@ -533,6 +545,9 @@
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\Stream\IClientStream.cs">
       <Link>Messaging\Api\Stream\IClientStream.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\Stream\INetStreamEventHandler.cs">
+      <Link>Messaging\Api\Stream\INetStreamEventHandler.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\Stream\IPlayItem.cs">
       <Link>Messaging\Api\Stream\IPlayItem.cs</Link>
@@ -551,6 +566,9 @@
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\Stream\IStream.cs">
       <Link>Messaging\Api\Stream\IStream.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\Stream\IStreamAwareScopeHandler.cs">
+      <Link>Messaging\Api\Stream\IStreamAwareScopeHandler.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\Stream\IStreamCapableConnection.cs">
       <Link>Messaging\Api\Stream\IStreamCapableConnection.cs</Link>
@@ -729,6 +747,15 @@
     <Compile Include="..\FluorineFx\Messaging\Rtmp\StatusASO.cs">
       <Link>Messaging\Rtmp\StatusASO.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\AbstractClientStream.cs">
+      <Link>Messaging\Rtmp\Stream\AbstractClientStream.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\AbstractStream.cs">
+      <Link>Messaging\Rtmp\Stream\AbstractStream.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\Consumer\ConnectionConsumer.cs">
+      <Link>Messaging\Rtmp\Stream\Consumer\ConnectionConsumer.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\IBWControlContext.cs">
       <Link>Messaging\Rtmp\Stream\IBWControlContext.cs</Link>
     </Compile>
@@ -741,6 +768,15 @@
     <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\ITokenBucket.cs">
       <Link>Messaging\Api\Stream\ITokenBucket.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\Messages\ResetMessage.cs">
+      <Link>Messaging\Rtmp\Stream\Messages\ResetMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\Messages\RtmpMessage.cs">
+      <Link>Messaging\Rtmp\Stream\Messages\RtmpMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\Messages\StatusMessage.cs">
+      <Link>Messaging\Rtmp\Stream\Messages\StatusMessage.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Rtmp\Stream\OutputStream.cs">
       <Link>Messaging\Rtmp\Stream\OutputStream.cs</Link>
     </Compile>
@@ -750,11 +786,26 @@
     <Compile Include="..\FluorineFx\Net\INetConnectionClient.cs">
       <Link>Net\INetConnectionClient.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Net\MetaDataEventArgs.cs">
+      <Link>Net\MetaDataEventArgs.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Net\NetConnection.cs">
       <Link>Net\NetConnection.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Net\NetStatusEventArgs.cs">
       <Link>Net\NetStatusEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Net\NetStream.cs">
+      <Link>Net\NetStream.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Net\NetStreamAudioEventArgs.cs">
+      <Link>Net\NetStreamAudioEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Net\NetStreamVideoEventArgs.cs">
+      <Link>Net\NetStreamVideoEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Net\PlayStatusEventArgs.cs">
+      <Link>Net\PlayStatusEventArgs.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Net\RemoteSharedObject.cs">
       <Link>Net\RemoteSharedObject.cs</Link>
@@ -839,8 +890,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Media\" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

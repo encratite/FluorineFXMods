@@ -154,6 +154,7 @@ namespace FluorineFx
         internal const string Identity_Failed = "Identity_Failed";
 
         internal const string Invoke_Method = "Invoke_Method";
+        internal const string Invocation_Failed = "Invocation_Failed";
 
         internal const string Channel_NotFound = "Channel_NotFound";
 
