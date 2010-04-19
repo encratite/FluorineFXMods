@@ -119,7 +119,7 @@ namespace FluorineFx.AMF3
 		/// Initializes a new instance of the ByteArray class.
 		/// </summary>
         /// <param name="buffer">The array of unsigned bytes from which to create the current ByteArray.</param>
-		internal ByteArray(byte[] buffer)
+        public ByteArray(byte[] buffer)
 		{
 			_memoryStream = new MemoryStream();
 			_memoryStream.Write(buffer, 0, buffer.Length);
@@ -143,11 +143,20 @@ namespace FluorineFx.AMF3
 		/// <summary>
 		/// Gets or sets the current position, in bytes, of the file pointer into the ByteArray object.
 		/// </summary>
-		public int Position
+        public uint Position
 		{
-			get{ return (int)_memoryStream.Position; }
+            get { return (uint)_memoryStream.Position; }
 			set{ _memoryStream.Position = value; }
 		}
+
+        /// <summary>
+        /// The number of bytes of data available for reading from the current position in the byte array to the end of the array.
+        /// </summary>
+        /// <value>The number of bytes of data available for reading from the current position.</value>
+        public uint BytesAvailable
+        {
+            get { return this.Length - this.Position; }
+        }
         /// <summary>
         /// Gets or sets the object encoding used in the ByteArray.
         /// </summary>
@@ -208,14 +217,40 @@ namespace FluorineFx.AMF3
 		/// <summary>
 		/// Reads length bytes of data from the byte stream or byte array. 
 		/// </summary>
-		/// <param name="bytes"></param>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
+        /// <param name="bytes">The byte array object to read data into.</param>
+        /// <param name="offset">The offset (position) in bytes at which the read data should be written.</param>
+		/// <param name="length">The number of bytes to read.</param>
 		public void ReadBytes(byte[] bytes, uint offset, uint length)
 		{
 			_dataInput.ReadBytes(bytes, offset, length);
 		}
-		/// <summary>
+        /// <summary>
+        /// Reads the number of data bytes, specified by the length parameter, from the byte stream. The bytes are read into the ByteArray object specified 
+        /// by the bytes parameter, and the bytes are written into the destination ByteArray starting at the position specified by offset.
+        /// </summary>
+        /// <param name="bytes">The ByteArray object to read data into.</param>
+        /// <param name="offset">The offset (position) in bytes at which the read data should be written.</param>
+        /// <param name="length">The number of bytes to read.</param>
+        public void ReadBytes(ByteArray bytes, uint offset, uint length)
+        {
+            uint tmp = bytes.Position;
+            int count = (int)(length != 0 ? length : this.BytesAvailable);
+            for (int i = 0; i < count; i++)
+            {
+                bytes._memoryStream.Position = i + offset;
+                bytes._memoryStream.WriteByte(this.ReadByte());
+            }
+            bytes.Position = tmp;
+        }
+        /// <summary>
+        /// Reads all available data from the byte stream. The bytes are read into the ByteArray object specified by the bytes parameter.
+        /// </summary>
+        /// <param name="bytes">The ByteArray object to read data into.</param>
+        public void ReadBytes(ByteArray bytes)
+        {
+            ReadBytes(bytes, 0, 0);
+        }
+        /// <summary>
 		/// Reads an IEEE 754 double-precision floating point number from the byte stream or byte array. 
 		/// </summary>
 		/// <returns></returns>
@@ -484,6 +519,17 @@ namespace FluorineFx.AMF3
             _dataInput = new DataInput(amfReader);
 #endif
 #endif
+        }
+
+        /// <summary>
+        /// Converts the byte array to a string.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="System.String"/> representation of the byte array.
+        /// </returns>
+        public override string ToString()
+        {
+            return System.Text.Encoding.Default.GetString(this.ToArray());
         }
 	}
 }
