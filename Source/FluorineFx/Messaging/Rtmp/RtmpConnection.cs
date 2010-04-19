@@ -489,6 +489,11 @@ namespace FluorineFx.Messaging.Rtmp
         #region IConnection Members
 
         /// <summary>
+        /// Gets the total number of messages that are pending to be sent to the connection.
+        /// </summary>
+        public override long PendingMessages { get { return _pendingCalls.Count; } }
+
+        /// <summary>
         /// Mark message as being written.
         /// </summary>
         /// <param name="packet">The RTMP packet</param>

@@ -494,7 +494,7 @@ namespace FluorineFx.Messaging
         /// <summary>
         /// Gets the total number of messages that are pending to be sent to the connection.
         /// </summary>
-        public long PendingMessages { get { return 0; } }
+        public virtual long PendingMessages { get { return 0; } }
         /// <summary>
         /// Get the total number of video messages that are pending to be sent to a stream.
         /// </summary>
