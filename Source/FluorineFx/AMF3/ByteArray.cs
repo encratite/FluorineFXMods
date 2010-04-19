@@ -529,7 +529,12 @@ namespace FluorineFx.AMF3
         /// </returns>
         public override string ToString()
         {
+#if SILVERLIGHT
+            byte[] buffer = this.ToArray();
+            return System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+#else
             return System.Text.Encoding.Default.GetString(this.ToArray());
+#endif
         }
 	}
 }
