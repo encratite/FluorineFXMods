@@ -142,9 +142,8 @@ namespace FluorineFx
                             WireAppDomain();
                             RegisterObject();
                         }
-                        catch (SecurityException)
-                        {
-                        }
+                        catch (MethodAccessException){}
+                        catch (SecurityException){}
                         _initialized = true;
 					}
 				}

@@ -43,12 +43,19 @@ namespace FluorineFx.IO.Bytecode.Lightweight
         CreateInstanceInvoker _createInstanceMethod;
         ReadDataInvoker _readDataMethod;
         ClassDefinition _classDefinition;
+#if !(MONO) && !(NET_2_0) && !(NET_3_5) && !(SILVERLIGHT)
+        PermissionSet _ps;
+#endif
 
         public AMF3ReflectionOptimizer(Type type, ClassDefinition classDefinition, AMFReader reader, object instance)
 		{
             _classDefinition = classDefinition;
             _createInstanceMethod = CreateCreateInstanceMethod(type);
             _readDataMethod = CreateReadDataMethod(type, reader, instance);
+#if !(MONO) && !(NET_2_0) && !(NET_3_5) && !(SILVERLIGHT)
+            _ps = new PermissionSet(PermissionState.None);
+            _ps.AddPermission(new ReflectionPermission(ReflectionPermissionFlag.MemberAccess));
+#endif
         }
 
         private CreateInstanceInvoker CreateCreateInstanceMethod(System.Type type)
@@ -64,8 +71,11 @@ namespace FluorineFx.IO.Bytecode.Lightweight
 
         protected virtual ReadDataInvoker CreateReadDataMethod(Type type, AMFReader reader, object instance)
         {
-            //DynamicMethod method = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(AMFReader) }, type, true);
+#if !(MONO) && !(NET_2_0) && !(NET_3_5) && !(SILVERLIGHT)
+            bool canSkipChecks = _ps.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
+#else
             bool canSkipChecks = SecurityManager.IsGranted(new ReflectionPermission(ReflectionPermissionFlag.MemberAccess));
+#endif
             DynamicMethod method = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(AMFReader), typeof(ClassDefinition) }, this.GetType(), canSkipChecks);
             ILGenerator il = method.GetILGenerator();
 

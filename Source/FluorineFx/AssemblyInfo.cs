@@ -31,6 +31,8 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("FluorineFx for .NET Framework 2.0")]
 #elif (NET_3_5)
 [assembly: AssemblyTitle("FluorineFx for .NET Framework 3.5")]
+#elif (NET_4_0)
+[assembly: AssemblyTitle("FluorineFx for .NET Framework 4.0")]
 #elif (MONO)
 [assembly: AssemblyTitle("FluorineFx for MONO 2.0")]
 #else
