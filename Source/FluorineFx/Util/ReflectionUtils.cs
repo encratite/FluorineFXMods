@@ -35,9 +35,9 @@ namespace FluorineFx.Util
 	{
         protected ReflectionUtils() { }
 
-		static Type GenericIListType = Type.GetType("System.Collections.Generic.IList`1");
-		static Type GenericICollectionType = Type.GetType("System.Collections.Generic.ICollection`1");
-		static Type GenericIDictionaryType = Type.GetType("System.Collections.Generic.IDictionary`2");
+		internal static Type GenericIListType = Type.GetType("System.Collections.Generic.IList`1");
+        internal static Type GenericICollectionType = Type.GetType("System.Collections.Generic.ICollection`1");
+        internal static Type GenericIDictionaryType = Type.GetType("System.Collections.Generic.IDictionary`2");
 
 		public static Type GetObjectType(object v)
 		{

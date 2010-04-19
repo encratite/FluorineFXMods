@@ -109,10 +109,14 @@ namespace FluorineFx.Util
 			{
 				list = (IList)Activator.CreateInstance(listType);
 			}
-			else
-			{
-				throw new Exception(string.Format("Cannot create and populate list type {0}.", listType));
-			}
+            else if (ReflectionUtils.IsSubClass(listType, typeof(IList<>)))
+            {
+                list = CreateGenericList(ReflectionUtils.GetGenericArguments(listType)[0]) as IList;
+            }
+            else
+            {
+                throw new Exception(string.Format("Cannot create and populate list type {0}.", listType));
+            }
 
 			// create readonly and fixed sized collections using the temporary list
 			if (isReadOnlyOrFixedSize)
@@ -393,6 +397,23 @@ namespace FluorineFx.Util
             else if (typeof(IList).IsAssignableFrom(type))
                 return true;
             else if (ReflectionUtils.IsSubClass(type, typeof(IList<>)))
+                return true;
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// Determines whether the specified type is a generic list type.
+        /// </summary>
+        /// <param name="type">A Type object.</param>
+        /// <returns>
+        /// 	<c>true</c> if it is a generic list type; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsGenericListType(Type type)
+        {
+            ValidationUtils.ArgumentNotNull(type, "listType");
+
+            if (ReflectionUtils.IsSubClass(type, typeof(IList<>)))
                 return true;
             else
                 return false;

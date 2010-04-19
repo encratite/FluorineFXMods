@@ -451,17 +451,20 @@ namespace FluorineFx
                     if (HttpContext.Current != null && HttpContext.Current.Request != null)
                     {
                         log.Debug("Checking Request PhysicalApplicationPath");
-                        string path = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "bin");
+                        string path = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "Bin");
                         if (Directory.Exists(path))
                         {
                             lacLocations.Add(path);
                             log.Debug(string.Format("Adding LAC location {0}", path));
                         }
-                        path = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "Bin");
-                        if (Directory.Exists(path))
+                        else
                         {
-                            lacLocations.Add(path);
-                            log.Debug(string.Format("Adding LAC location {0}", path));
+                            path = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "bin");
+                            if (Directory.Exists(path))
+                            {
+                                lacLocations.Add(path);
+                                log.Debug(string.Format("Adding LAC location {0}", path));
+                            }
                         }
                     }
                 }
@@ -799,6 +802,11 @@ namespace FluorineFx
             return ConvertChangeType(value, targetType, ReflectionUtils.IsNullable(targetType));
         }
 
+        static T Cast<T>(object obj) where T : class
+        {
+            return obj as T;
+        }
+
         private static object ConvertChangeType(object value, Type targetType, bool isNullable)
         {
             if (targetType.IsArray)
@@ -972,11 +980,24 @@ namespace FluorineFx
             if (typeConverter != null && typeConverter.CanConvertTo(targetType))
                 return typeConverter.ConvertTo(value, targetType);
 
+            if (targetType.IsInterface)
+            {
+                if (null == value)
+                    return null;
+                MethodInfo castMethod = typeof(TypeHelper).GetMethod("Cast", BindingFlags.Static | BindingFlags.NonPublic).MakeGenericMethod(targetType);
+                object castedObject = castMethod.Invoke(null, new object[] { value });
+                if (castedObject != null)
+                    return castedObject;
+            }
             //Collections
 #if !(NET_1_1)
             if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.Generic.ICollection`1") && value is IList)
             {
-                object obj = CreateInstance(targetType);
+                object obj = null;
+                if (CollectionUtils.IsListType(targetType))
+                    obj = CollectionUtils.CreateList(targetType);
+                if( obj == null )
+                    obj = CreateInstance(targetType);
                 if (obj != null)
                 {
                     //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
@@ -985,7 +1006,7 @@ namespace FluorineFx
                     {
                         //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
                         Type typeGenericICollection = targetType.GetInterface("System.Collections.Generic.ICollection`1", true);
-                        MethodInfo miAddCollection = targetType.GetMethod("Add");
+                        MethodInfo miAddCollection = typeGenericICollection.GetMethod("Add");
                         IList source = value as IList;
                         for (int i = 0; i < (value as IList).Count; i++)
                             miAddCollection.Invoke(obj, new object[] { ChangeType(source[i], typeParameters[0]) });
@@ -1025,7 +1046,7 @@ namespace FluorineFx
                     {
                         //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
                         Type typeGenericIDictionary = targetType.GetInterface("System.Collections.Generic.IDictionary`2", true);
-                        MethodInfo miAddCollection = targetType.GetMethod("Add");
+                        MethodInfo miAddCollection = typeGenericIDictionary.GetMethod("Add");
                         IDictionary dictionary = value as IDictionary;
                         foreach (DictionaryEntry entry in dictionary)
                         {
