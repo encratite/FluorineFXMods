@@ -54,6 +54,6 @@ using System.Runtime.InteropServices;
 
 #if STRONG
 [assembly: AssemblyDelaySign(false)]
-[assembly: AssemblyKeyFile("..\\..\\..\\..\\snk\\fluorine.snk")]
+[assembly: AssemblyKeyFile("..\\..\\..\\snk\\fluorine.snk")]
 [assembly: AssemblyKeyName("")]
 #endif
