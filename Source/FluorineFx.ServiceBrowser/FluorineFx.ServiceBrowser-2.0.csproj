@@ -10,8 +10,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FluorineFx.ServiceBrowser</RootNamespace>
     <AssemblyName>FluorineFx.ServiceBrowser</AssemblyName>
-    <StartupObject>
-    </StartupObject>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -162,27 +160,27 @@
     <EmbeddedResource Include="Resource\swfobject.js" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="antlr.runtime, Version=2.7.6.2, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+    <Reference Include="antlr.runtime, Version=2.7.6.2, Culture=neutral, PublicKeyToken=65e474d141e25e07">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\antlr\net\2.0\antlr.runtime.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\sharpziplib\net\2.0\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\log4net\net\2.0\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=1.0.10.1, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\mysql\MySql.Data.dll</HintPath>
+      <HintPath>..\sql\MySql\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Web" />
-    <Reference Include="System.XML" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FluorineFx\FluorineFx-2.0.csproj">
@@ -196,8 +194,6 @@
     <None Include="templates\flash_remoting _as2\preview.template" />
     <None Include="templates\flash_remoting _as2\runme.jsfl.template" />
     <None Include="templates\flash_remoting _as2\test.fla" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="templates\cairngorm_flex2\Assembler.cs.subtemplate" />
     <None Include="templates\cairngorm_flex2\Assembler.template" />
     <None Include="templates\cairngorm_flex2\DAO.cs.subtemplate" />
@@ -205,8 +201,6 @@
     <None Include="templates\cairngorm_flex2\preview.template" />
     <None Include="templates\cairngorm_flex2\Web.config.template" />
     <None Include="templates\flash_remoting _as2\template.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="templates\cairngorm_flex2\flex\app.mxml.subtemplate" />
     <None Include="templates\cairngorm_flex2\flex\app.template" />
     <None Include="templates\cairngorm_flex2\flex\build.bat.template" />
@@ -267,8 +261,6 @@
     <None Include="templates\CairngormFlex2Remoting\flex\_application\_vo\vo.template" />
     <None Include="templates\CairngormFlex2Remoting\flex\_settings\org.eclipse.core.resources.prefs" />
     <None Include="templates\CairngormFlex2Remoting\preview.template" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="templates\CairngormFlex2Remoting\flex\_application\_vo\DataVO.as.subtemplate" />
     <None Include="templates\CairngormFlex2Remoting\VO.cs.subtemplate" />
     <None Include="templates\CairngormFlex2Remoting\VO.template" />
