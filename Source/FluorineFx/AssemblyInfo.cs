@@ -102,9 +102,9 @@ using System.Runtime.CompilerServices;
 #if STRONG
 [assembly: AssemblyDelaySign(false)]
 #if MONO
-[assembly: AssemblyKeyFile("../../../snk/fluorine.snk")]
+[assembly: AssemblyKeyFile("../../snk/fluorine.snk")]
 #else
-[assembly: AssemblyKeyFile("..\\..\\..\\..\\snk\\fluorine.snk")]
+[assembly: AssemblyKeyFile("..\\..\\..\\snk\\fluorine.snk")]
 #endif
 [assembly: AssemblyKeyName("")]
 #endif
