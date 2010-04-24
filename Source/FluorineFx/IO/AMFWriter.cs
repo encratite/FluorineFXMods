@@ -383,7 +383,7 @@ namespace FluorineFx.IO
             if( AmfWriterTable[0].ContainsKey(type) )
                 amfWriter = AmfWriterTable[0][type] as IAMFWriter;
 			//Second try with basetype (enums and arrays for example)
-            if (amfWriter == null && AmfWriterTable[0].ContainsKey(type.BaseType))
+            if (amfWriter == null && type.BaseType != null && AmfWriterTable[0].ContainsKey(type.BaseType))
                 amfWriter = AmfWriterTable[0][type.BaseType] as IAMFWriter;
 
 			if( amfWriter == null )
@@ -764,9 +764,9 @@ namespace FluorineFx.IO
 				WriteAMF3Null();
 				return;
 			}
+            Type type = data.GetType();
             if (FluorineConfiguration.Instance.AcceptNullValueTypes && FluorineConfiguration.Instance.NullableValues != null)
 			{
-				Type type = data.GetType();
 				if( FluorineConfiguration.Instance.NullableValues.ContainsKey(type) && data.Equals(FluorineConfiguration.Instance.NullableValues[type]) )
 				{
 					WriteAMF3Null();
@@ -775,23 +775,23 @@ namespace FluorineFx.IO
 			}
 
             IAMFWriter amfWriter = null;
-            if( AmfWriterTable[3].ContainsKey(data.GetType()) )
-                amfWriter = AmfWriterTable[3][data.GetType()] as IAMFWriter;
+            if (AmfWriterTable[3].ContainsKey(type))
+                amfWriter = AmfWriterTable[3][type] as IAMFWriter;
 			//Second try with basetype (Enums for example)
-            if (amfWriter == null && AmfWriterTable[3].ContainsKey(data.GetType().BaseType) )
-				amfWriter = AmfWriterTable[3][data.GetType().BaseType] as IAMFWriter;
+            if (amfWriter == null && type.BaseType != null && AmfWriterTable[3].ContainsKey(type.BaseType))
+                amfWriter = AmfWriterTable[3][type.BaseType] as IAMFWriter;
 
 			if( amfWriter == null )
 			{
 				lock(AmfWriterTable)
 				{
-                    if (!AmfWriterTable[3].ContainsKey(data.GetType()))
+                    if (!AmfWriterTable[3].ContainsKey(type))
                     {
                         amfWriter = new AMF3ObjectWriter();
-                        AmfWriterTable[3].Add(data.GetType(), amfWriter);
+                        AmfWriterTable[3].Add(type, amfWriter);
                     }
                     else
-                        amfWriter = AmfWriterTable[3][data.GetType()] as IAMFWriter;
+                        amfWriter = AmfWriterTable[3][type] as IAMFWriter;
 				}
 			}
 
@@ -801,7 +801,7 @@ namespace FluorineFx.IO
 			}
 			else
 			{
-				string msg = string.Format("Could not find serializer for type {0}", data.GetType().FullName);
+                string msg = string.Format("Could not find serializer for type {0}", type.FullName);
 				throw new FluorineException(msg);
 			}
 			//WriteByte(AMF3TypeCode.Object);
