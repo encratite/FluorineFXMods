@@ -17,6 +17,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+using System.Collections;
 using System.Web;
 using System.Web.Caching;
 using FluorineFx.Collections;
@@ -62,6 +63,30 @@ namespace FluorineFx.Context
                 HttpRuntime.Cache.Insert(name, value, cacheDependency, DateTime.Now.AddYears(1), TimeSpan.Zero, CacheItemPriority.NotRemovable, null);
                 return;
             }
+        }
+
+        /// <summary>
+        /// Locks access to an IApplicationState variable to facilitate access synchronization.
+        /// </summary>
+        public void Lock()
+        {
+            //System.Web.Caching.Cache is thread-safe
+        }
+        /// <summary>
+        /// Unlocks access to an IApplicationState variable to facilitate access synchronization.
+        /// </summary>
+        public void UnLock()
+        {
+            //System.Web.Caching.Cache is thread-safe
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        public IEnumerator GetEnumerator()
+        {
+            return HttpRuntime.Cache.GetEnumerator();
         }
 
         #endregion

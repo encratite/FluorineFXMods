@@ -17,13 +17,14 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+using System.Collections;
 
 namespace FluorineFx.Context
 {
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	public interface IApplicationState
+    public interface IApplicationState : IEnumerable
 	{
         /// <summary>
         /// Gets the value of a single ApplicationState object by name.
@@ -42,5 +43,13 @@ namespace FluorineFx.Context
         /// <param name="name">The name of the object to be added to the collection.</param>
         /// <param name="value">The value of the object.</param>
 		void Add(string name, object value);
+        /// <summary>
+        /// Locks access to an IApplicationState variable to facilitate access synchronization.
+        /// </summary>
+        void Lock();
+        /// <summary>
+        /// Unlocks access to an IApplicationState variable to facilitate access synchronization.
+        /// </summary>
+        void UnLock();
 	}
 }

@@ -17,6 +17,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
+using System.Collections;
 using System.Web;
 
 namespace FluorineFx.Context
@@ -67,6 +68,30 @@ namespace FluorineFx.Context
 			HttpContext.Current.Application.Add(name, value);
 		}
 
+        /// <summary>
+        /// Locks access to an IApplicationState variable to facilitate access synchronization.
+        /// </summary>
+        public void Lock()
+        {
+            HttpContext.Current.Application.Lock();
+        }
+        /// <summary>
+        /// Unlocks access to an IApplicationState variable to facilitate access synchronization.
+        /// </summary>
+        public void UnLock()
+        {
+            HttpContext.Current.Application.UnLock();
+        }
+
 		#endregion
-	}
+
+        #region IEnumerable Members
+
+        public IEnumerator GetEnumerator()
+        {
+            return HttpContext.Current.Application.GetEnumerator();
+        }
+
+        #endregion
+    }
 }

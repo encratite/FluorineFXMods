@@ -18,6 +18,7 @@
 */
 using System;
 using System.Collections;
+using System.Threading;
 
 namespace FluorineFx.Context
 {
@@ -117,6 +118,30 @@ namespace FluorineFx.Context
             {
                 GetApplicationStateData().Add(name, value);
             }
+        }
+
+        /// <summary>
+        /// Locks access to an IApplicationState variable to facilitate access synchronization.
+        /// </summary>
+        public void Lock()
+        {
+            Monitor.Enter(_objLock);
+        }
+        /// <summary>
+        /// Unlocks access to an IApplicationState variable to facilitate access synchronization.
+        /// </summary>
+        public void UnLock()
+        {
+            Monitor.Exit(_objLock);
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        public IEnumerator GetEnumerator()
+        {
+            return GetApplicationStateData().GetEnumerator();
         }
 
         #endregion
