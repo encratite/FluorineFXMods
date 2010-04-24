@@ -21,19 +21,21 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Runtime.Serialization;
-#if !(NET_1_1)
+using System.Reflection;
 using System.Collections.Generic;
-#endif
+using System.ComponentModel;
+using FluorineFx.Util;
+using FluorineFx.Exceptions;
 
 namespace FluorineFx
 {
-#if !(NET_1_1)
 	/// <summary>
 	/// The ASObject class represents a Flash object.
 	/// </summary>
 #if !SILVERLIGHT
     [Serializable]
 #endif
+    [TypeConverter(typeof(ASObjectConverter))]
     public class ASObject : Dictionary<string, Object>
     {
         private string _typeName;
@@ -87,71 +89,110 @@ namespace FluorineFx
             get { return _typeName != null && _typeName != string.Empty; }
         }
     }
-#else
-	/// <summary>
-	/// The ASObject class represents a Flash object.
-	/// </summary>
-    [Serializable]
-    public class ASObject : Hashtable
-	{
-		private string _typeName;
 
-		/// <summary>
-		/// Initializes a new instance of the ASObject class.
-		/// </summary>
-		public ASObject()
-		{
-		}
-		/// <summary>
-		/// Initializes a new instance of the ASObject class.
-		/// </summary>
-		/// <param name="typeName">Typed object type name.</param>
-		public ASObject(string typeName)
-		{
-			_typeName = typeName;
-		}
+    /// <summary>
+    /// Provides a type converter to convert ASObject objects to and from various other representations.
+    /// </summary>
+    public class ASObjectConverter : TypeConverter
+    {
         /// <summary>
-        /// Initializes a new instance of the ASObject class by copying the elements from the specified dictionary to the new ASObject object.
+        /// Overloaded. Returns whether this converter can convert the object to the specified type.
         /// </summary>
-        /// <param name="dictionary">The IDictionary object to copy to a new ASObject object.</param>
-		public ASObject(IDictionary dictionary): base(dictionary)
-		{
-		}
-		/// <summary>
-		/// Initializes a new instance of the ASObject class.
-		/// </summary>
-		/// <param name="nameValueCollection"></param>
-		public ASObject(NameValueCollection nameValueCollection)
-		{
-			foreach(string key in nameValueCollection.AllKeys)
-			{
-				string value = nameValueCollection[key];
-				this[key] = value;
-			}
-		}
+        /// <param name="context">An ITypeDescriptorContext that provides a format context.</param>
+        /// <param name="destinationType">A Type that represents the type you want to convert to.</param>
+        /// <returns>true if this converter can perform the conversion; otherwise, false.</returns>
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+        {
+            if (destinationType.IsValueType || destinationType.IsEnum)
+                return false;
+            if (!ReflectionUtils.IsInstantiatableType(destinationType))
+                return false;
+            return true;
+        }
         /// <summary>
-        /// Initializes a new instance of an ASObject object during deserialization.
+        /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        /// <param name="info">The information needed to serialize an object.</param>
-        /// <param name="context">The source or destination for the serialization stream.</param>
-		public ASObject(SerializationInfo info, StreamingContext context) : base(info, context)
-		{
-		}
-		/// <summary>
-		/// Gets or sets the type name for a typed object.
-		/// </summary>
-		public string TypeName
-		{
-			get{ return _typeName; }
-			set{ _typeName = value; }
-		}
-		/// <summary>
-		/// Gets the Boolean value indicating whether the ASObject is typed.
-		/// </summary>
-		public bool IsTypedObject
-		{
-			get{ return _typeName != null && _typeName != string.Empty; }
-		}
-	}
-#endif
+        /// <param name="context">An ITypeDescriptorContext that provides a format context.</param>
+        /// <param name="culture">A CultureInfo object. If a null reference (Nothing in Visual Basic) is passed, the current culture is assumed.</param>
+        /// <param name="value">The Object to convert.</param>
+        /// <param name="destinationType">The Type to convert the value parameter to.</param>
+        /// <returns>An Object that represents the converted value.</returns>
+        public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+        {
+            ASObject aso = value as ASObject;
+            if (!ReflectionUtils.IsInstantiatableType(destinationType))
+                return null;
+
+            object instance = TypeHelper.CreateInstance(destinationType);
+            if (instance != null)
+            {
+                foreach (string memberName in aso.Keys)
+                {
+                    object val = aso[memberName];
+                    //MemberInfo mi = ReflectionUtils.GetMember(destinationType, key, MemberTypes.Field | MemberTypes.Property);
+                    //if (mi != null)
+                    //    ReflectionUtils.SetMemberValue(mi, result, aso[key]);
+
+                    PropertyInfo propertyInfo = null;
+                    try
+                    {
+                        propertyInfo = destinationType.GetProperty(memberName);
+                    }
+                    catch (AmbiguousMatchException)
+                    {
+                        //To resolve the ambiguity, include BindingFlags.DeclaredOnly to restrict the search to members that are not inherited.
+                        propertyInfo = destinationType.GetProperty(memberName, BindingFlags.DeclaredOnly | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance);
+                    }
+                    if (propertyInfo != null)
+                    {
+                        try
+                        {
+                            val = TypeHelper.ChangeType(val, propertyInfo.PropertyType);
+                            if (propertyInfo.CanWrite && propertyInfo.GetSetMethod() != null)
+                            {
+                                if (propertyInfo.GetIndexParameters() == null || propertyInfo.GetIndexParameters().Length == 0)
+                                    propertyInfo.SetValue(instance, val, null);
+                                else
+                                {
+                                    string msg = __Res.GetString(__Res.Reflection_PropertyIndexFail, string.Format("{0}.{1}", destinationType.FullName, memberName));
+                                    throw new FluorineException(msg);
+                                }
+                            }
+                            else
+                            {
+                                //string msg = __Res.GetString(__Res.Reflection_PropertyReadOnly, string.Format("{0}.{1}", type.FullName, memberName));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            string msg = __Res.GetString(__Res.Reflection_PropertySetFail, string.Format("{0}.{1}", destinationType.FullName, memberName), ex.Message);
+                            throw new FluorineException(msg);
+                        }
+                    }
+                    else
+                    {
+                        FieldInfo fi = destinationType.GetField(memberName, BindingFlags.Public | BindingFlags.Instance);
+                        try
+                        {
+                            if (fi != null)
+                            {
+                                val = TypeHelper.ChangeType(val, fi.FieldType);
+                                fi.SetValue(instance, val);
+                            }
+                            else
+                            {
+                                //string msg = __Res.GetString(__Res.Reflection_MemberNotFound, string.Format("{0}.{1}", destinationType.FullName, memberName));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            string msg = __Res.GetString(__Res.Reflection_FieldSetFail, string.Format("{0}.{1}", destinationType.FullName, memberName), ex.Message);
+                            throw new FluorineException(msg);
+                        }
+                    }
+                }
+            }
+            return instance;
+        }
+    }
 }
