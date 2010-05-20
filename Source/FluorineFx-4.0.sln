@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx-4.0", "FluorineF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx.ServiceBrowser-4.0", "FluorineFx.ServiceBrowser\FluorineFx.ServiceBrowser-4.0.csproj", "{3EE02BF6-86F1-462A-A004-68EE85821360}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx.Hosting-4.0", "FluorineFx.Hosting\FluorineFx.Hosting-4.0.csproj", "{BBF4132B-9C14-4AB9-AC0F-6D2432A5D5BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx.WCF-4.0", "FluorineFx.WCF\FluorineFx.WCF-4.0.csproj", "{4F5720FD-621A-4A43-A579-409C64E852C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,14 @@ Global
 		{3EE02BF6-86F1-462A-A004-68EE85821360}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EE02BF6-86F1-462A-A004-68EE85821360}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EE02BF6-86F1-462A-A004-68EE85821360}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBF4132B-9C14-4AB9-AC0F-6D2432A5D5BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBF4132B-9C14-4AB9-AC0F-6D2432A5D5BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBF4132B-9C14-4AB9-AC0F-6D2432A5D5BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBF4132B-9C14-4AB9-AC0F-6D2432A5D5BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F5720FD-621A-4A43-A579-409C64E852C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F5720FD-621A-4A43-A579-409C64E852C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F5720FD-621A-4A43-A579-409C64E852C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F5720FD-621A-4A43-A579-409C64E852C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

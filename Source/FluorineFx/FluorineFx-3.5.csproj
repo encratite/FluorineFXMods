@@ -757,6 +757,7 @@
     <Compile Include="Util\UriBase.cs" />
     <Compile Include="Util\ValidationUtils.cs" />
     <Compile Include="Util\WsdlHelper.cs" />
+    <Compile Include="Util\ZlibStream.cs" />
     <Compile Include="__Res.cs" />
   </ItemGroup>
   <ItemGroup>

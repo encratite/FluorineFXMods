@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -28,15 +29,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Apache.NMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=2a329723af30bc8d, processorArchitecture=MSIL">
+    <Reference Include="Apache.NMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=2a329723af30bc8d">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Apache.NMS\net-2.0\Apache.NMS.dll</HintPath>
     </Reference>
-    <Reference Include="Apache.NMS.ActiveMQ, Version=1.0.0.0, Culture=neutral, PublicKeyToken=2a329723af30bc8d, processorArchitecture=MSIL">
+    <Reference Include="Apache.NMS.ActiveMQ, Version=1.0.0.0, Culture=neutral, PublicKeyToken=2a329723af30bc8d">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Apache.NMS\net-2.0\Apache.NMS.ActiveMQ.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\log4net\net\2.0\log4net.dll</HintPath>
     </Reference>
