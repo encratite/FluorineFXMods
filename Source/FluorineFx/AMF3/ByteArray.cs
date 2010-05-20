@@ -20,16 +20,11 @@
 using System;
 using System.IO;
 using System.ComponentModel;
-#if (NET_1_1)
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-#else
 #if !SILVERLIGHT
 using System.IO.Compression;
 #endif
-#endif
-using FluorineFx;
 using FluorineFx.IO;
+using FluorineFx.Util;
 
 namespace FluorineFx.AMF3
 {
@@ -64,6 +59,7 @@ namespace FluorineFx.AMF3
 		/// <returns>An Object that represents the converted value.</returns>
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
 		{
+            ValidationUtils.ArgumentNotNull(value, "value");   
 			if( destinationType == typeof(byte[]) )
 			{
 				return (value as ByteArray).MemoryStream.ToArray();
@@ -75,6 +71,24 @@ namespace FluorineFx.AMF3
 #endif
 		}
 	}
+
+    /// <summary>
+    /// The CompressionAlgorithm class defines string constants for the names of compress and uncompress options. 
+    /// These constants are used as values of the algorithm parameter of the ByteArray.Compress() and ByteArray.Uncompress() methods.
+    /// </summary>
+    sealed public class CompressionAlgorithm
+    {
+        /// <summary>
+        /// Defines the string to use for the deflate compression algorithm.
+        /// </summary>
+        public const string Deflate = "deflate";
+        /// <summary>
+        /// Defines the string to use for the zlib compression algorithm.
+        /// </summary>
+        public const string Zlib = "zlib";
+
+        private CompressionAlgorithm(){}
+    }
 
 	/// <summary>
 	/// Flex ByteArray. The ByteArray class provides methods and properties to optimize reading, writing, and working with binary data.
@@ -436,88 +450,141 @@ namespace FluorineFx.AMF3
         /// </summary>
         public void Compress()
         {
+            Compress(CompressionAlgorithm.Zlib);
+        }
+        /// <summary>
+        /// Compresses the byte array using the deflate compression algorithm. The entire byte array is compressed.
+        /// </summary>
+        public void Deflate()
+        {
+            Compress(CompressionAlgorithm.Deflate);
+        }
+
+        /// <summary>
+        /// Compresses the byte array using zlib compression. The entire byte array is compressed.
+        /// </summary>
+        /// <param name="algorithm">The compression algorithm to use when compressing. Valid values are defined as constants in the CompressionAlgorithm class. The default is to use zlib format.</param>
+        /// <remarks>
+        /// After the call, the Length property of the ByteArray is set to the new length. The position property is set to the end of the byte array.
+        /// </remarks>
+        public void Compress(string algorithm)
+        {
+            ValidationUtils.ArgumentConditionTrue(algorithm == CompressionAlgorithm.Deflate || algorithm == CompressionAlgorithm.Zlib, "algorithm", "Invalid parameter");
 #if SILVERLIGHT
             throw new NotSupportedException();
 #else
-#if (NET_1_1)
-            Deflater deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, false);
-            MemoryStream ms = new MemoryStream();
-            DeflaterOutputStream stream = new DeflaterOutputStream(ms, deflater);
-            byte[] buffer = _memoryStream.GetBuffer();
-            stream.Write(buffer, 0, buffer.Length);
-            stream.Close();
-            _memoryStream.Close();
-            _memoryStream = new MemoryStream(ms.GetBuffer());
-            AMFReader amfReader = new AMFReader(_memoryStream);
-            AMFWriter amfWriter = new AMFWriter(_memoryStream);
-            _dataOutput = new DataOutput(amfWriter);
-            _dataInput = new DataInput(amfReader);
-#else
-            byte[] buffer = _memoryStream.GetBuffer();
-            DeflateStream deflateStream = new DeflateStream(_memoryStream, CompressionMode.Compress, true);
-            deflateStream.Write(buffer, 0, buffer.Length);
-            deflateStream.Close();
-            AMFReader amfReader = new AMFReader(_memoryStream);
-            AMFWriter amfWriter = new AMFWriter(_memoryStream);
-            _dataOutput = new DataOutput(amfWriter);
-            _dataInput = new DataInput(amfReader);
-#endif
+            if (algorithm == CompressionAlgorithm.Deflate)
+            {
+                byte[] buffer = _memoryStream.ToArray();
+                MemoryStream ms = new MemoryStream();
+                DeflateStream deflateStream = new DeflateStream(ms, CompressionMode.Compress, true);
+                deflateStream.Write(buffer, 0, buffer.Length);
+                deflateStream.Close();
+                _memoryStream.Close();
+                _memoryStream = ms;
+                AMFReader amfReader = new AMFReader(_memoryStream);
+                AMFWriter amfWriter = new AMFWriter(_memoryStream);
+                _dataOutput = new DataOutput(amfWriter);
+                _dataInput = new DataInput(amfReader);
+            }
+            if (algorithm == CompressionAlgorithm.Zlib)
+            {
+                byte[] buffer = _memoryStream.ToArray();
+                MemoryStream ms = new MemoryStream();
+                ZlibStream zlibStream = new ZlibStream(ms, CompressionMode.Compress, true);
+                zlibStream.Write(buffer, 0, buffer.Length);
+                zlibStream.Flush();
+                zlibStream.Close();
+                zlibStream.Dispose();
+                _memoryStream.Close();
+                _memoryStream = ms;
+                AMFReader amfReader = new AMFReader(_memoryStream);
+                AMFWriter amfWriter = new AMFWriter(_memoryStream);
+                _dataOutput = new DataOutput(amfWriter);
+                _dataInput = new DataInput(amfReader);
+            }
 #endif
         }
+
+        /// <summary>
+        /// Decompresses the byte array using the deflate compression algorithm. The byte array must have been compressed using the same algorithm.
+        /// </summary>
+        /// <remarks>
+        /// After the call, the position property is set to 0.
+        /// </remarks>
+        public void Inflate()
+        {
+            Uncompress(CompressionAlgorithm.Deflate);
+        }
+
         /// <summary>
         /// Decompresses the byte array. The byte array must have been previously compressed with the Compress() method.
         /// </summary>
         public void Uncompress()
         {
+            Uncompress(CompressionAlgorithm.Zlib);
+        }
+
+        /// <summary>
+        /// Decompresses the byte array. The byte array must have been previously compressed with the Compress() method.
+        /// </summary>
+        /// <param name="algorithm">The compression algorithm to use when decompressing. This must be the same compression algorithm used to compress the data. Valid values are defined as constants in the CompressionAlgorithm class. The default is to use zlib format.</param>
+        public void Uncompress(string algorithm)
+        {
+            ValidationUtils.ArgumentConditionTrue(algorithm == CompressionAlgorithm.Deflate || algorithm == CompressionAlgorithm.Zlib, "algorithm", "Invalid parameter");
 #if SILVERLIGHT
             throw new NotSupportedException();
 #else
-#if (NET_1_1)
-            Inflater inflater = new Inflater(true);
-            InflaterInputStream stream = new InflaterInputStream(_memoryStream);
-            MemoryStream ms = new MemoryStream();
-            byte[] writeData = new byte[1024];
-            while(true)
+            if (algorithm == CompressionAlgorithm.Zlib)
             {
-                int readCount = stream.Read(writeData, 0, writeData.Length);
-                if( readCount > 0 )
-                    ms.Write(writeData, 0, readCount);
-                else
-                    break;
+                //The zlib format is specified by RFC 1950. Zlib also uses deflate, plus 2 or 6 header bytes, and a 4 byte checksum at the end. 
+                //The first 2 bytes indicate the compression method and flags. If the dictionary flag is set, then 4 additional bytes will follow.
+                //Preset dictionaries aren't very common and we don't support them
+                this.Position = 0;
+                ZlibStream deflateStream = new ZlibStream(_memoryStream, CompressionMode.Decompress, false);
+                MemoryStream ms = new MemoryStream();
+                byte[] buffer = new byte[1024];
+                // Chop off the first two bytes
+                //int b = _memoryStream.ReadByte();
+                //b = _memoryStream.ReadByte();
+                while (true)
+                {
+                    int readCount = deflateStream.Read(buffer, 0, buffer.Length);
+                    if (readCount > 0)
+                        ms.Write(buffer, 0, readCount);
+                    else
+                        break;
+                }
+                deflateStream.Close();
+                _memoryStream.Close();
+                _memoryStream.Dispose();
+                _memoryStream = ms;
+                _memoryStream.Position = 0;
             }
-            stream.Close();
-            _memoryStream.Close();
-			_memoryStream = ms;
-            _memoryStream.Position = 0;
+            if (algorithm == CompressionAlgorithm.Deflate)
+            {
+                this.Position = 0;
+                DeflateStream deflateStream = new DeflateStream(_memoryStream, CompressionMode.Decompress, false);
+                MemoryStream ms = new MemoryStream();
+                byte[] buffer = new byte[1024];
+                while (true)
+                {
+                    int readCount = deflateStream.Read(buffer, 0, buffer.Length);
+                    if (readCount > 0)
+                        ms.Write(buffer, 0, readCount);
+                    else
+                        break;
+                }
+                deflateStream.Close();
+                _memoryStream.Close();
+                _memoryStream.Dispose();
+                _memoryStream = ms;
+                _memoryStream.Position = 0;
+            }
             AMFReader amfReader = new AMFReader(_memoryStream);
             AMFWriter amfWriter = new AMFWriter(_memoryStream);
             _dataOutput = new DataOutput(amfWriter);
             _dataInput = new DataInput(amfReader);
-#else
-            DeflateStream deflateStream = new DeflateStream(_memoryStream, CompressionMode.Decompress, false);
-            MemoryStream ms = new MemoryStream();
-            byte[] buffer = new byte[1024];
-            // Skip first two bytes
-            _memoryStream.ReadByte();
-            _memoryStream.ReadByte();
-            while (true)
-            {
-                int readCount = deflateStream.Read(buffer, 0, buffer.Length);
-                if (readCount > 0)
-                    ms.Write(buffer, 0, readCount);
-                else
-                    break;
-            }
-            deflateStream.Close();
-            _memoryStream.Close();
-            _memoryStream.Dispose();
-            _memoryStream = ms;
-            _memoryStream.Position = 0;
-            AMFReader amfReader = new AMFReader(_memoryStream);
-            AMFWriter amfWriter = new AMFWriter(_memoryStream);
-            _dataOutput = new DataOutput(amfWriter);
-            _dataInput = new DataInput(amfReader);
-#endif
 #endif
         }
 
