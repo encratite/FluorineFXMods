@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html DIR="LTR">
+<head>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+</head>
+<body>
+
+<h2>FluorineFx.Hosting.HostManager</h2>
+
+<p>
+The HostManager object sits on top of all running FluorineFx application AppDomains and can be used to manage the applications.<br />
+Each application is hosted in its own Application Domain.
+</p>
+
+<h2>Setting up the runtime environment</h2>
+<p>
+The runtime uses the "applications" subdirectory as its base directory.<br />
+However it is possible to use the StartApplication method with any physical path (the directory name itself will act like a virtual directory on a Web server).
+</p>
+
+<h2>HostManager summary</h2>
+
+<p><b>HostManager.Start</b></p>
+<p>The Start method will initialize the host.</p>
+
+<p><b>HostManager.Stop</b></p>
+<p>The Stop method will shutdown all the running applications.</p>
+
+<p><b>HostManager.StartApplication</b></p>
+<p>Starts a new application from the specified physical path (full path to the application folder)</p>
+
+<p><b>HostManager.StopApplication</b></p>
+<p>
+Stops an application identified by its Application Id.<br /><br />
+Note: use GetRunningApplication to get the identity of the application.<br />
+Note: the runtime will raise an ApplicationShutdown event on a different thread after the application was stopped.
+</p>
+
+<p><b>HostManager.GetRunningApplications</b></p>
+<p>Returns an array of ApplicationInfo objects for each running application.</p>
+
+<p><b>HostManager.GetRunningApplication</b></p>
+<p>Returns an ApplicationInfo object identifying the application started from the specified physical path.</p>
+
+<p><b>HostManager.ApplicationRestart</b></p>
+<p>Event raised when an application was restarted.</p>
+
+<p><b>HostManager.ApplicationShutdown</b></p>
+<p>Event raised when an application was stopped.</p>
+
+<p><b>HostManager.ApplicationError</b></p>
+<p>Event raised when an application error occurred.</p>
+
+<p>&nbsp;</p>
+
+<hr>
+<span style="FONT: 8pt Verdana, Arial, Helvetica">
+FluorineFx open source library ©  2007-2010 FluorineFx.com.
+</span>
+</body>
+</html>
