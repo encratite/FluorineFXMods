@@ -56,12 +56,7 @@ namespace FluorineFx.Net
 #endif
 
         NetConnection _netConnection;
-#if !(NET_1_1)
         Dictionary<string, object> _connectionParameters;
-#else
-        Hashtable _connectionParameters;
-#endif
-
         RtmpClientConnection _connection;
         object[] _connectArguments;
         //IEventDispatcher _streamEventDispatcher = null;
@@ -71,11 +66,7 @@ namespace FluorineFx.Net
             : base()
         {
             _netConnection = netConnection;
-#if !(NET_1_1)
             _connectionParameters = new Dictionary<string,object>();
-#else
-            _connectionParameters = new Hashtable();
-#endif
             //_connectionParams.Add("pageUrl", "");
             _connectionParameters.Add("objectEncoding", (double)_netConnection.ObjectEncoding);
             _connectionParameters.Add("capabilities", 15);
@@ -390,10 +381,6 @@ namespace FluorineFx.Net
             _connectionParameters["app"] = uri.LocalPath.TrimStart(new char[] { '/' });
 
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-#if NET_1_1
-			IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port);
-			socket.Connect(endpoint);
-#else
 #if !SILVERLIGHT
             socket.Connect(uri.Host, uri.Port);
             _connection = new RtmpClientConnection(this, socket);
@@ -406,7 +393,6 @@ namespace FluorineFx.Net
             args.RemoteEndPoint = endPoint;
             args.Completed += new EventHandler<SocketAsyncEventArgs>(OnSocketConnectCompleted);
             socket.ConnectAsync(args); 
-#endif
 #endif
         }
 
@@ -461,7 +447,45 @@ namespace FluorineFx.Net
 
         public void Call(string endpoint, string destination, string source, string operation, IPendingServiceCallback callback, params object[] arguments)
         {
-            throw new NotSupportedException();
+            if (_netConnection.ObjectEncoding == ObjectEncoding.AMF0)
+                throw new NotSupportedException("AMF0 not supported for Flex RPC");
+            try
+            {
+                TypeHelper._Init();
+
+                RemotingMessage remotingMessage = new RemotingMessage();
+                remotingMessage.clientId = Guid.NewGuid().ToString("D");
+                remotingMessage.destination = destination;
+                remotingMessage.messageId = Guid.NewGuid().ToString("D");
+                remotingMessage.timestamp = 0;
+                remotingMessage.timeToLive = 0;
+                remotingMessage.SetHeader(MessageBase.EndpointHeader, endpoint);
+                if (_netConnection.ClientId == null)
+                    remotingMessage.SetHeader(MessageBase.FlexClientIdHeader, "nil");
+                else
+                    remotingMessage.SetHeader(MessageBase.FlexClientIdHeader, _netConnection.ClientId);
+                //Service stuff
+                remotingMessage.source = source;
+                remotingMessage.operation = operation;
+                remotingMessage.body = arguments;
+
+                FlexInvoke invoke = new FlexInvoke();
+                PendingCall pendingCall = new PendingCall(null, new object[] { remotingMessage });
+                if (callback != null)
+                {
+                    //pendingCall.RegisterCallback(callback);
+                    CallHandler handler = new CallHandler(this, callback);
+                    pendingCall.RegisterCallback(handler);
+                }
+                invoke.ServiceCall = pendingCall;
+                invoke.InvokeId = _connection.InvokeId;
+                _connection.RegisterPendingCall(invoke.InvokeId, pendingCall);
+                Write(invoke);
+            }
+            catch (Exception ex)
+            {
+                _netConnection.RaiseNetStatus(ex);
+            }            
         }
 
         public void Write(IRtmpEvent message)
@@ -483,5 +507,37 @@ namespace FluorineFx.Net
         }
 
         #endregion
+
+        class CallHandler : IPendingServiceCallback
+        {
+            readonly RtmpClient _client;
+            readonly IPendingServiceCallback _callback;
+
+            public CallHandler(RtmpClient client, IPendingServiceCallback callback)
+            {
+                _client = client;
+                _callback = callback;
+            }
+
+            #region IPendingServiceCallback Members
+
+            public void ResultReceived(IPendingServiceCall call)
+            {
+                //Unwrap flex messages
+                if (call.Result is ErrorMessage)
+                {
+                    call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_INVOCATION_EXCEPTION;
+                }
+                else if (call.Result is AcknowledgeMessage)
+                {
+                    AcknowledgeMessage ack = call.Result as AcknowledgeMessage;
+                    call.Result = ack.body;
+                    call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_RESULT;
+                }
+                _callback.ResultReceived(call);
+            }
+
+            #endregion
+        }
     }
 }

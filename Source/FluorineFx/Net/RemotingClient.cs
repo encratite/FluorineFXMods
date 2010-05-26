@@ -97,8 +97,8 @@ namespace FluorineFx.Net
                 }
 #endif
                 PendingCall call = new PendingCall(command, arguments);
-                RequestData requestData = new RequestData(request, amfMessage, call, callback);
-                request.BeginGetRequestStream(new AsyncCallback(this.BeginRequestFlashCall), requestData);
+                AmfRequestData amfRequestData = new AmfRequestData(request, amfMessage, call, callback);
+                request.BeginGetRequestStream(new AsyncCallback(this.BeginRequestFlashCall), amfRequestData);
             }
             catch (Exception ex)
             {
@@ -110,16 +110,16 @@ namespace FluorineFx.Net
         {
             try
             {
-                RequestData requestData = ar.AsyncState as RequestData;
-                if (requestData != null)
+                AmfRequestData amfRequestData = ar.AsyncState as AmfRequestData;
+                if (amfRequestData != null)
                 {
-                    Stream requestStream = requestData.Request.EndGetRequestStream(ar);
+                    Stream requestStream = amfRequestData.Request.EndGetRequestStream(ar);
                     AMFSerializer amfSerializer = new AMFSerializer(requestStream);
-                    amfSerializer.WriteMessage(requestData.AmfMessage);
+                    amfSerializer.WriteMessage(amfRequestData.AmfMessage);
                     amfSerializer.Flush();
                     amfSerializer.Close();
 
-                    requestData.Request.BeginGetResponse(new AsyncCallback(this.BeginResponseFlashCall), requestData);
+                    amfRequestData.Request.BeginGetResponse(new AsyncCallback(this.BeginResponseFlashCall), amfRequestData);
                 }
             }
             catch (Exception ex)
@@ -132,10 +132,10 @@ namespace FluorineFx.Net
         {
             try
             {
-                RequestData requestData = ar.AsyncState as RequestData;
-                if (requestData != null)
+                AmfRequestData amfRequestData = ar.AsyncState as AmfRequestData;
+                if (amfRequestData != null)
                 {
-                    HttpWebResponse response = (HttpWebResponse)requestData.Request.EndGetResponse(ar);
+                    HttpWebResponse response = (HttpWebResponse)amfRequestData.Request.EndGetResponse(ar);
                     if (response != null)
                     {
                         //Get response and deserialize
@@ -151,13 +151,13 @@ namespace FluorineFx.Net
                                 if (header.Name == AMFHeader.RequestPersistentHeader)
                                     _netConnection.AddHeader(header.Name, header.MustUnderstand, header.Content);
                             }
-                            PendingCall call = requestData.Call;
+                            PendingCall call = amfRequestData.Call;
                             call.Result = responseBody.Content;
                             if( responseBody.Target.EndsWith(AMFBody.OnStatus) )
                                 call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_INVOCATION_EXCEPTION;
                             else
                                 call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_RESULT;
-                            requestData.Callback.ResultReceived(call);
+                            amfRequestData.Callback.ResultReceived(call);
                         }
                         else
                             _netConnection.RaiseNetStatus("Could not aquire ResponseStream");
@@ -217,8 +217,8 @@ namespace FluorineFx.Net
                 amfMessage.AddBody(amfBody);
 
                 PendingCall call = new PendingCall(source, operation, arguments);
-                RequestData requestData = new RequestData(request, amfMessage, call, callback);
-                request.BeginGetRequestStream(new AsyncCallback(this.BeginRequestFlexCall), requestData);
+                AmfRequestData amfRequestData = new AmfRequestData(request, amfMessage, call, callback);
+                request.BeginGetRequestStream(new AsyncCallback(this.BeginRequestFlexCall), amfRequestData);
             }
             catch (Exception ex)
             {
@@ -230,16 +230,16 @@ namespace FluorineFx.Net
         {
             try
             {
-                RequestData requestData = ar.AsyncState as RequestData;
-                if (requestData != null)
+                AmfRequestData amfRequestData = ar.AsyncState as AmfRequestData;
+                if (amfRequestData != null)
                 {
-                    Stream requestStream = requestData.Request.EndGetRequestStream(ar);
+                    Stream requestStream = amfRequestData.Request.EndGetRequestStream(ar);
                     AMFSerializer amfSerializer = new AMFSerializer(requestStream);
-                    amfSerializer.WriteMessage(requestData.AmfMessage);
+                    amfSerializer.WriteMessage(amfRequestData.AmfMessage);
                     amfSerializer.Flush();
                     amfSerializer.Close();
 
-                    requestData.Request.BeginGetResponse(new AsyncCallback(this.BeginResponseFlexCall), requestData);
+                    amfRequestData.Request.BeginGetResponse(new AsyncCallback(this.BeginResponseFlexCall), amfRequestData);
                 }
             }
             catch (Exception ex)
@@ -252,10 +252,10 @@ namespace FluorineFx.Net
         {
             try
             {
-                RequestData requestData = ar.AsyncState as RequestData;
-                if (requestData != null)
+                AmfRequestData amfRequestData = ar.AsyncState as AmfRequestData;
+                if (amfRequestData != null)
                 {
-                    HttpWebResponse response = (HttpWebResponse)requestData.Request.EndGetResponse(ar);
+                    HttpWebResponse response = (HttpWebResponse)amfRequestData.Request.EndGetResponse(ar);
                     if (response != null)
                     {
                         //Get response and deserialize
@@ -282,20 +282,20 @@ namespace FluorineFx.Net
                                 status["details"] = result;
                                 _netConnection.RaiseNetStatus(status);
                                 */
-                                PendingCall call = requestData.Call;
+                                PendingCall call = amfRequestData.Call;
                                 call.Result = result;
                                 call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_INVOCATION_EXCEPTION;
-                                requestData.Callback.ResultReceived(call);
+                                amfRequestData.Callback.ResultReceived(call);
                             }
                             else if (result is AcknowledgeMessage)
                             {
                                 AcknowledgeMessage ack = result as AcknowledgeMessage;
                                 if (_netConnection.ClientId == null && ack.HeaderExists(MessageBase.FlexClientIdHeader))
                                     _netConnection.SetClientId(ack.GetHeader(MessageBase.FlexClientIdHeader) as string);
-                                PendingCall call = requestData.Call;
+                                PendingCall call = amfRequestData.Call;
                                 call.Result = ack.body;
                                 call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_RESULT;
-                                requestData.Callback.ResultReceived(call);
+                                amfRequestData.Callback.ResultReceived(call);
                             }
                         }
                         else
@@ -319,7 +319,7 @@ namespace FluorineFx.Net
         #endregion
     }
 
-    class RequestData
+    class AmfRequestData
     {
         PendingCall _call;
 
@@ -348,7 +348,7 @@ namespace FluorineFx.Net
             get { return _callback; }
         }
 
-        public RequestData(HttpWebRequest request, AMFMessage amfMessage, PendingCall call, IPendingServiceCallback callback)
+        public AmfRequestData(HttpWebRequest request, AMFMessage amfMessage, PendingCall call, IPendingServiceCallback callback)
         {
             _call = call;
             _request = request;
