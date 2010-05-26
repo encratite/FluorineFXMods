@@ -167,6 +167,8 @@ namespace FluorineFx.Hosting
         private readonly Timer _serverTimer;
         private readonly object _enterThread = new object(); // Only one timer event is processed at any given moment
         private readonly ArrayList _events;
+        private string _applicationRoot;
+        const string DefaultApplicationRoot = "applications";
 
         public event ApplicationShutdownHandler ApplicationShutdown;
         public event ApplicationRestartHandler ApplicationRestart;
@@ -179,6 +181,7 @@ namespace FluorineFx.Hosting
 				_log = LogManager.GetLogger(typeof(HostManager));
 			}
 			catch{}
+            _applicationRoot = DefaultApplicationRoot;
             _events = ArrayList.Synchronized(new ArrayList(32));
             _serverTimer = new Timer(1000);
             _serverTimer.Elapsed += new ElapsedEventHandler(this.ElapsedEventHandler);
@@ -197,7 +200,16 @@ namespace FluorineFx.Hosting
             }
         }
 
-        public void Start()
+        /// <summary>
+        /// Gets or sets the root directory for applications.
+        /// </summary>
+	    public string ApplicationRoot
+	    {
+	        get { return _applicationRoot; }
+	        set { _applicationRoot = value; }
+	    }
+
+	    public void Start()
         {
             Start(false);
         }
@@ -230,7 +242,8 @@ namespace FluorineFx.Hosting
                         shadowCopyAssemblyList += Path.Combine(assemblyFolder, shadowCopyAssemblies[i]);
                     }
                     */
-                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "applications");
+                    //string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "applications");
+                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ApplicationRoot);
                     if( Directory.Exists(path) )
                     {
                         foreach (string dir in Directory.GetDirectories(path))

@@ -129,6 +129,7 @@ namespace FluorineFx.Hosting
                 if (File.Exists(asmPath)) 
                     return asmPath;
             }
+            /*
             string applicationsPath = Path.Combine(rootDir, "applications");
             foreach (string dir in Directory.GetDirectories(applicationsPath))
             {
@@ -136,6 +137,7 @@ namespace FluorineFx.Hosting
                 if (File.Exists(asmPath))
                     return asmPath;
             }
+            */
             return null;
         }
 
@@ -260,10 +262,15 @@ namespace FluorineFx.Hosting
 				{
 					Type type = _serverHandle.GetType();
                     MethodInfo miInit = type.GetMethod("Init", new Type[] { typeof(string), typeof(bool) });
-					miInit.Invoke(_serverHandle, new object[] {configPath, false});
-					MethodInfo miStart = type.GetMethod("Start");
-					miStart.Invoke(_serverHandle, new object[0]);
-					_log.Info("FluorineRuntimeProxy started.");
+                    if (miInit != null)
+                    {
+                        miInit.Invoke(_serverHandle, new object[] { configPath, false });
+                        MethodInfo miStart = type.GetMethod("Start");
+                        miStart.Invoke(_serverHandle, new object[0]);
+                        _log.Info("FluorineRuntimeProxy started.");
+                    }
+                    else
+                        _log.Error("Could not load FluorineFx.Messaging.MessageServer.");
 				}
 				else
 					_log.Error("Could not load FluorineFx.Messaging.MessageServer.");
