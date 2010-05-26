@@ -60,7 +60,10 @@ using System.Runtime.CompilerServices;
 // The config file will be watched for changes.
 [assembly: System.Security.AllowPartiallyTrustedCallers()]
 [assembly: System.CLSCompliant(true)]
- 
+
+#if (NET_4_0)
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif
 //
 // Version information for an assembly consists of the following four values:
 //
