@@ -52,9 +52,8 @@ using System.Reflection;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 // Configure log4net using the .log4net file
-[assembly: log4net.Config.XmlConfigurator(ConfigFile="log4net.config",Watch=true)]
 // The config file will be watched for changes.
-[assembly: System.Security.AllowPartiallyTrustedCallers]
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
 
 //
 // Version information for an assembly consists of the following four values:

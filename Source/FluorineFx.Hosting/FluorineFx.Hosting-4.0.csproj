@@ -86,7 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="FluorineFx.Hosting.HostManager.htm" />
-    <None Include="web.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
