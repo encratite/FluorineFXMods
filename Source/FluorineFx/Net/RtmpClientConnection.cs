@@ -17,33 +17,21 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
-using System.Collections.Specialized;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Diagnostics;
-#if !(NET_1_1)
 using System.Collections.Generic;
-#endif
 #if !SILVERLIGHT
 using log4net;
 #endif
 using FluorineFx.Messaging.Messages;
 using FluorineFx.Messaging.Api;
-using FluorineFx.Messaging.Api.Stream;
-using FluorineFx.Messaging.Api.Service;
-using FluorineFx.Messaging.Api.Event;
 using FluorineFx.Messaging.Rtmp;
-using FluorineFx.Messaging.Rtmp.Event;
-using FluorineFx.Messaging.Rtmp.Stream;
 //using FluorineFx.Messaging.Rtmpt;
 //using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Util;
 using FluorineFx.Context;
 using FluorineFx.Configuration;
-using FluorineFx.Collections;
 #if !SILVERLIGHT
 using FluorineFx.Threading;
 #endif
@@ -52,21 +40,21 @@ namespace FluorineFx.Net
 {
     class SocketBufferPool
     {
-        private static BufferPool bufferPool;
+        private static BufferPool _bufferPool;
 
         public static BufferPool Pool
         {
             get
             {
-                if (bufferPool == null)
+                if (_bufferPool == null)
                 {
                     lock (typeof(SocketBufferPool))
                     {
-                        if (bufferPool == null)
-                            bufferPool = new BufferPool(4096/*FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpTransportSettings.ReceiveBufferSize*/);
+                        if (_bufferPool == null)
+                            _bufferPool = new BufferPool(4096/*FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpTransportSettings.ReceiveBufferSize*/);
                     }
                 }
-                return bufferPool;
+                return _bufferPool;
             }
         }
     }
@@ -78,8 +66,8 @@ namespace FluorineFx.Net
 #if !SILVERLIGHT
         private static ILog log = LogManager.GetLogger(typeof(RtmpClientConnection));
 #endif
-        ByteBuffer _readBuffer;
-        RtmpNetworkStream _rtmpNetworkStream;
+        readonly ByteBuffer _readBuffer;
+        readonly RtmpNetworkStream _rtmpNetworkStream;
         DateTime _lastAction;
         private long _readBytes;
         private long _writtenBytes;
@@ -87,24 +75,6 @@ namespace FluorineFx.Net
         public RtmpClientConnection(IRtmpHandler handler, Socket socket)
             : base(handler, null, null)
 		{
-#if NET_1_1
-			try
-			{
-			    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpTransportSettings.ReceiveBufferSize);
-            }
-			catch(SocketException ex)
-			{
-                log.Warn(__Res.GetString(__Res.SocketServer_SocketOptionFail, "ReceiveBuffer"), ex);
-			}
-			try
-			{
-			    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendBuffer, FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpTransportSettings.SendBufferSize);
-            }
-			catch(SocketException ex)
-			{
-                log.Warn(__Res.GetString(__Res.SocketServer_SocketOptionFail, "SendBuffer"), ex);
-			}
-#else
 #if FXCLIENT
             //TODO
             socket.ReceiveBufferSize = 4096;
@@ -113,19 +83,18 @@ namespace FluorineFx.Net
             socket.ReceiveBufferSize = FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpTransportSettings.ReceiveBufferSize;
             socket.SendBufferSize = FluorineConfiguration.Instance.FluorineSettings.RtmpServer.RtmpTransportSettings.SendBufferSize;
 #endif
-#endif
             _handler = handler;
             _readBuffer = ByteBuffer.Allocate(4096);
             _readBuffer.Flip();
             _rtmpNetworkStream = new RtmpNetworkStream(socket);
-            this.Context.SetMode(RtmpMode.Client);
+            Context.SetMode(RtmpMode.Client);
 		}
 
         public override bool IsConnected
         {
             get
             {
-                return this.State == RtmpState.Connected;
+                return State == RtmpState.Connected;
             }
         }
         public DateTime LastAction
@@ -143,12 +112,12 @@ namespace FluorineFx.Net
         {
             //Handshake 1st phase
             ByteBuffer buffer = ByteBuffer.Allocate(RtmpProtocolDecoder.HandshakeSize + 1);
-            buffer.Put((byte)0x03);
+            buffer.Put(0x03);
             /*
             buffer.Fill((byte)0x00, RtmpProtocolDecoder.HandshakeSize);
             buffer.Flip();
              */
-            int tick = System.Environment.TickCount;
+            int tick = Environment.TickCount;
             buffer.Put(1, (byte)((tick >> 24) & 0xff));
             buffer.Put(2, (byte)((tick >> 16) & 0xff));
             buffer.Put(3, (byte)((tick >> 8) & 0xff));
@@ -165,14 +134,14 @@ namespace FluorineFx.Net
         }
 
         #region Network IO
-        public void BeginReceive(bool IOCPThread)
+        public void BeginReceive(bool iocpThread)
         {
 #if !SILVERLIGHT
             if (log.IsDebugEnabled)
-                log.Debug(__Res.GetString(__Res.Rtmp_SocketBeginReceive, _connectionId, IOCPThread));
+                log.Debug(__Res.GetString(__Res.Rtmp_SocketBeginReceive, _connectionId, iocpThread));
 #endif
-            if (!IOCPThread)
-                ThreadPool.QueueUserWorkItem(new WaitCallback(BeginReceiveCallbackProcessing), null);
+            if (!iocpThread)
+                ThreadPool.QueueUserWorkItem(BeginReceiveCallbackProcessing, null);
             else
                 BeginReceiveCallbackProcessing(null);
         }
@@ -189,7 +158,7 @@ namespace FluorineFx.Net
                 try
                 {
                     buffer = SocketBufferPool.Pool.CheckOut();
-                    _rtmpNetworkStream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(BeginReadCallbackProcessing), buffer);
+                    _rtmpNetworkStream.BeginRead(buffer, 0, buffer.Length, BeginReadCallbackProcessing, buffer);
                 }
                 catch (Exception ex)
                 {
@@ -219,7 +188,7 @@ namespace FluorineFx.Net
                         _readBuffer.Append(buffer, 0, readBytes);
                         //Leave IOCP thread
 #if !SILVERLIGHT
-                        ThreadPoolEx.Global.QueueUserWorkItem(new WaitCallback(OnReceivedCallback), null);
+                        ThreadPoolEx.Global.QueueUserWorkItem(OnReceivedCallback, null);
 #else
                         ThreadPool.QueueUserWorkItem(new WaitCallback(OnReceivedCallback), null);
 #endif
@@ -250,19 +219,15 @@ namespace FluorineFx.Net
                 log.Debug(__Res.GetString(__Res.Rtmp_SocketReadProcessing, _connectionId));
 
             if (log.IsDebugEnabled)
-                log.Debug("Begin handling packet " + this.ToString());
+                log.Debug("Begin handling packet " + ToString());
 #endif
 
             try
             {
-#if !(NET_1_1)
-                List<object> result = null;
-#else
-                ArrayList result = null;
-#endif
+                List<object> result;
                 try
                 {
-                    result = RtmpProtocolDecoder.DecodeBuffer(this.Context, _readBuffer);
+                    result = RtmpProtocolDecoder.DecodeBuffer(Context, _readBuffer);
                 }
                 catch (HandshakeFailedException hfe)
                 {
@@ -272,7 +237,7 @@ namespace FluorineFx.Net
 #endif
                     // Clear buffer if something is wrong in protocol decoding.
                     _readBuffer.Clear();
-                    this.Close();
+                    Close();
                     return;
                 }
                 catch (Exception ex)
@@ -284,7 +249,7 @@ namespace FluorineFx.Net
 #endif
                     // Clear buffer if something is wrong in protocol decoding.
                     _readBuffer.Clear();
-                    this.Close();
+                    Close();
                     return;
                 }
 
@@ -292,9 +257,12 @@ namespace FluorineFx.Net
                 {
                     ByteBuffer resultBuffer = result[0] as ByteBuffer;
                     //Handshake 3d phase
-                    resultBuffer.Skip(1);
-                    resultBuffer.Compact();
-                    resultBuffer.Limit = RtmpProtocolDecoder.HandshakeSize;
+                    if (resultBuffer != null)
+                    {
+                        resultBuffer.Skip(1);
+                        resultBuffer.Compact();
+                        resultBuffer.Limit = RtmpProtocolDecoder.HandshakeSize;
+                    }
                     ByteBuffer buffer = ByteBuffer.Allocate(RtmpProtocolDecoder.HandshakeSize);
                     buffer.Put(resultBuffer);
                     Write(buffer);
@@ -329,7 +297,7 @@ namespace FluorineFx.Net
             }
 #if !SILVERLIGHT
             if (log.IsDebugEnabled)
-                log.Debug("End handling packet " + this.ToString());
+                log.Debug("End handling packet " + ToString());
 #endif
             //Ready to receive again
             BeginReceive(false);
@@ -353,7 +321,7 @@ namespace FluorineFx.Net
 
 #if !SILVERLIGHT
             if (error && log.IsErrorEnabled)
-                log.Error("Error " + this.ToString(), exception);
+                log.Error("Error " + ToString(), exception);
 #endif
             BeginDisconnect();
         }
@@ -366,7 +334,7 @@ namespace FluorineFx.Net
                 {
                     //Leave IOCP thread
 #if !SILVERLIGHT
-                    ThreadPoolEx.Global.QueueUserWorkItem(new WaitCallback(OnDisconnectCallback), null);
+                    ThreadPoolEx.Global.QueueUserWorkItem(OnDisconnectCallback, null);
 #else
                     ThreadPool.QueueUserWorkItem(new WaitCallback(OnDisconnectCallback), null);
 #endif
@@ -375,7 +343,7 @@ namespace FluorineFx.Net
                 {
 #if !SILVERLIGHT
                     if (log.IsErrorEnabled)
-                        log.Error("BeginDisconnect " + this.ToString(), ex);
+                        log.Error("BeginDisconnect " + ToString(), ex);
 #endif
                 }
             }
@@ -396,7 +364,7 @@ namespace FluorineFx.Net
             {
 #if !SILVERLIGHT
                 if (log.IsErrorEnabled)
-                    log.Error("OnDisconnectCallback " + this.ToString(), ex);
+                    log.Error("OnDisconnectCallback " + ToString(), ex);
 #endif
             }
             //Close(); -> IRtmpHandler
@@ -464,7 +432,7 @@ namespace FluorineFx.Net
 #endif
                 //encode
                 WritingMessage(packet);
-                ByteBuffer outputStream = RtmpProtocolEncoder.Encode(this.Context, packet);
+                ByteBuffer outputStream = RtmpProtocolEncoder.Encode(Context, packet);
                 Write(outputStream);
                 _handler.MessageSent(this, packet);
             }

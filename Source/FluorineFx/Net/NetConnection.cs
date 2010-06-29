@@ -17,18 +17,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
 using System.Net;
-using System.Net.Sockets;
 using FluorineFx.IO;
-using FluorineFx.Configuration;
-using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
-#if !(NET_1_1)
 using System.Collections.Generic;
-#endif
 using FluorineFx.Messaging.Rtmp;
-using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.SO;
 using FluorineFx.Util;
 
@@ -110,17 +103,12 @@ namespace FluorineFx.Net
         string _playerVersion;
         object _client;
 #if !(SILVERLIGHT)
-        CookieContainer _cookieContainer;
+        readonly CookieContainer _cookieContainer;
 #endif
-#if !(NET_1_1)
-        Dictionary<string, AMFHeader> _headers;
-#else
-        Hashtable _headers;
-#endif
-
-        event NetStatusHandler _netStatusHandler;
-        event ConnectHandler _connectHandler;
-        event DisconnectHandler _disconnectHandler;
+        readonly Dictionary<string, AMFHeader> _headers;
+        event NetStatusHandler NetStatusHandler;
+        event ConnectHandler ConnectHandler;
+        event DisconnectHandler DisconnectHandler;
 
         /// <summary>
         /// Initializes a new instance of the NetConnection class.
@@ -130,11 +118,7 @@ namespace FluorineFx.Net
             _clientId = null;
             _playerVersion = "WIN 9,0,115,0";
             _objectEncoding = ObjectEncoding.AMF0;
-#if !(NET_1_1)
             _headers = new Dictionary<string,AMFHeader>();
-#else
-            _headers = new Hashtable();
-#endif
             _client = this;
 #if !(SILVERLIGHT)
             _cookieContainer = new CookieContainer();
@@ -146,24 +130,24 @@ namespace FluorineFx.Net
         /// </summary>
         public event NetStatusHandler NetStatus
         {
-            add { _netStatusHandler += value; }
-            remove { _netStatusHandler -= value; }
+            add { NetStatusHandler += value; }
+            remove { NetStatusHandler -= value; }
         }
         /// <summary>
         /// Dispatched when a NetConnection instance is connected.
         /// </summary>
         public event ConnectHandler OnConnect
         {
-            add { _connectHandler += value; }
-            remove { _connectHandler -= value; }
+            add { ConnectHandler += value; }
+            remove { ConnectHandler -= value; }
         }
         /// <summary>
         /// Dispatched when a NetConnection instance is disconnected.
         /// </summary>
         public event DisconnectHandler OnDisconnect
         {
-            add { _disconnectHandler += value; }
-            remove { _disconnectHandler -= value; }
+            add { DisconnectHandler += value; }
+            remove { DisconnectHandler -= value; }
         }
         /// <summary>
         /// Gets URI of the application on the server.
@@ -222,11 +206,7 @@ namespace FluorineFx.Net
             _clientId = clientId;
         }
 
-#if !(NET_1_1)
         internal Dictionary<string, AMFHeader> Headers
-#else
-        internal Hashtable Headers
-#endif
         {
             get { return _headers; }
         }
@@ -314,11 +294,7 @@ namespace FluorineFx.Net
             // Create IAsyncResult object identifying the asynchronous operation
             AsyncResultNoResult ar = new AsyncResultNoResult(callback, state);
             // Use a thread pool thread to perform the operation
-#if NET_1_1
-			System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(DoConnect), ar);
-#else
             System.Threading.ThreadPool.QueueUserWorkItem(DoConnect, ar);
-#endif
 			// Return the IAsyncResult to the caller
             return ar;
         }
@@ -331,7 +307,7 @@ namespace FluorineFx.Net
         {
             AsyncResultNoResult ar = asyncResult as AsyncResultNoResult;
             // Wait for operation to complete, then return result or throw exception
-            ar.EndInvoke();
+            if (ar != null) ar.EndInvoke();
         }
 
         private void DoConnect(object asyncResult)
@@ -341,12 +317,12 @@ namespace FluorineFx.Net
             {
                 // Perform the operation; if sucessful set the result
                 Connect();
-                ar.SetAsCompleted(null, false);
+                if (ar != null) ar.SetAsCompleted(null, false);
             }
             catch (Exception ex)
             {
                 // If operation fails, set the exception
-                ar.SetAsCompleted(ex, false);
+                if (ar != null) ar.SetAsCompleted(ex, false);
             }
         }
 
@@ -354,7 +330,7 @@ namespace FluorineFx.Net
         {
             if (_uri.Scheme == "http" || _uri.Scheme == "https")
             {
-#if !(NET_1_1) && !(SILVERLIGHT)
+#if !(SILVERLIGHT)
                 if( ServicePointManager.ServerCertificateValidationCallback == null )
                     ServicePointManager.ServerCertificateValidationCallback = delegate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors) { return true; };
 #endif
@@ -383,52 +359,60 @@ namespace FluorineFx.Net
             _netConnectionClient = null;
         }
 
+        /// <summary>
+        /// Servers like Wowza may call "close" on NetConnection.
+        /// </summary>
+        public void close()
+        {
+            Close();
+        }
+
         internal void RaiseNetStatus(Exception exception)
         {
-            if (_netStatusHandler != null)
+            if (NetStatusHandler != null)
             {
-                _netStatusHandler(this, new NetStatusEventArgs(exception));
+                NetStatusHandler(this, new NetStatusEventArgs(exception));
             }
         }
 
         internal void RaiseNetStatus(string code, Exception exception)
         {
-            if (_netStatusHandler != null)
+            if (NetStatusHandler != null)
             {
-                _netStatusHandler(this, new NetStatusEventArgs(code, exception));
+                NetStatusHandler(this, new NetStatusEventArgs(code, exception));
             }
         }
 
         internal void RaiseNetStatus(ASObject info)
         {
-            if (_netStatusHandler != null)
+            if (NetStatusHandler != null)
             {
-                _netStatusHandler(this, new NetStatusEventArgs(info));
+                NetStatusHandler(this, new NetStatusEventArgs(info));
             }
         }
 
         internal void RaiseNetStatus(string message)
         {
-            if (_netStatusHandler != null)
+            if (NetStatusHandler != null)
             {
-                _netStatusHandler(this, new NetStatusEventArgs(message));
+                NetStatusHandler(this, new NetStatusEventArgs(message));
             }
         }
 
         internal void RaiseOnConnect()
         {
-            if (_connectHandler != null)
+            if (ConnectHandler != null)
             {
-                _connectHandler(this, new EventArgs());
+                ConnectHandler(this, new EventArgs());
             }
         }
 
         internal void RaiseDisconnect()
         {
             RemoteSharedObject.DispatchDisconnect(this);
-            if (_disconnectHandler != null)
+            if (DisconnectHandler != null)
             {
-                _disconnectHandler(this, new EventArgs());
+                DisconnectHandler(this, new EventArgs());
             }
         }
 

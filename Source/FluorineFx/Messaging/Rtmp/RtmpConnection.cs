@@ -18,15 +18,8 @@
 */
 using System;
 using System.Collections;
-using System.Collections.Specialized;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
-#if !(NET_1_1)
 using System.Collections.Generic;
 using FluorineFx.Collections.Generic;
-#endif
 #if !SILVERLIGHT
 using log4net;
 #endif
@@ -34,15 +27,12 @@ using FluorineFx.Messaging.Messages;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Stream;
 using FluorineFx.Messaging.Api.Service;
-using FluorineFx.Messaging.Api.Event;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.Stream;
 using FluorineFx.Messaging.Rtmp.Service;
 using FluorineFx.Util;
 using FluorineFx.Context;
-using FluorineFx.Collections;
 using FluorineFx.Configuration;
-using FluorineFx.Threading;
 using FluorineFx.Exceptions;
 #if !FXCLIENT
 using FluorineFx.Scheduling;
@@ -71,7 +61,7 @@ namespace FluorineFx.Messaging.Rtmp
 #endif
         RtmpContext	_context;
 
-        private BitArray _reservedStreams;
+        private readonly BitArray _reservedStreams;
 
         /// <summary>
         /// Name of job that keeps connection alive.
@@ -82,69 +72,39 @@ namespace FluorineFx.Messaging.Rtmp
         /// </summary>
         protected string _waitForHandshakeJob;
 
-#if !(NET_1_1)
         /// <summary>
         /// Connection channels.
         /// Integer, Channel
         /// </summary>
-        CopyOnWriteDictionary<int, RtmpChannel> _channels;
+        readonly CopyOnWriteDictionary<int, RtmpChannel> _channels;
         /// <summary>
         /// Client streams.
         /// Map(Integer, IClientStream)
         /// </summary>
-        CopyOnWriteDictionary<int, IClientStream> _streams;
+        readonly CopyOnWriteDictionary<int, IClientStream> _streams;
         /// <summary>
         /// Map for pending video packets and stream IDs
         /// Map(Integer, AtomicInteger)
         /// </summary>
-        CopyOnWriteDictionary<int, AtomicInteger> _pendingVideos;
+        readonly CopyOnWriteDictionary<int, AtomicInteger> _pendingVideos;
         /// <summary>
         /// Remembers stream buffer durations
         /// Map(Integer, Integer)
         /// </summary>
-        CopyOnWriteDictionary<int, int> _streamBuffers;
+        readonly CopyOnWriteDictionary<int, int> _streamBuffers;
         /// <summary>
         /// Stores pending calls and ids as pairs.
         /// </summary>
-        CopyOnWriteDictionary<int, IServiceCall> _pendingCalls;
+        readonly CopyOnWriteDictionary<int, IServiceCall> _pendingCalls;
         /// <summary>
         /// Deferred results set.
         /// </summary>
         protected Dictionary<DeferredResult, object> _deferredResults = new Dictionary<DeferredResult, object>();
-#else
-        /// <summary>
-        /// Connection channels.
-        /// Integer, Channel
-        /// </summary>
-        CopyOnWriteDictionary _channels;
-        /// <summary>
-        /// Client streams.
-        /// Map(Integer, IClientStream)
-        /// </summary>
-        CopyOnWriteDictionary _streams;
-        /// <summary>
-        /// Map for pending video packets and stream IDs
-        /// Map(Integer, AtomicInteger)
-        /// </summary>
-        CopyOnWriteDictionary _pendingVideos;
-        /// <summary>
-        /// Remembers stream buffer durations
-        /// Map(Integer, Integer)
-        /// </summary>
-        CopyOnWriteDictionary _streamBuffers;
-        /// <summary>
-        /// Stores pending calls and ids as pairs.
-        /// </summary>
-        CopyOnWriteDictionary _pendingCalls;
-        /// <summary>
-        /// Deferred results set.
-        /// </summary>
-        protected Hashtable _deferredResults = new Hashtable();
-#endif
+
         /// <summary>
         /// Identifier for remote calls.
         /// </summary>
-        AtomicInteger _invokeId = new AtomicInteger(1);
+        readonly AtomicInteger _invokeId = new AtomicInteger(0);
 
         /// <summary>
         /// Timestamp when last ping command was sent.
@@ -161,7 +121,7 @@ namespace FluorineFx.Messaging.Rtmp
         /// <summary>
         /// Number of bytes the client reported to have received.
         /// </summary>
-        private long _clientBytesRead = 0;
+        private long _clientBytesRead;
         /// <summary>
         /// Data read interval
         /// </summary>
@@ -188,13 +148,12 @@ namespace FluorineFx.Messaging.Rtmp
         /// <summary>
         /// Number of streams used.
         /// </summary>
-        private AtomicInteger _streamCount;
+        private readonly AtomicInteger _streamCount;
 
         internal RtmpConnection(IRtmpHandler handler, string path, IDictionary parameters)
             : base(path, parameters)
 		{
             _handler = handler;
-#if !(NET_1_1)
             _channels = new CopyOnWriteDictionary<int,RtmpChannel>(4);
             _streams = new CopyOnWriteDictionary<int,IClientStream>();
             _pendingVideos = new CopyOnWriteDictionary<int,AtomicInteger>();
@@ -202,15 +161,6 @@ namespace FluorineFx.Messaging.Rtmp
             _streamBuffers = new CopyOnWriteDictionary<int,int>();
             _reservedStreams = new BitArray(0);
             _pendingCalls = new CopyOnWriteDictionary<int, IServiceCall>();
-#else
-            _channels = new CopyOnWriteDictionary(4);
-            _streams = new CopyOnWriteDictionary();
-            _pendingVideos = new CopyOnWriteDictionary();
-            _streamCount = new AtomicInteger();
-            _streamBuffers = new CopyOnWriteDictionary();
-            _reservedStreams = new BitArray(0);
-            _pendingCalls = new CopyOnWriteDictionary();
-#endif
 			// We start with an anonymous connection without a scope.
 			// These parameters will be set during the call of "connect" later.
 			_context = new RtmpContext(RtmpMode.Server);
@@ -234,9 +184,9 @@ namespace FluorineFx.Messaging.Rtmp
                         // XXX Bandwidth control service should not be bound to
                         // a specific scope because it's designed to control
                         // the bandwidth system-wide.
-                        if (this.Scope != null && this.Scope.Context != null)
+                        if (Scope != null && Scope.Context != null)
                         {
-                            IBWControlService bwController = this.Scope.GetService(typeof(IBWControlService)) as IBWControlService;
+                            IBWControlService bwController = Scope.GetService(typeof(IBWControlService)) as IBWControlService;
                             _bwContext = bwController.RegisterBWControllable(this);
                         }
                         UnscheduleWaitForHandshakeJob();
@@ -523,11 +473,11 @@ namespace FluorineFx.Messaging.Rtmp
             if(_lastPingSent.Value == 0)
                 _lastPongReceived.Value = newPingTime;
             Ping pingRequest = new Ping();
-            pingRequest.PingType = (short)FluorineFx.Messaging.Rtmp.Event.Ping.PingClient;
+            pingRequest.PingType = Event.Ping.PingClient;
             _lastPingSent.Value = newPingTime;
             int now = (int)(newPingTime & 0xffffffff);
             pingRequest.Value2 = now;
-            pingRequest.Value3 = FluorineFx.Messaging.Rtmp.Event.Ping.Undefined;
+            pingRequest.Value3 = Event.Ping.Undefined;
             Ping(pingRequest);
         }
 
@@ -924,7 +874,7 @@ namespace FluorineFx.Messaging.Rtmp
         /// <param name="ping"></param>
         public void Ping(Ping ping)
         {
-            GetChannel((byte)2).Write(ping);
+            GetChannel(2).Write(ping);
         }
 
         /// <summary>

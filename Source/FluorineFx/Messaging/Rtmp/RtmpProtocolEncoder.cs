@@ -418,7 +418,7 @@ namespace FluorineFx.Messaging.Rtmp
 			if(!isPending && (invoke is Invoke)) 
 			{
 				IPendingServiceCall pendingCall = (IPendingServiceCall)serviceCall;
-                if (!serviceCall.IsSuccess)
+                if (!serviceCall.IsSuccess && !(pendingCall.Result is StatusASO))
                 {
                     StatusASO status = GenerateErrorResult(StatusASO.NC_CALL_FAILED, serviceCall.Exception);
                     pendingCall.Result = status;

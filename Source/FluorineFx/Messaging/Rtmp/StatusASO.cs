@@ -361,7 +361,7 @@ namespace FluorineFx.Messaging.Rtmp
 				case NC_CONNECT_APPSHUTDOWN:
 					return new StatusASO(NC_CONNECT_APPSHUTDOWN, ERROR, string.Empty, null, objectEncoding);
 				case NC_CONNECT_CLOSED:
-					return new StatusASO(NC_CONNECT_CLOSED, ERROR, string.Empty, null, objectEncoding);
+					return new StatusASO(NC_CONNECT_CLOSED, STATUS, string.Empty, null, objectEncoding);
 				case NC_CONNECT_FAILED:
 					return new StatusASO(NC_CONNECT_FAILED, ERROR, string.Empty, null, objectEncoding);
 				case NC_CONNECT_REJECTED:
