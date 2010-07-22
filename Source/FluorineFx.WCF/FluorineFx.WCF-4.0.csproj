@@ -431,6 +431,27 @@
       <Link>Messaging\Messages\RemotingMessage.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\ObjectFactory.cs" />
+    <Compile Include="..\FluorineFx\Reflection\ConstructorExtensions.cs">
+      <Link>Reflection\ConstructorExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Reflection\Lightweight\AbstractEmitter.cs">
+      <Link>Reflection\Lightweight\AbstractEmitter.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Reflection\Lightweight\CtorInvocationEmitter.cs">
+      <Link>Reflection\Lightweight\CtorInvocationEmitter.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Reflection\Lightweight\Delegates.cs">
+      <Link>Reflection\Lightweight\Delegates.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Reflection\Lightweight\EmitHelper.cs">
+      <Link>Reflection\Lightweight\EmitHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Reflection\Lightweight\GenericBinder.cs">
+      <Link>Reflection\Lightweight\GenericBinder.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Reflection\Lightweight\InvocationEmitter.cs">
+      <Link>Reflection\Lightweight\InvocationEmitter.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\TypeHelper.cs" />
     <Compile Include="..\FluorineFx\Util\AsyncResultNoResult.cs">
       <Link>Util\AsyncResultNoResult.cs</Link>
@@ -452,6 +473,9 @@
     </Compile>
     <Compile Include="..\FluorineFx\Util\StringUtils.cs">
       <Link>Util\StringUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Util\Unreferenced.cs">
+      <Link>Util\Unreferenced.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Util\ValidationUtils.cs">
       <Link>Util\ValidationUtils.cs</Link>
