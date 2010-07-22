@@ -18,12 +18,13 @@
 */
 using System;
 using System.Collections;
+using System.Net;
 using System.Reflection;
 using System.Net.Sockets;
 #if !SILVERLIGHT
-using FluorineFx.Util;
 using log4net;
 #endif
+using FluorineFx.Util;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
 using FluorineFx.Messaging.Api.Stream;
@@ -44,7 +45,7 @@ namespace FluorineFx.Net
     class RtmpClient : BaseRtmpHandler, INetConnectionClient, IPendingServiceCallback
     {
 #if !SILVERLIGHT
-        private static readonly ILog log = LogManager.GetLogger(typeof(RtmpClient));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(RtmpClient));
 #endif
 
         readonly NetConnection _netConnection;
@@ -58,12 +59,12 @@ namespace FluorineFx.Net
         {
             _netConnection = netConnection;
             _connectionParameters = new ASObject();
-            _connectionParameters.Add("pageUrl", "http://localhost/test.html");
+            _connectionParameters.Add("pageUrl", _netConnection.PageUrl);
             _connectionParameters.Add("objectEncoding", (double)_netConnection.ObjectEncoding);
             _connectionParameters.Add("capabilities", 15);
             _connectionParameters.Add("audioCodecs", (double)1639);
             _connectionParameters.Add("flashVer", _netConnection.PlayerVersion);
-            _connectionParameters.Add("swfUrl", "file://C:/FlvPlayer.swf");
+            _connectionParameters.Add("swfUrl", _netConnection.SwfUrl);
             _connectionParameters.Add("videoFunction", (double)1);
             _connectionParameters.Add("fpad", false);
             _connectionParameters.Add("videoCodecs", (double)252);
@@ -121,8 +122,8 @@ namespace FluorineFx.Net
                     break;
                 case Ping.StreamDry:
 #if !SILVERLIGHT
-                    if (log.IsDebugEnabled)
-                        log.Debug("Stream indicates there is no data available");
+                    if (Log.IsDebugEnabled)
+                        Log.Debug("Stream indicates there is no data available");
 #endif
                     break;
                 case Ping.ClientBuffer:
@@ -133,8 +134,8 @@ namespace FluorineFx.Net
                     //Get requested buffer size in milliseconds
                     int buffer = ping.Value3;
 #if !SILVERLIGHT
-                    if (log.IsDebugEnabled)
-                        log.Debug(string.Format("Client sent a buffer size: {0} ms for stream id: {1}", buffer, streamId));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(string.Format("Client sent a buffer size: {0} ms for stream id: {1}", buffer, streamId));
 #endif
                     if (streamId != 0)
                     {
@@ -144,8 +145,8 @@ namespace FluorineFx.Net
                         {
                             stream.SetClientBufferDuration(buffer);
 #if !SILVERLIGHT
-                            if (log.IsDebugEnabled)
-                                log.Debug(string.Format("Setting client buffer on stream: {0}", streamId));
+                            if (Log.IsDebugEnabled)
+                                Log.Debug(string.Format("Setting client buffer on stream: {0}", streamId));
 #endif
                         }
                     }
@@ -155,15 +156,15 @@ namespace FluorineFx.Net
                         // Remember buffer time until stream is created
                         connection.RememberStreamBufferDuration(streamId, buffer);
 #if !SILVERLIGHT
-                        if (log.IsDebugEnabled)
-                            log.Debug(string.Format("Remembering client buffer on stream: {0}", streamId));
+                        if (Log.IsDebugEnabled)
+                            Log.Debug(string.Format("Remembering client buffer on stream: {0}", streamId));
 #endif
                     }
                     break;
                 default:
 #if !SILVERLIGHT
-                    if (log.IsDebugEnabled)
-                        log.Debug(string.Format("Unhandled ping: {0}", ping));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(string.Format("Unhandled ping: {0}", ping));
 #endif
                     break;
             }
@@ -184,8 +185,8 @@ namespace FluorineFx.Net
             if (invoke.EventType == EventType.STREAM_DATA)
             {
 #if !SILVERLIGHT
-                if (log.IsDebugEnabled)
-                    log.Debug(string.Format("Ignoring stream data notify with header {0}", header));
+                if (Log.IsDebugEnabled)
+                    Log.Debug(string.Format("Ignoring stream data notify with header {0}", header));
 #endif
                 return;
             }
@@ -210,8 +211,8 @@ namespace FluorineFx.Net
                         if (aso.Contains("clientid"))
                             clientId = aso["clientid"];
 #if !SILVERLIGHT
-                        if (log.IsDebugEnabled)
-                            log.Debug(string.Format("Client id: {0}", clientId));
+                        if (Log.IsDebugEnabled)
+                            Log.Debug(string.Format("Client id: {0}", clientId));
 #endif
                         _netConnection.SetClientId(clientId != null ? clientId.ToString() : null);
                     }
@@ -342,8 +343,8 @@ namespace FluorineFx.Net
                 if (call.Status == Messaging.Rtmp.Service.Call.STATUS_SUCCESS_VOID || call.Status == Messaging.Rtmp.Service.Call.STATUS_SUCCESS_NULL)
                 {
 #if !SILVERLIGHT
-                    if (log.IsDebugEnabled)
-                        log.Debug("Method does not have return value, do not reply");
+                    if (Log.IsDebugEnabled)
+                        Log.Debug("Method does not have return value, do not reply");
 #endif
                     return;
                 }
@@ -391,8 +392,6 @@ namespace FluorineFx.Net
             //_connectionParameters["tcUrl"] = "rtmp://" + uri.Host + (uri.Port > 0 ? uri.Port.ToString() + ':' : string.Empty) + uri.PathAndQuery;
             _connectionParameters["tcUrl"] = command;
             string app = uri.LocalPath.TrimStart(new char[] { '/' });
-            //if (app.IndexOf('/') != -1)
-            //    app = app.Substring(0, app.IndexOf('/'));
             _connectionParameters["app"] = app;
 
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -457,7 +456,15 @@ namespace FluorineFx.Net
 
         public void Call(string command, IPendingServiceCallback callback, params object[] arguments)
         {
-            _connection.Invoke(command, arguments, callback);
+            try
+            {
+                TypeHelper._Init();
+                _connection.Invoke(command, arguments, callback);
+            }
+            catch (Exception ex)
+            {
+                _netConnection.RaiseNetStatus(ex);
+            }
         }
 
         public void Call(string endpoint, string destination, string source, string operation, IPendingServiceCallback callback, params object[] arguments)
@@ -475,10 +482,7 @@ namespace FluorineFx.Net
                 remotingMessage.timestamp = 0;
                 remotingMessage.timeToLive = 0;
                 remotingMessage.SetHeader(MessageBase.EndpointHeader, endpoint);
-                if (_netConnection.ClientId == null)
-                    remotingMessage.SetHeader(MessageBase.FlexClientIdHeader, "nil");
-                else
-                    remotingMessage.SetHeader(MessageBase.FlexClientIdHeader, _netConnection.ClientId);
+                remotingMessage.SetHeader(MessageBase.FlexClientIdHeader, _netConnection.ClientId ?? "nil");
                 //Service stuff
                 remotingMessage.source = source;
                 remotingMessage.operation = operation;
@@ -488,8 +492,7 @@ namespace FluorineFx.Net
                 PendingCall pendingCall = new PendingCall(null, new object[] { remotingMessage });
                 if (callback != null)
                 {
-                    //pendingCall.RegisterCallback(callback);
-                    CallHandler handler = new CallHandler(this, callback);
+                    CallHandler handler = new CallHandler(callback);
                     pendingCall.RegisterCallback(handler);
                 }
                 invoke.ServiceCall = pendingCall;
@@ -501,6 +504,62 @@ namespace FluorineFx.Net
             {
                 _netConnection.RaiseNetStatus(ex);
             }            
+        }
+
+        public void Call<T>(string endpoint, string destination, string source, string operation, Responder<T> responder, params object[] arguments)
+        {
+            if (_netConnection.ObjectEncoding == ObjectEncoding.AMF0)
+                throw new NotSupportedException("AMF0 not supported for Flex RPC");
+            try
+            {
+                TypeHelper._Init();
+
+                RemotingMessage remotingMessage = new RemotingMessage();
+                remotingMessage.clientId = Guid.NewGuid().ToString("D");
+                remotingMessage.destination = destination;
+                remotingMessage.messageId = Guid.NewGuid().ToString("D");
+                remotingMessage.timestamp = 0;
+                remotingMessage.timeToLive = 0;
+                remotingMessage.SetHeader(MessageBase.EndpointHeader, endpoint);
+                remotingMessage.SetHeader(MessageBase.FlexClientIdHeader, _netConnection.ClientId ?? "nil");
+                //Service stuff
+                remotingMessage.source = source;
+                remotingMessage.operation = operation;
+                remotingMessage.body = arguments;
+
+                FlexInvoke invoke = new FlexInvoke();
+                PendingCall pendingCall = new PendingCall(null, new object[] { remotingMessage });
+                ResponderHandler handler = new ResponderHandler(responder);
+                pendingCall.RegisterCallback(handler);
+                invoke.ServiceCall = pendingCall;
+                invoke.InvokeId = _connection.InvokeId;
+                _connection.RegisterPendingCall(invoke.InvokeId, pendingCall);
+                Write(invoke);
+            }
+            catch (Exception ex)
+            {
+                _netConnection.RaiseNetStatus(ex);
+            } 
+        }
+
+        public void Call<T>(string command, Responder<T> responder, params object[] arguments)
+        {
+            try
+            {
+                TypeHelper._Init();
+                Invoke invoke = new Invoke();
+                PendingCall pendingCall = new PendingCall(command, arguments);
+                ResponderHandler handler = new ResponderHandler(responder);
+                pendingCall.RegisterCallback(handler);
+                invoke.ServiceCall = pendingCall;
+                invoke.InvokeId = _connection.InvokeId;
+                _connection.RegisterPendingCall(invoke.InvokeId, pendingCall);
+                Write(invoke);
+            }
+            catch (Exception ex)
+            {
+                _netConnection.RaiseNetStatus(ex);
+            }
         }
 
         public void Write(IRtmpEvent message)
@@ -523,14 +582,64 @@ namespace FluorineFx.Net
 
         #endregion
 
+        class ResponderHandler : IPendingServiceCallback
+        {
+            private readonly object _responder;
+
+            public ResponderHandler(object responder)
+            {
+                _responder = responder;
+            }
+
+            #region IPendingServiceCallback Members
+
+            public void ResultReceived(IPendingServiceCall call)
+            {
+                //Unwrap flex messages
+                if (call.Result is ErrorMessage)
+                {
+                    StatusFunction statusFunction = _responder.GetType().GetProperty("Status").GetValue(_responder, null) as StatusFunction;
+                    if (statusFunction != null)
+                        statusFunction(new Fault(call.Result as ErrorMessage));                    
+                }
+                else if (call.Result is AcknowledgeMessage)
+                {
+                    AcknowledgeMessage ack = call.Result as AcknowledgeMessage;
+                    Delegate resultFunction = _responder.GetType().GetProperty("Result").GetValue(_responder, null) as Delegate;
+                    if (resultFunction != null)
+                    {
+                        ParameterInfo[] arguments = resultFunction.Method.GetParameters();
+                        object result = TypeHelper.ChangeType(ack.body, arguments[0].ParameterType);
+                        resultFunction.DynamicInvoke(result);
+                    }
+                }
+                else if (call.IsSuccess)
+                {
+                    Delegate resultFunction = _responder.GetType().GetProperty("Result").GetValue(_responder, null) as Delegate;
+                    if (resultFunction != null)
+                    {
+                        ParameterInfo[] arguments = resultFunction.Method.GetParameters();
+                        object result = TypeHelper.ChangeType(call.Result, arguments[0].ParameterType);
+                        resultFunction.DynamicInvoke(result);
+                    }
+                }
+                else
+                {
+                    StatusFunction statusFunction = _responder.GetType().GetProperty("Status").GetValue(_responder, null) as StatusFunction;
+                    if (statusFunction != null)
+                        statusFunction(new Fault(call.Result));
+                }
+            }
+
+            #endregion
+        }
+
         class CallHandler : IPendingServiceCallback
         {
-            readonly RtmpClient _client;
             readonly IPendingServiceCallback _callback;
 
-            public CallHandler(RtmpClient client, IPendingServiceCallback callback)
+            public CallHandler(IPendingServiceCallback callback)
             {
-                _client = client;
                 _callback = callback;
             }
 

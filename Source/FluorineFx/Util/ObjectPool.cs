@@ -17,163 +17,211 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
-#if SILVERLIGHT
 using System.Collections.Generic;
-#else
+using FluorineFx.Threading;
+#if !SILVERLIGHT
 using log4net;
 #endif
-
-//TODO This class should have a generic version for !(NET_1_1)
 
 namespace FluorineFx.Util
 {
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
-    abstract class ObjectPool : DisposableBase
+    public class ObjectPool<T> : DisposableBase
     {
 #if !SILVERLIGHT
-        private static ILog log = LogManager.GetLogger(typeof(ObjectPool));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ObjectPool<>));
 #endif
-        private bool _forceGC = true;
-        private int _growth = 10;
-#if SILVERLIGHT
-        private Queue<object> _queue;
-#else
-        private Queue _queue;
-#endif
+        private readonly int _capacity;
+        private readonly int _growth;
+        private readonly bool _forceGC;
+        private readonly FastReaderWriterLock _lock;
+        private Queue<T> _queue;
 
-        static ObjectPool()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectPool&lt;T&gt;"/> class.
+        /// </summary>
+        /// <param name="capacity">The number of elements that the object pool object initially contains.</param>
+        public ObjectPool(int capacity)
+            : this(capacity, 10, true)
         {
         }
 
-        protected ObjectPool()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectPool&lt;T&gt;"/> class.
+        /// </summary>
+        /// <param name="capacity">The number of elements that the object pool object initially contains.</param>
+        /// <param name="growth">The number of elements reserved in the object pool when there are no available objects.</param>
+        public ObjectPool(int capacity, int growth)
+            : this(capacity, growth, true)
         {
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectPool&lt;T&gt;"/> class.
+        /// </summary>
+        /// <param name="capacity">The number of elements that the object pool object initially contains.</param>
+        /// <param name="growth">The number of elements reserved in the object pool when there are no available objects.</param>
+        /// <param name="forceGCOnGrowth">If set to <c>true</c> forces GC on growth.</param>
+        public ObjectPool(int capacity, int growth, bool forceGCOnGrowth)
+        {
+            _lock = new FastReaderWriterLock();
+            _forceGC = forceGCOnGrowth;
+            _growth = growth;
+            _capacity = capacity;
+            if (_forceGC)
+                GC.WaitForPendingFinalizers();
+        }
+
 
         #region IDisposable Members
 
+        /// <summary>
+        /// Free managed resources.
+        /// </summary>
         protected override void Free()
         {
-            lock ((_queue as ICollection).SyncRoot)
+            try
             {
-                while (_queue.Count > 0)
+                _lock.AcquireWriterLock();
+                if (_queue != null)
                 {
-                    object obj = _queue.Dequeue();
-                    try
+                    while (_queue.Count > 0)
                     {
-                        if (obj is IDisposable)
-                            (obj as IDisposable).Dispose();
-                    }
-                    catch
-                    {
+                        try
+                        {
+                            using (_queue.Dequeue() as IDisposable)
+                            {
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Unreferenced.Parameter(ex);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
             }
             base.Free();
         }
 
         #endregion IDisposable Members
 
-        protected void Initialize(int capacity)
-        {
-            if (!IsDisposed)
-            {
-#if SILVERLIGHT
-                _queue = new Queue<object>(capacity);
-#else
-                _queue = new Queue(capacity);
-#endif
-                lock ((_queue as ICollection).SyncRoot)
-                {
-                    AddObjects(capacity);
-                }
-                if (_forceGC)
-                    GC.WaitForPendingFinalizers();
-            }
-        }
-
-        protected void Initialize(int capacity, int growth)
-        {
-            if (!IsDisposed)
-            {
-                _growth = growth;
-                Initialize(capacity);
-            }
-        }
-
-        protected void Initialize(int capacity, int growth, bool forceGCOnGrowth)
-        {
-            if (!IsDisposed)
-            {
-                _forceGC = forceGCOnGrowth;
-                Initialize(capacity, growth);
-            }
-        }
-
+        /// <summary>
+        /// Reserve new objects in the object pool.
+        /// </summary>
+        /// <param name="count">The number of elements reserved in the object pool.</param>
         private void AddObjects(int count)
         {
-            if (!IsDisposed)
-            {
 #if !SILVERLIGHT
-                log.Debug(string.Format("ObjectPool creating {0} pooled objects", count));
+            Log.Debug(string.Format("ObjectPool creating {0} pooled objects", count));
 #endif
-                if (_forceGC)
-                    GC.Collect();
-                for (int i = 1; i <= count; i++)
-                {
-                    object obj = this.GetObject();
-                    _queue.Enqueue(obj);
-                }
-                if (_forceGC)
-                    GC.Collect();
-            }
-        }
-
-        protected void CheckIn(object obj)
-        {
-            if (!IsDisposed)
+            if (_forceGC)
+                GC.Collect();
+            if( _queue == null )
+                _queue = new Queue<T>(_capacity);
+            for (int i = 1; i <= count; i++)
             {
-                lock ((_queue as ICollection).SyncRoot)
-                {
-                    _queue.Enqueue(obj);
-                }
+                T obj = GetObject();
+                _queue.Enqueue(obj);
+            }
+            if (_forceGC)
+                GC.Collect();
+        }
+
+        /// <summary>
+        /// Releases the object back to the object pool.
+        /// </summary>
+        /// <param name="obj">The object to check in.</param>
+        public void CheckIn(T obj)
+        {
+            if (IsDisposed)
+                throw new ObjectDisposedException("ObjectPool");
+            try
+            {
+                _lock.AcquireWriterLock();
+                if (_queue == null)
+                    throw new InvalidOperationException("Invalid CheckIn operation");
+                _queue.Enqueue(obj);
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
             }
         }
 
-        protected object CheckOut()
+        /// <summary>
+        /// Aquires an object from the object pool.
+        /// </summary>
+        /// <returns>An object from the object pool.</returns>
+        public T CheckOut()
         {
             if (IsDisposed)
                 throw new ObjectDisposedException("ObjectPool");
 
-            object obj = null;
-            lock ((_queue as ICollection).SyncRoot)
+            try
             {
-                if (_queue.Count == 0)
-                    this.AddObjects(_growth);
-                obj = _queue.Dequeue();
+                _lock.AcquireReaderLock();
+                if (_queue != null && _queue.Count != 0)
+                    return _queue.Dequeue();
             }
-            if (_forceGC)
-                GC.WaitForPendingFinalizers();
-            return obj;
+            finally
+            {
+                _lock.ReleaseReaderLock();
+            }
+
+            try
+            {
+                _lock.AcquireWriterLock();
+                if (_queue == null || _queue.Count == 0)
+                    AddObjects(_growth);
+                return _queue.Dequeue();
+            }
+            finally
+            {
+                _lock.ReleaseWriterLock();
+            }
         }
 
-        protected abstract object GetObject();
+        /// <summary>
+        /// Creates instances of the object pool element's class.
+        /// </summary>
+        /// <returns>A new object instance.</returns>
+        protected virtual T GetObject()
+        {
+            throw new NotImplementedException();
+        }
 
+        /// <summary>
+        /// Gets the length of the object pool.
+        /// </summary>
+        /// <value>The length of the object pool.</value>
         protected int Length
         {
             get
             {
                 if (IsDisposed)
                     throw new ObjectDisposedException("ObjectPool");
-                lock ((_queue as ICollection).SyncRoot)
+                try
                 {
-                    return _queue.Count;
+                    _lock.AcquireReaderLock();
+                    return _queue != null ? _queue.Count : 0;
+                }
+                finally
+                {
+                    _lock.ReleaseReaderLock();
                 }
             }
         }
 
+        /// <summary>
+        /// Gets the growth parameter of the object pool.
+        /// </summary>
+        /// <value>The growth parameter of the object pool.</value>
         public int Growth
         {
             get
@@ -181,17 +229,6 @@ namespace FluorineFx.Util
                 if (IsDisposed)
                     throw new ObjectDisposedException("ObjectPool");
                 return _growth;
-            }
-        }
-
-        protected object SyncRoot
-        {
-            get
-            {
-                if (IsDisposed)
-                    throw new ObjectDisposedException("ObjectPool");
-                //return _queue.SyncRoot;
-                return (_queue as ICollection).SyncRoot;
             }
         }
     }

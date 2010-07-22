@@ -62,7 +62,7 @@ namespace FluorineFx.AMF3
             ValidationUtils.ArgumentNotNull(value, "value");   
 			if( destinationType == typeof(byte[]) )
 			{
-				return (value as ByteArray).MemoryStream.ToArray();
+				return ((ByteArray) value).MemoryStream.ToArray();
 			}
 #if !SILVERLIGHT
 			return base.ConvertTo (context, culture, value, destinationType);
@@ -76,7 +76,7 @@ namespace FluorineFx.AMF3
     /// The CompressionAlgorithm class defines string constants for the names of compress and uncompress options. 
     /// These constants are used as values of the algorithm parameter of the ByteArray.Compress() and ByteArray.Uncompress() methods.
     /// </summary>
-    sealed public class CompressionAlgorithm
+    public static class CompressionAlgorithm
     {
         /// <summary>
         /// Defines the string to use for the deflate compression algorithm.
@@ -86,8 +86,6 @@ namespace FluorineFx.AMF3
         /// Defines the string to use for the zlib compression algorithm.
         /// </summary>
         public const string Zlib = "zlib";
-
-        private CompressionAlgorithm(){}
     }
 
 	/// <summary>
@@ -169,7 +167,7 @@ namespace FluorineFx.AMF3
         /// <value>The number of bytes of data available for reading from the current position.</value>
         public uint BytesAvailable
         {
-            get { return this.Length - this.Position; }
+            get { return Length - Position; }
         }
         /// <summary>
         /// Gets or sets the object encoding used in the ByteArray.
@@ -248,11 +246,11 @@ namespace FluorineFx.AMF3
         public void ReadBytes(ByteArray bytes, uint offset, uint length)
         {
             uint tmp = bytes.Position;
-            int count = (int)(length != 0 ? length : this.BytesAvailable);
+            int count = (int)(length != 0 ? length : BytesAvailable);
             for (int i = 0; i < count; i++)
             {
                 bytes._memoryStream.Position = i + offset;
-                bytes._memoryStream.WriteByte(this.ReadByte());
+                bytes._memoryStream.WriteByte(ReadByte());
             }
             bytes.Position = tmp;
         }
@@ -540,7 +538,7 @@ namespace FluorineFx.AMF3
                 //The zlib format is specified by RFC 1950. Zlib also uses deflate, plus 2 or 6 header bytes, and a 4 byte checksum at the end. 
                 //The first 2 bytes indicate the compression method and flags. If the dictionary flag is set, then 4 additional bytes will follow.
                 //Preset dictionaries aren't very common and we don't support them
-                this.Position = 0;
+                Position = 0;
                 ZlibStream deflateStream = new ZlibStream(_memoryStream, CompressionMode.Decompress, false);
                 MemoryStream ms = new MemoryStream();
                 byte[] buffer = new byte[1024];
@@ -563,7 +561,7 @@ namespace FluorineFx.AMF3
             }
             if (algorithm == CompressionAlgorithm.Deflate)
             {
-                this.Position = 0;
+                Position = 0;
                 DeflateStream deflateStream = new DeflateStream(_memoryStream, CompressionMode.Decompress, false);
                 MemoryStream ms = new MemoryStream();
                 byte[] buffer = new byte[1024];
@@ -600,7 +598,7 @@ namespace FluorineFx.AMF3
             byte[] buffer = this.ToArray();
             return System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length);
 #else
-            return System.Text.Encoding.Default.GetString(this.ToArray());
+            return System.Text.Encoding.Default.GetString(ToArray());
 #endif
         }
 	}

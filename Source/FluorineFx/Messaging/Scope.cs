@@ -20,16 +20,16 @@ using System;
 using System.Collections;
 #if !(NET_1_1)
 using System.Collections.Generic;
+using System.Threading;
 using FluorineFx.Collections.Generic;
 #endif
 #if !SILVERLIGHT
 using log4net;
 #endif
 using FluorineFx.Context;
-using FluorineFx.Collections;
 using FluorineFx.Messaging.Api;
-using FluorineFx.Messaging.Api.Persistence;
 using FluorineFx.Messaging.Endpoints;
+using FluorineFx.Messaging.Api.Statistics;
 
 namespace FluorineFx.Messaging
 {
@@ -45,49 +45,49 @@ namespace FluorineFx.Messaging
     /// The following are all names for scopes: application, room, place, lobby.
 	/// </summary>
     [CLSCompliant(false)]
-	public class Scope : BasicScope, IScope
+    public class Scope : BasicScope, IScope, IScopeStatistics
 	{
 #if !SILVERLIGHT
         static ILog log = LogManager.GetLogger(typeof(Scope));
 #endif
 
-		private static string ScopeType = "scope";
+		private const string ScopeType = "scope";
 		public static string Separator = ":";
-
 
 		private IScopeContext _context;
 		private IScopeHandler _handler;
 		private bool _autoStart = true;
 		private bool _enabled = true;
-		private bool _running = false;
-        private ServiceContainer _serviceContainer;
+		private bool _running;
+        private readonly ServiceContainer _serviceContainer;
         /// <summary>
         /// Timestamp the scope was created.
         /// </summary>
-        private long _creationTime;
+        private readonly long _creationTime;
 
-
-#if !(NET_1_1)
         /// <summary>
         /// String, IBasicScope
         /// </summary>
         //private Dictionary<string, IBasicScope> _children = new Dictionary<string, IBasicScope>();
-        private CopyOnWriteDictionary _children = new CopyOnWriteDictionary();
+        private readonly CopyOnWriteDictionary<string, IBasicScope> _children = new CopyOnWriteDictionary<string,IBasicScope>();
         /// <summary>
         /// IClient, CopyOnWriteArraySet(IConnection)
         /// </summary>
-        //private Dictionary<IClient, CopyOnWriteArraySet<IConnection>> _clients = new Dictionary<IClient, CopyOnWriteArraySet<IConnection>>();
-        private CopyOnWriteDictionary _clients = new CopyOnWriteDictionary();
-#else
-		/// <summary>
-		/// String, IBasicScope
-		/// </summary>
-        private CopyOnWriteDictionary _children = new CopyOnWriteDictionary();
-		/// <summary>
-		/// IClient, Set(IConnection)
-		/// </summary>
-        private CopyOnWriteDictionary _clients = new CopyOnWriteDictionary();
-#endif
+        private readonly CopyOnWriteDictionary<IClient, CopyOnWriteArraySet<IConnection>> _clients = new CopyOnWriteDictionary<IClient, CopyOnWriteArraySet<IConnection>>();
+
+        /// <summary>
+        /// Statistics about clients connected to the scope.
+        /// </summary>
+	    protected StatisticsCounter _clientStats = new StatisticsCounter();
+        /// <summary>
+        /// Statistics about connections to the scope.
+        /// </summary>
+	    protected StatisticsCounter _connectionStats = new StatisticsCounter();
+        /// <summary>
+        /// Statistics about sub-scopes.
+        /// </summary>
+	    protected StatisticsCounter _subscopeStats = new StatisticsCounter();	
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scope"/> class.
@@ -104,7 +104,7 @@ namespace FluorineFx.Messaging
             : base(null, ScopeType, name, false)
 		{
             _serviceContainer = new ServiceContainer();
-            _creationTime = System.Environment.TickCount;
+            _creationTime = Environment.TickCount;
         }
 
         internal ServiceContainer ServiceContainer
@@ -176,7 +176,7 @@ namespace FluorineFx.Messaging
 		{
 			if(HasParent) 
 			{
-				if(!Parent.HasChildScope(this.Name)) 
+				if(!Parent.HasChildScope(Name)) 
 				{
 					if(!Parent.AddChildScope(this)) 
 					{
@@ -203,9 +203,9 @@ namespace FluorineFx.Messaging
             Stop();
             if (HasParent)
             {
-                if (this.Parent.HasChildScope(this.Name))
+                if (Parent.HasChildScope(Name))
                 {
-                    this.Parent.RemoveChildScope(this);
+                    Parent.RemoveChildScope(this);
                 }
             }
         }
@@ -263,7 +263,7 @@ namespace FluorineFx.Messaging
         /// <returns><code>true</code> if scope has handler and it's start method returned true, <code>false</code> otherwise.</returns>
         public bool Start() 
 		{
-            lock (this.SyncRoot)
+            lock (SyncRoot)
             {
                 bool result = false;
                 if (IsEnabled && !IsRunning)
@@ -302,7 +302,7 @@ namespace FluorineFx.Messaging
         /// </summary>
         public void Stop()
         {
-            lock (this.SyncRoot)
+            lock (SyncRoot)
             {
                 if (IsEnabled && IsRunning && HasHandler)
                 {
@@ -338,8 +338,17 @@ namespace FluorineFx.Messaging
 			if(HasHandler) 
 			{
 				Handler.Stop(this);
-				// TODO:  kill all child scopes
 			}
+            // Kill all child scopes
+            foreach(KeyValuePair<string, IBasicScope> entry in _children)
+            {
+#if !SILVERLIGHT
+                if (log.IsDebugEnabled) log.Debug(string.Format("Stopping child scope: {0}", entry.Key));
+#endif
+                IBasicScope basicScope = entry.Value;
+                if (basicScope is Scope)
+                    ((Scope)basicScope).Uninit();
+            }
 		}
 
 		#region IScope Members
@@ -366,9 +375,9 @@ namespace FluorineFx.Messaging
         /// </returns>
 		public bool Connect(IConnection connection, object[] parameters)
 		{
-			if(HasParent && !this.Parent.Connect(connection, parameters)) 
+			if(HasParent && !Parent.Connect(connection, parameters)) 
 				return false;
-			if(HasHandler && !this.Handler.Connect(connection, this, parameters))
+			if(HasHandler && !Handler.Connect(connection, this, parameters))
 				return false;
 			IClient client = connection.Client;
             if (!connection.IsConnected)
@@ -377,7 +386,7 @@ namespace FluorineFx.Messaging
                 return false;
             }
             //We would not get this far if there is no handler
-            if (HasHandler && !this.Handler.Join(client, this))
+            if (HasHandler && !Handler.Join(client, this))
             {
                 return false;
             }
@@ -387,27 +396,18 @@ namespace FluorineFx.Messaging
                 return false;
             }
 
-#if !(NET_1_1)
-            CopyOnWriteArraySet<IConnection> connections = null;
+            CopyOnWriteArraySet<IConnection> connections;
             if (_clients.ContainsKey(client))
-                connections = _clients[client] as CopyOnWriteArraySet<IConnection>;
+                connections = _clients[client];
             else
             {
                 connections = new CopyOnWriteArraySet<IConnection>();
                 _clients[client] = connections;
             }
-#else
-            CopyOnWriteArraySet connections = null;
-            if( _clients.ContainsKey(client) )
-                connections = _clients[client] as CopyOnWriteArraySet;
-            else
-            {
-                connections = new CopyOnWriteArraySet();
-                _clients[client] = connections;
-            }
-#endif
             connections.Add(connection);
+            _clientStats.Increment();
             AddEventListener(connection);
+            _connectionStats.Increment();
 			return true;
 		}
 
@@ -417,22 +417,26 @@ namespace FluorineFx.Messaging
         /// <param name="connection">The connection.</param>
 		public void Disconnect(IConnection connection)
 		{
-			// We call the disconnect handlers in reverse order they were called
-			// during connection, i.e. roomDisconnect is called before
-			// appDisconnect.
+			// We call the disconnect handlers in reverse order they were called during connection, i.e. roomDisconnect is called before appDisconnect.
 			IClient client = connection.Client;
+            if (client == null)
+            {
+                // Early bail out
+                RemoveEventListener(connection);
+                _connectionStats.Decrement();
+                if(HasParent)
+                    Parent.Disconnect(connection);
+                return;
+            }
+
 			if(_clients.ContainsKey(client)) 
 			{
-#if !(NET_1_1)
-                CopyOnWriteArraySet<IConnection> connections = _clients[client] as CopyOnWriteArraySet<IConnection>;
-#else
-                CopyOnWriteArraySet connections = _clients[client] as CopyOnWriteArraySet;
-#endif
+                CopyOnWriteArraySet<IConnection> connections = _clients[client];
 				connections.Remove(connection);
 				IScopeHandler handler = null;
 				if(HasHandler) 
 				{
-					handler = this.Handler;
+					handler = Handler;
 					try 
 					{
 						handler.Disconnect(connection, this);
@@ -449,6 +453,7 @@ namespace FluorineFx.Messaging
 				if(connections.Count == 0)
 				{
 					_clients.Remove(client);
+                    _clientStats.Decrement();
 					if(handler != null) 
 					{
 						try 
@@ -466,9 +471,10 @@ namespace FluorineFx.Messaging
 					}
 				}
 				RemoveEventListener(connection);
+                _connectionStats.Decrement();
 			}
 			if(HasParent)
-				this.Parent.Disconnect(connection);
+				Parent.Disconnect(connection);
 		}
 
         /// <summary>
@@ -479,12 +485,11 @@ namespace FluorineFx.Messaging
 		{
 			get
 			{
-				if(!HasContext && HasParent) 
+			    if(!HasContext && HasParent) 
 					return Parent.Context;
-				else
-					return _context;
+			    return _context;
 			}
-			set
+            set
 			{
 				_context = value;
 			}
@@ -499,7 +504,16 @@ namespace FluorineFx.Messaging
         /// </returns>
 		public bool HasChildScope(string name)
 		{
-			return _children.ContainsKey(ScopeType + Separator + name);
+            // Synchronize removal and retrieval of child scopes
+            Monitor.Enter(SyncRoot);
+            try
+            {
+                return _children.ContainsKey(ScopeType + Separator + name);
+            }
+            finally
+            {
+                Monitor.Exit(SyncRoot);
+            }
 		}
 
         /// <summary>
@@ -512,7 +526,17 @@ namespace FluorineFx.Messaging
         /// </returns>
 		public bool HasChildScope(string type, string name)
 		{
-			return _children.ContainsKey(type + Separator + name);
+            // Synchronize removal and retrieval of child scopes
+            Monitor.Enter(SyncRoot);
+            try
+            {
+
+                return _children.ContainsKey(type + Separator + name);
+            }
+            finally
+            {
+                Monitor.Exit(SyncRoot);
+            }
 		}
 
         /// <summary>
@@ -538,6 +562,14 @@ namespace FluorineFx.Messaging
         /// </returns>
 		public bool AddChildScope(IBasicScope scope)
 		{
+            if (HasChildScope(scope.Type, scope.Name))
+            {
+#if !SILVERLIGHT
+                log.Warn(string.Format("Child scope {0} already exists", scope.Name));
+#endif
+                return false;
+            }
+
 			if(HasHandler && !Handler.AddChildScope(scope)) 
 			{
 #if !SILVERLIGHT
@@ -562,12 +594,13 @@ namespace FluorineFx.Messaging
             if (scope is Scope)
             {
                 //Chain service containers
-                (scope as Scope).ServiceContainer.Container = this.ServiceContainer;
+                (scope as Scope).ServiceContainer.Container = ServiceContainer;
             }
             if( log != null && log.IsDebugEnabled )
 				log.Debug("Add child scope: " + scope + " to " + this);
 #endif
 			_children[scope.Type + Separator + scope.Name] = scope;
+            _subscopeStats.Increment();
 			return true;
 		}
 
@@ -577,21 +610,44 @@ namespace FluorineFx.Messaging
         /// <param name="scope">Removes the specified scope.</param>
 		public void RemoveChildScope(IBasicScope scope)
 		{
-			if (scope is IScope) 
-			{
-				if(HasHandler)
-					this.Handler.Stop((IScope) scope);				
-			}
-            string child = scope.Type + Separator + scope.Name;
-            if( _children.ContainsKey(child) )
-			    _children.Remove(child);
+            //Synchronize retrieval of the child scope (with removal)
+            Monitor.Enter(SyncRoot);
+            try
+            {
+			// Don't remove if reference if we have another one
+			    if (HasChildScope(scope.Name) && GetScope(scope.Name) != scope) 
+                {
+#if !SILVERLIGHT
+				    log.Warn(string.Format("Being asked to remove wrong scope reference child scope is {0} not {1}", GetScope(scope.Name), scope));
+#endif
+                    return;
+                }
+#if !SILVERLIGHT
+                if( log != null && log.IsDebugEnabled )
+					log.Debug(string.Format("Remove child scope: {0} path: {1}", scope, scope.Path));
+#endif
+                if (scope is IScope)
+                {
+                    if (HasHandler)
+                        Handler.Stop((IScope)scope);
+    			    _subscopeStats.Decrement();
+                }
+                string child = scope.Type + Separator + scope.Name;
+                if (_children.ContainsKey(child))
+                    _children.Remove(child);
+            }
+            finally
+            {
+                Monitor.Exit(SyncRoot);
+            }
+
 			if(HasHandler)
 			{
 #if !SILVERLIGHT
                 if( log != null && log.IsDebugEnabled )
 					log.Debug("Remove child scope");
 #endif
-				this.Handler.RemoveChildScope(scope);
+				Handler.RemoveChildScope(scope);
 			}
             if (scope is Scope)
             {
@@ -604,7 +660,7 @@ namespace FluorineFx.Messaging
         /// Gets the child scope names.
         /// </summary>
         /// <returns>Collection of child scope names.</returns>
-		public ICollection GetScopeNames()
+		public ICollection<String> GetScopeNames()
 		{
 			return _children.Keys;
 		}
@@ -615,14 +671,13 @@ namespace FluorineFx.Messaging
         /// <param name="type">Child scope type.</param>
         /// <returns>An iterator of basic scope names.</returns>
         public IEnumerator GetBasicScopeNames(string type)
-		{
-			if (type == null) 
+        {
+            if (type == null) 
 				return _children.Keys.GetEnumerator();
-			else
-				return new PrefixFilteringStringEnumerator(_children.Keys, type + Separator);
-		}
+            return new PrefixFilteringStringEnumerator(_children.Keys, type + Separator);
+        }
 
-        /// <summary>
+	    /// <summary>
         /// Gets a child scope by name.
         /// </summary>
         /// <param name="type">Child scope type.</param>
@@ -632,7 +687,7 @@ namespace FluorineFx.Messaging
         {
             string child = type + Separator + name;
             if (_children.ContainsKey(child))
-                return _children[child] as IBasicScope;
+                return _children[child];
             return null;
         }
 
@@ -643,9 +698,18 @@ namespace FluorineFx.Messaging
         /// <returns>Scope with the specified name.</returns>
 		public IScope GetScope(string name)
 		{
-            string child = ScopeType + Separator + name;
-            if (_children.ContainsKey(child))
-                return _children[child] as IScope;
+            // Synchronize removal and retrieval of child scopes
+            Monitor.Enter(SyncRoot);
+            try
+            {
+                string child = ScopeType + Separator + name;
+                if (_children.ContainsKey(child))
+                    return _children[child] as IScope;
+            }
+            finally
+            {
+                Monitor.Exit(SyncRoot);
+            }
             return null;
         }
 
@@ -653,7 +717,7 @@ namespace FluorineFx.Messaging
         /// Gets a set of connected clients.
         /// </summary>
         /// <returns>Collection of connected clients.</returns>
-		public ICollection GetClients()
+		public ICollection<IClient> GetClients()
 		{
 			return _clients.Keys;
 		}
@@ -667,7 +731,7 @@ namespace FluorineFx.Messaging
 		{
 			get
 			{
-				return (_handler != null || (this.HasParent && this.Parent.HasHandler));
+				return (_handler != null || (HasParent && Parent.HasHandler));
 			}
 		}
         /// <summary>
@@ -677,19 +741,12 @@ namespace FluorineFx.Messaging
 		public IScopeHandler Handler
 		{
 			get
-			{ 
-				if(_handler != null) 
-				{
-					return _handler;
-				} 
-				else if (HasParent) 
-				{
-					return Parent.Handler;
-				} 
-				else 
-					return null;
+			{
+			    if (_handler != null)
+			        return _handler;
+			    return HasParent ? Parent.Handler : null;
 			}
-			set
+            set
 			{ 
 				_handler = value; 
 				if (_handler is IScopeAware)
@@ -704,14 +761,12 @@ namespace FluorineFx.Messaging
 		{
 			get
 			{
-				if( HasContext )
-				{
-					return string.Empty;
-				} else if (HasParent){
-					return Parent.ContextPath + "/" + Name;				
-				} else {
-					return null;
-				}
+			    if (HasContext)
+			        return string.Empty;
+			    if (HasParent){
+			        return Parent.ContextPath + "/" + Name;				
+			    }
+			    return null;
 			}
 		}
 
@@ -719,7 +774,7 @@ namespace FluorineFx.Messaging
         /// Returns an enumerator that iterates through connections.
         /// </summary>
         /// <returns>An IEnumerator object that can be used to iterate through the connections.</returns>
-		public IEnumerator GetConnections()
+        public IEnumerator<IConnection> GetConnections()
 		{
             return new ConnectionIterator(this);
 		}
@@ -730,25 +785,28 @@ namespace FluorineFx.Messaging
 		/// <returns></returns>
 		public IScopeContext GetContext()
 		{
-			if(!HasContext && HasParent) 
-				return this.Parent.Context;
-			else 
-				return _context;
+		    if(!HasContext && HasParent) 
+				return Parent.Context;
+		    return _context;
 		}
 
-        /// <summary>
+	    /// <summary>
         /// Returns collection of connections for the specified client.
         /// </summary>
         /// <param name="client">The client object.</param>
         /// <returns>Collection of connections.</returns>
 		public ICollection LookupConnections(IClient client)
-		{
-			if( _clients.ContainsKey(client) )
-                return _clients[client] as ICollection;
-			else
-				return null;
-		}
+	    {
+	        if( _clients.ContainsKey(client) )
+                return _clients[client];
+	        return null;
+	    }
 
+	    /// <summary>
+        /// Gets statistics information about the scope.
+        /// </summary>
+        /// <value>Scope statistics information.</value>
+        public IScopeStatistics Statistics { get { return this; } }
 
 		#endregion
 
@@ -771,17 +829,17 @@ namespace FluorineFx.Messaging
 
 		sealed class PrefixFilteringStringEnumerator : IEnumerator
 		{
-			private string _prefix;
+			private readonly string _prefix;
 			private int _index;
-			private object[] _enumerable = null;
+			private readonly string[] _enumerable;
 			private string _currentElement;
 
 
-			internal PrefixFilteringStringEnumerator(ICollection enumerable, string prefix)
+			internal PrefixFilteringStringEnumerator(ICollection<string> enumerable, string prefix)
 			{
 				_prefix = prefix;
 				_index = -1;
-                _enumerable = new object[enumerable.Count];
+                _enumerable = new string[enumerable.Count];
 				enumerable.CopyTo(_enumerable, 0);
 			}
 
@@ -793,19 +851,7 @@ namespace FluorineFx.Messaging
 				_index = -1;
 			}
 
-			public string Current
-			{
-				get
-				{
-					if(_index == -1)
-						throw new InvalidOperationException("Enum not started.");
-					if(_index >= _enumerable.Length)
-						throw new InvalidOperationException("Enumeration ended.");
-					return _currentElement;
-				}
-			}
-
-			object IEnumerator.Current
+		    object IEnumerator.Current
 			{
 				get
 				{
@@ -823,7 +869,7 @@ namespace FluorineFx.Messaging
 				{
 					_index++;
 
-					string element = _enumerable[_index] as string;
+					string element = _enumerable[_index];
 					if( element.StartsWith(_prefix) )
 					{
 						_currentElement = element;
@@ -837,19 +883,37 @@ namespace FluorineFx.Messaging
 			#endregion
 		}
 
-        sealed class ConnectionIterator : IEnumerator
+        sealed class ConnectionIterator : IEnumerator<IConnection>
         {
             IEnumerator _connectionIterator;
-            IDictionaryEnumerator _setIterator;
+            readonly IEnumerator<KeyValuePair<IClient, CopyOnWriteArraySet<IConnection>>> _setIterator;
 
             public ConnectionIterator(Scope scope)
             {
                 _setIterator = scope._clients.GetEnumerator();
             }
 
+            #region IEnumerator<IConnection> Members
+
+            public IConnection Current
+            {
+                get { throw new Exception("The method or operation is not implemented."); }
+            }
+
+            #endregion
+
+            #region IDisposable Members
+
+            public void Dispose()
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+
+            #endregion
+
             #region IEnumerator Members
 
-            public object Current
+            object IEnumerator.Current
             {
                 get { return _connectionIterator.Current; }
             }
@@ -861,16 +925,12 @@ namespace FluorineFx.Messaging
                     // More connections for this client
                     return true;
                 }
-                if(!_setIterator.MoveNext())
+                if (!_setIterator.MoveNext())
                 {
                     // No more clients
                     return false;
                 }
-#if !(NET_1_1)
-                _connectionIterator = (_setIterator.Value as CopyOnWriteArraySet<IConnection>).GetEnumerator();
-#else
-                _connectionIterator = (_setIterator.Value as CopyOnWriteArraySet).GetEnumerator();
-#endif
+                _connectionIterator = _setIterator.Current.Value.GetEnumerator();
                 while (_connectionIterator != null)
                 {
                     if (_connectionIterator.MoveNext())
@@ -884,13 +944,9 @@ namespace FluorineFx.Messaging
                         return false;
                     }
                     // Advance to next client
-#if !(NET_1_1)
-                    _connectionIterator = (_setIterator.Value as CopyOnWriteArraySet<IConnection>).GetEnumerator();
-#else
-                    _connectionIterator = (_setIterator.Value as CopyOnWriteArraySet).GetEnumerator();
-#endif
+                    _connectionIterator = _setIterator.Current.Value.GetEnumerator();
                 }
-                return false;
+                return false;                
             }
 
             public void Reset()
@@ -910,8 +966,58 @@ namespace FluorineFx.Messaging
         {
             if (HasContext)
                 return _context.GetResource(path);
-            return this.Context.GetResource(this.ContextPath + '/' + path);
+            return Context.GetResource(ContextPath + '/' + path);
         }
 
-	}
+
+        #region IScopeStatistics Members
+
+
+        public int TotalConnections
+        {
+            get { return _connectionStats.Total; }
+        }
+
+        public int MaxConnections
+        {
+            get { return _connectionStats.Max; }
+        }
+
+        public int ActiveConnections
+        {
+            get { return _connectionStats.Current; }
+        }
+
+        public int TotalClients
+        {
+            get { return _clientStats.Total; }
+        }
+
+        public int MaxClients
+        {
+            get { return _clientStats.Max; }
+        }
+
+        public int ActiveClients
+        {
+            get { return _clientStats.Current; }
+        }
+
+        public int TotalSubscopes
+        {
+            get { return _subscopeStats.Total; }
+        }
+
+        public int MaxSubscopes
+        {
+            get { return _subscopeStats.Max; }
+        }
+
+        public int ActiveSubscopes
+        {
+            get { return _subscopeStats.Current; }
+        }
+
+        #endregion
+    }
 }

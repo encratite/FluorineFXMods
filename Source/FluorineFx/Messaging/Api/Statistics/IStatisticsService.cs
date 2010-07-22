@@ -20,14 +20,9 @@
 namespace FluorineFx.Messaging.Api.Statistics
 {
     /// <summary>
-    /// Base interface for all statistics informations.
+    /// Statistics methods for FluorineFx. Can be used to poll for updates of given elements inside the server.
     /// </summary>
-    public interface IStatisticsBase
+    public interface IStatisticsService
     {
-        /// <summary>
-        /// Gets the timestamp the object was created.
-        /// </summary>
-        /// <value>The timestamp in milliseconds since midnight, January 1, 1970 UTC.</value>
-        long CreationTime { get; }
     }
 }

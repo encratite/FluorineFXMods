@@ -55,5 +55,12 @@ namespace FluorineFx
 			if(exception.InnerException != null)
 				Add("rootcause", new ExceptionASO(exception.InnerException));
 		}
+
+        public ExceptionASO(string error)
+        {
+            Add("code", "Server.Processing");
+            Add("level", "error");
+            Add("description", error);
+        }
 	}
 }

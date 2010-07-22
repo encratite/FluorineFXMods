@@ -95,13 +95,15 @@ namespace FluorineFx.Net
     [CLSCompliant(false)]
     public sealed class NetConnection
     {
-        string _clientId;
-        Uri _uri;
-        object[] _arguments;
-        INetConnectionClient _netConnectionClient;
-        ObjectEncoding _objectEncoding;
-        string _playerVersion;
-        object _client;
+        private string _clientId;
+        private Uri _uri;
+        private object[] _arguments;
+        private INetConnectionClient _netConnectionClient;
+        private ObjectEncoding _objectEncoding;
+        private string _playerVersion;
+        private string _swfUrl;
+        private string _pageUrl;
+        private object _client;
 #if !(SILVERLIGHT)
         readonly CookieContainer _cookieContainer;
 #endif
@@ -163,6 +165,24 @@ namespace FluorineFx.Net
         {
             get { return _playerVersion; }
             set { _playerVersion = value; }
+        }
+        /// <summary>
+        /// Gets or sets the URL of the source SWF file making the connection.
+        /// </summary>
+        /// <value>The SWF URL.</value>
+        public string SwfUrl
+        {
+            get { return _swfUrl; }
+            set { _swfUrl = value; }
+        }
+        /// <summary>
+        /// Gets or sets the URL of the web page from which the SWF file was loaded.
+        /// </summary>
+        /// <value>The page URL.</value>
+        public string PageUrl
+        {
+            get { return _pageUrl; }
+            set { _pageUrl = value; }
         }
         /// <summary>
         /// Gets or sets the object encoding (AMF version) for this NetConnection object. Default is ObjectEncoding.AMF0.
@@ -422,9 +442,22 @@ namespace FluorineFx.Net
         /// <param name="command">A method specified in object path form.</param>
         /// <param name="callback">An optional object that is used to handle return values from the server.</param>
         /// <param name="arguments">Optional arguments. These arguments are passed to the method specified in the command parameter when the method is executed on the remote application server.</param>
+        [ObsoleteAttribute("Overload of the Call method which accepts IPendingServiceCallback has been deprecated. Please investigate the use of the overload that accepts a Responder<T> instead.")]
         public void Call(string command, IPendingServiceCallback callback, params object[] arguments)
         {
             _netConnectionClient.Call(command, callback, arguments);
+        }
+
+        /// <summary>
+        /// Invokes a command or method on the server to which this connection is connected.
+        /// </summary>
+        /// <typeparam name="T">Return type from a remote method invocation.</typeparam>
+        /// <param name="command">A method specified in object path form.</param>
+        /// <param name="responder">An optional object that is used to handle return values from the server.</param>
+        /// <param name="arguments">Optional arguments. These arguments are passed to the method specified in the command parameter when the method is executed on the remote application server.</param>
+        public void Call<T>(string command, Responder<T> responder, params object[] arguments)
+        {
+            _netConnectionClient.Call(command, responder, arguments);
         }
 
         /// <summary>
@@ -437,11 +470,30 @@ namespace FluorineFx.Net
         /// <param name="callback">An optional object that is used to handle return values from the server.</param>
         /// <param name="arguments">Optional arguments. These arguments are passed to the method specified in the command parameter when the method is executed on the remote application server.</param>
         /// <remarks>
-        /// For RTMP connection this method throws a NotSupportedException.
+        /// For a RTMP connection this method throws a NotSupportedException.
         /// </remarks>
+        [ObsoleteAttribute("Overload of the Call method which accepts IPendingServiceCallback has been deprecated. Please investigate the use of the overload that accepts a Responder<T> instead.")]
         public void Call(string endpoint, string destination, string source, string operation, IPendingServiceCallback callback, params object[] arguments)
         {
             _netConnectionClient.Call(endpoint, destination, source, operation, callback, arguments);
+        }
+
+        /// <summary>
+        /// Invokes a command or method on the server to which this connection is connected.
+        /// </summary>
+        /// <typeparam name="T">Return type from a remote method invocation.</typeparam>
+        /// <param name="endpoint">Flex RPC endpoint name.</param>
+        /// <param name="destination">Flex RPC message destination.</param>
+        /// <param name="source">The name of the service to be called including namespace name.</param>
+        /// <param name="operation">The name of the remote method/operation that should be called.</param>
+        /// <param name="responder">An optional object that is used to handle return values from the server.</param>
+        /// <param name="arguments">Optional arguments. These arguments are passed to the method specified in the command parameter when the method is executed on the remote application server.</param>
+        /// <remarks>
+        /// For RTMP connection this method throws a NotSupportedException.
+        /// </remarks>
+        public void Call<T>(string endpoint, string destination, string source, string operation, Responder<T> responder, params object[] arguments)
+        {
+            _netConnectionClient.Call(endpoint, destination, source, operation, responder, arguments);
         }
 
         internal void OnSharedObject(RtmpConnection connection, RtmpChannel channel, RtmpHeader header, SharedObjectMessage message)

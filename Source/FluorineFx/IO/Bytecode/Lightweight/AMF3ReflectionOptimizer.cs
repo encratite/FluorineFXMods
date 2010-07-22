@@ -23,13 +23,13 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Security;
 using System.Security.Permissions;
+using FluorineFx.Reflection.Lightweight;
 using log4net;
 
 using FluorineFx.AMF3;
 using FluorineFx.Configuration;
 using FluorineFx.Exceptions;
 
-#if !(NET_1_1)
 
 namespace FluorineFx.IO.Bytecode.Lightweight
 {
@@ -616,5 +616,3 @@ namespace FluorineFx.IO.Bytecode.Lightweight
         #endregion
     }
 }
-
-#endif

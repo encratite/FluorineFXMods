@@ -17,17 +17,12 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-namespace FluorineFx.Messaging.Api.Statistics
+namespace FluorineFx.Reflection.Lightweight
 {
     /// <summary>
-    /// Base interface for all statistics informations.
+    /// A delegate to invoke the constructor of a type.
     /// </summary>
-    public interface IStatisticsBase
-    {
-        /// <summary>
-        /// Gets the timestamp the object was created.
-        /// </summary>
-        /// <value>The timestamp in milliseconds since midnight, January 1, 1970 UTC.</value>
-        long CreationTime { get; }
-    }
+    /// <param name="parameters">An array of arguments that match in number, order, and type the parameters of the constructor to invoke.</param>
+    /// <returns>A reference to the newly created object.</returns>
+    public delegate object ConstructorInvoker(params object[] parameters);
 }

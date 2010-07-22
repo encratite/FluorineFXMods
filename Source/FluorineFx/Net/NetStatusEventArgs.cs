@@ -27,8 +27,8 @@ namespace FluorineFx.Net
     /// </summary>
     public class NetStatusEventArgs : EventArgs
     {
-        Exception _exception;
-        ASObject _info;
+        readonly Exception _exception;
+        readonly ASObject _info;
 
         internal NetStatusEventArgs(Exception exception)
         {
@@ -36,7 +36,8 @@ namespace FluorineFx.Net
             _info = new ASObject();
             _info["level"] = "error";
             _info["code"] = StatusASO.NC_CALL_FAILED;
-            _info["description"] = exception.Message;
+            //_info["description"] = exception.Message;
+            _info["details"] = exception.Message;
         }
 
         internal NetStatusEventArgs(string code, Exception exception)
@@ -45,7 +46,8 @@ namespace FluorineFx.Net
             _info = new ASObject();
             _info["level"] = "error";
             _info["code"] = code;
-            _info["description"] = exception.Message;
+            //_info["description"] = exception.Message;
+            _info["details"] = exception.Message;
         }
 
         internal NetStatusEventArgs(string message)
@@ -53,7 +55,8 @@ namespace FluorineFx.Net
             _info = new ASObject();
             _info["level"] = "error";
             _info["code"] = StatusASO.NC_CALL_FAILED;
-            _info["description"] = message;
+            //_info["description"] = message;
+            _info["details"] = message;
         }
 
         internal NetStatusEventArgs(ASObject info)

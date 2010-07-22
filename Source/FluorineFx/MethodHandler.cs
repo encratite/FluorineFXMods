@@ -17,15 +17,12 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.ComponentModel;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Security;
 using System.Security.Permissions;
-#if !(NET_1_1)
-using System.Collections.Generic;
-#endif
 #if !SILVERLIGHT
 using log4net;
 #endif
@@ -36,18 +33,13 @@ namespace FluorineFx
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	public sealed class MethodHandler
+	public static class MethodHandler
 	{
 #if !SILVERLIGHT
-        private static readonly ILog log = LogManager.GetLogger(typeof(MethodHandler));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(MethodHandler));
 #endif
-        /// <summary>
-        /// Initializes a new instance of the MethodHandler class.
-        /// </summary>
-		private MethodHandler()
-		{
-		}
-        /// <summary>
+
+	    /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         /// <param name="type"></param>
@@ -99,11 +91,7 @@ namespace FluorineFx
         public static MethodInfo GetMethod(Type type, string methodName, IList arguments, bool exactMatch, bool throwException, bool traceError)
 		{
 			MethodInfo[] methodInfos = type.GetMethods(BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static);
-#if !(NET_1_1)
             List<MethodInfo> suitableMethodInfos = new List<MethodInfo>();
-#else
-			ArrayList suitableMethodInfos = new ArrayList();
-#endif
             for (int i = 0; i < methodInfos.Length; i++)
             {
                 MethodInfo methodInfo = methodInfos[i];
@@ -119,7 +107,7 @@ namespace FluorineFx
                 //Overloaded methods may suffer performance penalties because of type conversion checking
                 for (int i = suitableMethodInfos.Count-1; i >= 0; i--)
                 {
-                    MethodInfo methodInfo = suitableMethodInfos[i] as MethodInfo;
+                    MethodInfo methodInfo = suitableMethodInfos[i];
                     ParameterInfo[] parameterInfos = methodInfo.GetParameters();
                     bool match = true;
                     //Matching method name and parameters number
@@ -153,25 +141,21 @@ namespace FluorineFx
                 if (traceError)
                 {
 #if !SILVERLIGHT
-                    if (log.IsErrorEnabled)
+                    if (Log.IsErrorEnabled)
                     {
                         //Trace the issue
-                        log.Error(msg);
-                        log.Error("Displaying verbose logging information");
+                        Log.Error(msg);
+                        Log.Error("Displaying verbose logging information");
                         try
                         {
                             new FileIOPermission(PermissionState.Unrestricted);
-                            log.Error(string.Format("Reflected type was '{0}' location of the loaded file {1}", type.AssemblyQualifiedName, type.Assembly.Location));
+                            Log.Error(string.Format("Reflected type was '{0}' location of the loaded file {1}", type.AssemblyQualifiedName, type.Assembly.Location));
                         }
                         catch (SecurityException)
                         {
-                            log.Error(string.Format("Reflected type was '{0}' location of the loaded file cannot be determined", type.AssemblyQualifiedName));
+                            Log.Error(string.Format("Reflected type was '{0}' location of the loaded file cannot be determined", type.AssemblyQualifiedName));
                         }
-#if !(NET_1_1)
                         List<MethodInfo> suitableMethodInfosTmp = new List<MethodInfo>();
-#else
-			            ArrayList suitableMethodInfosTmp = new ArrayList();
-#endif
                         for (int i = 0; i < methodInfos.Length; i++)
                         {
                             MethodInfo methodInfo = methodInfos[i];
@@ -186,7 +170,7 @@ namespace FluorineFx
                         }
                         for (int i = suitableMethodInfosTmp.Count - 1; i >= 0; i--)
                         {
-                            MethodInfo methodInfo = suitableMethodInfosTmp[i] as MethodInfo;
+                            MethodInfo methodInfo = suitableMethodInfosTmp[i];
                             ParameterInfo[] parameterInfos = methodInfo.GetParameters();
                             StringBuilder signature = new StringBuilder();
                             for (int j = 0; j < parameterInfos.Length; j++)
@@ -198,7 +182,7 @@ namespace FluorineFx
                                 signature.Append(parameterInfos[j].ParameterType.Name);
                                 signature.Append(")");
                             }
-                            log.Error(string.Format("Checking {0}({1})", methodInfo.Name, signature.ToString()));
+                            Log.Error(string.Format("Checking {0}({1})", methodInfo.Name, signature));
                             bool match = true;
                             //Matching method name and parameters number
                             for (int j = 0; j < parameterInfos.Length; j++)
@@ -210,9 +194,9 @@ namespace FluorineFx
                                     if (!TypeHelper.IsAssignable(arg, parameterInfo.ParameterType))
                                     {
                                         if (arg != null)
-                                            log.Error(string.Format("{0}({1}) did not match value \"{2}\" ({3})", parameterInfo.Name, parameterInfo.ParameterType.Name, arg, arg.GetType().Name));
+                                            Log.Error(string.Format("{0}({1}) did not match value \"{2}\" ({3})", parameterInfo.Name, parameterInfo.ParameterType.Name, arg, arg.GetType().Name));
                                         else
-                                            log.Error(string.Format("{0}({1}) did not match null)", parameterInfo.Name, parameterInfo.ParameterType.Name));
+                                            Log.Error(string.Format("{0}({1}) did not match null)", parameterInfo.Name, parameterInfo.ParameterType.Name));
                                         match = false;
                                         break;
                                     }
@@ -222,9 +206,9 @@ namespace FluorineFx
                                     if (arg == null || arg.GetType() != parameterInfo.ParameterType)
                                     {
                                         if (arg != null)
-                                            log.Error(string.Format("{0}({1}) did not match value \"{2}\" ({3})", parameterInfo.Name, parameterInfo.ParameterType.Name, arg, arg.GetType().Name));
+                                            Log.Error(string.Format("{0}({1}) did not match value \"{2}\" ({3})", parameterInfo.Name, parameterInfo.ParameterType.Name, arg, arg.GetType().Name));
                                         else
-                                            log.Error(string.Format("{0}({1}) did not match null)", parameterInfo.Name, parameterInfo.ParameterType.Name));
+                                            Log.Error(string.Format("{0}({1}) did not match null)", parameterInfo.Name, parameterInfo.ParameterType.Name));
                                         match = false;
                                         break;
                                     }
@@ -258,9 +242,8 @@ namespace FluorineFx
 					throw new FluorineException(msg);
 			}
             if (suitableMethodInfos.Count > 0)
-                return suitableMethodInfos[0] as MethodInfo;
-            else
-                return null;
+                return suitableMethodInfos[0];
+            return null;
 		}
 	}
 }

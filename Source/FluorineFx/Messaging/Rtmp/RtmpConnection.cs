@@ -59,7 +59,7 @@ namespace FluorineFx.Messaging.Rtmp
 #if !SILVERLIGHT
         private static ILog log = LogManager.GetLogger(typeof(RtmpConnection));
 #endif
-        RtmpContext	_context;
+        readonly RtmpContext _context;
 
         private readonly BitArray _reservedStreams;
 
@@ -104,7 +104,7 @@ namespace FluorineFx.Messaging.Rtmp
         /// <summary>
         /// Identifier for remote calls.
         /// </summary>
-        readonly AtomicInteger _invokeId = new AtomicInteger(0);
+        readonly AtomicInteger _invokeId;
 
         /// <summary>
         /// Timestamp when last ping command was sent.
@@ -150,7 +150,7 @@ namespace FluorineFx.Messaging.Rtmp
         /// </summary>
         private readonly AtomicInteger _streamCount;
 
-        internal RtmpConnection(IRtmpHandler handler, string path, IDictionary parameters)
+        internal RtmpConnection(IRtmpHandler handler, RtmpMode mode, string path, IDictionary parameters)
             : base(path, parameters)
 		{
             _handler = handler;
@@ -163,7 +163,10 @@ namespace FluorineFx.Messaging.Rtmp
             _pendingCalls = new CopyOnWriteDictionary<int, IServiceCall>();
 			// We start with an anonymous connection without a scope.
 			// These parameters will be set during the call of "connect" later.
-			_context = new RtmpContext(RtmpMode.Server);
+            _context = new RtmpContext(mode);
+            //Transaction id depends on server/client mode
+            //When server mode is set we cannot push messages with transaction id = 1 (connect)
+            _invokeId = mode == RtmpMode.Server ? new AtomicInteger(1) : new AtomicInteger(0);
 		}
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.

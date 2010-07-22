@@ -213,7 +213,9 @@
     <Compile Include="Messaging\Api\ISessionListener.cs" />
     <Compile Include="Messaging\Api\Service\IServiceHandlerProvider.cs" />
     <Compile Include="Messaging\Api\SO\ISharedObjectHandlerProvider.cs" />
+    <Compile Include="Messaging\Api\Statistics\IScopeStatistics.cs" />
     <Compile Include="Messaging\Api\Statistics\IStatisticsCounter.cs" />
+    <Compile Include="Messaging\Api\Statistics\IStatisticsService.cs" />
     <Compile Include="Messaging\Api\Stream\IAudioStreamCodec.cs" />
     <Compile Include="Messaging\Api\Stream\INetStreamEventHandler.cs" />
     <Compile Include="Messaging\Api\Stream\IServerStream.cs" />
@@ -245,6 +247,7 @@
     <Compile Include="Messaging\Rtmp\Stream\StreamUtils.cs" />
     <Compile Include="Messaging\SecurityException.cs" />
     <Compile Include="Messaging\ServiceException.cs" />
+    <Compile Include="Net\Fault.cs" />
     <Compile Include="Net\INetConnectionClient.cs" />
     <Compile Include="Net\MetaDataEventArgs.cs" />
     <Compile Include="Net\NetConnection.cs" />
@@ -260,6 +263,7 @@
     <Compile Include="Net\NetStreamVideoEventArgs.cs" />
     <Compile Include="Net\PlayStatusEventArgs.cs" />
     <Compile Include="Net\RemotingClient.cs" />
+    <Compile Include="Net\Responder.cs" />
     <Compile Include="Net\RtmpClient.cs" />
     <Compile Include="Net\RtmpClientConnection.cs" />
     <Compile Include="Net\NetStatusEventArgs.cs" />
@@ -335,6 +339,14 @@
     <Compile Include="Messaging\Rtmp\Stream\SimpleBWControlService.cs" />
     <Compile Include="Messaging\Rtmp\Stream\SimplePlaylistController.cs" />
     <Compile Include="Messaging\Server\BWCheck.cs" />
+    <Compile Include="Reflection\ConstructorExtensions.cs" />
+    <Compile Include="Reflection\Lightweight\AbstractEmitter.cs" />
+    <Compile Include="Reflection\Lightweight\Delegates.cs" />
+    <Compile Include="Reflection\Lightweight\CtorInvocationEmitter.cs" />
+    <Compile Include="Reflection\Lightweight\EmitHelper.cs" />
+    <Compile Include="Reflection\Lightweight\GenericBinder.cs" />
+    <Compile Include="Reflection\Lightweight\InvocationEmitter.cs" />
+    <Compile Include="RequestHandlers.cs" />
     <Compile Include="RtmptHandler.cs" />
     <Compile Include="Scheduling\IScheduledJob.cs" />
     <Compile Include="Scheduling\ISchedulingService.cs" />
@@ -417,14 +429,6 @@
     <Compile Include="Scheduling\TriggerFiredBundle.cs" />
     <Compile Include="Security\LoginManager.cs" />
     <Compile Include="Silverlight\PolicyServer.cs" />
-    <Compile Include="SWX\SwxAssembler.cs" />
-    <Compile Include="SWX\SwxHandler.cs" />
-    <Compile Include="SWX\Writers\ISWXWriter.cs" />
-    <Compile Include="SWX\Writers\SWXArrayWriter.cs" />
-    <Compile Include="SWX\Writers\SWXBooleanWriter.cs" />
-    <Compile Include="SWX\Writers\SWXDoubleWriter.cs" />
-    <Compile Include="SWX\Writers\SWXObjectWriter.cs" />
-    <Compile Include="SWX\Writers\SWXStringWriter.cs" />
     <Compile Include="Threading\FastReaderWriterLock.cs" />
     <Compile Include="Util\ArrayUtils.cs" />
     <Compile Include="Util\AsyncResult.cs" />
@@ -499,8 +503,6 @@
     <Compile Include="IO\Bytecode\Lightweight\AMF0ReflectionOptimizer.cs" />
     <Compile Include="IO\Bytecode\Lightweight\AMF3ReflectionOptimizer.cs" />
     <Compile Include="IO\Bytecode\Lightweight\BytecodeProvider.cs" />
-    <Compile Include="IO\Bytecode\Lightweight\EmitHelper.cs" />
-    <Compile Include="IO\Bytecode\Lightweight\GenericBinder.cs" />
     <Compile Include="IO\CacheableObject.cs" />
     <Compile Include="IO\CachedBody.cs" />
     <Compile Include="IO\ErrorResponseBody.cs" />
@@ -740,9 +742,11 @@
     <Compile Include="Util\NumberUtils.cs" />
     <Compile Include="Util\ObjectPool.cs" />
     <Compile Include="Collections\ReadOnlyList.cs" />
+    <Compile Include="Util\PathUtil.cs" />
     <Compile Include="Util\ReflectionUtils.cs" />
     <Compile Include="Util\StringUtils.cs" />
     <Compile Include="Util\ThreadingUtils.cs" />
+    <Compile Include="Util\Unreferenced.cs" />
     <Compile Include="Util\UriBase.cs" />
     <Compile Include="Util\ValidationUtils.cs" />
     <Compile Include="Util\WsdlHelper.cs" />

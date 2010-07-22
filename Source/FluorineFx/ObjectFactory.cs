@@ -18,22 +18,15 @@
 */
 
 using System;
-using System.IO;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Configuration;
 using System.Reflection;
-using FluorineFx.Exceptions;
+using System.Security.Permissions;
+using FluorineFx.Collections.Generic;
 using FluorineFx.Configuration;
-#if !FXCLIENT
-using System.Web;
-using FluorineFx.Context;
-#endif
 #if !SILVERLIGHT
+using FluorineFx.Reflection;
+using FluorineFx.Reflection.Lightweight;
+using FluorineFx.Util;
 using log4net;
-#endif
-#if !(NET_1_1)
-using System.Collections.Generic;
 #endif
 
 namespace FluorineFx
@@ -41,157 +34,180 @@ namespace FluorineFx
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	class ObjectFactory
+	sealed class ObjectFactory
 	{
 #if !SILVERLIGHT
-		private static readonly ILog log = LogManager.GetLogger(typeof(ObjectFactory));
+		private static readonly ILog Log = LogManager.GetLogger(typeof(ObjectFactory));
 #endif
+        private static volatile ObjectFactory _instance;
+        private static readonly object SyncRoot = new Object();
 
-#if !(NET_1_1)
-        private static Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
-#else
-		private static Hashtable _typeCache = new Hashtable();
+        private readonly CopyOnWriteDictionary<string, Type> _typeCache;
+#if !SILVERLIGHT
+        private readonly CopyOnWriteDictionary<Type, ConstructorInvoker> _typeConstructorCache;
 #endif
-		private static string[] _lacLocations;
+        private readonly string[] _lacLocations;
+        private readonly bool _reflectionEmitPermission;
 
-		static ObjectFactory()
-		{
-			_lacLocations = TypeHelper.GetLacLocations();
-		}
+	    private ObjectFactory() 
+        {
+            _lacLocations = TypeHelper.GetLacLocations();
+            _typeCache = new CopyOnWriteDictionary<string, Type>();
+#if !SILVERLIGHT
+            _typeConstructorCache = new CopyOnWriteDictionary<Type, ConstructorInvoker>();
+            try
+            {
+                ReflectionPermission perm = new ReflectionPermission(ReflectionPermissionFlag.ReflectionEmit);
+                perm.Demand();
+                _reflectionEmitPermission = true;
+            }
+            catch(Exception ex)
+            {
+                Unreferenced.Parameter(ex);
+                _reflectionEmitPermission = false;
+            }
+#endif
+        }
 
-		static public Type Locate(string typeName)
+        public static ObjectFactory Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (SyncRoot) 
+                    {
+                        if (_instance == null)
+                            _instance = new ObjectFactory();
+                    }
+                }
+                return _instance;
+            }
+        }
+
+		public Type InternalLocate(string typeName)
 		{
-			if( typeName == null || typeName == string.Empty )
+			if( string.IsNullOrEmpty(typeName) )
 				return null;
 
-			string mappedTypeName = typeName;
-			mappedTypeName = FluorineConfiguration.Instance.GetMappedTypeName(typeName);
-
+            string mappedTypeName = FluorineConfiguration.Instance.GetMappedTypeName(typeName);
 			//Lookup first in our cache.
-			lock(typeof(Type))
-			{
-                Type type = null;
-                if( _typeCache.ContainsKey(mappedTypeName) )
-                    type = _typeCache[mappedTypeName] as Type;
-				if( type == null )
-				{
-
-					type = FluorineFx.TypeHelper.Locate(mappedTypeName);
-					if(type != null)
-					{
-						_typeCache[mappedTypeName] = type;
-						return type;
-					}
-					else
-					{
-						//Locate in LAC
-						type = LocateInLac(mappedTypeName);
-					}
-				}
-				return type;
-			}
+            Type type;
+            if (!_typeCache.TryGetValue(mappedTypeName, out type))
+            {
+                type = TypeHelper.Locate(mappedTypeName);
+                if (type != null)
+                    _typeCache[mappedTypeName] = type;
+                else
+                    type = InternalLocateInLac(mappedTypeName); // Locate in the LAC
+            }
+            return type;
 		}
 
-		static public Type LocateInLac(string typeName)
+		public Type InternalLocateInLac(string typeName)
 		{
-			//Locate in LAC
-			if( typeName == null || typeName == string.Empty )
+			if( string.IsNullOrEmpty(typeName) )
 				return null;
 
-			string mappedTypeName = typeName;
-			mappedTypeName = FluorineConfiguration.Instance.GetMappedTypeName(typeName);
-
-			//Lookup first in our cache.
-			lock(typeof(Type))
-			{
-                Type type = null;
-                if (_typeCache.ContainsKey(mappedTypeName))
-                    type = _typeCache[mappedTypeName] as Type;
-				if( type == null )
-				{
-
-					//Locate in LAC
-					for(int i = 0; i < _lacLocations.Length; i++)
-					{
-						type = FluorineFx.TypeHelper.LocateInLac(mappedTypeName, _lacLocations[i]);
-						if(type != null)
-						{
-							_typeCache[mappedTypeName] = type;
-							return type;
-						}
-					}
-				}
-				return type;
-			}
+            string mappedTypeName = FluorineConfiguration.Instance.GetMappedTypeName(typeName);
+            //Lookup first in our cache.
+            Type type;
+            if (!_typeCache.TryGetValue(mappedTypeName, out type))
+            {
+                //Locate in LAC
+                for (int i = 0; i < _lacLocations.Length; i++)
+                {
+                    type = TypeHelper.LocateInLac(mappedTypeName, _lacLocations[i]);
+                    if (type != null)
+                    {
+                        _typeCache[mappedTypeName] = type;
+                        return type;
+                    }
+                }
+            }
+            return type;
 		}
 
-		static internal void AddTypeToCache(Type type)
+		internal void AddTypeToCache(Type type)
 		{
-			if( type != null )
-			{
-				lock(typeof(Type))
-				{
-					_typeCache[type.FullName] = type;
-				}
-			}
+            if (type != null)
+                _typeCache[type.FullName] = type;
 		}
 
-		static public bool ContainsType(string typeName)
+		public bool ContainsType(string typeName)
 		{
-			if( typeName != null )
-			{
-				lock(typeof(Type))
-				{
-					return _typeCache.ContainsKey(typeName);
-				}
-			}
-			return false;
+            if (string.IsNullOrEmpty(typeName))
+                return false;
+            return _typeCache.ContainsKey(typeName);
 		}
 
-		static public object CreateInstance(Type type)
+        public object InternalCreateInstance(Type type)
 		{
-			return CreateInstance(type, null);
+            return InternalCreateInstance(type, null);
 		}
 
-		static public object CreateInstance(Type type, object[] args)
+        public object InternalCreateInstance(string typeName)
+        {
+            return InternalCreateInstance(typeName, null);
+        }
+
+        public object InternalCreateInstance(string typeName, object[] args)
+        {
+            Type type = InternalLocate(typeName);
+            return InternalCreateInstance(type, args);
+        }
+
+        public object InternalCreateInstance(Type type, object[] args)
 		{
-			if( type != null )
-			{
-				lock(typeof(Type))
-				{
-					if (type.IsAbstract && type.IsSealed)
-					{
-						return type;
-					}
-					else
-					{
-						if( args == null )
-#if SILVERLIGHT
-                            return type.InvokeMember(null, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance | BindingFlags.Static, null, null, new object[] { });
+            if (type != null)
+            {
+                if (type.IsAbstract && type.IsSealed)
+                    return type;
+
+#if !SILVERLIGHT
+                if (_reflectionEmitPermission)
+                {
+                    ConstructorInvoker invoker;
+                    _typeConstructorCache.TryGetValue(type, out invoker);
+                    if (invoker == null)
+                    {
+                        invoker = ConstructorExtensions.DelegateForCreateInstance(type, args);
+                        _typeConstructorCache[type] = invoker;
+                    }
+                    return invoker(args);
+                }
+                return Activator.CreateInstance(type, BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static, null, args, null);
 #else
-							return Activator.CreateInstance(type, BindingFlags.CreateInstance|BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static, null, new object[]{}, null);
+
+                return type.InvokeMember(null, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance | BindingFlags.Static, null, null, args);
 #endif
-						else
-#if SILVERLIGHT
-                            return type.InvokeMember(null, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance | BindingFlags.Static, null, null, args);
-#else
-                            return Activator.CreateInstance(type, BindingFlags.CreateInstance|BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static, null, args, null);
-#endif
-					}
-				}
-			}
+            }
 			return null;
 		}
 
-		static public object CreateInstance(string typeName)
-		{
-			return CreateInstance(typeName, null);
-		}
+        static public Type Locate(string type)
+        {
+            return Instance.InternalLocate(type);
+        }
 
-		static public object CreateInstance(string typeName, object[] args)
-		{
-			Type type = Locate(typeName);
-			return CreateInstance(type, args);
-		}
+        static public Type LocateInLac(string type)
+        {
+            return Instance.InternalLocateInLac(type);
+        }
+
+        static public object CreateInstance(Type type)
+        {
+            return Instance.InternalCreateInstance(type);
+        }
+
+        static public object CreateInstance(string type)
+        {
+            return Instance.InternalCreateInstance(type);
+        }
+
+        static public object CreateInstance(Type type, object[] args)
+        {
+            return Instance.InternalCreateInstance(type, args);
+        }
 	}
 }

@@ -18,10 +18,7 @@
 */
 
 using System;
-#if !(NET_1_1)
 using System.Collections.Generic;
-#endif
-using System.Text;
 using System.Reflection;
 using System.Collections;
 using System.ComponentModel;
@@ -33,9 +30,7 @@ namespace FluorineFx.Util
     /// </summary>
 	internal abstract class ReflectionUtils
 	{
-        protected ReflectionUtils() { }
-
-		internal static Type GenericIListType = Type.GetType("System.Collections.Generic.IList`1");
+        internal static Type GenericIListType = Type.GetType("System.Collections.Generic.IList`1");
         internal static Type GenericICollectionType = Type.GetType("System.Collections.Generic.ICollection`1");
         internal static Type GenericIDictionaryType = Type.GetType("System.Collections.Generic.IDictionary`2");
 
@@ -76,37 +71,17 @@ namespace FluorineFx.Util
 		public static bool IsNullable(Type type)
 		{
 			ValidationUtils.ArgumentNotNull(type, "type");
-
 			if (type.IsValueType)
-			{
-#if (NET_1_1)
-				PropertyInfo piIsGenericType = type.GetType().GetProperty("IsGenericType");
-				if (piIsGenericType != null)
-				{
-					//.NET 2 here
-					bool isGenericType = (bool)piIsGenericType.GetValue(type, null);
-					return isGenericType && type.Name.StartsWith("Nullable");
-					//return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-				}
-				return false;
-#else
                 return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-#endif
-			}
 			return false;
 		}
 
 		public static bool IsUnitializedValue(object value)
 		{
 			if (value == null)
-			{
 				return true;
-			}
-			else
-			{
-				object unitializedValue = CreateUnitializedValue(value.GetType());
-				return value.Equals(unitializedValue);
-			}
+		    object unitializedValue = CreateUnitializedValue(value.GetType());
+		    return value.Equals(unitializedValue);
 		}
 
 		public static object CreateUnitializedValue(Type type)
@@ -118,21 +93,15 @@ namespace FluorineFx.Util
 
 			if (type.IsClass || type.IsInterface || type == typeof(void))
 				return null;
-			else if (type.IsValueType)
-				return Activator.CreateInstance(type);
-			else
-				throw new ArgumentException(string.Format("Type {0} cannot be instantiated.", type), "type");
+		    if (type.IsValueType)
+		        return Activator.CreateInstance(type);
+		    throw new ArgumentException(string.Format("Type {0} cannot be instantiated.", type), "type");
 		}
 
 		public static bool IsPropertyIndexed(PropertyInfo property)
 		{
 			ValidationUtils.ArgumentNotNull(property, "property");
-
-#if (NET_1_1)
-			return !CollectionUtils.IsNullOrEmpty(property.GetIndexParameters());
-#else
             return !CollectionUtils.IsNullOrEmpty<ParameterInfo>(property.GetIndexParameters());
-#endif
 		}
 
 		public static bool ImplementsInterface(Type type, string interfaceName)
@@ -199,90 +168,30 @@ namespace FluorineFx.Util
 
 		static public bool IsGenericTypeDefinition(Type type)
 		{
-#if (NET_1_1)
-			PropertyInfo piIsGenericTypeDefinition = type.GetType().GetProperty("IsGenericTypeDefinition");
-			if (piIsGenericTypeDefinition != null)
-			{
-				//.NET 2 here
-				bool isGenericTypeDefinition = (bool)piIsGenericTypeDefinition.GetValue(type, null);
-				return isGenericTypeDefinition;
-			}
-			return false;
-#else
             return type.IsGenericTypeDefinition;
-#endif
 		}
 
 		static public bool IsGenericType(Type type)
 		{
-#if (NET_1_1)
-			PropertyInfo piIsGenericType = type.GetType().GetProperty("IsGenericType");
-			if (piIsGenericType != null)
-			{
-				//.NET 2 here
-				bool isGenericType = (bool)piIsGenericType.GetValue(type, null);
-				return isGenericType;
-			}
-			return false;
-#else
             return type.IsGenericType;
-#endif
 		}
 
 		static public Type GetGenericTypeDefinition(Type type)
 		{
-#if (NET_1_1)
-			MethodInfo miGetGenericTypeDefinition = type.GetType().GetMethod("GetGenericTypeDefinition");
-			if (miGetGenericTypeDefinition != null)
-			{
-				//.NET 2 here
-				Type genericTypeDefinition = miGetGenericTypeDefinition.Invoke(type, new object[] { }) as Type;
-				return genericTypeDefinition;
-			}
-			return null;
-#else
             return type.GetGenericTypeDefinition();
-#endif
 		}
 
 		static public Type[] GetGenericArguments(Type type)
 		{
-#if (NET_1_1)
-			MethodInfo miGetGenericArguments = type.GetType().GetMethod("GetGenericArguments");
-			if (miGetGenericArguments != null)
-			{
-				//.NET 2 here
-				Type[] genericArguments = miGetGenericArguments.Invoke(type, new object[] { }) as Type[];
-				return genericArguments;
-			}
-			return null;
-#else
             return type.GetGenericArguments();
-#endif
 		}
 
         internal static Type MakeGenericType(Type genericTypeDefinition, params Type[] typeArguments)
 		{
 			ValidationUtils.ArgumentNotNull(genericTypeDefinition, "genericTypeDefinition");
-#if (NET_1_1)
-			ValidationUtils.ArgumentNotNullOrEmpty(typeArguments, "typeArguments");
-#else
             ValidationUtils.ArgumentNotNullOrEmpty<Type>(typeArguments, "typeArguments");
-#endif
             ValidationUtils.ArgumentConditionTrue(IsGenericTypeDefinition(genericTypeDefinition), "genericTypeDefinition", string.Format("Type {0} is not a generic type definition.", genericTypeDefinition));
-
-#if (NET_1_1)
-			MethodInfo miMakeGenericType = genericTypeDefinition.GetType().GetMethod("MakeGenericType");
-			if (miMakeGenericType != null)
-			{
-				//.NET 2 here
-				Type constructed = miMakeGenericType.Invoke(genericTypeDefinition, new object[] { typeArguments }) as Type;
-				return constructed;
-			}
-			return null;
-#else
             return genericTypeDefinition.MakeGenericType(typeArguments);
-#endif
 		}
 
 		/// <summary>
@@ -299,21 +208,18 @@ namespace FluorineFx.Util
 			{
 				return type.GetElementType();
 			}
-			else if (IsSubClass(type, ReflectionUtils.GenericIListType, out genericListType))
-			{
-				if ( IsGenericTypeDefinition(genericListType))
-					throw new Exception(string.Format("Type {0} is not a list.", type));
+		    if (IsSubClass(type, GenericIListType, out genericListType))
+		    {
+		        if ( IsGenericTypeDefinition(genericListType))
+		            throw new Exception(string.Format("Type {0} is not a list.", type));
 
-				return GetGenericArguments(genericListType)[0];
-			}
-			else if (typeof(IList).IsAssignableFrom(type))
-			{
-				return null;
-			}
-			else
-			{
-				throw new Exception(string.Format("Type {0} is not a list.", type));
-			}
+		        return GetGenericArguments(genericListType)[0];
+		    }
+		    if (typeof(IList).IsAssignableFrom(type))
+		    {
+		        return null;
+		    }
+		    throw new Exception(string.Format("Type {0} is not a list.", type));
 		}
 
 		public static Type GetDictionaryValueType(Type type)
@@ -321,102 +227,56 @@ namespace FluorineFx.Util
 			ValidationUtils.ArgumentNotNull(type, "type");
 
 			Type genericDictionaryType;
-			if (IsSubClass(type, ReflectionUtils.GenericIDictionaryType, out genericDictionaryType))
+			if (IsSubClass(type, GenericIDictionaryType, out genericDictionaryType))
 			{
 				if (IsGenericTypeDefinition(genericDictionaryType))
 					throw new Exception(string.Format("Type {0} is not a dictionary.", type));
 
 				return GetGenericArguments(genericDictionaryType)[1];
 			}
-			else if (typeof(IDictionary).IsAssignableFrom(type))
-			{
-				return null;
-			}
-			else
-			{
-				throw new Exception(string.Format("Type {0} is not a dictionary.", type));
-			}
+		    if (typeof(IDictionary).IsAssignableFrom(type))
+		        return null;
+		    throw new Exception(string.Format("Type {0} is not a dictionary.", type));
 		}
 
-#if (NET_1_1)
-		/// <summary>
-		/// Tests whether the list's items are their unitialized value.
-		/// </summary>
-		/// <param name="list">The list.</param>
-		/// <returns>Whether the list's items are their unitialized value</returns>
-		public static bool ItemsUnitializedValue(IList list)
-		{
-			ValidationUtils.ArgumentNotNull(list, "list");
-
-			Type elementType = GetListItemType(list.GetType());
-
-			if (elementType.IsValueType)
-			{
-				object unitializedValue = CreateUnitializedValue(elementType);
-
-				for (int i = 0; i < list.Count; i++)
-				{
-					if (!list[i].Equals(unitializedValue))
-						return false;
-				}
-			}
-			else if (elementType.IsClass)
-			{
-				for (int i = 0; i < list.Count; i++)
-				{
-					object value = list[i];
-
-					if (value != null)
-						return false;
-				}
-			}
-			else
-			{
-				throw new Exception(string.Format("Type {0} is neither a ValueType or a Class.", elementType));
-			}
-
-			return true;
-		}
-#else
-    /// <summary>
-    /// Tests whether the list's items are their unitialized value.
-    /// </summary>
-    /// <param name="list">The list.</param>
-    /// <returns>Whether the list's items are their unitialized value</returns>
-    public static bool ItemsUnitializedValue<T>(IList<T> list)
-    {
-      ValidationUtils.ArgumentNotNull(list, "list");
-
-      Type elementType = GetListItemType(list.GetType());
-
-      if (elementType.IsValueType)
-      {
-        object unitializedValue = CreateUnitializedValue(elementType);
-
-        for (int i = 0; i < list.Count; i++)
+        /// <summary>
+        /// Tests whether the list's items are their unitialized value.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        /// <returns>Whether the list's items are their unitialized value</returns>
+        public static bool ItemsUnitializedValue<T>(IList<T> list)
         {
-          if (!list[i].Equals(unitializedValue))
-            return false;
-        }
-      }
-      else if (elementType.IsClass)
-      {
-        for (int i = 0; i < list.Count; i++)
-        {
-          object value = list[i];
+            ValidationUtils.ArgumentNotNull(list, "list");
 
-          if (value != null)
-            return false;
-        }
-      }
-      else
-      {
-        throw new Exception(string.Format("Type {0} is neither a ValueType or a Class.", elementType));
-      }
+            Type elementType = GetListItemType(list.GetType());
 
-      return true;
-    }
-#endif
+            if (elementType.IsValueType)
+            {
+                object unitializedValue = CreateUnitializedValue(elementType);
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (!list[i].Equals(unitializedValue))
+                        return false;
+                }
+            }
+            else if (elementType.IsClass)
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    object value = list[i];
+
+                    if (value != null)
+                        return false;
+                }
+            }
+            else
+            {
+                throw new Exception(string.Format("Type {0} is neither a ValueType or a Class.", elementType));
+            }
+
+            return true;
+        }
 
 		/// <summary>
 		/// Gets the member's underlying type.
@@ -455,8 +315,7 @@ namespace FluorineFx.Util
 
 			if (propertyInfo != null)
 				return IsIndexedProperty(propertyInfo);
-			else
-				return false;
+		    return false;
 		}
 
 		/// <summary>
@@ -582,20 +441,10 @@ namespace FluorineFx.Util
 
 		public static MemberInfo[] GetFieldsAndProperties(Type type, BindingFlags bindingAttr)
 		{
-#if !(NET_1_1)
             List<MemberInfo> targetMembers = new List<MemberInfo>();
-#else
-			ArrayList targetMembers = new ArrayList();
-#endif
-
 			targetMembers.AddRange(type.GetFields(bindingAttr));
 			targetMembers.AddRange(type.GetProperties(bindingAttr));
-
-#if !(NET_1_1)
             return targetMembers.ToArray();
-#else
-			return targetMembers.ToArray(typeof(MemberInfo)) as MemberInfo[];
-#endif
 		}
 
 		public static Attribute GetAttribute(Type type, ICustomAttributeProvider attributeProvider)
@@ -625,13 +474,7 @@ namespace FluorineFx.Util
 		public static MemberInfo[] FindMembers(Type targetType, MemberTypes memberType, BindingFlags bindingAttr, MemberFilter filter, object filterCriteria)
 		{
 			ValidationUtils.ArgumentNotNull(targetType, "targetType");
-
-#if !(NET_1_1)
             List<MemberInfo> memberInfos = new List<MemberInfo>(targetType.FindMembers(memberType, bindingAttr, filter, filterCriteria));
-#else
-            ArrayList memberInfos = new ArrayList(targetType.FindMembers(memberType, bindingAttr, filter, filterCriteria));
-#endif
-
 			// fix weirdness with FieldInfos only being returned for the current Type
 			// find base type fields and add them to result
 			if ((memberType & MemberTypes.Field) != 0
@@ -646,11 +489,7 @@ namespace FluorineFx.Util
 				}
 			}
 
-#if !(NET_1_1)
             return memberInfos.ToArray();
-#else
-            return memberInfos.ToArray(typeof(MemberInfo)) as MemberInfo[];
-#endif
         }
 
         public static MemberInfo[] FindMembers(Type targetType, MemberTypes memberType, BindingFlags bindingAttr, Type customAttributeType)
@@ -693,6 +532,50 @@ namespace FluorineFx.Util
             TypeConverterAttribute typeConverterAttribute = GetAttribute(typeof(TypeConverterAttribute), attributeProvider, true) as TypeConverterAttribute;
             return ObjectFactory.CreateInstance(typeConverterAttribute.ConverterTypeName) as TypeConverter;
 #endif
+        }
+
+		public static Type[] ToTypeArray(object[] objects)
+        {
+            if (objects == null || objects.Length == 0)
+                return Type.EmptyTypes;
+            Type[] types = new Type[objects.Length];
+			for (int i = 0; i < types.Length; i++)
+			{
+				types[i] = objects[i].GetType();
+			}
+			return types;
+		}
+
+        public static Type[] ToTypeArray(ParameterInfo[] parameters)
+        {
+            if (parameters == null || parameters.Length == 0)
+                return Type.EmptyTypes;
+            Type[] types = new Type[parameters.Length];
+            for (int i = 0; i < types.Length; i++)
+            {
+                types[i] = parameters[i].ParameterType;
+            }
+            return types;
+        }
+
+        public static bool IsTargetTypeStruct(Type type)
+        {
+            return type.IsValueType;
+        }
+
+        public static bool IsEmptyTypeList(Type[] types)
+        {
+            return types == Type.EmptyTypes;
+        }
+
+        public static bool HasRefParam(Type[] types)
+        {
+            foreach(Type type in types)
+            {
+                if( type.IsByRef )
+                    return true;
+            }
+            return false;
         }
 	}
 }

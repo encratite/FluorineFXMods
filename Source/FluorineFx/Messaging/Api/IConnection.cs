@@ -18,7 +18,6 @@
 */
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.Net;
 
 namespace FluorineFx.Messaging.Api

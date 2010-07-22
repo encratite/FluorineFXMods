@@ -28,7 +28,7 @@ namespace FluorineFx.Util
 		/// <summary>
 		/// Tracks whether Dispose has been called.
 		/// </summary>
-        private volatile bool _disposed = false;
+        private volatile bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the DisposableBase class.

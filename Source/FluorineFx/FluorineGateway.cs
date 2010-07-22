@@ -17,17 +17,12 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Xml;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.SessionState;
-using System.Web.Configuration;
 using System.Text;
 using System.IO;
-using System.Collections;
-using System.Collections.Specialized;
 using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Configuration;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -35,14 +30,13 @@ using System.Threading;
 using System.Security;
 using System.Security.Permissions;
 using System.Web.Hosting;
+using FluorineFx.Util;
 using log4net;
-using log4net.Config;
 using FluorineFx.Browser;
 using FluorineFx.Configuration;
 using FluorineFx.Context;
 using FluorineFx.HttpCompress;
 using FluorineFx.Messaging;
-using FluorineFx.Silverlight;
 
 //Compressing http content based on "The open compression engine for ASP.NET"
 //http://www.blowery.org/code/HttpCompressionModule.html
@@ -61,41 +55,27 @@ namespace FluorineFx
 	/// <summary>
 	/// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
 	/// </summary>
-	public class FluorineGateway : IHttpModule, IRequiresSessionState
-#if !(NET_1_1)
-        , IRegisteredObject
-#endif
+    [CLSCompliant(false)]
+    public class FluorineGateway : IHttpModule, IRequiresSessionState, IRegisteredObject, IRequestHandlerHost
 	{
-        private static readonly ILog log = LogManager.GetLogger(typeof(FluorineGateway));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(FluorineGateway));
 
 		internal const string FluorineHttpCompressKey = "__@fluorinehttpcompress";
         internal const string FluorineMessageServerKey = "__@fluorinemessageserver";
 
 
-		static int _unhandledExceptionCount = 0;
-		static string _sourceName = null;
+		static int _unhandledExceptionCount;
+		static string _sourceName;
 		static object _objLock = new object();
-		static bool _initialized = false;
+		static bool _initialized;
 
-        static MessageServer messageServer;
-        static IServiceBrowserRenderer serviceBrowserRenderer;
+        static MessageServer _messageServer;
+        static IServiceBrowserRenderer _serviceBrowserRenderer;
 
-		/// <summary>
-		/// Initializes a new instance of the FluorineGateway class.
-		/// </summary>
-		public FluorineGateway()
-		{
-		}
+        static readonly string[] PossibleConfigFolderNames = { Path.Combine("App_Data", "flex"), Path.Combine("WEB-INF", "flex"), "App_Data" };
+        static List<IRequestHandler> _handlers = new List<IRequestHandler>();
 
-
-        private static string GetPageName(string requestPath)
-        {
-            if (requestPath.IndexOf('?') != -1)
-                requestPath = requestPath.Substring(0, requestPath.IndexOf('?'));
-            return requestPath.Remove(0, requestPath.LastIndexOf("/") + 1);
-        }
-
-		#region IHttpModule Members
+	    #region IHttpModule Members
 
 		/// <summary>
 		/// Initializes the module and prepares it to handle requests.
@@ -103,16 +83,6 @@ namespace FluorineFx
 		/// <param name="application">An HttpApplication that provides access to the methods, properties, and events common to all application objects within an ASP.NET application.</param>
 		public void Init(HttpApplication application)
 		{
-            /*
-			try
-			{
-				ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-                log4net.GlobalContext.Properties["ClientIP"] = "0.0.0.0";
-                log.Info(__Res.GetString(__Res.Fluorine_InitModule));
-			}
-			catch { }
-            */
-
 			//http://support.microsoft.com/kb/911816
 			// Do this one time for each AppDomain.
 			if (!_initialized) 
@@ -121,18 +91,14 @@ namespace FluorineFx
 				{
 					if (!_initialized) 
 					{
-                        try
+                        if (Log.IsInfoEnabled)
                         {
-                            if (log.IsInfoEnabled)
-                            {
-                                log.Info("************************************");
-                                log.Info(__Res.GetString(__Res.Fluorine_Start));
-                                log.Info(__Res.GetString(__Res.Fluorine_Version, Assembly.GetExecutingAssembly().GetName().Version));
-                                log.Info("************************************");
-                                log.Info(__Res.GetString(__Res.MessageServer_Create));
-                            }
+                            Log.Info("************************************");
+                            Log.Info(__Res.GetString(__Res.Fluorine_Start));
+                            Log.Info(__Res.GetString(__Res.Fluorine_Version, Assembly.GetExecutingAssembly().GetName().Version));
+                            Log.Info("************************************");
+                            Log.Info(__Res.GetString(__Res.MessageServer_Create));
                         }
-                        catch { }
                         try
                         {
                             // See if we're running in full trust
@@ -144,6 +110,48 @@ namespace FluorineFx
                         }
                         catch (MethodAccessException){}
                         catch (SecurityException){}
+
+                        FluorineWebContext.Initialize();
+
+                        Log.Info(__Res.GetString(__Res.ServiceBrowser_Aquire));
+                        try
+                        {
+                            Type type = ObjectFactory.Locate("FluorineFx.ServiceBrowser.ServiceBrowserRenderer");
+                            if (type != null)
+                            {
+                                _serviceBrowserRenderer = Activator.CreateInstance(type) as IServiceBrowserRenderer;
+                                if (_serviceBrowserRenderer != null)
+                                    Log.Info(__Res.GetString(__Res.ServiceBrowser_Aquired));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Fatal(__Res.GetString(__Res.ServiceBrowser_AquireFail), ex);
+                        }
+
+                        try
+                        {
+                            _messageServer = new MessageServer();
+                            string[] possibleConfigFolderPaths = new string[PossibleConfigFolderNames.Length];
+                            for (int i = 0; i < PossibleConfigFolderNames.Length; i++)
+                            {
+                                string configPath = Path.Combine(HttpRuntime.AppDomainAppPath, PossibleConfigFolderNames[i]);
+                                possibleConfigFolderPaths[i] = configPath;
+                            }
+                            _messageServer.Init(possibleConfigFolderPaths, _serviceBrowserRenderer != null);
+                            _messageServer.Start();
+                            Log.Info(__Res.GetString(__Res.MessageServer_Started));
+                            HttpContext.Current.Application[FluorineMessageServerKey] = _messageServer;
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Fatal(__Res.GetString(__Res.MessageServer_StartError), ex);
+                        }
+
+                        _handlers.Add(new AmfRequestHandler(this));
+                        _handlers.Add(new StreamingAmfRequestHandler(this));
+                        _handlers.Add(new RtmptRequestHandler(this));
+                        _handlers.Add(new JsonRpcRequestHandler(this));
                         _initialized = true;
 					}
 				}
@@ -165,107 +173,28 @@ namespace FluorineFx
 			//UpdateRequestCache 
 			//EndRequest 
 
-			application.BeginRequest += new EventHandler(application_BeginRequest);
+			application.BeginRequest += ApplicationBeginRequest;
             if (!FluorineConfiguration.Instance.FluorineSettings.Runtime.AsyncHandler)
             {
-                application.PreRequestHandlerExecute += new EventHandler(application_PreRequestHandlerExecute);
+                application.PreRequestHandlerExecute += ApplicationPreRequestHandlerExecute;
             }
             else
             {
-                application.AddOnPreRequestHandlerExecuteAsync(new BeginEventHandler(BeginPreRequestHandlerExecute), new EndEventHandler(EndPreRequestHandlerExecute));
+                application.AddOnPreRequestHandlerExecuteAsync(BeginPreRequestHandlerExecute, EndPreRequestHandlerExecute);
             }
 
-			application.AuthenticateRequest += new EventHandler(application_AuthenticateRequest);
+			application.AuthenticateRequest += ApplicationAuthenticateRequest;
 
 			//This implementation hooks the ReleaseRequestState and PreSendRequestHeaders events to 
 			//figure out as late as possible if we should install the filter.
 			//The Post Release Request State is the event most fitted for the task of adding a filter
 			//Everything else is too soon or too late. At this point in the execution phase the entire 
 			//response content is created and the page has fully executed but still has a few modules to go through
-			//from an asp.net perspective.  We filter the content here and all of the javascript renders correctly.
+			//from an ASP.NET perspective.  We filter the content here and all of the javascript renders correctly.
 			//application.PostReleaseRequestState += new EventHandler(this.CompressContent);
-			application.ReleaseRequestState += new EventHandler(application_ReleaseRequestState);
-			application.PreSendRequestHeaders += new EventHandler(application_PreSendRequestHeaders);
-			application.EndRequest += new EventHandler(application_EndRequest);
-
-            FluorineWebContext.Initialize();
-
-            if (serviceBrowserRenderer == null)
-            {
-                lock (_objLock)
-                {
-                    if (serviceBrowserRenderer == null)
-                    {
-                        try
-                        {
-                            //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-                            log.Info(__Res.GetString(__Res.ServiceBrowser_Aquire));
-                        }
-                        catch { }
-
-                        try
-                        {
-                            Type type = ObjectFactory.Locate("FluorineFx.ServiceBrowser.ServiceBrowserRenderer");
-                            if (type != null)
-                            {
-                                serviceBrowserRenderer = Activator.CreateInstance(type) as IServiceBrowserRenderer;
-                                if (serviceBrowserRenderer != null)
-                                {
-                                    try
-                                    {
-                                        //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-                                        log.Info(__Res.GetString(__Res.ServiceBrowser_Aquired));
-                                    }
-                                    catch { }
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            try
-                            {
-                                //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-                                log.Fatal(__Res.GetString(__Res.ServiceBrowser_AquireFail), ex);
-                            }
-                            catch { }
-                        }
-                    }
-                }
-            }
-            if (messageServer == null)
-            {
-                lock (_objLock)
-                {
-                    if (messageServer == null)
-                    {
-                        messageServer = new MessageServer();
-                        try
-                        {
-                            string configPath = Path.Combine(HttpRuntime.AppDomainAppPath, "WEB-INF");
-                            configPath = Path.Combine(configPath, "flex");
-                            messageServer.Init(configPath, serviceBrowserRenderer != null);
-                            messageServer.Start();
-
-                            try
-                            {
-                                //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-                                log.Info(__Res.GetString(__Res.MessageServer_Started));
-                            }
-                            catch { }
-                            HttpContext.Current.Application[FluorineMessageServerKey] = messageServer;
-                        }
-                        catch (Exception ex)
-                        {
-                            try
-                            {
-                                //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-                                log.Fatal(__Res.GetString(__Res.MessageServer_StartError), ex);
-                            }
-                            catch { }
-                        }
-                    }
-                }
-            }
+			application.ReleaseRequestState += ApplicationReleaseRequestState;
+			application.PreSendRequestHeaders += ApplicationPreSendRequestHeaders;
+			application.EndRequest += ApplicationEndRequest;
 		}
 
 		/// <summary>
@@ -273,8 +202,6 @@ namespace FluorineFx
 		/// </summary>
 		public void Dispose()
 		{
-            //ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-            //log.Info("Disposing FluorineFx Gateway");
 		}
 
 		#endregion
@@ -285,68 +212,57 @@ namespace FluorineFx
             {
                 Stop();
             }
-            catch (Exception)
-            { }
+            catch (Exception ex)
+            {
+                Unreferenced.Parameter(ex);
+            }
         }
 
 		/// <summary>
 		/// Occurs as the first event in the HTTP pipeline chain of execution when ASP.NET responds to a request.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void application_BeginRequest(object sender, EventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void ApplicationBeginRequest(object sender, EventArgs e)
 		{
 			HttpApplication httpApplication = (HttpApplication)sender;
 			HttpRequest httpRequest = httpApplication.Request;
 
-			if( serviceBrowserRenderer != null )
+            for (int i = 0; i < _handlers.Count; i++)
+                _handlers[i].BeginRequest(httpApplication);
+
+			if( _serviceBrowserRenderer != null )
 			{
-				if( serviceBrowserRenderer.CanRender(httpRequest) )
+				if( _serviceBrowserRenderer.CanRender(httpRequest) )
 				{
 					CompressContent(httpApplication);
 
                     FluorineWebContext.Initialize();
 					httpApplication.Response.Clear();
 					//httpApplication.Response.ClearHeaders();
-					serviceBrowserRenderer.Render(httpApplication);
+					_serviceBrowserRenderer.Render(httpApplication);
 					httpApplication.CompleteRequest();
 					return;
 				}
 			}
-
-            if (httpApplication.Request.ContentType == ContentType.AMF)
-			{
-				httpApplication.Context.SkipAuthorization = true;
-			}
-
-            if (httpApplication.Request.ContentType == ContentType.XForm)
-            {
-                HttpCookie cookie = HttpContext.Current.Request.Cookies["ASP.NET_SessionId"];
-                string command = HttpContext.Current.Request.Params[FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint.CommandParameterName];
-                if (cookie != null && FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint.OpenCommand.Equals(command))
-                {
-                    HttpContext.Current.Request.Cookies.Remove("ASP.NET_SessionId");
-                    httpApplication.Context.Items[Session.FxASPNET_SessionId] = cookie;
-                }
-            }
-
-			//sessionState cookieless="true" requires to handle here an HTTP POST but Session is not available here
-			//HandleXAmfEx(httpApplication);
 		}
 
 		/// <summary>
 		/// Occurs just before ASP.NET begins executing a handler such as a page or XML Web service.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void application_PreRequestHandlerExecute(object sender, EventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void ApplicationPreRequestHandlerExecute(object sender, EventArgs e)
 		{
-			HttpApplication httpApplication = (HttpApplication)sender;
-			HandleXAmfEx(httpApplication);
-            HandleSWX(httpApplication);
-            HandleJSONRPC(httpApplication);
-            HandleRtmpt(httpApplication);
+			HttpApplication context = (HttpApplication)sender;
+            ProcessRequest(context);
 		}
+
+        internal void ProcessRequest(HttpApplication context)
+        {
+            for (int i = 0; i < _handlers.Count; i++)
+                _handlers[i].ProcessRequest(context);
+        }
 
         IAsyncResult BeginPreRequestHandlerExecute(Object source, EventArgs e, AsyncCallback cb, Object state)
         {
@@ -359,313 +275,76 @@ namespace FluorineFx
         void EndPreRequestHandlerExecute(IAsyncResult ar)
         {
             AsyncHandler asyncHandler = ar as AsyncHandler;
-        }
-
-
-        internal void HandleSWX(HttpApplication httpApplication)
-        {
-            string page = GetPageName(httpApplication.Request.RawUrl);
-            if (page.ToLower() == "swxgateway.aspx")
-            {
-                httpApplication.Response.Clear();
-                ILog log = null;
-                try
-                {
-                    log = LogManager.GetLogger(typeof(FluorineGateway));
-                    log4net.ThreadContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
-                }
-                catch { }
-                if (log != null && log.IsDebugEnabled)
-                    log.Debug(__Res.GetString(__Res.Swx_Begin));
-
-                try
-                {
-                    FluorineWebContext.Initialize();
-
-                    SWX.SwxHandler swxHandler = new SWX.SwxHandler();
-                    swxHandler.Handle(httpApplication);
-
-                    if (log != null && log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Swx_End));
-
-                    httpApplication.CompleteRequest();
-                }
-                catch (Exception ex)
-                {
-                    if (log != null)
-                        log.Fatal(__Res.GetString(__Res.Swx_Fatal), ex);
-                    httpApplication.Response.Clear();
-                    httpApplication.Response.ClearHeaders();
-                    httpApplication.Response.Status = __Res.GetString(__Res.Swx_Fatal404) + " " + ex.Message;
-                    httpApplication.CompleteRequest();
-                }
-            }
-        }
-
-        internal void HandleJSONRPC(HttpApplication httpApplication)
-        {
-            string page = GetPageName(httpApplication.Request.RawUrl);
-            if (page.ToLower() == "jsongateway.aspx")
-            {
-                httpApplication.Response.Clear();
-                ILog log = null;
-                try
-                {
-                    log = LogManager.GetLogger(typeof(FluorineGateway));
-                    log4net.ThreadContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
-                }
-                catch { }
-                if (log != null && log.IsDebugEnabled)
-                    log.Debug(__Res.GetString(__Res.Json_Begin));
-
-                try
-                {
-                    FluorineWebContext.Initialize();
-
-                    Json.Rpc.JsonRpcHandler handler = new FluorineFx.Json.Rpc.JsonRpcHandler(httpApplication.Context);
-                    handler.ProcessRequest();
-
-                    if (log != null && log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Json_End));
-
-                    httpApplication.CompleteRequest();
-                }
-                catch (Exception ex)
-                {
-                    if (log != null)
-                        log.Fatal(__Res.GetString(__Res.Json_Fatal), ex);
-                    httpApplication.Response.Clear();
-                    httpApplication.Response.ClearHeaders();
-                    httpApplication.Response.Status = __Res.GetString(__Res.Json_Fatal404) + " " + ex.Message;
-                    httpApplication.CompleteRequest();
-                }
-            }
-        }
-
-        internal void HandleXAmfEx(HttpApplication httpApplication)
-		{
-            if (httpApplication.Request.ContentType == ContentType.AMF)
-			{
-				CompressContent(httpApplication);
-				httpApplication.Response.Clear();
-                httpApplication.Response.ContentType = ContentType.AMF;
-
-				ILog log = null;
-				try
-				{
-					log = LogManager.GetLogger(typeof(FluorineGateway));
-                    log4net.ThreadContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
-				}
-				catch{}
-				if (log != null && log.IsDebugEnabled)
-                    log.Debug(__Res.GetString(__Res.Amf_Begin));
-
-				try
-				{
-                    FluorineWebContext.Initialize();
-
-					if (messageServer != null)
-						messageServer.Service();
-					else
-					{
-						if (log != null)
-							log.Fatal(__Res.GetString(__Res.MessageServer_AccessFail));
-					}
-
-					if( log != null && log.IsDebugEnabled )
-                        log.Debug(__Res.GetString(__Res.Amf_End));
-
-
-					//http://support.microsoft.com/default.aspx?scid=kb;en-us;312629
-					//httpApplication.Response.End();
-					httpApplication.CompleteRequest();
-				}
-				catch(Exception ex)
-				{
-					if(log != null )
-						log.Fatal(__Res.GetString(__Res.Amf_Fatal), ex);
-					httpApplication.Response.Clear();
-					httpApplication.Response.ClearHeaders();//FluorineHttpApplicationContext modifies headers
-					httpApplication.Response.Status = __Res.GetString(__Res.Amf_Fatal404) + " " + ex.Message;
-					httpApplication.CompleteRequest();
-				}
-			}
-		}
-
-        internal void HandleStreamingAmf(HttpApplication httpApplication)
-        {
-            //"HTTP_REFERER"
-
-            if (httpApplication.Request.ContentType == ContentType.XForm 
-                /* && httpApplication.Request.Params["HTTP_CONTENT_TYPE"] == ContentType.AMF*/ )
-            {
-                string command = httpApplication.Request.Params[FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint.CommandParameterName];
-                if (!FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint.OpenCommand.Equals(command) && !FluorineFx.Messaging.Endpoints.StreamingAmfEndpoint.CloseCommand.Equals(command))
-                    return;
-                if (httpApplication.Request.UrlReferrer != null && !httpApplication.Request.UrlReferrer.ToString().EndsWith(".swf"))
-                    return;
-
-                //CompressContent(httpApplication);
-                httpApplication.Response.Clear();
-                //httpApplication.Response.BufferOutput = false;
-                //httpApplication.Response.ContentType = ContentType.AMF;
-
-                ILog log = null;
-                try
-                {
-                    log = LogManager.GetLogger(typeof(FluorineGateway));
-                    log4net.ThreadContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
-                }
-                catch { }
-                if (log != null && log.IsDebugEnabled)
-                    log.Debug(__Res.GetString(__Res.Amf_Begin));
-
-                try
-                {
-                    FluorineWebContext.Initialize();
-
-                    if (messageServer != null)
-                        messageServer.Service();
-                    else
-                    {
-                        if (log != null)
-                            log.Fatal(__Res.GetString(__Res.MessageServer_AccessFail));
-                    }
-
-                    if (log != null && log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Amf_End));
-
-
-                    //http://support.microsoft.com/default.aspx?scid=kb;en-us;312629
-                    //httpApplication.Response.End();
-                    httpApplication.CompleteRequest();
-                }
-                catch (Exception ex)
-                {
-                    if (log != null)
-                        log.Fatal(__Res.GetString(__Res.Amf_Fatal), ex);
-                    httpApplication.Response.Clear();
-                    httpApplication.Response.ClearHeaders();//FluorineHttpApplicationContext modifies headers
-                    httpApplication.Response.Status = __Res.GetString(__Res.Amf_Fatal404) + " " + ex.Message;
-                    httpApplication.CompleteRequest();
-                }
-            }
-        }
-
-        internal void HandleRtmpt(HttpApplication httpApplication)
-        {
-            if (httpApplication.Request.ContentType == ContentType.RTMPT)
-            {
-                httpApplication.Response.Clear();
-                httpApplication.Response.ContentType = ContentType.RTMPT;
-
-                ILog log = null;
-                try
-                {
-                    log = LogManager.GetLogger(typeof(FluorineGateway));
-                    log4net.ThreadContext.Properties["ClientIP"] = System.Web.HttpContext.Current.Request.UserHostAddress;
-                }
-                catch { }
-                if (log != null && log.IsDebugEnabled)
-                    log.Debug(__Res.GetString(__Res.Rtmpt_Begin));
-
-                try
-                {
-                    FluorineWebContext.Initialize();
-
-                    if (httpApplication.Request.Headers["RTMPT-command"] != null)
-                    {
-                        log.Debug(string.Format("ISAPI rewrite, original URL {0}", httpApplication.Request.Headers["RTMPT-command"]));
-                    }
-
-
-                    if (messageServer != null)
-                        messageServer.ServiceRtmpt();
-                    else
-                    {
-                        if (log != null)
-                            log.Fatal(__Res.GetString(__Res.MessageServer_AccessFail));
-                    }
-
-                    if (log != null && log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Rtmpt_End));
-
-                    httpApplication.CompleteRequest();
-                }
-                catch (Exception ex)
-                {
-                    if (log != null)
-                        log.Fatal(__Res.GetString(__Res.Rtmpt_Fatal), ex);
-                    httpApplication.Response.Clear();
-                    httpApplication.Response.ClearHeaders();
-                    httpApplication.Response.Status = __Res.GetString(__Res.Rtmpt_Fatal404) + " " + ex.Message;
-                    httpApplication.CompleteRequest();
-                }
-            }
+            Unreferenced.Parameter(asyncHandler);
         }
 
 		/// <summary>
 		/// Occurs when a security module has established the identity of the user.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void application_AuthenticateRequest(object sender, EventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void ApplicationAuthenticateRequest(object sender, EventArgs e)
 		{
-			HttpApplication httpApplication = (HttpApplication)sender;
-            if (httpApplication.Request.ContentType == ContentType.AMF)
-			{
-				httpApplication.Context.SkipAuthorization = true;
-			}
+            HttpApplication context = (HttpApplication)sender;
+            for (int i = 0; i < _handlers.Count; i++)
+                _handlers[i].AuthenticateRequest(context);
 		}
-
-		private void application_ReleaseRequestState(object sender, EventArgs e)
+        /// <summary>
+        /// Occurs after ASP.NET finishes executing all request event handlers. This event causes state modules to save the current state data.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		private void ApplicationReleaseRequestState(object sender, EventArgs e)
 		{
 			HttpApplication httpApplication = (HttpApplication)sender;
 			CompressContent(httpApplication);
 		}
 
-		private void application_PreSendRequestHeaders(object sender, EventArgs e)
+        /// <summary>
+        /// Occurs just before ASP.NET sends HTTP headers to the client.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		private void ApplicationPreSendRequestHeaders(object sender, EventArgs e)
 		{
-			HttpApplication httpApplication = (HttpApplication)sender;
-            if (httpApplication.Context.Items.Contains(Session.FxASPNET_SessionId))
-            {
-                httpApplication.Response.Cookies.Remove("ASP.NET_SessionId");
-                HttpCookie cookie = httpApplication.Context.Items[Session.FxASPNET_SessionId] as HttpCookie;
-                httpApplication.Response.Cookies.Add(cookie);
-            }
-			CompressContent(httpApplication);
+            HttpApplication context = (HttpApplication)sender;
+            for (int i = 0; i < _handlers.Count; i++)
+                _handlers[i].PreSendRequestHeaders(context);
+            CompressContent(context);
 		}
 
-		private void application_EndRequest(object sender, EventArgs e)
+		private void ApplicationEndRequest(object sender, EventArgs e)
 		{
 			HttpApplication httpApplication = (HttpApplication)sender;
 			if( httpApplication.Response.Filter is CompressingFilter || httpApplication.Response.Filter is ThresholdFilter)
 			{
-				CompressingFilter compressingFilter = null;
+				CompressingFilter compressingFilter;
 				if( httpApplication.Response.Filter is ThresholdFilter )
 					compressingFilter = (httpApplication.Response.Filter as ThresholdFilter).CompressingFilter;
 				else
 					compressingFilter = httpApplication.Response.Filter as CompressingFilter;
 
-				ILog log = null;
-				try
-				{
-					log = LogManager.GetLogger(typeof(FluorineGateway));
-				}
-				catch{}
-				if( compressingFilter != null && log != null && log.IsDebugEnabled )
+				if( compressingFilter != null && Log != null && Log.IsDebugEnabled )
 				{
 					float ratio = 0;
 					if( compressingFilter.TotalIn != 0 )
-						ratio = (compressingFilter.TotalOut * 100) / compressingFilter.TotalIn;
+						ratio = (float)(compressingFilter.TotalOut * 100) / compressingFilter.TotalIn;
 					string realPath = Path.GetFileName(httpApplication.Request.Path);
                     if (httpApplication.Request.ContentType == ContentType.AMF)
 						realPath += "(x-amf)";
 					string msg = __Res.GetString(__Res.Compress_Info, realPath, ratio);
-					log.Debug(msg);
+					Log.Debug(msg);
 				}
 			}
 		}
+
+        #region IRequestHandlerHost Members
+
+
+        public MessageServer MessageServer
+        {
+            get { return _messageServer; }
+        }
 
 		#region Compress
 
@@ -673,91 +352,65 @@ namespace FluorineFx
 		/// EventHandler that gets ahold of the current request context and attempts to compress the output.
 		/// </summary>
 		/// <param name="httpApplication">The <see cref="HttpApplication"/> that is firing this event.</param>
-		void CompressContent(HttpApplication httpApplication) 
+		public void CompressContent(HttpApplication httpApplication) 
 		{
 			// Only do this if we haven't already attempted an install.  This prevents PreSendRequestHeaders from
 			// trying to add this item way to late.  We only want the first run through to do anything.
 			// also, we use the context to store whether or not we've attempted an add, as it's thread-safe and
 			// scoped to the request.  An instance of this module can service multiple requests at the same time,
 			// so we cannot use a member variable.
-			if(!httpApplication.Context.Items.Contains(FluorineHttpCompressKey)) 
-			{
+            if (!httpApplication.Context.Items.Contains(FluorineHttpCompressKey))
+            {
 
-				// log the install attempt in the HttpContext
-				// must do this first as several IF statements
-				// below skip full processing of this method
-				httpApplication.Context.Items.Add(FluorineHttpCompressKey, 1);
-
-				// get the config settings
-				HttpCompressSettings settings = FluorineConfiguration.Instance.HttpCompressSettings;
-
-				if( settings.HandleRequest == HandleRequest.None )
-				{
-					// skip if no request can be handled
-					return;
-				}
-
+                // Log the install attempt in the HttpContext. Must do this first as several IF statements below skip full processing of this method
+                httpApplication.Context.Items.Add(FluorineHttpCompressKey, 1);
+                // Get the config settings
+                HttpCompressSettings settings = FluorineConfiguration.Instance.HttpCompressSettings;
+                // Skip if no request can be handled
+                if (settings.HandleRequest == HandleRequest.None)
+                    return;
+                // Skip if only AMF is compressed and we do not have an AMF request
                 if (settings.HandleRequest == HandleRequest.Amf && httpApplication.Request.ContentType != ContentType.AMF)
-				{
-					// skip if only AMF is compressed and we do not have an AMF request
-					return;
-				}
-
-				if(settings.CompressionLevel == CompressionLevels.None)
-				{
-					// skip if the CompressionLevel is set to 'None'
-					return;
-				}				
-
-				//string realPath = httpApplication.Request.Path.Remove(0, httpApplication.Request.ApplicationPath.Length+1);
-				string realPath = Path.GetFileName(httpApplication.Request.Path);
-				if(settings.IsExcludedPath(realPath))
-				{
-					// skip if the file path excludes compression
-					return;
-				}
-
+                    return;
+                // Skip if the CompressionLevel is set to 'None'
+                if (settings.CompressionLevel == CompressionLevels.None)
+                    return;
+                //string realPath = httpApplication.Request.Path.Remove(0, httpApplication.Request.ApplicationPath.Length+1);
+                string realPath = Path.GetFileName(httpApplication.Request.Path);
+                if (settings.IsExcludedPath(realPath))
+                {
+                    // Skip if the file path excludes compression
+                    return;
+                }
+                // Skip if the MimeType excludes compression
                 if (httpApplication.Response.ContentType == null || settings.IsExcludedMimeType(httpApplication.Response.ContentType))
-				{
-					// skip if the MimeType excludes compression
-					return;
-				}
+                    return;
 
-				// fix to handle caching appropriately
-				// see http://www.pocketsoap.com/weblog/2003/07/1330.html
-				// Note, this header is added only when the request
-				// has the possibility of being compressed...
-				// i.e. it is not added when the request is excluded from
-				// compression by CompressionLevel, Path, or MimeType
-				httpApplication.Response.Cache.VaryByHeaders["Accept-Encoding"] = true;
+                // Fix to handle caching appropriately, see http://www.pocketsoap.com/weblog/2003/07/1330.html
+                // This header is added only when the request has the possibility of being compressed
+                // i.e. it is not added when the request is excluded from compression by CompressionLevel, Path, or MimeType
+                httpApplication.Response.Cache.VaryByHeaders["Accept-Encoding"] = true;
 
-				// grab an array of algorithm;q=x, algorith;q=x style values
-				string acceptedTypes = httpApplication.Request.Headers["Accept-Encoding"];
-				// if we couldn't find the header, bail out
-				if(acceptedTypes == null)
-				{
-					return;
-				}
+                // Grab an array of algorithm;q=x, algorith;q=x style values
+                string acceptedTypes = httpApplication.Request.Headers["Accept-Encoding"];
+                // If we couldn't find the header, bail out
+                if (acceptedTypes == null)
+                    return;
 
-				// the actual types could be , delimited.  split 'em out.
-				string[] types = acceptedTypes.Split(',');
+                // The actual types could be , delimited.  split 'em out.
+                string[] types = acceptedTypes.Split(',');
 
-				CompressingFilter filter = GetFilterForScheme(types, httpApplication.Response.Filter, settings);
-
-				if(filter == null)
-				{
-					// if we didn't find a filter, bail out
-					return;
-				}
-
-				// if we get here, we found a viable filter.
-				// set the filter and change the Content-Encoding header to match so the client can decode the response
-
+                CompressingFilter filter = GetFilterForScheme(types, httpApplication.Response.Filter, settings);
+                // If we didn't find a filter, bail out
+                if (filter == null)
+                    return;
+                // If we get here, we found a viable filter.
+                // Set the filter and change the Content-Encoding header to match so the client can decode the response
                 if (httpApplication.Request.ContentType == ContentType.AMF)
-					httpApplication.Response.Filter = new ThresholdFilter(filter, httpApplication.Response.Filter, settings.Threshold);
-				else
-					httpApplication.Response.Filter = filter;
-			}
+                    httpApplication.Response.Filter = new ThresholdFilter(filter, httpApplication.Response.Filter, settings.Threshold);
+                else
+                    httpApplication.Response.Filter = filter;
+            }
 		}
 
 		/// <summary>
@@ -783,11 +436,7 @@ namespace FluorineFx
 			float gZipQuality = 0f;
 			float starQuality = 0f;
 
-			bool isAcceptableDeflate;
-			bool isAcceptableGZip;
-			bool isAcceptableStar;
-
-			for (int i = 0; i<schemes.Length;i++) 
+		    for (int i = 0; i<schemes.Length;i++) 
 			{
 				string acceptEncodingValue = schemes[i].Trim().ToLower();
 
@@ -799,7 +448,6 @@ namespace FluorineFx
 					if (deflateQuality < newDeflateQuality)
 						deflateQuality = newDeflateQuality;
 				}
-
 				else if (acceptEncodingValue.StartsWith("gzip") || acceptEncodingValue.StartsWith("x-gzip")) 
 				{
 					foundGZip = true;
@@ -808,7 +456,6 @@ namespace FluorineFx
 					if (gZipQuality < newGZipQuality)
 						gZipQuality = newGZipQuality;
 				}
-	    
 				else if (acceptEncodingValue.StartsWith("*")) 
 				{
 					foundStar = true;
@@ -819,9 +466,9 @@ namespace FluorineFx
 				}
 			}
 
-			isAcceptableStar = foundStar && (starQuality > 0);
-			isAcceptableDeflate = (foundDeflate && (deflateQuality > 0)) || (!foundDeflate && isAcceptableStar);
-			isAcceptableGZip = (foundGZip && (gZipQuality > 0)) || (!foundGZip && isAcceptableStar);
+			bool isAcceptableStar = foundStar && (starQuality > 0);
+			bool isAcceptableDeflate = (foundDeflate && (deflateQuality > 0)) || (!foundDeflate && isAcceptableStar);
+			bool isAcceptableGZip = (foundGZip && (gZipQuality > 0)) || (!foundGZip && isAcceptableStar);
 
 			if (isAcceptableDeflate && !foundDeflate)
 				deflateQuality = starQuality;
@@ -830,21 +477,19 @@ namespace FluorineFx
 				gZipQuality = starQuality;
 
 
-			// do they support any of our compression methods?
+			// Do they support any of our compression methods?
 			if(!(isAcceptableDeflate || isAcceptableGZip || isAcceptableStar)) 
-			{
 				return null;
-			}
       
-			// if deflate is better according to client
+			// If deflate is better according to client
 			if (isAcceptableDeflate && (!isAcceptableGZip || (deflateQuality > gZipQuality)))
 				return new DeflateFilter(output, prefs.CompressionLevel);
       
-			// if gzip is better according to client
+			// If gzip is better according to client
 			if (isAcceptableGZip && (!isAcceptableDeflate || (deflateQuality < gZipQuality)))
 				return new GZipFilter(output);
 
-			// if we're here, the client either didn't have a preference or they don't support compression
+			// If we're here, the client either didn't have a preference or they don't support compression
 			if(isAcceptableDeflate && (prefs.PreferredAlgorithm == Algorithms.Deflate || prefs.PreferredAlgorithm == Algorithms.Default))
 				return new DeflateFilter(output, prefs.CompressionLevel);
 			if(isAcceptableGZip && prefs.PreferredAlgorithm == Algorithms.GZip)
@@ -872,19 +517,19 @@ namespace FluorineFx
 				} 
 				catch(FormatException) 
 				{
-          
 				}
 				return val;
-			} 
-			else 
-				return 1;
+			}
+		    return 1;
 		}
 
 		#endregion Compress
 
-		#region kb911816
+        #endregion
 
-		private void WireAppDomain()
+        #region kb911816
+
+        private void WireAppDomain()
 		{
 			string webenginePath = Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "webengine.dll");
 			if (File.Exists(webenginePath))
@@ -895,22 +540,20 @@ namespace FluorineFx
 				if (EventLog.SourceExists(_sourceName))
 				{
 					//This requires .NET Framework 2.0
-					AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(OnUnhandledException);
+					AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 				}
 			}
 
-            AppDomain.CurrentDomain.DomainUnload += new EventHandler(CurrentDomain_DomainUnload);
-            ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-            log.Info("Adding handler for the DomainUnload event");
+            AppDomain.CurrentDomain.DomainUnload += CurrentDomain_DomainUnload;
+            Log.Info("Adding handler for the DomainUnload event");
             //If we do not have permission to handle DomainUnload but in this case the socket server will not start either
 		}
 
         private void RegisterObject()
         {
-#if !(NET_1_1) && !MONO
+#if !MONO
             HostingEnvironment.RegisterObject(this);
-            ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-            log.Info("FluorineFx registered in the hosting environment");
+            Log.Info("FluorineFx registered in the hosting environment");
 #endif
         }
 
@@ -925,26 +568,22 @@ namespace FluorineFx
 			string appId = (string) AppDomain.CurrentDomain.GetData(".appId");
 			if (appId != null) 
 				message.Append(appId);
-            
-			Exception currentException = null;
-			for (currentException = (Exception)e.ExceptionObject; currentException != null; currentException = currentException.InnerException) 
-			{
-				message.AppendFormat("\r\n\r\ntype={0}\r\n\r\nmessage={1}\r\n\r\nstack=\r\n{2}\r\n\r\n",
-					currentException.GetType().FullName, 
-					currentException.Message,
-					currentException.StackTrace);
-			}
-			EventLog Log = new EventLog();
-			Log.Source = _sourceName;
-			Log.WriteEntry(message.ToString(), EventLogEntryType.Error);
 
-            ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-            log.Fatal(message.ToString());
+            for (Exception currentException = (Exception)e.ExceptionObject; currentException != null; currentException = currentException.InnerException)
+            {
+                message.AppendFormat("\r\n\r\ntype={0}\r\n\r\nmessage={1}\r\n\r\nstack=\r\n{2}\r\n\r\n",
+                    currentException.GetType().FullName,
+                    currentException.Message,
+                    currentException.StackTrace);
+            }
+			EventLog eventLog = new EventLog();
+            eventLog.Source = _sourceName;
+            eventLog.WriteEntry(message.ToString(), EventLogEntryType.Error);
+            Log.Fatal(message.ToString());
         }
 
 		#endregion kb911816
 
-#if !(NET_1_1)
         #region IRegisteredObject Members
 
         /// <summary>
@@ -957,23 +596,26 @@ namespace FluorineFx
             {
                 Stop();
             }
-            catch (Exception)
-            { }
+            catch(Exception ex)
+            { 
+                Unreferenced.Parameter(ex); 
+            }
             HostingEnvironment.UnregisterObject(this);
         }
 
         #endregion
-#endif
 
+        /// <summary>
+        /// Stops the message server.
+        /// </summary>
         private void Stop()
         {
             lock (_objLock)
             {
-                if (messageServer != null)
-                    messageServer.Stop();
-                messageServer = null;
-                ILog log = LogManager.GetLogger(typeof(FluorineGateway));
-                log.Info("Stopped FluorineFx Gateway");
+                if (_messageServer != null)
+                    _messageServer.Stop();
+                _messageServer = null;
+                Log.Info("Stopped FluorineFx Gateway");
             }
         }
     }

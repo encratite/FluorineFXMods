@@ -108,7 +108,7 @@ namespace FluorineFx.Messaging.Rtmpt
         FastReaderWriterLock _lock;
 
         public RtmptConnection(RtmptServer rtmptServer, IPEndPoint ipEndPoint, string path, Hashtable parameters)
-            : base(rtmptServer.RtmpHandler, path, parameters)
+            : base(rtmptServer.RtmpHandler, RtmpMode.Server, path, parameters)
         {
             _lock = new FastReaderWriterLock();
             _remoteEndPoint = ipEndPoint;

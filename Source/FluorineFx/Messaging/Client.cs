@@ -152,7 +152,7 @@ namespace FluorineFx.Messaging
         {
             get
             {
-                return _messageClients;
+                return GetMessageClients();
             }
         }
 

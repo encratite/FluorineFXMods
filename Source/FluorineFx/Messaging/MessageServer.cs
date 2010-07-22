@@ -18,10 +18,7 @@
 */
 
 using System;
-using System.Collections;
-using System.Configuration;
 using System.Web;
-using System.Xml;
 using System.IO;
 using log4net;
 using FluorineFx.Messaging.Config;
@@ -32,7 +29,6 @@ using FluorineFx.Configuration;
 using FluorineFx.Context;
 using FluorineFx.Util;
 using FluorineFx.Exceptions;
-using FluorineFx.Messaging.Rtmpt;
 using FluorineFx.Silverlight;
 
 namespace FluorineFx.Messaging
@@ -45,19 +41,12 @@ namespace FluorineFx.Messaging
 	{
         private static readonly ILog log = LogManager.GetLogger(typeof(MessageServer));
 
-        private static object _syncLock = new object();
+        private readonly object _syncLock = new object();
         ServicesConfiguration _servicesConfiguration;
 		MessageBroker	_messageBroker;
         PolicyServer _policyServer;
 
-		/// <summary>
-		/// Initializes a new instance of the MessageServer class.
-		/// </summary>
-		public MessageServer()
-		{
-		}
-
-        /// <summary>
+	    /// <summary>
         /// Gets an object that can be used to synchronize access. 
         /// </summary>
         public object SyncRoot { get { return _syncLock; } }
@@ -72,25 +61,48 @@ namespace FluorineFx.Messaging
         /// <param name="configPath"></param>
         public void Init(string configPath)
         {
-            Init(configPath, false);
+            string[] configPaths = { configPath };
+            Init(configPaths, false);
         }
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        /// <param name="configPath"></param>
-        /// <param name="serviceBrowserAvailable"></param>
+        /// <param name="configPath">Configuration file location.</param>
+        /// <param name="serviceBrowserAvailable">Indicates whether the service browser is avaliable.</param>
+        /// <remarks>This method is called from the Hosting library</remarks>
         public void Init(string configPath, bool serviceBrowserAvailable)
+        {
+            string[] configPaths = { configPath };
+            Init(configPaths, serviceBrowserAvailable);
+        }
+        /// <summary>
+        /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
+        /// </summary>
+        /// <param name="configFolderPaths">Possible configuration file locations.</param>
+        /// <param name="serviceBrowserAvailable">Indicates whether the service browser is avaliable.</param>
+        public void Init(string[] configFolderPaths, bool serviceBrowserAvailable)
 		{
 			_messageBroker = new MessageBroker(this);
 
-            string servicesConfigFile = Path.Combine(configPath, "services-config.xml");
-            if (File.Exists(servicesConfigFile))
+            string servicesConfigFile = null;
+            for (int i = 0; i < configFolderPaths.Length; i++)
             {
-                _servicesConfiguration = ServicesConfiguration.Load(configPath, "services-config.xml");
+                servicesConfigFile = Path.Combine(configFolderPaths[i], "services-config.xml");
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.MessageServer_TryingServiceConfig, servicesConfigFile));
+                if (File.Exists(servicesConfigFile))
+                    break;
+            }
+            if (servicesConfigFile != null && File.Exists(servicesConfigFile))
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.MessageServer_LoadingServiceConfig, servicesConfigFile));
+                _servicesConfiguration = ServicesConfiguration.Load(servicesConfigFile);
             }
             else
             {
-                log.Debug(__Res.GetString(__Res.MessageServer_LoadingConfigDefault, servicesConfigFile));
+                if (log.IsDebugEnabled)
+                    log.Debug(__Res.GetString(__Res.MessageServer_LoadingConfigDefault));
                 _servicesConfiguration = ServicesConfiguration.CreateDefault();
             }
 
@@ -134,7 +146,7 @@ namespace FluorineFx.Messaging
                 ServiceDefinition serviceConfiguration = _servicesConfiguration.GetServiceByClass("flex.messaging.services.RemotingService");
                 if (serviceConfiguration != null)
                 {
-                    AdapterDefinition adapter = serviceConfiguration.GetAdapterByClass(typeof(FluorineFx.Remoting.RemotingAdapter).FullName);
+                    AdapterDefinition adapter = serviceConfiguration.GetAdapterByClass(typeof(Remoting.RemotingAdapter).FullName);
                     if (adapter != null)
                         InstallServiceBrowserDestinations(serviceConfiguration, adapter);
                     else
@@ -204,7 +216,7 @@ namespace FluorineFx.Messaging
                 if (FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings != null &&
                     FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings.Enable)
                 {
-                    IResource resource = null;
+                    IResource resource;
                     if (FluorineContext.Current != null)
                         resource = FluorineContext.Current.GetResource(FluorineConfiguration.Instance.FluorineSettings.Silverlight.PolicyServerSettings.PolicyFile);
                     else
@@ -271,7 +283,7 @@ namespace FluorineFx.Messaging
         /// </summary>
 		public void Start()
 		{
-            lock (this.SyncRoot)
+            lock (SyncRoot)
             {
                 if (log.IsInfoEnabled)
                     log.Info(__Res.GetString(__Res.MessageServer_Start));
@@ -288,17 +300,14 @@ namespace FluorineFx.Messaging
         /// </summary>
 		public void Stop()
 		{
-            lock (this.SyncRoot)
+            lock (SyncRoot)
             {
                 if (_messageBroker != null)
                 {
                     if (log.IsInfoEnabled)
                         log.Info(__Res.GetString(__Res.MessageServer_Stop));
-                    if (_messageBroker != null)
-                    {
-                        _messageBroker.Stop();
-                        _messageBroker = null;
-                    }
+                    _messageBroker.Stop();
+                    _messageBroker = null;
                     if (_policyServer != null)
                     {
                         _policyServer.Close();
@@ -315,7 +324,7 @@ namespace FluorineFx.Messaging
         /// </summary>
 		protected override void Free()
 		{
-            lock (this.SyncRoot)
+            lock (SyncRoot)
             {
                 if (_messageBroker != null)
                 {
@@ -329,7 +338,7 @@ namespace FluorineFx.Messaging
         /// </summary>
 		protected override void FreeUnmanaged()
 		{
-            lock (this.SyncRoot)
+            lock (SyncRoot)
             {
                 if (_messageBroker != null)
                 {

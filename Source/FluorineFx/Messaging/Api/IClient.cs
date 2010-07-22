@@ -19,8 +19,6 @@
 using System;
 using System.Collections;
 using System.Security.Principal;
-using FluorineFx.Messaging.Messages;
-using FluorineFx.Context;
 
 namespace FluorineFx.Messaging.Api
 {

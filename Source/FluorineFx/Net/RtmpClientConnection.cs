@@ -73,7 +73,7 @@ namespace FluorineFx.Net
         private long _writtenBytes;
 
         public RtmpClientConnection(IRtmpHandler handler, Socket socket)
-            : base(handler, null, null)
+            : base(handler, RtmpMode.Client, null, null)
 		{
 #if FXCLIENT
             //TODO

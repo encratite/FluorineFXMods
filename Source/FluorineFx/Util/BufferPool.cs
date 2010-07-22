@@ -16,44 +16,49 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-using System;
-using System.Collections;
-
 namespace FluorineFx.Util
 {
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
-    class BufferPool : ObjectPool
+    class BufferPool : ObjectPool<byte[]>
     {
-        private int _bufferSize;
+        private readonly int _bufferSize;
 
-        public BufferPool(): this(10, 10, 4096)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BufferPool"/> class.
+        /// </summary>
+        public BufferPool()
+            : this(10, 10, 4096)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BufferPool"/> class.
+        /// </summary>
+        /// <param name="bufferSize">Size of the buffer.</param>
         public BufferPool(int bufferSize)
             : this(10, 10, bufferSize)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BufferPool"/> class.
+        /// </summary>
+        /// <param name="capacity">The number of elements that the object pool object initially contains.</param>
+        /// <param name="growth">The number of elements reserved in the object pool when there are no available objects.</param>
+        /// <param name="bufferSize">Size of the buffer.</param>
         public BufferPool(int capacity, int growth, int bufferSize)
+            : base(capacity, growth, true)
         {
             _bufferSize = bufferSize;
-            base.Initialize(capacity, growth, true);
         }
 
-        public void CheckIn(byte[] buffer)
-        {
-            base.CheckIn(buffer);
-        }
-
-        public new byte[] CheckOut()
-        {
-            return base.CheckOut() as byte[];
-        }
-
-        protected override object GetObject()
+        /// <summary>
+        /// Creates a new buffer to be placed in the object pool.
+        /// </summary>
+        /// <returns>A new buffer.</returns>
+        protected override byte[] GetObject()
         {
             return new byte[_bufferSize];
         }

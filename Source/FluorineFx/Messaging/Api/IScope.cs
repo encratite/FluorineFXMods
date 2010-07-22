@@ -18,7 +18,8 @@
 */
 using System;
 using System.Collections;
-using FluorineFx.Messaging.Api.Service;
+using System.Collections.Generic;
+using FluorineFx.Messaging.Api.Statistics;
 using FluorineFx.Messaging.Endpoints;
 
 namespace FluorineFx.Messaging.Api
@@ -94,7 +95,7 @@ namespace FluorineFx.Messaging.Api
         /// Gets the child scope names.
         /// </summary>
         /// <returns>Collection of child scope names.</returns>
-        ICollection GetScopeNames();
+        ICollection<String> GetScopeNames();
         /// <summary>
         /// Returns an iterator of basic scope names.
         /// </summary>
@@ -117,13 +118,13 @@ namespace FluorineFx.Messaging.Api
         /// <summary>
         /// Gets a set of connected clients.
         /// </summary>
-        /// <returns></returns>
-        ICollection GetClients();
+        /// <returns>Collection of connected clients.</returns>
+        ICollection<IClient> GetClients();
         /// <summary>
-        /// Get a connection iterator.
+        /// Returns an enumerator that iterates through connections.
         /// </summary>
-        /// <returns></returns>
-        IEnumerator GetConnections();
+        /// <returns>An IEnumerator object that can be used to iterate through the connections.</returns>
+        IEnumerator<IConnection> GetConnections();
         /// <summary>
         /// Gets a value indicating whether this instance has handler.
         /// </summary>
@@ -151,5 +152,10 @@ namespace FluorineFx.Messaging.Api
         /// This property supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         IEndpoint Endpoint { get; }
+        /// <summary>
+        /// Gets statistics information about the scope.
+        /// </summary>
+        /// <value>Scope statistics information.</value>
+        IScopeStatistics Statistics { get; }
     }
 }

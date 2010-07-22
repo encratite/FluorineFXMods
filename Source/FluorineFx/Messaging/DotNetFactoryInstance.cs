@@ -17,10 +17,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
-using System.Reflection;
 using FluorineFx.Messaging.Config;
-using FluorineFx.Context;
 
 namespace FluorineFx.Messaging
 {
@@ -49,22 +46,12 @@ namespace FluorineFx.Messaging
 		public object CreateInstance()
 		{
 			Type type = GetInstanceClass();
-			object instance = null;
             if (type == null)
             {
-                string msg = __Res.GetString(__Res.Type_InitError, this.Source);
+                string msg = __Res.GetString(__Res.Type_InitError, Source);
                 throw new MessageException(msg, new TypeLoadException(msg));
             }
-
-			if (type.IsAbstract && type.IsSealed)
-			{
-				instance = type;
-			}
-			else
-			{
-				instance = Activator.CreateInstance(type, BindingFlags.CreateInstance|BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static, null, new object[]{}, null);
-			}
-			return instance;
+            return ObjectFactory.CreateInstance(type);
 		}
         /// <summary>
         /// Gets or sets the FactoryInstance source.
@@ -89,12 +76,11 @@ namespace FluorineFx.Messaging
         /// </summary>
         /// <returns>A Type instance.</returns>
         public override Type GetInstanceClass()
-		{
-			if( _cachedType == null )
-				_cachedType = ObjectFactory.LocateInLac(this.Source);
-			return _cachedType;
-		}
-        /// <summary>
+        {
+            return _cachedType ?? (_cachedType = ObjectFactory.LocateInLac(Source));
+        }
+
+	    /// <summary>
         /// Gets the application-scoped instance.
         /// </summary>
 		public object ApplicationInstance
@@ -120,7 +106,7 @@ namespace FluorineFx.Messaging
         public override void OnOperationComplete(object instance)
         {
             base.OnOperationComplete(instance);
-            if (this.Scope == FactoryInstance.RequestScope)
+            if (Scope == RequestScope)
             {
                 if (instance is IDisposable)
                 {

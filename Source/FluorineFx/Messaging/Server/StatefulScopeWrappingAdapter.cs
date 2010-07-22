@@ -248,7 +248,7 @@ namespace FluorineFx.Messaging.Adapter
         /// Returns collection of child scope names.
         /// </summary>
         /// <returns>Collection of child scope names</returns>
-		public ICollection GetChildScopeNames()
+		public ICollection<string> GetChildScopeNames()
 		{
 			return _scope.GetScopeNames();
 		}
@@ -256,7 +256,7 @@ namespace FluorineFx.Messaging.Adapter
         /// Returns collection of clients.
         /// </summary>
         /// <returns>Collection of clients.</returns>
-		public ICollection GetClients()
+		public ICollection<IClient> GetClients()
 		{
 			return _scope.GetClients();
 		}

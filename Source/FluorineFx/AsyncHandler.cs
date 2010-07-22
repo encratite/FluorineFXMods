@@ -19,7 +19,6 @@
 using System;
 using System.Threading;
 using System.Web;
-using System.Runtime.Remoting.Messaging;
 using FluorineFx.Threading;
 
 namespace FluorineFx
@@ -27,8 +26,8 @@ namespace FluorineFx
     class AsyncHandler : IAsyncResult
     {
         private bool _completed;
-        private Object _state;
-        private AsyncCallback _callback;
+        private readonly Object _state;
+        private readonly AsyncCallback _callback;
         private HttpApplication _httpApplication;
         FluorineGateway _gateway;
 
@@ -68,7 +67,7 @@ namespace FluorineFx
         public void Start()
         {
             //ThreadPool.QueueUserWorkItem(new WaitCallback(AsyncTask), null);
-            ThreadPoolEx.Global.QueueUserWorkItem(new WaitCallback(AsyncTask), null);
+            ThreadPoolEx.Global.QueueUserWorkItem(AsyncTask, null);
         }
 
         private void AsyncTask(object state)
@@ -76,11 +75,7 @@ namespace FluorineFx
             // Restore HttpContext
             //CallContext.SetData("HttpContext", _httpApplication.Context);
             HttpContext.Current = _httpApplication.Context;
-            _gateway.HandleXAmfEx(_httpApplication);
-            _gateway.HandleStreamingAmf(_httpApplication);
-            _gateway.HandleSWX(_httpApplication);
-            _gateway.HandleJSONRPC(_httpApplication);
-            _gateway.HandleRtmpt(_httpApplication);
+            _gateway.ProcessRequest(_httpApplication);
             _gateway = null;
             _httpApplication = null;
             _completed = true;

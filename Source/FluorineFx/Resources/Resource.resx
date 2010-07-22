@@ -267,14 +267,14 @@
   <data name="MessageServer_Create" xml:space="preserve">
     <value>Creating Message Server</value>
   </data>
-  <data name="MessageServer_LoadingConfig" xml:space="preserve">
-    <value>Loading services configuration file {0}</value>
+  <data name="MessageServer_TryingServiceConfig" xml:space="preserve">
+    <value>Trying to load services configuration file from {0}</value>
   </data>
   <data name="MessageServer_LoadingConfigDefault" xml:space="preserve">
-    <value>Could not find services configuration file {0}, using default settings</value>
+    <value>Could not find a services configuration file, using default settings</value>
   </data>
   <data name="MessageServer_LoadingServiceConfig" xml:space="preserve">
-    <value>Loading configuration file {0}</value>
+    <value>Loading services configuration file from {0}</value>
   </data>
   <data name="MessageServer_Start" xml:space="preserve">
     <value>Starting Message Broker</value>
@@ -376,7 +376,7 @@
     <value>{0} Socket begin send iocp = {1}</value>
   </data>
   <data name="Rtmp_SocketConnectionReset" xml:space="preserve">
-    <value>{0} Connection reset by peer, error code was {1}</value>
+    <value>{0} Connection reset by peer ({1})</value>
   </data>
   <data name="Rtmp_SocketDisconnectProcessing" xml:space="preserve">
     <value>{0} Socket disconnect</value>
@@ -604,7 +604,7 @@
     <value>Failed to load dynamic link library {0} from LAC</value>
   </data>
   <data name="TypeHelper_Probing" xml:space="preserve">
-    <value>TypeHelper probing assembly {0}</value>
+    <value>TypeHelper probing assembly {0} for type '{1}'</value>
   </data>
   <data name="TypeIdentifier_Loaded" xml:space="preserve">
     <value>Type identifier {0} loaded</value>
@@ -679,7 +679,7 @@
     <value>Starting Silverlight policy server, policy file: {0}</value>
   </data>
   <data name="Rtmp_SocketConnectionAborted" xml:space="preserve">
-    <value>{0} An established connection was aborted, error code was {1}</value>
+    <value>{0} An established connection was aborted ({1})</value>
   </data>
   <data name="Client_Invalidated" xml:space="preserve">
     <value>Client with id {0} has been invalidated</value>
@@ -775,7 +775,7 @@
     <value>Execution context is missing</value>
   </data>
   <data name="Rtmp_SocketConnectionTimeout" xml:space="preserve">
-    <value>A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond, error code was {1}</value>
+    <value>A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond ({1})</value>
   </data>
   <data name="MessageBroker_Response" xml:space="preserve">
     <value>Routing response {0}</value>

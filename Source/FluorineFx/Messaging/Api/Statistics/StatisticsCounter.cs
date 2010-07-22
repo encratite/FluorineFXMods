@@ -23,7 +23,7 @@ namespace FluorineFx.Messaging.Api.Statistics
     /// <summary>
     /// Counts numbers used by the statistics. Keeps track of current, maximum and total numbers.
     /// </summary>
-    class StatisticsCounter : IStatisticsCounter
+    public class StatisticsCounter : IStatisticsCounter
     {
         /// <summary>
         /// Current number.

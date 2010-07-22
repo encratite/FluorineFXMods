@@ -104,7 +104,7 @@ namespace FluorineFx.Util
                     {
                         type = types[0];
                         _webserviceTypeCache[asmxFile] = type;
-                        ObjectFactory.AddTypeToCache(type);
+                        ObjectFactory.Instance.AddTypeToCache(type);
                     }
                 }
                 else

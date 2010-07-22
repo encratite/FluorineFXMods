@@ -116,7 +116,7 @@ namespace FluorineFx.Context
                 {
 
                     string cookieHeader = HttpContext.Current.Request.Headers["Cookie"];
-                    if ((null != cookieHeader) && (cookieHeader.IndexOf("ASP.NET_SessionId") >= 0))
+                    if ((null != cookieHeader) && (cookieHeader.IndexOf(HttpSession.AspNetSessionIdCookie) >= 0))
                     {
                         return true;
                     }

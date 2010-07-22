@@ -128,9 +128,9 @@ namespace FluorineFx
         internal const string MessageBroker_RegisterError = "MessageBroker_RegisterError";
         internal const string MessageBroker_RoutingError = "MessageBroker_RoutingError";
         internal const string MessageBroker_RoutingMessage = "MessageBroker_RoutingMessage";
-        internal const string MessageBroker_Response = "MessageBroker_Response";        
+        internal const string MessageBroker_Response = "MessageBroker_Response";
 
-        internal const string MessageServer_LoadingConfig = "MessageServer_LoadingConfig";
+        internal const string MessageServer_TryingServiceConfig = "MessageServer_TryingServiceConfig";
         internal const string MessageServer_LoadingConfigDefault = "MessageServer_LoadingConfigDefault";
         internal const string MessageServer_LoadingServiceConfig = "MessageServer_LoadingServiceConfig";
         internal const string MessageServer_Start = "MessageServer_Start";

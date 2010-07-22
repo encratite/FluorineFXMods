@@ -984,7 +984,7 @@ namespace FluorineFx.IO
         internal object ReadAMF3Object(ClassDefinition classDefinition)
         {
             object instance = null;
-            if (classDefinition.ClassName != null && classDefinition.ClassName != string.Empty)
+            if (!string.IsNullOrEmpty(classDefinition.ClassName))
                 instance = ObjectFactory.CreateInstance(classDefinition.ClassName);
             else
                 instance = new ASObject();

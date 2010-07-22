@@ -17,16 +17,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
 using System.Net;
 using System.IO;
-#if !(NET_1_1)
 using System.Collections.Generic;
-#endif
-using FluorineFx;
+using System.Reflection;
 using FluorineFx.IO;
-using FluorineFx.AMF3;
-using FluorineFx.Exceptions;
 using FluorineFx.Messaging.Messages;
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
@@ -41,7 +36,7 @@ namespace FluorineFx.Net
     class RemotingClient : INetConnectionClient
     {
         string _gatewayUrl;
-        NetConnection _netConnection;
+        readonly NetConnection _netConnection;
 
         public RemotingClient(NetConnection netConnection)
         {
@@ -77,7 +72,7 @@ namespace FluorineFx.Net
 
                 Uri uri = new Uri(_gatewayUrl);
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-                request.ContentType = "application/x-amf";
+                request.ContentType = ContentType.AMF;
                 request.Method = "POST";
 #if !(SILVERLIGHT)
                 request.CookieContainer = _netConnection.CookieContainer;
@@ -85,20 +80,42 @@ namespace FluorineFx.Net
                 AMFMessage amfMessage = new AMFMessage((ushort)_netConnection.ObjectEncoding);
                 AMFBody amfBody = new AMFBody(command, callback.GetHashCode().ToString(), arguments);
                 amfMessage.AddBody(amfBody);
-#if !(NET_1_1)
                 foreach (KeyValuePair<string, AMFHeader> entry in _netConnection.Headers)
                 {
                     amfMessage.AddHeader(entry.Value);
                 }
-#else
-                foreach (DictionaryEntry entry in _netConnection.Headers)
-                {
-                    amfMessage.AddHeader(entry.Value as AMFHeader);
-                }
-#endif
                 PendingCall call = new PendingCall(command, arguments);
-                AmfRequestData amfRequestData = new AmfRequestData(request, amfMessage, call, callback);
-                request.BeginGetRequestStream(new AsyncCallback(this.BeginRequestFlashCall), amfRequestData);
+                AmfRequestData amfRequestData = new AmfRequestData(request, amfMessage, call, callback, null);
+                request.BeginGetRequestStream(BeginRequestFlashCall, amfRequestData);
+            }
+            catch (Exception ex)
+            {
+                _netConnection.RaiseNetStatus(ex);
+            }
+        }
+
+        public void Call<T>(string command, Responder<T> responder, params object[] arguments)
+        {
+            try
+            {
+                TypeHelper._Init();
+
+                Uri uri = new Uri(_gatewayUrl);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                request.ContentType = ContentType.AMF;
+                request.Method = "POST";
+#if !(SILVERLIGHT)
+                request.CookieContainer = _netConnection.CookieContainer;
+#endif
+                AMFMessage amfMessage = new AMFMessage((ushort)_netConnection.ObjectEncoding);
+                AMFBody amfBody = new AMFBody(command, responder.GetHashCode().ToString(), arguments);
+                amfMessage.AddBody(amfBody);
+                foreach (KeyValuePair<string, AMFHeader> entry in _netConnection.Headers)
+                {
+                    amfMessage.AddHeader(entry.Value);
+                }
+                AmfRequestData amfRequestData = new AmfRequestData(request, amfMessage, null, null, responder);
+                request.BeginGetRequestStream(BeginRequestFlashCall, amfRequestData);
             }
             catch (Exception ex)
             {
@@ -119,7 +136,7 @@ namespace FluorineFx.Net
                     amfSerializer.Flush();
                     amfSerializer.Close();
 
-                    amfRequestData.Request.BeginGetResponse(new AsyncCallback(this.BeginResponseFlashCall), amfRequestData);
+                    amfRequestData.Request.BeginGetResponse(BeginResponseFlashCall, amfRequestData);
                 }
             }
             catch (Exception ex)
@@ -151,13 +168,32 @@ namespace FluorineFx.Net
                                 if (header.Name == AMFHeader.RequestPersistentHeader)
                                     _netConnection.AddHeader(header.Name, header.MustUnderstand, header.Content);
                             }
-                            PendingCall call = amfRequestData.Call;
-                            call.Result = responseBody.Content;
-                            if( responseBody.Target.EndsWith(AMFBody.OnStatus) )
-                                call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_INVOCATION_EXCEPTION;
-                            else
-                                call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_RESULT;
-                            amfRequestData.Callback.ResultReceived(call);
+                            if (amfRequestData.Call != null)
+                            {
+                                PendingCall call = amfRequestData.Call;
+                                call.Result = responseBody.Content;
+                                call.Status = responseBody.Target.EndsWith(AMFBody.OnStatus) ? Messaging.Rtmp.Service.Call.STATUS_INVOCATION_EXCEPTION : Messaging.Rtmp.Service.Call.STATUS_SUCCESS_RESULT;
+                                amfRequestData.Callback.ResultReceived(call);
+                            }
+                            if (amfRequestData.Responder != null)
+                            {
+                                if (responseBody.Target.EndsWith(AMFBody.OnStatus))
+                                {
+                                    StatusFunction statusFunction = amfRequestData.Responder.GetType().GetProperty("Status").GetValue(amfRequestData.Responder, null) as StatusFunction;
+                                    if (statusFunction != null)
+                                        statusFunction(new Fault(responseBody.Content));
+                                }
+                                else
+                                {
+                                    Delegate resultFunction = amfRequestData.Responder.GetType().GetProperty("Result").GetValue(amfRequestData.Responder, null) as Delegate;
+                                    if (resultFunction != null)
+                                    {
+                                        ParameterInfo[] arguments = resultFunction.Method.GetParameters();
+                                        object result = TypeHelper.ChangeType(responseBody.Content, arguments[0].ParameterType);
+                                        resultFunction.DynamicInvoke(result);
+                                    }
+                                }
+                            }
                         }
                         else
                             _netConnection.RaiseNetStatus("Could not aquire ResponseStream");
@@ -182,7 +218,7 @@ namespace FluorineFx.Net
 
                 Uri uri = new Uri(_gatewayUrl);
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-                request.ContentType = "application/x-amf";
+                request.ContentType = ContentType.AMF;
                 request.Method = "POST";
 #if !(SILVERLIGHT)
                 request.CookieContainer = _netConnection.CookieContainer;
@@ -196,29 +232,68 @@ namespace FluorineFx.Net
                 remotingMessage.timestamp = 0;
                 remotingMessage.timeToLive = 0;
                 remotingMessage.SetHeader(MessageBase.EndpointHeader, endpoint);
-                if (_netConnection.ClientId == null)
-                    remotingMessage.SetHeader(MessageBase.FlexClientIdHeader, "nil");
-                else
-                    remotingMessage.SetHeader(MessageBase.FlexClientIdHeader, _netConnection.ClientId);
+                remotingMessage.SetHeader(MessageBase.FlexClientIdHeader, _netConnection.ClientId ?? "nil");
                 //Service stuff
                 remotingMessage.source = source;
                 remotingMessage.operation = operation;
                 remotingMessage.body = arguments;
 
-#if !(NET_1_1)
                 foreach (KeyValuePair<string, AMFHeader> entry in _netConnection.Headers)
-#else
-                foreach (DictionaryEntry entry in _netConnection.Headers)
-#endif
                 {
-                    amfMessage.AddHeader(entry.Value as AMFHeader);
+                    amfMessage.AddHeader(entry.Value);
                 }
                 AMFBody amfBody = new AMFBody(null, null, new object[] { remotingMessage });
                 amfMessage.AddBody(amfBody);
 
                 PendingCall call = new PendingCall(source, operation, arguments);
-                AmfRequestData amfRequestData = new AmfRequestData(request, amfMessage, call, callback);
-                request.BeginGetRequestStream(new AsyncCallback(this.BeginRequestFlexCall), amfRequestData);
+                AmfRequestData amfRequestData = new AmfRequestData(request, amfMessage, call, callback, null);
+                request.BeginGetRequestStream(BeginRequestFlexCall, amfRequestData);
+            }
+            catch (Exception ex)
+            {
+                _netConnection.RaiseNetStatus(ex);
+            }
+        }
+
+        public void Call<T>(string endpoint, string destination, string source, string operation, Responder<T> responder, params object[] arguments)
+        {
+            if (_netConnection.ObjectEncoding == ObjectEncoding.AMF0)
+                throw new NotSupportedException("AMF0 not supported for Flex RPC");
+            try
+            {
+                TypeHelper._Init();
+
+                Uri uri = new Uri(_gatewayUrl);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                request.ContentType = ContentType.AMF;
+                request.Method = "POST";
+#if !(SILVERLIGHT)
+                request.CookieContainer = _netConnection.CookieContainer;
+#endif
+                AMFMessage amfMessage = new AMFMessage((ushort)_netConnection.ObjectEncoding);
+
+                RemotingMessage remotingMessage = new RemotingMessage();
+                remotingMessage.clientId = Guid.NewGuid().ToString("D");
+                remotingMessage.destination = destination;
+                remotingMessage.messageId = Guid.NewGuid().ToString("D");
+                remotingMessage.timestamp = 0;
+                remotingMessage.timeToLive = 0;
+                remotingMessage.SetHeader(MessageBase.EndpointHeader, endpoint);
+                remotingMessage.SetHeader(MessageBase.FlexClientIdHeader, _netConnection.ClientId ?? "nil");
+                //Service stuff
+                remotingMessage.source = source;
+                remotingMessage.operation = operation;
+                remotingMessage.body = arguments;
+
+                foreach (KeyValuePair<string, AMFHeader> entry in _netConnection.Headers)
+                {
+                    amfMessage.AddHeader(entry.Value);
+                }
+                AMFBody amfBody = new AMFBody(null, null, new object[] { remotingMessage });
+                amfMessage.AddBody(amfBody);
+
+                AmfRequestData amfRequestData = new AmfRequestData(request, amfMessage, null, null, responder);
+                request.BeginGetRequestStream(BeginRequestFlexCall, amfRequestData);
             }
             catch (Exception ex)
             {
@@ -239,7 +314,7 @@ namespace FluorineFx.Net
                     amfSerializer.Flush();
                     amfSerializer.Close();
 
-                    amfRequestData.Request.BeginGetResponse(new AsyncCallback(this.BeginResponseFlexCall), amfRequestData);
+                    amfRequestData.Request.BeginGetResponse(BeginResponseFlexCall, amfRequestData);
                 }
             }
             catch (Exception ex)
@@ -271,8 +346,8 @@ namespace FluorineFx.Net
                                 if (header.Name == AMFHeader.RequestPersistentHeader)
                                     _netConnection.AddHeader(header.Name, header.MustUnderstand, header.Content);
                             }
-                            object result = responseBody.Content;
-                            if (result is ErrorMessage)
+                            object message = responseBody.Content;
+                            if (message is ErrorMessage)
                             {
                                 /*
                                 ASObject status = new ASObject();
@@ -282,20 +357,42 @@ namespace FluorineFx.Net
                                 status["details"] = result;
                                 _netConnection.RaiseNetStatus(status);
                                 */
-                                PendingCall call = amfRequestData.Call;
-                                call.Result = result;
-                                call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_INVOCATION_EXCEPTION;
-                                amfRequestData.Callback.ResultReceived(call);
+                                if (amfRequestData.Call != null)
+                                {
+                                    PendingCall call = amfRequestData.Call;
+                                    call.Result = message;
+                                    call.Status = Messaging.Rtmp.Service.Call.STATUS_INVOCATION_EXCEPTION;
+                                    amfRequestData.Callback.ResultReceived(call);
+                                }
+                                if (amfRequestData.Responder != null)
+                                {
+                                    StatusFunction statusFunction = amfRequestData.Responder.GetType().GetProperty("Status").GetValue(amfRequestData.Responder, null) as StatusFunction;
+                                    if (statusFunction != null)
+                                        statusFunction(new Fault(message as ErrorMessage));
+                                }
                             }
-                            else if (result is AcknowledgeMessage)
+                            else if (message is AcknowledgeMessage)
                             {
-                                AcknowledgeMessage ack = result as AcknowledgeMessage;
+                                AcknowledgeMessage ack = message as AcknowledgeMessage;
                                 if (_netConnection.ClientId == null && ack.HeaderExists(MessageBase.FlexClientIdHeader))
                                     _netConnection.SetClientId(ack.GetHeader(MessageBase.FlexClientIdHeader) as string);
-                                PendingCall call = amfRequestData.Call;
-                                call.Result = ack.body;
-                                call.Status = FluorineFx.Messaging.Rtmp.Service.Call.STATUS_SUCCESS_RESULT;
-                                amfRequestData.Callback.ResultReceived(call);
+                                if (amfRequestData.Call != null)
+                                {
+                                    PendingCall call = amfRequestData.Call;
+                                    call.Result = ack.body;
+                                    call.Status = Messaging.Rtmp.Service.Call.STATUS_SUCCESS_RESULT;
+                                    amfRequestData.Callback.ResultReceived(call);
+                                }
+                                if (amfRequestData.Responder != null)
+                                {
+                                    Delegate resultFunction = amfRequestData.Responder.GetType().GetProperty("Result").GetValue(amfRequestData.Responder, null) as Delegate;
+                                    if (resultFunction != null)
+                                    {
+                                        ParameterInfo[] arguments = resultFunction.Method.GetParameters();
+                                        object result = TypeHelper.ChangeType(ack.body, arguments[0].ParameterType);
+                                        resultFunction.DynamicInvoke(result);
+                                    }
+                                }
                             }
                         }
                         else
@@ -321,36 +418,42 @@ namespace FluorineFx.Net
 
     class AmfRequestData
     {
-        PendingCall _call;
+        readonly PendingCall _call;
+        readonly HttpWebRequest _request;
+        readonly AMFMessage _amfMessage;
+        readonly IPendingServiceCallback _callback;
+        readonly object _responder;
 
         internal PendingCall Call
         {
             get { return _call; }
         }
 
-        HttpWebRequest _request;
-
         public HttpWebRequest Request
         {
             get { return _request; }
         }
 
-        AMFMessage _amfMessage;
-
         public AMFMessage AmfMessage
         {
             get { return _amfMessage; }
         }
-        IPendingServiceCallback _callback;
 
         public IPendingServiceCallback Callback
         {
             get { return _callback; }
         }
 
-        public AmfRequestData(HttpWebRequest request, AMFMessage amfMessage, PendingCall call, IPendingServiceCallback callback)
+        public object Responder
+        {
+            get { return _responder; }
+        }
+
+
+        public AmfRequestData(HttpWebRequest request, AMFMessage amfMessage, PendingCall call, IPendingServiceCallback callback, object responder)
         {
             _call = call;
+            _responder = responder;
             _request = request;
             _amfMessage = amfMessage;
             _callback = callback;

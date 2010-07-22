@@ -39,22 +39,20 @@ namespace FluorineFx.Messaging.Services.Messaging
         MsmqProperties _msmqSettings;
         MessageQueue _messageQueue;
         IMessageFormatter _messageFormatter;
-        Hashtable _producers;
         Hashtable _consumers;
 
         public override void Init()
         {
             base.Init();
-            _producers = new Hashtable();
             _consumers = new Hashtable();
-            _msmqSettings = this.DestinationDefinition.Properties.Msmq;
+            _msmqSettings = DestinationDefinition.Properties.Msmq;
             if (_msmqSettings != null)
             {
                 MessageQueue.EnableConnectionCache = false;
                 log.Debug(__Res.GetString(__Res.Msmq_StartQueue, _msmqSettings.Name));
                 _messageQueue = new MessageQueue(_msmqSettings.Name);
                 string messageFormatterName = MsmqProperties.BinaryMessageFormatter;
-                if (_msmqSettings.Formatter != null && _msmqSettings.Formatter != string.Empty)
+                if (!string.IsNullOrEmpty(_msmqSettings.Formatter))
                     messageFormatterName = _msmqSettings.Formatter;
                 log.Debug(__Res.GetString(__Res.Msmq_InitFormatter, messageFormatterName));
                 if (messageFormatterName == MsmqProperties.BinaryMessageFormatter)
@@ -65,9 +63,9 @@ namespace FluorineFx.Messaging.Services.Messaging
                 else if (messageFormatterName.StartsWith(MsmqProperties.XmlMessageFormatter))
                 {
                     string[] formatterParts = messageFormatterName.Split(new char[]{';'});
-                    Type[] types = null;
+                    Type[] types;
                     if (formatterParts.Length == 1)
-                        types = new Type[1] { typeof(string) };
+                        types = new Type[] { typeof(string) };
                     else
                     {
                         types = new Type[formatterParts.Length-1];
@@ -112,7 +110,7 @@ namespace FluorineFx.Messaging.Services.Messaging
             {
                 if (_messageQueue != null )
                 {
-                    _messageQueue.ReceiveCompleted += new ReceiveCompletedEventHandler(OnReceiveCompleted);
+                    _messageQueue.ReceiveCompleted += OnReceiveCompleted;
                     _messageQueue.BeginReceive(new TimeSpan(1, 0, 0), _messageQueue);
                 }
             }
@@ -120,7 +118,7 @@ namespace FluorineFx.Messaging.Services.Messaging
             {
                 if (_messageQueue != null )
                 {
-                    _messageQueue.ReceiveCompleted -= new ReceiveCompletedEventHandler(OnReceiveCompleted);
+                    _messageQueue.ReceiveCompleted -= OnReceiveCompleted;
                 }
             }
         }
@@ -139,7 +137,7 @@ namespace FluorineFx.Messaging.Services.Messaging
             switch (commandMessage.operation)
             {
                 case CommandMessage.SubscribeOperation:
-                    lock (this.SyncRoot)
+                    lock (SyncRoot)
                     {
                         bool enableReceive = _consumers.Count == 0;
                         _consumers[commandMessage.clientId] = null;
@@ -148,7 +146,7 @@ namespace FluorineFx.Messaging.Services.Messaging
                     }
                     break;
                 case CommandMessage.UnsubscribeOperation:
-                    lock (this.SyncRoot)
+                    lock (SyncRoot)
                     {
                         if (_consumers.Contains(commandMessage.clientId))
                         {
@@ -164,13 +162,13 @@ namespace FluorineFx.Messaging.Services.Messaging
 
         void OnReceiveCompleted(object sender, ReceiveCompletedEventArgs e)
         {
-            System.Messaging.Message message = ((MessageQueue)e.AsyncResult.AsyncState).EndReceive(e.AsyncResult);
+            Message message = ((MessageQueue)e.AsyncResult.AsyncState).EndReceive(e.AsyncResult);
             log.Debug(__Res.GetString(__Res.Msmq_Receive, message.Label, message.Id));
             try
             {
                 AsyncMessage asyncMessage = ConvertMsmqMessage(message);
-                MessageService messageService = this.Destination.Service as MessageService;
-                messageService.PushMessageToClients(asyncMessage);
+                MessageService messageService = Destination.Service as MessageService;
+                if (messageService != null) messageService.PushMessageToClients(asyncMessage);
                 //msgBroker.RouteMessage(msg);
             }
             catch (System.Runtime.Serialization.SerializationException ex)
@@ -183,10 +181,9 @@ namespace FluorineFx.Messaging.Services.Messaging
 
         private AsyncMessage ConvertMsmqMessage(Message message)
         {
-            AsyncMessage asyncMessage = null;
-            asyncMessage = new AsyncMessage();
+            AsyncMessage asyncMessage = new AsyncMessage();
             asyncMessage.body = message.Body;
-            asyncMessage.destination = this.DestinationDefinition.Id;
+            asyncMessage.destination = DestinationDefinition.Id;
             asyncMessage.clientId = Guid.NewGuid().ToString("D");
             asyncMessage.messageId = Guid.NewGuid().ToString("D");
             asyncMessage.timestamp = Environment.TickCount;

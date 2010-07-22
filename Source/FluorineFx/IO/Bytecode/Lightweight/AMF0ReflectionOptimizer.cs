@@ -17,12 +17,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
-using System.Xml;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Security;
 using System.Security.Permissions;
+using FluorineFx.Reflection.Lightweight;
 using log4net;
 
 using FluorineFx.AMF3;

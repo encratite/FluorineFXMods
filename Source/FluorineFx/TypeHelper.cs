@@ -24,18 +24,15 @@ using System.Collections;
 using System.Reflection;
 using System.IO;
 using System.Security;
-using System.Security.Permissions;
 using System.Text;
-#if !(NET_1_1)
 using System.Collections.Generic;
-#endif
 #if !SILVERLIGHT
 using System.Data;
 using System.Data.SqlTypes;
 using System.Web;
 using log4net;
 #endif
-#if !NET_1_1 && !NET_2_0
+#if !NET_2_0
 using System.Xml.Linq;
 #endif
 using FluorineFx.Configuration;
@@ -48,35 +45,37 @@ namespace FluorineFx
 	/// </summary>
 	public sealed class TypeHelper
 	{
+#if SILVERLIGHT
         static object _syncLock = new object();
+#endif
 #if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(TypeHelper));
 #endif
 
 		static TypeHelper()
 		{
-            _defaultSByteNullValue = (SByte)GetNullValue(typeof(SByte));
-            _defaultInt16NullValue = (Int16)GetNullValue(typeof(Int16));
-            _defaultInt32NullValue = (Int32)GetNullValue(typeof(Int32));
-            _defaultInt64NullValue = (Int64)GetNullValue(typeof(Int64));
-            _defaultByteNullValue = (Byte)GetNullValue(typeof(Byte));
-            _defaultUInt16NullValue = (UInt16)GetNullValue(typeof(UInt16));
-            _defaultUInt32NullValue = (UInt32)GetNullValue(typeof(UInt32));
-            _defaultUInt64NullValue = (UInt64)GetNullValue(typeof(UInt64));
-            _defaultCharNullValue = (Char)GetNullValue(typeof(Char));
-            _defaultSingleNullValue = (Single)GetNullValue(typeof(Single));
-            _defaultDoubleNullValue = (Double)GetNullValue(typeof(Double));
-            _defaultBooleanNullValue = (Boolean)GetNullValue(typeof(Boolean));
+            DefaultSByteNullValue = (SByte)GetNullValue(typeof(SByte));
+            DefaultInt16NullValue = (Int16)GetNullValue(typeof(Int16));
+            DefaultInt32NullValue = (Int32)GetNullValue(typeof(Int32));
+            DefaultInt64NullValue = (Int64)GetNullValue(typeof(Int64));
+            DefaultByteNullValue = (Byte)GetNullValue(typeof(Byte));
+            DefaultUInt16NullValue = (UInt16)GetNullValue(typeof(UInt16));
+            DefaultUInt32NullValue = (UInt32)GetNullValue(typeof(UInt32));
+            DefaultUInt64NullValue = (UInt64)GetNullValue(typeof(UInt64));
+            DefaultCharNullValue = (Char)GetNullValue(typeof(Char));
+            DefaultSingleNullValue = (Single)GetNullValue(typeof(Single));
+            DefaultDoubleNullValue = (Double)GetNullValue(typeof(Double));
+            DefaultBooleanNullValue = (Boolean)GetNullValue(typeof(Boolean));
 
-            _defaultStringNullValue = (String)GetNullValue(typeof(String));
-            _defaultDateTimeNullValue = (DateTime)GetNullValue(typeof(DateTime));
-            _defaultDecimalNullValue = (Decimal)GetNullValue(typeof(Decimal));
-            _defaultGuidNullValue = (Guid)GetNullValue(typeof(Guid));
-            _defaultXmlReaderNullValue = (XmlReader)GetNullValue(typeof(XmlReader));
+            DefaultStringNullValue = (String)GetNullValue(typeof(String));
+            DefaultDateTimeNullValue = (DateTime)GetNullValue(typeof(DateTime));
+            DefaultDecimalNullValue = (Decimal)GetNullValue(typeof(Decimal));
+            DefaultGuidNullValue = (Guid)GetNullValue(typeof(Guid));
+            DefaultXmlReaderNullValue = (XmlReader)GetNullValue(typeof(XmlReader));
 #if !SILVERLIGHT
-            _defaultXmlDocumentNullValue = (XmlDocument)GetNullValue(typeof(XmlDocument));
+            DefaultXmlDocumentNullValue = (XmlDocument)GetNullValue(typeof(XmlDocument));
 #endif
-#if !NET_1_1 && !NET_2_0
+#if !NET_2_0
             _defaultXDocumentNullValue = (XDocument)GetNullValue(typeof(XDocument));
             _defaultXElementNullValue = (XElement)GetNullValue(typeof(XElement));
 #endif
@@ -133,9 +132,9 @@ namespace FluorineFx
         /// <returns></returns>
         static public Type Locate(string typeName)
 		{
-			if( typeName == null || typeName == string.Empty )
+			if( string.IsNullOrEmpty(typeName) )
 				return null;
-            Assembly[] assemblies = GetAssemblies();// AppDomain.CurrentDomain.GetAssemblies();
+            Assembly[] assemblies = GetAssemblies();
 			for (int i = 0; i < assemblies.Length; i++)
 			{
 				Assembly assembly = assemblies[i];
@@ -155,14 +154,14 @@ namespace FluorineFx
 		{
 			if( lac == null  )
 				return null;
-			if( typeName == null || typeName == string.Empty )
+			if( string.IsNullOrEmpty(typeName) )
 				return null;
 			foreach (string file in Directory.GetFiles(lac, "*.dll"))
 			{
 				try
 				{
 #if !SILVERLIGHT
-                    log.Debug(__Res.GetString(__Res.TypeHelper_Probing, file));
+                    log.Debug(__Res.GetString(__Res.TypeHelper_Probing, file, typeName));
 #endif
 					Assembly assembly = Assembly.LoadFrom(file);
 					Type type = assembly.GetType(typeName, false);
@@ -241,11 +240,11 @@ namespace FluorineFx
         /// <returns></returns>
 		public static bool SkipMethod(MethodInfo methodInfo)
 		{
-			if (methodInfo.ReturnType == typeof(System.IAsyncResult))
+			if (methodInfo.ReturnType == typeof(IAsyncResult))
 				return true;
 			foreach (ParameterInfo parameterInfo in methodInfo.GetParameters())
 			{
-				if (parameterInfo.ParameterType == typeof(System.IAsyncResult))
+				if (parameterInfo.ParameterType == typeof(IAsyncResult))
 					return true;
 			}
 			return false;
@@ -259,7 +258,7 @@ namespace FluorineFx
 		{
             Attribute attribute = ReflectionUtils.GetAttribute(typeof(DescriptionAttribute), type, false);
 			if (attribute != null)
-				return (attribute as DescriptionAttribute).Description;
+				return ((DescriptionAttribute) attribute).Description;
 			return null;
 		}
         /// <summary>
@@ -271,7 +270,7 @@ namespace FluorineFx
 		{
             Attribute attribute = ReflectionUtils.GetAttribute(typeof(DescriptionAttribute), methodInfo, false);
             if (attribute != null)
-                return (attribute as DescriptionAttribute).Description;
+                return ((DescriptionAttribute) attribute).Description;
             return null;
 		}
 
@@ -281,7 +280,7 @@ namespace FluorineFx
 			for (int i = 0; values != null && i < values.Length; i++)
 			{
 				object value = values[i];
-				values[i] = TypeHelper.ChangeType(value, parameterInfos[i].ParameterType);
+				values[i] = ChangeType(value, parameterInfos[i].ParameterType);
 			}
 		}
 
@@ -348,7 +347,7 @@ namespace FluorineFx
 
 		internal static object CreateInstance(Type type)
 		{
-			//Is this a generic type definition?
+		    //Is this a generic type definition?
 			if (ReflectionUtils.IsGenericType(type))
 			{
 				Type genericTypeDefinition = ReflectionUtils.GetGenericTypeDefinition(type);
@@ -375,10 +374,10 @@ namespace FluorineFx
 				}
 				return obj;
 			}
-			else
-				return Activator.CreateInstance(type);
+		    return Activator.CreateInstance(type);
 		}
-        /// <summary>
+
+	    /// <summary>
         /// Detects the MONO runtime.
         /// </summary>
 		public static bool IsMono
@@ -388,82 +387,90 @@ namespace FluorineFx
 				return (typeof(object).Assembly.GetType("System.MonoType") != null);
 			}
 		}
+
+        class Location
+        {
+            private readonly string _path;
+            private readonly string _description;
+
+            public Location(string path, string description)
+            {
+                _path = path;
+                _description = description;
+            }
+
+            public string Path
+            {
+                get { return _path; }
+            }
+
+            public string Description
+            {
+                get { return _description; }
+            }
+        }
+
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Lac locations used for assembly probing by FluorineFx.</returns>
 		public static string[] GetLacLocations()
 		{
 #if !FXCLIENT
-			ArrayList lacLocations = new ArrayList();
+            List<Location> locations = new List<Location>();
 
-			try
-			{
-				//This is the FluorineFx path
-				log.Debug("Checking FluorineFx location");
+            try
+            {
                 try
                 {
-                    string location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    if (location != null)
+                    // Dynamically-created assemblies
+                    if (IsMono)
                     {
-                        lacLocations.Add(location);
-                        log.Debug(string.Format("Adding LAC location {0}", location));
+                        log.Debug("Checking Mono AppDomain.SetupInformation.DynamicBase");
+                        // http://lists.ximian.com/pipermail/mono-list/2005-May/027274.html
+                        // DynamicDirectory on Mono cannot be accessed
+                        if (AppDomain.CurrentDomain.SetupInformation.DynamicBase != null)
+                        {
+                            string path = Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.DynamicBase);
+                            Location location = new Location(path, "Mono AppDomain.SetupInformation.DynamicBase");
+                            locations.Add(location);
+                        }
+                    }
+                    else
+                    {
+                        log.Debug("Checking AppDomain.DynamicDirectory");
+                        //.NET2 assemblies in DynamicDirectory
+                        if (AppDomain.CurrentDomain.DynamicDirectory != null)
+                        {
+                            string path = Path.GetDirectoryName(AppDomain.CurrentDomain.DynamicDirectory);
+                            Location location = new Location(path, "AppDomain.DynamicDirectory");
+                            locations.Add(location);
+                        }
                     }
                 }
                 catch (SecurityException)
                 {
                 }
 
-				try
-				{
-					//Dynamically-created assemblies
-					if (IsMono)//Mono
-					{
-						log.Debug("Checking Mono DynamicBase");
-						//http://lists.ximian.com/pipermail/mono-list/2005-May/027274.html
-						//DynamicDirectory on Mono cannot be accessed
-						if (AppDomain.CurrentDomain.SetupInformation.DynamicBase != null)
-						{
-							string dynamicBase = Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.DynamicBase);
-							lacLocations.Add(dynamicBase);
-							log.Debug(string.Format("Adding LAC location {0}", dynamicBase));
-						}
-					}
-					else
-					{
-						log.Debug("Checking DynamicDirectory");
-						//.NET2 assemblies in DynamicDirectory
-						if (AppDomain.CurrentDomain.DynamicDirectory != null)
-						{
-							//Uri uri = new Uri(AppDomain.CurrentDomain.DynamicDirectory);
-							string dynamicDirectory = Path.GetDirectoryName(AppDomain.CurrentDomain.DynamicDirectory);
-							lacLocations.Add(dynamicDirectory);
-							log.Debug(string.Format("Adding LAC location {0}", dynamicDirectory));
-						}
-					}
-				}
-				catch (SecurityException)
-				{
-				}
-				//If we are hosted in a web application check PhysicalApplicationPath\bin too
                 try
                 {
+                    // If we are hosted in a web application check PhysicalApplicationPath\bin too
                     if (HttpContext.Current != null && HttpContext.Current.Request != null)
                     {
-                        log.Debug("Checking Request PhysicalApplicationPath");
+                        log.Debug("Checking ASP.NET Bin folder");
                         string path = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "Bin");
                         if (Directory.Exists(path))
                         {
-                            lacLocations.Add(path);
-                            log.Debug(string.Format("Adding LAC location {0}", path));
+                            Location location = new Location(path, "ASP.NET Bin folder");
+                            locations.Add(location);
                         }
                         else
                         {
                             path = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "bin");
                             if (Directory.Exists(path))
                             {
-                                lacLocations.Add(path);
-                                log.Debug(string.Format("Adding LAC location {0}", path));
+                                Location location = new Location(path, "ASP.NET bin folder");
+                                locations.Add(location);
                             }
                         }
                     }
@@ -471,12 +478,51 @@ namespace FluorineFx
                 catch (SecurityException)
                 {
                 }
-			}
-			catch(Exception ex)
-			{
-				log.Error("An error occurred while configuring LAC locations. This may lead to assembly load failures.", ex);
-			}
-			return lacLocations.ToArray(typeof(string)) as string[];
+
+                log.Debug("Checking FluorineFx location");
+                try
+                {
+                    // This is the FluorineFx path
+                    // We leave it lastly because of the ASP.NET shadow copying feature (a setup of assemblies with the same identity but at different location)
+                    string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    if (path != null)
+                    {
+                        Location location = new Location(path, "FluorineFx location");
+                        locations.Add(location);
+                    }
+                }
+                catch (SecurityException)
+                {
+                }
+
+                // Sort out unique root paths
+                for (int i = locations.Count - 1; i >= 0; i--)
+                {
+                    Location location1 = locations[i];
+                    for (int j = locations.Count - 1; j >= 0; j--)
+                    {
+                        Location location2 = locations[j];
+                        if (i != j && PathUtil.ContainsPath(location1.Path, location2.Path))
+                        {
+                            locations.RemoveAt(j);
+                            break;
+                        }
+                    }
+                }
+                string[] lacLocations = new string[locations.Count];
+                for (int i = 0; i < locations.Count; i++)
+                {
+                    lacLocations[i] = locations[i].Path;
+                    if (log.IsDebugEnabled)
+                        log.Debug(string.Format("Adding LAC location: {0}, path: {1}", locations[i].Description, locations[i].Path));
+                }
+                return lacLocations;
+            }
+            catch (Exception ex)
+            {
+                log.Error("An error occurred while configuring LAC locations. This may lead to assembly load failures.", ex);
+            }
+            return new string[0];
 #else
             return new string[0];
 #endif
@@ -499,11 +545,9 @@ namespace FluorineFx
                 Attribute attribute = ReflectionUtils.GetAttribute(typeof(RemotingServiceAttribute), type, true);
                 if (attribute != null)
                     return true;
-                else
-                    return false;
+                return false;
             }
-            else
-                return true;
+            return true;
 #else
             return true;
 #endif
@@ -524,13 +568,10 @@ namespace FluorineFx
         {
             if (type == null) throw new ArgumentNullException("type");
 
-#if !(NET_1_1)
             if (ReflectionUtils.IsNullable(type))
 				type = type.GetGenericArguments()[0];
-#endif
             if (type.IsEnum)
                 type = Enum.GetUnderlyingType(type);
-
             return type;
         }
         /// <summary>
@@ -641,13 +682,10 @@ namespace FluorineFx
                         // Int32 is assignable from UInt32, SByte from Byte and so on.
                         if (dstElementType.IsAssignableFrom(srcElementType))
                             return true;
-                        else
-                        {
-                            //This is a costly operation
-                            for (int i = 0; i < arrayLength; ++i)
-                                if (!IsAssignable(srcArray.GetValue(i), dstElementType))
-                                    return false;
-                        }
+                        //This is a costly operation
+                        for (int i = 0; i < arrayLength; ++i)
+                            if (!IsAssignable(srcArray.GetValue(i), dstElementType))
+                                return false;
                     }
                     else
                     {
@@ -682,8 +720,12 @@ namespace FluorineFx
             {
                 try
                 {
-                    Enum.Parse(targetType, obj.ToString(), true);
-                    return true;
+                    if (obj != null)
+                    {
+                        Enum.Parse(targetType, obj.ToString(), true);
+                        return true;
+                    }
+                    return false;
                 }
                 catch (ArgumentException)
                 {
@@ -701,7 +743,6 @@ namespace FluorineFx
                     return true;
 
                 //Collections
-#if !(NET_1_1)
                 if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.Generic.ICollection`1") && obj is IList)
                 {
                     //For generic interfaces, the name parameter is the mangled name, ending with a grave accent (`) and the number of type parameters
@@ -712,16 +753,13 @@ namespace FluorineFx
                         Type typeGenericICollection = targetType.GetInterface("System.Collections.Generic.ICollection`1", true);
                         return typeGenericICollection != null;
                     }
-                    else
-                        return false;
+                    return false;
                 }
-#endif
                 if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.IList") && obj is IList)
                 {
                     return true;
                 }
 
-#if !(NET_1_1)
                 if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.Generic.IDictionary`2") && obj is IDictionary)
                 {
                     Type[] typeParameters = ReflectionUtils.GetGenericArguments(targetType);
@@ -731,21 +769,17 @@ namespace FluorineFx
                         Type typeGenericIDictionary = targetType.GetInterface("System.Collections.Generic.IDictionary`2", true);
                         return typeGenericIDictionary != null;
                     }
-                    else
-                        return false;
+                    return false;
                 }
-
-#endif
                 if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.IDictionary") && obj is IDictionary)
                 {
                     return true;
                 }
-                //return false;
             }
             else
             {
 #if !SILVERLIGHT
-                if (targetType is System.Data.SqlTypes.INullable)
+                if (targetType is INullable)
                     return true;
 #endif
                 if (targetType.IsValueType)
@@ -758,22 +792,19 @@ namespace FluorineFx
                     }
                     return false;
                 }
-                else
-                    return true;
+                return true;
             }
 
             try
             {
-#if !(NET_1_1)
                 if (isNullable)
                 {
-                    switch (Type.GetTypeCode(TypeHelper.GetUnderlyingType(targetType)))
+                    switch (Type.GetTypeCode(GetUnderlyingType(targetType)))
                     {
                         case TypeCode.Char: return CanConvertToNullableChar(obj);
                     }
                     if (typeof(Guid) == targetType) return CanConvertToNullableGuid(obj);
                 }
-#endif
                 switch (Type.GetTypeCode(targetType))
                 {
                     case TypeCode.Char: return CanConvertToChar(obj);
@@ -784,7 +815,7 @@ namespace FluorineFx
             {
             }
 
-#if !SILVERLIGHT && !NET_1_1 && !NET_2_0
+#if !SILVERLIGHT && !NET_2_0
             if (typeof(System.Xml.Linq.XDocument) == targetType && obj is XmlDocument) return true;
             if (typeof(System.Xml.Linq.XElement) == targetType && obj is XmlDocument) return true;
 #endif
@@ -896,10 +927,9 @@ namespace FluorineFx
                 }
             }
 
-#if !(NET_1_1)
             if (isNullable)
             {
-                switch (Type.GetTypeCode(TypeHelper.GetUnderlyingType(targetType)))
+                switch (Type.GetTypeCode(GetUnderlyingType(targetType)))
                 {
                     case TypeCode.Boolean:  return ConvertToNullableBoolean (value);
                     case TypeCode.Byte:     return ConvertToNullableByte    (value);
@@ -916,9 +946,8 @@ namespace FluorineFx
                     case TypeCode.UInt32:   return ConvertToNullableUInt32  (value);
                     case TypeCode.UInt64:   return ConvertToNullableUInt64  (value);
                 }
-                if (typeof(Guid) == TypeHelper.GetUnderlyingType(targetType)) return ConvertToNullableGuid(value);
+                if (typeof(Guid) == GetUnderlyingType(targetType)) return ConvertToNullableGuid(value);
             }
-#endif
 
             switch (Type.GetTypeCode(targetType))
             {
@@ -941,9 +970,9 @@ namespace FluorineFx
 
             if (typeof(Guid) == targetType) return ConvertToGuid(value);
 #if !SILVERLIGHT
-            if (typeof(System.Xml.XmlDocument) == targetType) return ConvertToXmlDocument(value);
+            if (typeof(XmlDocument) == targetType) return ConvertToXmlDocument(value);
 #endif
-#if !SILVERLIGHT && !NET_1_1 && !NET_2_0
+#if !SILVERLIGHT && !NET_2_0
             if (typeof(System.Xml.Linq.XDocument) == targetType) return ConvertToXDocument(value);
             if (typeof(System.Xml.Linq.XElement) == targetType) return ConvertToXElement(value);
 #endif
@@ -982,15 +1011,12 @@ namespace FluorineFx
 
             if (targetType.IsInterface)
             {
-                if (null == value)
-                    return null;
                 MethodInfo castMethod = typeof(TypeHelper).GetMethod("Cast", BindingFlags.Static | BindingFlags.NonPublic).MakeGenericMethod(targetType);
                 object castedObject = castMethod.Invoke(null, new object[] { value });
                 if (castedObject != null)
                     return castedObject;
             }
             //Collections
-#if !(NET_1_1)
             if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.Generic.ICollection`1") && value is IList)
             {
                 object obj = null;
@@ -1021,7 +1047,6 @@ namespace FluorineFx
                     return obj;
                 }
             }
-#endif
             if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.IList") && value is IList)
             {
                 object obj = CreateInstance(targetType);
@@ -1034,7 +1059,6 @@ namespace FluorineFx
                     return obj;
                 }
             }
-#if !(NET_1_1)
             if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.Generic.IDictionary`2") && value is IDictionary)
             {
                 object obj = CreateInstance(targetType);
@@ -1067,7 +1091,6 @@ namespace FluorineFx
                 }
             }
 
-#endif
             if (ReflectionUtils.ImplementsInterface(targetType, "System.Collections.IDictionary") && value is IDictionary)
             {
                 object obj = CreateInstance(targetType);
@@ -1084,7 +1107,6 @@ namespace FluorineFx
             return System.Convert.ChangeType(value, targetType, null);
         }
 
-#if !(NET_1_1)
         #region Nullable Types
 
         /// <summary>
@@ -1097,7 +1119,7 @@ namespace FluorineFx
         {
             if (value is SByte) return (SByte?)value;
             if (value == null)  return null;
-            return FluorineFx.Util.Convert.ToNullableSByte(value);
+            return Util.Convert.ToNullableSByte(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable 16-bit signed integer.
@@ -1109,7 +1131,7 @@ namespace FluorineFx
             if (value is Int16) return (Int16?)value;
             if (value == null)  return null;
 
-            return FluorineFx.Util.Convert.ToNullableInt16(value);
+            return Util.Convert.ToNullableInt16(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable 32-bit signed integer.
@@ -1121,7 +1143,7 @@ namespace FluorineFx
             if (value is Int32) return (Int32?)value;
             if (value == null)  return null;
 
-            return FluorineFx.Util.Convert.ToNullableInt32(value);
+            return Util.Convert.ToNullableInt32(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable 64-bit signed integer.
@@ -1133,7 +1155,7 @@ namespace FluorineFx
             if (value is Int64) return (Int64?)value;
             if (value == null)  return null;
 
-            return FluorineFx.Util.Convert.ToNullableInt64(value);
+            return Util.Convert.ToNullableInt64(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable 8-bit unsigned integer.
@@ -1145,7 +1167,7 @@ namespace FluorineFx
             if (value is Byte) return (Byte?)value;
             if (value == null) return null;
 
-            return FluorineFx.Util.Convert.ToNullableByte(value);
+            return Util.Convert.ToNullableByte(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable 16-bit unsigned integer.
@@ -1158,7 +1180,7 @@ namespace FluorineFx
             if (value is UInt16) return (UInt16?)value;
             if (value == null)   return null;
 
-            return FluorineFx.Util.Convert.ToNullableUInt16(value);
+            return Util.Convert.ToNullableUInt16(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable 32-bit unsigned integer.
@@ -1171,7 +1193,7 @@ namespace FluorineFx
             if (value is UInt32) return (UInt32?)value;
             if (value == null)   return null;
 
-            return FluorineFx.Util.Convert.ToNullableUInt32(value);
+            return Util.Convert.ToNullableUInt32(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable 64-bit unsigned integer.
@@ -1184,7 +1206,7 @@ namespace FluorineFx
             if (value is UInt64) return (UInt64?)value;
             if (value == null)   return null;
 
-            return FluorineFx.Util.Convert.ToNullableUInt64(value);
+            return Util.Convert.ToNullableUInt64(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable Unicode character.
@@ -1196,7 +1218,7 @@ namespace FluorineFx
             if (value is Char) return (Char?)value;
             if (value == null) return null;
 
-            return FluorineFx.Util.Convert.ToNullableChar(value);
+            return Util.Convert.ToNullableChar(value);
         }
         /// <summary>
         /// Checks whether the specified Object can be converted to a nullable Unicode character.
@@ -1207,7 +1229,7 @@ namespace FluorineFx
         {
             if (value is Char) return true;
             if (value == null) return true;
-            return FluorineFx.Util.Convert.CanConvertToNullableChar(value);
+            return Util.Convert.CanConvertToNullableChar(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable double-precision floating point number.
@@ -1219,7 +1241,7 @@ namespace FluorineFx
             if (value is Double) return (Double?)value;
             if (value == null)   return null;
 
-            return FluorineFx.Util.Convert.ToNullableDouble(value);
+            return Util.Convert.ToNullableDouble(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable single-precision floating point number.
@@ -1231,7 +1253,7 @@ namespace FluorineFx
             if (value is Single) return (Single?)value;
             if (value == null)   return null;
 
-            return FluorineFx.Util.Convert.ToNullableSingle(value);
+            return Util.Convert.ToNullableSingle(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent to a nullable Boolean value.
@@ -1243,7 +1265,7 @@ namespace FluorineFx
             if (value is Boolean) return (Boolean?)value;
             if (value == null)    return null;
 
-            return FluorineFx.Util.Convert.ToNullableBoolean(value);
+            return Util.Convert.ToNullableBoolean(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable DateTime.
@@ -1255,7 +1277,7 @@ namespace FluorineFx
             if (value is DateTime) return (DateTime?)value;
             if (value == null)     return null;
 
-            return FluorineFx.Util.Convert.ToNullableDateTime(value);
+            return Util.Convert.ToNullableDateTime(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable Decimal.
@@ -1267,7 +1289,7 @@ namespace FluorineFx
             if (value is Decimal) return (Decimal?)value;
             if (value == null)    return null;
 
-            return FluorineFx.Util.Convert.ToNullableDecimal(value);
+            return Util.Convert.ToNullableDecimal(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent nullable Guid.
@@ -1279,7 +1301,7 @@ namespace FluorineFx
             if (value is Guid) return (Guid?)value;
             if (value == null) return null;
 
-            return FluorineFx.Util.Convert.ToNullableGuid(value);
+            return Util.Convert.ToNullableGuid(value);
         }
         /// <summary>
         /// Checks whether the specified Object can be converted to a nullable Guid.
@@ -1290,14 +1312,13 @@ namespace FluorineFx
         {
             if (value is Guid) return true;
             if (value == null) return true;
-            return FluorineFx.Util.Convert.CanConvertToNullableGuid(value);
+            return Util.Convert.CanConvertToNullableGuid(value);
         }
         #endregion
-#endif
 
         #region Primitive Types
 
-        static SByte _defaultSByteNullValue;
+        static readonly SByte DefaultSByteNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 8-bit signed integer.
         /// </summary>
@@ -1308,10 +1329,10 @@ namespace FluorineFx
         {
             return
                 value is SByte ? (SByte)value :
-                value == null ? _defaultSByteNullValue :
-                    FluorineFx.Util.Convert.ToSByte(value);
+                value == null ? DefaultSByteNullValue :
+                    Util.Convert.ToSByte(value);
         }
-        static Int16 _defaultInt16NullValue;
+        static readonly Int16 DefaultInt16NullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 16-bit signed integer.
         /// </summary>
@@ -1321,11 +1342,11 @@ namespace FluorineFx
         {
             return
                 value is Int16 ? (Int16)value :
-                value == null ? _defaultInt16NullValue :
-                    FluorineFx.Util.Convert.ToInt16(value);
+                value == null ? DefaultInt16NullValue :
+                    Util.Convert.ToInt16(value);
         }
         
-        static Int32 _defaultInt32NullValue;
+        static readonly Int32 DefaultInt32NullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 32-bit signed integer.
         /// </summary>
@@ -1335,11 +1356,11 @@ namespace FluorineFx
         {
             return
                 value is Int32 ? (Int32)value :
-                value == null ? _defaultInt32NullValue :
-                    FluorineFx.Util.Convert.ToInt32(value);
+                value == null ? DefaultInt32NullValue :
+                    Util.Convert.ToInt32(value);
         }
 
-        static Int64 _defaultInt64NullValue;
+        static readonly Int64 DefaultInt64NullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 64-bit signed integer.
         /// </summary>
@@ -1349,11 +1370,11 @@ namespace FluorineFx
         {
             return
                 value is Int64 ? (Int64)value :
-                value == null ? _defaultInt64NullValue :
-                    FluorineFx.Util.Convert.ToInt64(value);
+                value == null ? DefaultInt64NullValue :
+                    Util.Convert.ToInt64(value);
         }
 
-        static Byte _defaultByteNullValue;
+        static readonly Byte DefaultByteNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 8-bit unsigned integer.
         /// </summary>
@@ -1363,11 +1384,11 @@ namespace FluorineFx
         {
             return
                 value is Byte ? (Byte)value :
-                value == null ? _defaultByteNullValue :
-                    FluorineFx.Util.Convert.ToByte(value);
+                value == null ? DefaultByteNullValue :
+                    Util.Convert.ToByte(value);
         }
 
-        static UInt16 _defaultUInt16NullValue;
+        static readonly UInt16 DefaultUInt16NullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 16-bit unsigned integer.
         /// </summary>
@@ -1378,10 +1399,10 @@ namespace FluorineFx
         {
             return
                 value is UInt16 ? (UInt16)value :
-                value == null ? _defaultUInt16NullValue :
-                    FluorineFx.Util.Convert.ToUInt16(value);
+                value == null ? DefaultUInt16NullValue :
+                    Util.Convert.ToUInt16(value);
         }
-        static UInt32 _defaultUInt32NullValue;
+        static readonly UInt32 DefaultUInt32NullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 32-bit unsigned integer.
         /// </summary>
@@ -1392,11 +1413,11 @@ namespace FluorineFx
         {
             return
                 value is UInt32 ? (UInt32)value :
-                value == null ? _defaultUInt32NullValue :
-                    FluorineFx.Util.Convert.ToUInt32(value);
+                value == null ? DefaultUInt32NullValue :
+                    Util.Convert.ToUInt32(value);
         }
 
-        static UInt64 _defaultUInt64NullValue;
+        static readonly UInt64 DefaultUInt64NullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent 64-bit unsigned integer.
         /// </summary>
@@ -1407,11 +1428,11 @@ namespace FluorineFx
         {
             return
                 value is UInt64 ? (UInt64)value :
-                value == null ? _defaultUInt64NullValue :
-                    FluorineFx.Util.Convert.ToUInt64(value);
+                value == null ? DefaultUInt64NullValue :
+                    Util.Convert.ToUInt64(value);
         }
 
-        static Char _defaultCharNullValue;
+        static readonly Char DefaultCharNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent Unicode character.
         /// </summary>
@@ -1421,8 +1442,8 @@ namespace FluorineFx
         {
             return
                 value is Char ? (Char)value :
-                value == null ? _defaultCharNullValue :
-                    FluorineFx.Util.Convert.ToChar(value);
+                value == null ? DefaultCharNullValue :
+                    Util.Convert.ToChar(value);
         }
         /// <summary>
         /// Checks whether the specified Object can be converted to a Unicode character.
@@ -1434,10 +1455,10 @@ namespace FluorineFx
             return
                 value is Char ? true :
                 value == null ? true :
-                    FluorineFx.Util.Convert.CanConvertToChar(value);
+                    Util.Convert.CanConvertToChar(value);
         }
 
-        static Single _defaultSingleNullValue;
+        static readonly Single DefaultSingleNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent single-precision floating point number.
         /// </summary>
@@ -1447,11 +1468,11 @@ namespace FluorineFx
         {
             return
                 value is Single ? (Single)value :
-                value == null ? _defaultSingleNullValue :
-                    FluorineFx.Util.Convert.ToSingle(value);
+                value == null ? DefaultSingleNullValue :
+                    Util.Convert.ToSingle(value);
         }
 
-        static Double _defaultDoubleNullValue;
+        static readonly Double DefaultDoubleNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent double-precision floating point number.
         /// </summary>
@@ -1461,11 +1482,11 @@ namespace FluorineFx
         {
             return
                 value is Double ? (Double)value :
-                value == null ? _defaultDoubleNullValue :
-                    FluorineFx.Util.Convert.ToDouble(value);
+                value == null ? DefaultDoubleNullValue :
+                    Util.Convert.ToDouble(value);
         }
 
-        static Boolean _defaultBooleanNullValue;
+        static readonly Boolean DefaultBooleanNullValue;
         /// <summary>
         /// Checks whether the specified Object can be converted to a Boolean value.
         /// </summary>
@@ -1475,15 +1496,15 @@ namespace FluorineFx
         {
             return
                 value is Boolean ? (Boolean)value :
-                value == null ? _defaultBooleanNullValue :
-                    FluorineFx.Util.Convert.ToBoolean(value);
+                value == null ? DefaultBooleanNullValue :
+                    Util.Convert.ToBoolean(value);
         }
 
         #endregion
 
         #region Simple Types
 
-        static string _defaultStringNullValue;
+        static readonly string DefaultStringNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent String.
         /// </summary>
@@ -1493,11 +1514,11 @@ namespace FluorineFx
         {
             return
                 value is String ? (String)value :
-                value == null ? _defaultStringNullValue :
-                    FluorineFx.Util.Convert.ToString(value);
+                value == null ? DefaultStringNullValue :
+                    Util.Convert.ToString(value);
         }
 
-        static DateTime _defaultDateTimeNullValue;
+        static readonly DateTime DefaultDateTimeNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent DateTime.
         /// </summary>
@@ -1507,11 +1528,11 @@ namespace FluorineFx
         {
             return
                 value is DateTime ? (DateTime)value :
-                value == null ? _defaultDateTimeNullValue :
-                    FluorineFx.Util.Convert.ToDateTime(value);
+                value == null ? DefaultDateTimeNullValue :
+                    Util.Convert.ToDateTime(value);
         }
 
-        static decimal _defaultDecimalNullValue;
+        static readonly decimal DefaultDecimalNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent Decimal.
         /// </summary>
@@ -1521,11 +1542,11 @@ namespace FluorineFx
         {
             return
                 value is Decimal ? (Decimal)value :
-                value == null ? _defaultDecimalNullValue :
-                    FluorineFx.Util.Convert.ToDecimal(value);
+                value == null ? DefaultDecimalNullValue :
+                    Util.Convert.ToDecimal(value);
         }
 
-        static Guid _defaultGuidNullValue;
+        static readonly Guid DefaultGuidNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent Guid.
         /// </summary>
@@ -1535,8 +1556,8 @@ namespace FluorineFx
         {
             return
                 value is Guid ? (Guid)value :
-                value == null ? _defaultGuidNullValue :
-                    FluorineFx.Util.Convert.ToGuid(value);
+                value == null ? DefaultGuidNullValue :
+                    Util.Convert.ToGuid(value);
         }
         /// <summary>
         /// Checks whether the specified Object can be converted to a Guid.
@@ -1548,10 +1569,10 @@ namespace FluorineFx
             return
                 value is Guid ? true :
                 value == null ? true :
-                    FluorineFx.Util.Convert.CanConvertToGuid(value);
+                    Util.Convert.CanConvertToGuid(value);
         }
 
-        static XmlReader _defaultXmlReaderNullValue;
+        static readonly XmlReader DefaultXmlReaderNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent XmlReader.
         /// </summary>
@@ -1561,11 +1582,11 @@ namespace FluorineFx
         {
             return
                 value is XmlReader ? (XmlReader)value :
-                value == null ? _defaultXmlReaderNullValue :
-                    FluorineFx.Util.Convert.ToXmlReader(value);
+                value == null ? DefaultXmlReaderNullValue :
+                    Util.Convert.ToXmlReader(value);
         }
 #if !SILVERLIGHT
-        static XmlDocument _defaultXmlDocumentNullValue;
+        static readonly XmlDocument DefaultXmlDocumentNullValue;
         /// <summary>
         /// Converts the value of the specified Object to its equivalent XmlDocument.
         /// </summary>
@@ -1575,11 +1596,11 @@ namespace FluorineFx
         {
             return
                 value is XmlDocument ? (XmlDocument)value :
-                value == null ? _defaultXmlDocumentNullValue :
-                    FluorineFx.Util.Convert.ToXmlDocument(value);
+                value == null ? DefaultXmlDocumentNullValue :
+                    Util.Convert.ToXmlDocument(value);
         }
 #endif
-#if !NET_1_1 && !NET_2_0
+#if !NET_2_0
         static XDocument _defaultXDocumentNullValue;
         public static XDocument ConvertToXDocument(object value)
         {
@@ -1609,7 +1630,7 @@ namespace FluorineFx
             return
                 value is byte[] ? (byte[])value :
                 value == null ? null :
-                    FluorineFx.Util.Convert.ToByteArray(value);
+                    Util.Convert.ToByteArray(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to a character array.
@@ -1621,7 +1642,7 @@ namespace FluorineFx
             return
                 value is char[] ? (char[])value :
                 value == null ? null :
-                    FluorineFx.Util.Convert.ToCharArray(value);
+                    Util.Convert.ToCharArray(value);
         }
 
         #endregion
@@ -1638,7 +1659,7 @@ namespace FluorineFx
             return
                 value == null ? SqlByte.Null :
                 value is SqlByte ? (SqlByte)value :
-                    FluorineFx.Util.Convert.ToSqlByte(value);
+                    Util.Convert.ToSqlByte(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlInt16.
@@ -1650,7 +1671,7 @@ namespace FluorineFx
             return
                 value == null ? SqlInt16.Null :
                 value is SqlInt16 ? (SqlInt16)value :
-                    FluorineFx.Util.Convert.ToSqlInt16(value);
+                    Util.Convert.ToSqlInt16(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlInt32.
@@ -1662,7 +1683,7 @@ namespace FluorineFx
             return
                 value == null ? SqlInt32.Null :
                 value is SqlInt32 ? (SqlInt32)value :
-                    FluorineFx.Util.Convert.ToSqlInt32(value);
+                    Util.Convert.ToSqlInt32(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlInt64.
@@ -1674,7 +1695,7 @@ namespace FluorineFx
             return
                 value == null ? SqlInt64.Null :
                 value is SqlInt64 ? (SqlInt64)value :
-                    FluorineFx.Util.Convert.ToSqlInt64(value);
+                    Util.Convert.ToSqlInt64(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlSingle.
@@ -1686,7 +1707,7 @@ namespace FluorineFx
             return
                 value == null ? SqlSingle.Null :
                 value is SqlSingle ? (SqlSingle)value :
-                    FluorineFx.Util.Convert.ToSqlSingle(value);
+                    Util.Convert.ToSqlSingle(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlBoolean.
@@ -1698,7 +1719,7 @@ namespace FluorineFx
             return
                 value == null ? SqlBoolean.Null :
                 value is SqlBoolean ? (SqlBoolean)value :
-                    FluorineFx.Util.Convert.ToSqlBoolean(value);
+                    Util.Convert.ToSqlBoolean(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlDouble.
@@ -1710,7 +1731,7 @@ namespace FluorineFx
             return
                 value == null ? SqlDouble.Null :
                 value is SqlDouble ? (SqlDouble)value :
-                    FluorineFx.Util.Convert.ToSqlDouble(value);
+                    Util.Convert.ToSqlDouble(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlDateTime.
@@ -1722,7 +1743,7 @@ namespace FluorineFx
             return
                 value == null ? SqlDateTime.Null :
                 value is SqlDateTime ? (SqlDateTime)value :
-                    FluorineFx.Util.Convert.ToSqlDateTime(value);
+                    Util.Convert.ToSqlDateTime(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlDecimal.
@@ -1735,7 +1756,7 @@ namespace FluorineFx
                 value == null ? SqlDecimal.Null :
                 value is SqlDecimal ? (SqlDecimal)value :
                 value is SqlMoney ? ((SqlMoney)value).ToSqlDecimal() :
-                    FluorineFx.Util.Convert.ToSqlDecimal(value);
+                    Util.Convert.ToSqlDecimal(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlMoney.
@@ -1748,7 +1769,7 @@ namespace FluorineFx
                 value == null ? SqlMoney.Null :
                 value is SqlMoney ? (SqlMoney)value :
                 value is SqlDecimal ? ((SqlDecimal)value).ToSqlMoney() :
-                    FluorineFx.Util.Convert.ToSqlMoney(value);
+                    Util.Convert.ToSqlMoney(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlString.
@@ -1760,7 +1781,7 @@ namespace FluorineFx
             return
                 value == null ? SqlString.Null :
                 value is SqlString ? (SqlString)value :
-                    FluorineFx.Util.Convert.ToSqlString(value);
+                    Util.Convert.ToSqlString(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlBinary.
@@ -1772,7 +1793,7 @@ namespace FluorineFx
             return
                 value == null ? SqlBinary.Null :
                 value is SqlBinary ? (SqlBinary)value :
-                    FluorineFx.Util.Convert.ToSqlBinary(value);
+                    Util.Convert.ToSqlBinary(value);
         }
         /// <summary>
         /// Converts the value of the specified Object to its equivalent SqlGuid.
@@ -1784,7 +1805,7 @@ namespace FluorineFx
             return
                 value == null ? SqlGuid.Null :
                 value is SqlGuid ? (SqlGuid)value :
-                    FluorineFx.Util.Convert.ToSqlGuid(value);
+                    Util.Convert.ToSqlGuid(value);
         }
 #endif
         #endregion
@@ -1812,7 +1833,7 @@ namespace FluorineFx
                 asObject["totalCount"] = dataTable.Rows.Count;
 
             if (dataTable.ExtendedProperties["Service"] != null)
-                asObject["serviceName"] = "rs://" + dataTable.ExtendedProperties["Service"] as string;
+                asObject["serviceName"] = "rs://" + dataTable.ExtendedProperties["Service"];
             else
                 asObject["serviceName"] = "FluorineFx.PageableResult";
             asObject["version"] = 1;

@@ -35,6 +35,7 @@ namespace FluorineFx.Context
         /// This member supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
         public const string FluorineSessionAttribute = "__@fluorinesession";
+        public const string AspNetSessionIdCookie = "ASP.NET_SessionId";
 
         private HttpSession(SessionManager sessionManager)
             : base(sessionManager)
@@ -84,18 +85,6 @@ namespace FluorineFx.Context
             {
                 if (HttpContext.Current != null && HttpContext.Current.Session != null)
                     HttpContext.Current.Session[name] = value;
-            }
-        }
-
-        public override System.Security.Principal.IPrincipal Principal
-        {
-            get
-            {
-                return base.Principal;
-            }
-            set
-            {
-                base.Principal = value;
             }
         }
 

@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 #endif
 using FluorineFx.Util;
+using FluorineFx.Threading;
 
 namespace FluorineFx.Messaging.Rtmp
 {
@@ -31,15 +32,15 @@ namespace FluorineFx.Messaging.Rtmp
 	enum DecoderState
 	{
 		/// <summary>
-		/// Decoding finished successfully state
+		/// Decoding finished successfully state.
 		/// </summary>
 		Ok = 0,
 		/// <summary>
-		/// Deconding continues state
+		/// Deconding continues state.
 		/// </summary>
 		Continue = 1,
 		/// <summary>
-		/// Decoder is buffering state constant
+		/// Decoder is buffering state constant.
 		/// </summary>
 		Buffer = 2
 	}
@@ -57,41 +58,41 @@ namespace FluorineFx.Messaging.Rtmp
         /// State bit field.
         /// 1 UseLegacyCollection
         /// 2 UseLegacyThrowable
+        /// 4 RtmpMode
         /// </summary>
         byte __fields;
 
-		RtmpMode _mode;
+		//RtmpMode _mode;
 		RtmpState _state;
 
 		int _lastReadChannel = 0x00;
 		int _lastWriteChannel = 0x00;
-#if !(NET_1_1)
+
         Dictionary<int, RtmpHeader> _readHeaders = new Dictionary<int, RtmpHeader>();
         Dictionary<int, RtmpHeader> _writeHeaders = new Dictionary<int, RtmpHeader>();
         Dictionary<int, RtmpPacket> _readPackets = new Dictionary<int, RtmpPacket>();
         Dictionary<int, RtmpPacket> _writePackets = new Dictionary<int, RtmpPacket>();
-#else
-		Hashtable _readHeaders = new Hashtable();
-		Hashtable _writeHeaders = new Hashtable();
-		Hashtable _readPackets = new Hashtable();
-		Hashtable _writePackets = new Hashtable();
-#endif
-		const int DefaultChunkSize = 128;
+
+        const int DefaultChunkSize = 128;
 		int _readChunkSize = DefaultChunkSize;
 		int _writeChunkSize = DefaultChunkSize;
 
         /// <summary>
         /// Handshake as sent to the client
         /// </summary>
-        byte[] _handshake; 
-        
+        byte[] _handshake;
+
+        private FastReaderWriterLock _readerWriterLock;
+
         /// <summary>
         /// Initializes a new instance of the RtmpContext class.
         /// </summary>
         /// <param name="mode"></param>
         public RtmpContext(RtmpMode mode)
 		{
-			_mode = mode;
+			//_mode = mode;
+            _readerWriterLock = new FastReaderWriterLock();
+            SetMode(mode);
 			_objectEncoding = ObjectEncoding.AMF0;
 		}
         /// <summary>
@@ -118,37 +119,67 @@ namespace FluorineFx.Messaging.Rtmp
             get { return (__fields & 2) == 2; }
             set { __fields = (value) ? (byte)(__fields | 2) : (byte)(__fields & ~2); }
         }
+
+        /// <summary>
+        /// Gets current RTMP mode.
+        /// </summary>
+        public RtmpMode Mode
+        {
+            get { return (RtmpMode)(__fields & 4); }
+        }
+
+        internal void SetMode(RtmpMode value)
+        {
+            __fields = value == RtmpMode.Client ? (byte)(__fields | 4) : (byte)(__fields & ~4);
+        }
+
+        /*
+        /// <summary>
+        /// Gets current RTMP mode.
+        /// </summary>
+        public RtmpMode Mode
+        {
+            get { return _mode; }
+        }
+
+        internal void SetMode(RtmpMode value)
+        {
+            _mode = value;
+        }
+        */
+
+        internal FastReaderWriterLock ReaderWriterLock
+        {
+            get { return _readerWriterLock; }
+        }
+
 		/// <summary>
 		/// Current state of protocol.
 		/// </summary>
 		public RtmpState State
 		{
 			get{ return _state; }
-			set
-			{
-				_state = value;
-				if(_state == RtmpState.Disconnected) 
-				{
-					// Free temporary packets
-					FreePackets(_readPackets);
-					FreePackets(_writePackets);
-				}
-			}
-		}
-        /// <summary>
-        /// Gets current RTMP mode.
-        /// </summary>
-		public RtmpMode Mode
-		{
-			get{ return _mode; }
+            set
+            {
+                try
+                {
+                    ReaderWriterLock.AcquireWriterLock();
+                    _state = value;
+                    if (_state == RtmpState.Disconnected)
+                    {
+                        // Free temporary packets
+                        FreePackets(_readPackets);
+                        FreePackets(_writePackets);
+                    }
+                }
+                finally
+                {
+                    ReaderWriterLock.ReleaseWriterLock();
+                }
+            }
 		}
 
-        internal void SetMode(RtmpMode value)
-        {
-            _mode = value;
-        }
 
-#if !(NET_1_1)
         private void FreePackets(Dictionary<int, RtmpPacket> packets)
         {
             foreach (RtmpPacket packet in packets.Values)
@@ -160,25 +191,21 @@ namespace FluorineFx.Messaging.Rtmp
             }
             packets.Clear();
         }
-#else
-		private void FreePackets(Hashtable packets) 
-		{
-			foreach(RtmpPacket packet in packets.Values) 
-			{
-				if (packet != null && packet.Data != null) 
-				{
-					packet.Data = null;
-				}
-			}
-			packets.Clear();
-		}
-#endif
 
-		internal void SetLastReadHeader(int channelId, RtmpHeader header) 
-		{
-			_lastReadChannel = channelId;
-			_readHeaders[channelId] = header;
-		}
+        internal void SetLastReadHeader(int channelId, RtmpHeader header)
+        {
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
+                _lastReadChannel = channelId;
+                _readHeaders[channelId] = header;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+        }
+
         /// <summary>
         /// Returns the last read header for channel.
         /// </summary>
@@ -186,73 +213,130 @@ namespace FluorineFx.Messaging.Rtmp
         /// <returns>Last read header.</returns>
 		public RtmpHeader GetLastReadHeader(int channelId) 
 		{
-            if( _readHeaders.ContainsKey(channelId) )
-			    return _readHeaders[channelId] as RtmpHeader;
+            try
+            {
+                ReaderWriterLock.AcquireReaderLock();
+                if (_readHeaders.ContainsKey(channelId))
+                    return _readHeaders[channelId] as RtmpHeader;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseReaderLock();
+            }
             return null;
 		}
 
-        internal void SetLastWriteHeader(int channelId, RtmpHeader header) 
-		{
-			_lastWriteChannel = channelId;
-			_writeHeaders[channelId] = header;
-		}
+        internal void SetLastWriteHeader(int channelId, RtmpHeader header)
+        {
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
+                _lastWriteChannel = channelId;
+                _writeHeaders[channelId] = header;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+        }
+
         /// <summary>
         /// Returns the last written header for channel.
         /// </summary>
         /// <param name="channelId">Channel id.</param>
         /// <returns>Last written header.</returns>
-		public RtmpHeader GetLastWriteHeader(int channelId) 
-		{
-            if( _writeHeaders.ContainsKey(channelId) )
-			    return _writeHeaders[channelId] as RtmpHeader;
+        public RtmpHeader GetLastWriteHeader(int channelId)
+        {
+            try
+            {
+                ReaderWriterLock.AcquireReaderLock();
+                if (_writeHeaders.ContainsKey(channelId))
+                    return _writeHeaders[channelId] as RtmpHeader;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseReaderLock();
+            }
             return null;
-		}
+        }
 
-        internal void SetLastReadPacket(int channelId, RtmpPacket packet) 
-		{
-            RtmpPacket prevPacket = null;
-            if( _readPackets.ContainsKey(channelId) )
-                prevPacket = _readPackets[channelId] as RtmpPacket;
-			if (prevPacket != null && prevPacket.Data != null) 
-			{
-				prevPacket.Data = null;
-			}
-			_readPackets[channelId] = packet;
-		}
+        internal void SetLastReadPacket(int channelId, RtmpPacket packet)
+        {
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
+                RtmpPacket prevPacket = null;
+                if (_readPackets.ContainsKey(channelId))
+                    prevPacket = _readPackets[channelId] as RtmpPacket;
+                if (prevPacket != null && prevPacket.Data != null)
+                {
+                    prevPacket.Data = null;
+                }
+                _readPackets[channelId] = packet;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+        }
         /// <summary>
         /// Returns the last read packet for channel.
         /// </summary>
         /// <param name="channelId">Channel id.</param>
         /// <returns>Last read packet for that channel.</returns>
-		public RtmpPacket GetLastReadPacket(int channelId) 
-		{
-            if( _readPackets.ContainsKey(channelId) )
-			    return _readPackets[channelId] as RtmpPacket;
-            return null;
-		}
+        public RtmpPacket GetLastReadPacket(int channelId)
+        {
+            try
+            {
+                ReaderWriterLock.AcquireReaderLock();
+                if (_readPackets.ContainsKey(channelId))
+                    return _readPackets[channelId] as RtmpPacket;
+                return null;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseReaderLock();
+            }
+        }
 
-        internal void SetLastWritePacket(int channelId, RtmpPacket packet) 
-		{
-            RtmpPacket prevPacket = null;
-            if (_writePackets.ContainsKey(channelId))
-                prevPacket = _writePackets[channelId] as RtmpPacket;
-			if (prevPacket != null && prevPacket.Data != null) 
-			{
-				prevPacket.Data = null;
-			}
-			_writePackets[channelId] = packet;
-		}
+        internal void SetLastWritePacket(int channelId, RtmpPacket packet)
+        {
+            try
+            {
+                ReaderWriterLock.AcquireWriterLock();
+                RtmpPacket prevPacket = null;
+                if (_writePackets.ContainsKey(channelId))
+                    prevPacket = _writePackets[channelId] as RtmpPacket;
+                if (prevPacket != null && prevPacket.Data != null)
+                {
+                    prevPacket.Data = null;
+                }
+                _writePackets[channelId] = packet;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseWriterLock();
+            }
+        }
         /// <summary>
         /// Returns the last written packet.
         /// </summary>
         /// <param name="channelId">Channel id.</param>
         /// <returns>Last written packet.</returns>
-		public RtmpPacket GetLastWritePacket(int channelId) 
-		{
-            if (_writePackets.ContainsKey(channelId))
-                return _writePackets[channelId] as RtmpPacket;
+        public RtmpPacket GetLastWritePacket(int channelId)
+        {
+            try
+            {
+                ReaderWriterLock.AcquireReaderLock();
+                if (_writePackets.ContainsKey(channelId))
+                    return _writePackets[channelId] as RtmpPacket;
+            }
+            finally
+            {
+                ReaderWriterLock.ReleaseReaderLock();
+            }
             return null;
-		}
+        }
         /// <summary>
         /// Returns channel being read last.
         /// </summary>

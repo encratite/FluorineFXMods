@@ -29,23 +29,17 @@ namespace FluorineFx.IO
 	/// </summary>
 	class ErrorResponseBody : ResponseBody
 	{
-		/// <summary>
-		/// Initializes a new instance of the ErrorResponseBody class.
-		/// </summary>
-		private ErrorResponseBody()
-		{
-		}
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the ErrorResponseBody class.
 		/// </summary>
 		/// <param name="requestBody"></param>
 		/// <param name="error"></param>
 		public ErrorResponseBody(AMFBody requestBody, string error):base(requestBody)
 		{
-			this.IgnoreResults = requestBody.IgnoreResults;
-			this.Target = requestBody.Response + AMFBody.OnStatus;
-			this.Response = null;
-			this.Content = error;
+			IgnoreResults = requestBody.IgnoreResults;
+			Target = requestBody.Response + AMFBody.OnStatus;
+			Response = null;
+			Content = new ExceptionASO(error);
 		}
 		/// <summary>
 		/// Initializes a new instance of the ErrorResponseBody class.
@@ -54,7 +48,6 @@ namespace FluorineFx.IO
 		/// <param name="exception"></param>
 		public ErrorResponseBody(AMFBody requestBody, Exception exception):base(requestBody)
 		{
-			this.Content = exception;
 			if( requestBody.IsEmptyTarget )
 			{
 				object content = requestBody.Content;
@@ -65,12 +58,14 @@ namespace FluorineFx.IO
 				if( message != null )
 				{
 					ErrorMessage errorMessage = ErrorMessage.GetErrorMessage(message, exception);
-					this.Content = errorMessage;
+					Content = errorMessage;
 				}
 			}
-			this.IgnoreResults = requestBody.IgnoreResults;
-            this.Target = requestBody.Response + AMFBody.OnStatus;
-			this.Response = null;
+            if( Content == null )
+                Content = new ExceptionASO(exception);
+			IgnoreResults = requestBody.IgnoreResults;
+            Target = requestBody.Response + AMFBody.OnStatus;
+			Response = null;
 		}
 		/// <summary>
 		/// Initializes a new instance of the ErrorResponseBody class.
@@ -81,10 +76,10 @@ namespace FluorineFx.IO
 		public ErrorResponseBody(AMFBody requestBody, IMessage message, Exception exception):base(requestBody)
 		{
 			ErrorMessage errorMessage = ErrorMessage.GetErrorMessage(message, exception);
-			this.Content = errorMessage;
-            this.Target = requestBody.Response + AMFBody.OnStatus;
-			this.IgnoreResults = requestBody.IgnoreResults;
-			this.Response = "";
+			Content = errorMessage;
+            Target = requestBody.Response + AMFBody.OnStatus;
+			IgnoreResults = requestBody.IgnoreResults;
+			Response = "";
 		}
 		/// <summary>
 		/// Initializes a new instance of the ErrorResponseBody class.
@@ -94,10 +89,10 @@ namespace FluorineFx.IO
 		/// <param name="errorMessage"></param>
 		public ErrorResponseBody(AMFBody requestBody, IMessage message, ErrorMessage errorMessage):base(requestBody)
 		{
-			this.Content = errorMessage;
-            this.Target = requestBody.Response + AMFBody.OnStatus;
-			this.IgnoreResults = requestBody.IgnoreResults;
-			this.Response = "";
+			Content = errorMessage;
+            Target = requestBody.Response + AMFBody.OnStatus;
+			IgnoreResults = requestBody.IgnoreResults;
+			Response = "";
 		}
 
 	}

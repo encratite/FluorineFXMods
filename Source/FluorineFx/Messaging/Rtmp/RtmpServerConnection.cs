@@ -101,7 +101,7 @@ namespace FluorineFx.Messaging.Rtmp
         //private string _waitForHandshakeJob;
         
         public RtmpServerConnection(RtmpServer rtmpServer, RtmpNetworkStream stream)
-            : base(rtmpServer.RtmpHandler, null, null)
+            : base(rtmpServer.RtmpHandler, RtmpMode.Server, null, null)
 		{
             _lock = new FastReaderWriterLock();
             _endpoint = rtmpServer.Endpoint;
