@@ -528,6 +528,9 @@
     <Compile Include="..\FluorineFx\Messaging\Api\Statistics\IPlaylistSubscriberStreamStatistics.cs">
       <Link>Messaging\Api\Statistics\IPlaylistSubscriberStreamStatistics.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Messaging\Api\Statistics\IScopeStatistics.cs">
+      <Link>Messaging\Api\Statistics\IScopeStatistics.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Messaging\Api\Statistics\IStatisticsBase.cs">
       <Link>Messaging\Api\Statistics\IStatisticsBase.cs</Link>
     </Compile>
@@ -783,6 +786,9 @@
     <Compile Include="..\FluorineFx\MethodHandler.cs">
       <Link>MethodHandler.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Net\Fault.cs">
+      <Link>Net\Fault.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Net\INetConnectionClient.cs">
       <Link>Net\INetConnectionClient.cs</Link>
     </Compile>
@@ -812,6 +818,9 @@
     </Compile>
     <Compile Include="..\FluorineFx\Net\RemotingClient.cs">
       <Link>Net\RemotingClient.cs</Link>
+    </Compile>
+    <Compile Include="..\FluorineFx\Net\Responder.cs">
+      <Link>Net\Responder.cs</Link>
     </Compile>
     <Compile Include="..\FluorineFx\Net\RtmpClient.cs">
       <Link>Net\RtmpClient.cs</Link>
@@ -876,6 +885,9 @@
     <Compile Include="..\FluorineFx\Util\ThreadingUtils.cs">
       <Link>Util\ThreadingUtils.cs</Link>
     </Compile>
+    <Compile Include="..\FluorineFx\Util\Unreferenced.cs">
+      <Link>Util\Unreferenced.cs</Link>
+    </Compile>
     <Compile Include="..\FluorineFx\Util\ValidationUtils.cs">
       <Link>Util\ValidationUtils.cs</Link>
     </Compile>
@@ -891,6 +903,7 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Media\" />
+    <Folder Include="Reflection\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
