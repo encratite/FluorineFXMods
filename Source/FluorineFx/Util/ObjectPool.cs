@@ -165,17 +165,6 @@ namespace FluorineFx.Util
 
             try
             {
-                _lock.AcquireReaderLock();
-                if (_queue != null && _queue.Count != 0)
-                    return _queue.Dequeue();
-            }
-            finally
-            {
-                _lock.ReleaseReaderLock();
-            }
-
-            try
-            {
                 _lock.AcquireWriterLock();
                 if (_queue == null || _queue.Count == 0)
                     AddObjects(_growth);

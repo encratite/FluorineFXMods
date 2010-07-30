@@ -21,7 +21,7 @@ namespace FluorineFx.Util
     /// <summary>
     /// This type supports the Fluorine infrastructure and is not intended to be used directly from your code.
     /// </summary>
-    class BufferPool : ObjectPool<byte[]>
+    public class BufferPool : ObjectPool<byte[]>
     {
         private readonly int _bufferSize;
 
