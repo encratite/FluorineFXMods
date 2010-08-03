@@ -18,12 +18,11 @@
 */
 
 using System;
-using System.Collections;
-using System.Collections.Specialized;
 using System.Runtime.Serialization;
 using System.Reflection;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using FluorineFx.Util;
 using FluorineFx.Exceptions;
 
@@ -32,10 +31,10 @@ namespace FluorineFx
 	/// <summary>
 	/// The ASObject class represents a Flash object.
 	/// </summary>
+    [TypeConverter(typeof(ASObjectConverter))]
 #if !SILVERLIGHT
     [Serializable]
 #endif
-    [TypeConverter(typeof(ASObjectConverter))]
     public class ASObject : Dictionary<string, Object>
     {
         private string _typeName;
@@ -86,7 +85,29 @@ namespace FluorineFx
         /// </summary>
         public bool IsTypedObject
         {
-            get { return _typeName != null && _typeName != string.Empty; }
+            get { return !string.IsNullOrEmpty(_typeName); }
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current ASObject object.
+        /// </summary>
+        /// <returns>A string that represents the current ASObject object.</returns>
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            if( IsTypedObject )
+                sb.Append(TypeName);
+            sb.Append("{");
+            int i = 0;
+            foreach (KeyValuePair<string, object> entry in this)
+            {
+                if (i != 0)
+                    sb.Append(", ");
+                sb.Append(entry.Key);
+                i++;
+            }
+            sb.Append("}");
+            return sb.ToString();
         }
     }
 

@@ -17,12 +17,10 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
 using System.Reflection;
-#if !(NET_1_1)
 using System.Collections.Generic;
-#endif
 #if !SILVERLIGHT
+using System.Text;
 using log4net;
 #endif
 using FluorineFx.AMF3;
@@ -38,10 +36,6 @@ namespace FluorineFx.IO
 #if !SILVERLIGHT
         private static readonly ILog log = LogManager.GetLogger(typeof(ObjectProxy));
 #endif
-
-        public ObjectProxy()
-        {
-        }
 
         #region IObjectProxy Members
 
@@ -59,20 +53,17 @@ namespace FluorineFx.IO
         {
             ValidationUtils.ArgumentNotNull(instance, "instance");
             Type type = instance.GetType();
-            ClassDefinition classDefinition = null;
 
-#if !(NET_1_1)
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("Creating class definition for typed {0}", type.FullName);
+            sb.Append("{");
+
             List<string> memberNames = new List<string>();
             List<ClassMember> classMemberList = new List<ClassMember>();
-#else
-            ArrayList memberNames = new ArrayList();
-            ArrayList classMemberList = new ArrayList();
-#endif
-
             PropertyInfo[] propertyInfos = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             for (int i = 0; i < propertyInfos.Length; i++)
             {
-                PropertyInfo propertyInfo = propertyInfos[i] as PropertyInfo;
+                PropertyInfo propertyInfo = propertyInfos[i];
                 string name = propertyInfo.Name;
                 if (propertyInfo.GetCustomAttributes(typeof(TransientAttribute), true).Length > 0)
                     continue;
@@ -93,6 +84,7 @@ namespace FluorineFx.IO
                 try
                 {
                     PropertyInfo propertyInfoTmp = type.GetProperty(name);
+                    Unreferenced.Parameter(propertyInfoTmp);
                 }
                 catch (AmbiguousMatchException)
                 {
@@ -101,11 +93,15 @@ namespace FluorineFx.IO
                 object[] attributes = propertyInfo.GetCustomAttributes(false);
                 ClassMember classMember = new ClassMember(name, bf, propertyInfo.MemberType, attributes);
                 classMemberList.Add(classMember);
+
+                if (i != 0)
+                    sb.Append(", ");
+                sb.Append(name);
             }
             FieldInfo[] fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
             for (int i = 0; i < fieldInfos.Length; i++)
             {
-                FieldInfo fieldInfo = fieldInfos[i] as FieldInfo;
+                FieldInfo fieldInfo = fieldInfos[i];
 #if !SILVERLIGHT
                 if (fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0)
                     continue;
@@ -116,15 +112,15 @@ namespace FluorineFx.IO
                 object[] attributes = fieldInfo.GetCustomAttributes(false);
                 ClassMember classMember = new ClassMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, fieldInfo.MemberType, attributes);
                 classMemberList.Add(classMember);
+
+                if (i != 0 && propertyInfos.Length > 0)
+                    sb.Append(", ");
+                sb.Append(name);
             }
-#if !(NET_1_1)
             ClassMember[] classMembers = classMemberList.ToArray();
-#else
-            ClassMember[] classMembers = classMemberList.ToArray(typeof(ClassMember)) as ClassMember[];
-#endif
             string customClassName = type.FullName;
             customClassName = FluorineConfiguration.Instance.GetCustomClass(customClassName);
-            classDefinition = new ClassDefinition(customClassName, classMembers, GetIsExternalizable(instance), GetIsDynamic(instance));
+            ClassDefinition classDefinition = new ClassDefinition(customClassName, classMembers, GetIsExternalizable(instance), GetIsDynamic(instance));
             return classDefinition;
         }
 

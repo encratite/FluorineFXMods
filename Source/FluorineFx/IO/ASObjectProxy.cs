@@ -17,17 +17,13 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 using System;
-using System.Collections;
 using System.Reflection;
-#if !(NET_1_1)
 using System.Collections.Generic;
-#endif
 #if !SILVERLIGHT
+using System.Text;
 using log4net;
 #endif
 using FluorineFx.AMF3;
-using FluorineFx.Configuration;
-using FluorineFx.Util;
 using FluorineFx.Exceptions;
 
 namespace FluorineFx.IO
@@ -47,51 +43,71 @@ namespace FluorineFx.IO
 
         public bool GetIsDynamic(object instance)
         {
-            return (instance as ASObject).IsTypedObject;
+            if (instance != null)
+            {
+                if (instance is ASObject)
+                    return (instance as ASObject).IsTypedObject;
+                throw new ArgumentException();
+            }
+            throw new NullReferenceException();
         }
 
         public ClassDefinition GetClassDefinition(object instance)
         {
-            ClassDefinition classDefinition = null;
-            ASObject aso = instance as ASObject;
-            if (aso.IsTypedObject)
+            if (instance is ASObject)
             {
-                ClassMember[] classMemberList = new ClassMember[aso.Count];
-                int i = 0;
-#if !(NET_1_1)
-                foreach (KeyValuePair<string, object> entry in aso)
-#else
-				foreach(DictionaryEntry entry in aso)
-#endif
+                ClassDefinition classDefinition;
+                ASObject aso = instance as ASObject;
+                if (aso.IsTypedObject)
                 {
-                    ClassMember classMember = new ClassMember(entry.Key as string, BindingFlags.Default, MemberTypes.Custom, null);
-                    classMemberList[i] = classMember;
-                    i++;
+                    ClassMember[] classMemberList = new ClassMember[aso.Count];
+                    int i = 0;
+                    foreach (KeyValuePair<string, object> entry in aso)
+                    {
+                        ClassMember classMember = new ClassMember(entry.Key, BindingFlags.Default, MemberTypes.Custom, null);
+                        classMemberList[i] = classMember;
+                        i++;
+                    }
+                    string customClassName = aso.TypeName;
+                    classDefinition = new ClassDefinition(customClassName, classMemberList, false, false);
                 }
-                string customClassName = aso.TypeName;
-                classDefinition = new ClassDefinition(customClassName, classMemberList, false, false);
+                else
+                {
+                    string customClassName = string.Empty;
+                    classDefinition = new ClassDefinition(customClassName, ClassDefinition.EmptyClassMembers, false, true);
+                }
+                if (log.IsDebugEnabled)
+                    log.Debug(string.Format("Creating class definition for AS object {0}", aso));
+                return classDefinition;
             }
-            else
-            {
-                string customClassName = string.Empty;
-                classDefinition = new ClassDefinition(customClassName, ClassDefinition.EmptyClassMembers, false, true);
-            }
-            return classDefinition;
+            throw new ArgumentException();
         }
 
         public object GetValue(object instance, ClassMember member)
         {
-            ASObject aso = instance as ASObject;
-            if (aso.ContainsKey(member.Name))
-                return aso[member.Name];
-            string msg = __Res.GetString(__Res.Reflection_MemberNotFound, string.Format("ASObject[{0}]", member.Name));
-            throw new FluorineException(msg);
+            if (instance is ASObject)
+            {
+                ASObject aso = instance as ASObject;
+                if (aso.ContainsKey(member.Name))
+                    return aso[member.Name];
+                string msg = __Res.GetString(__Res.Reflection_MemberNotFound, string.Format("ASObject[{0}]", member.Name));
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug(string.Format("Member {0} not found in AS object {1}", member.Name, aso));
+                }
+                throw new FluorineException(msg);
+            }
+            throw new ArgumentException();
         }
 
         public void SetValue(object instance, ClassMember member, object value)
         {
-            ASObject aso = instance as ASObject;
-            aso[member.Name] = value;
+            if (instance is ASObject)
+            {
+                ASObject aso = instance as ASObject;
+                aso[member.Name] = value;
+            }
+            throw new ArgumentException();
         }
 
         #endregion
