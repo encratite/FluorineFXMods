@@ -39,8 +39,7 @@ namespace FluorineFx.Context
             HttpContext ctx = HttpContext.Current;
             if (ctx == null)
                 return CallContext.GetData(name);
-            else
-                return ctx.Items[name];
+            return ctx.Items[name];
 #else
             return CallContext.GetData(name);
 #endif
@@ -109,9 +108,7 @@ namespace FluorineFx.Context
             if (ctx != null)
                 return ctx.Items[name];
 #endif
-            //return WebSafeCallContext.GetData(name);
-
-            object value = null;
+            object value;
             try
             {
                 // See if we're running in full trust
@@ -134,11 +131,11 @@ namespace FluorineFx.Context
 #if !FXCLIENT
             HttpContext ctx = HttpContext.Current;
             if (ctx != null)
+            {
                 ctx.Items[name] = value;
-            else
+                return;
+            }
 #endif
-            //WebSafeCallContext.SetData(name, value);
-
             try
             {
                 // See if we're running in full trust
@@ -159,10 +156,11 @@ namespace FluorineFx.Context
 #if !FXCLIENT
             HttpContext ctx = HttpContext.Current;
             if (ctx != null)
+            {
                 ctx.Items.Remove(name);
-            else
+                return;
+            }
 #endif
-            WebSafeCallContext.FreeNamedDataSlot(name);
 
             try
             {
