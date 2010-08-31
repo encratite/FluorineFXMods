@@ -96,6 +96,7 @@ namespace FluorineFx
                             Log.Info("************************************");
                             Log.Info(__Res.GetString(__Res.Fluorine_Start));
                             Log.Info(__Res.GetString(__Res.Fluorine_Version, Assembly.GetExecutingAssembly().GetName().Version));
+                            Log.Info(string.Format("Common language runtime version {0}", Environment.Version));
                             Log.Info("************************************");
                             Log.Info(__Res.GetString(__Res.MessageServer_Create));
                         }
