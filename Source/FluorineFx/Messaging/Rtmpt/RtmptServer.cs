@@ -20,13 +20,9 @@ using System;
 using System.Collections;
 using System.Web;
 using System.IO;
-using System.Net;
 using log4net;
 using FluorineFx.Util;
 using FluorineFx.Collections;
-using FluorineFx.Messaging.Api;
-using FluorineFx.Messaging.Messages;
-using FluorineFx.Messaging.Services;
 using FluorineFx.Messaging.Endpoints;
 using FluorineFx.Messaging.Rtmp;
 using FluorineFx.Context;
@@ -35,11 +31,16 @@ namespace FluorineFx.Messaging.Rtmpt
 {
     sealed class RtmptServer
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(RtmptServer));
-        
-        SynchronizedHashtable _connections;
-        RtmptEndpoint _endpoint;
-        RtmpHandler _rtmpHandler;
+        private static readonly ILog Log = LogManager.GetLogger(typeof(RtmptServer));
+
+        readonly SynchronizedHashtable _connections;
+        readonly RtmptEndpoint _endpoint;
+        readonly RtmpHandler _rtmpHandler;
+
+        // If HTTPIdent is requested send back some info
+        // http://livedocs.adobe.com/flashmediaserver/3.0/docs/help.html?content=08_xmlref_011.html
+        const string Ident = "<fcs><Company>FluorineFx</Company><Team>FluorineFx</Team></fcs>";
+
 
         public RtmptServer(RtmptEndpoint endpoint)
         {
@@ -68,24 +69,27 @@ namespace FluorineFx.Messaging.Rtmpt
             switch (p)
             {
                 case 'o': // OPEN_REQUEST
-                    if (log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Rtmpt_CommandOpen, path));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(__Res.GetString(__Res.Rtmpt_CommandOpen, path));
                     HandleOpen(request, response);
                     break;
                 case 'c': // CLOSE_REQUEST
-                    if (log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Rtmpt_CommandClose, path));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(__Res.GetString(__Res.Rtmpt_CommandClose, path));
                     HandleClose(request, response);
                     break;
                 case 's': // SEND_REQUEST
-                    if (log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Rtmpt_CommandSend, path));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(__Res.GetString(__Res.Rtmpt_CommandSend, path));
                     HandleSend(request, response);
                     break;
                 case 'i': // IDLE_REQUEST
-                    if (log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Rtmpt_CommandIdle, path));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(__Res.GetString(__Res.Rtmpt_CommandIdle, path));
                     HandleIdle(request, response);
+                    break;
+                case 'f': // HTTPIdent request (ident and ident2)
+                    ReturnMessage(Ident, response);
                     break;
                 default:
                     HandleBadRequest(__Res.GetString(__Res.Rtmpt_CommandNotSupported, path), response);
@@ -104,24 +108,27 @@ namespace FluorineFx.Messaging.Rtmpt
             switch (p)
             {
                 case 'o': // OPEN_REQUEST
-                    if (log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Rtmpt_CommandOpen, path));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(__Res.GetString(__Res.Rtmpt_CommandOpen, path));
                     HandleOpen(request);
                     break;
                 case 'c': // CLOSE_REQUEST
-                    if (log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Rtmpt_CommandClose, path));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(__Res.GetString(__Res.Rtmpt_CommandClose, path));
                     HandleClose(request);
                     break;
                 case 's': // SEND_REQUEST
-                    if (log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Rtmpt_CommandSend, path));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(__Res.GetString(__Res.Rtmpt_CommandSend, path));
                     HandleSend(request);
                     break;
                 case 'i': // IDLE_REQUEST
-                    if (log.IsDebugEnabled)
-                        log.Debug(__Res.GetString(__Res.Rtmpt_CommandIdle, path));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(__Res.GetString(__Res.Rtmpt_CommandIdle, path));
                     HandleIdle(request);
+                    break;
+                case 'f': // HTTPIdent request (ident and ident2)
+                    HandleIdent(request);
                     break;
                 default:
                     HandleBadRequest(__Res.GetString(__Res.Rtmpt_CommandNotSupported, path), request);
@@ -215,7 +222,7 @@ namespace FluorineFx.Messaging.Rtmpt
                 sw.Write("Pragma: no-cache\r\n");
             }
             sw.Write("Content-Type: text/plain\r\n");
-            sw.Write("Content-Length: " + message.Length.ToString() + "\r\n");
+            sw.Write("Content-Length: " + message.Length + "\r\n");
             sw.Write("Connection: Keep-Alive\r\n");
             sw.Write("\r\n");
             sw.Write(message);
@@ -231,10 +238,10 @@ namespace FluorineFx.Messaging.Rtmpt
                 HandleBadRequest(__Res.GetString(__Res.Rtmpt_UnknownClient, GetHttpRequestPath(request)), response);
                 return;
             }
-            else if (connection.IsClosing)
+            if (connection.IsClosing)
             {
                 // Tell client to close the connection
-                ReturnMessage((byte)0, response);
+                ReturnMessage(0, response);
                 connection.RealClose();
                 return;
             }
@@ -250,10 +257,10 @@ namespace FluorineFx.Messaging.Rtmpt
                 HandleBadRequest(__Res.GetString(__Res.Rtmpt_UnknownClient, request.Url), request);
                 return;
             }
-            else if (connection.IsClosing)
+            if (connection.IsClosing)
             {
                 // Tell client to close the connection
-                ReturnMessage((byte)0, request);
+                ReturnMessage(0, request);
                 connection.RealClose();
                 return;
             }
@@ -270,7 +277,7 @@ namespace FluorineFx.Messaging.Rtmpt
                 return;
             }
             FluorineRtmpContext.Initialize(connection);
-            int length = request.ContentLength;
+            //int length = request.ContentLength;
             byte[] data = new byte[request.InputStream.Length];
             request.InputStream.Read(data, 0, (int)request.InputStream.Length);
             ByteBuffer buffer = ByteBuffer.Wrap(data);
@@ -300,7 +307,7 @@ namespace FluorineFx.Messaging.Rtmpt
                 }
                 catch (Exception ex)
                 {
-                    log.Error(__Res.GetString(__Res.Rtmp_CouldNotProcessMessage), ex);
+                    Log.Error(__Res.GetString(__Res.Rtmp_CouldNotProcessMessage), ex);
                 }
             }
 		    // Send results to client
@@ -316,7 +323,7 @@ namespace FluorineFx.Messaging.Rtmpt
                 return;
             }
             FluorineRtmpContext.Initialize(connection); 
-            int length = request.ContentLength;
+            //int length = request.ContentLength;
             ByteBuffer buffer = request.Data;
             IList messages = connection.Decode(buffer);
             if (messages == null || messages.Count == 0)
@@ -344,7 +351,7 @@ namespace FluorineFx.Messaging.Rtmpt
                 }
                 catch (Exception ex)
                 {
-                    log.Error(__Res.GetString(__Res.Rtmp_CouldNotProcessMessage), ex);
+                    Log.Error(__Res.GetString(__Res.Rtmp_CouldNotProcessMessage), ex);
                 }
             }
             // Send results to client
@@ -362,7 +369,7 @@ namespace FluorineFx.Messaging.Rtmpt
             FluorineRtmpContext.Initialize(connection);
             RemoveConnection(connection.ConnectionId);
             _rtmpHandler.ConnectionClosed(connection);
-            ReturnMessage((byte)0, response);
+            ReturnMessage(0, response);
             connection.RealClose();
         }
 
@@ -377,12 +384,13 @@ namespace FluorineFx.Messaging.Rtmpt
             FluorineRtmpContext.Initialize(connection);
             RemoveConnection(connection.ConnectionId);
             _rtmpHandler.ConnectionClosed(connection);
-            ReturnMessage((byte)0, request);
+            ReturnMessage(0, request);
             connection.RealClose();
         }
 
         private void HandleOpen(HttpRequest request, HttpResponse response)
         {
+            Unreferenced.Parameter(request);
             //Pass a null IPEndPoint, for this connection will create it on demand
             RtmptConnection connection = new RtmptConnection(this, null, null, null);
             FluorineRtmpContext.Initialize(connection);
@@ -417,6 +425,15 @@ namespace FluorineFx.Messaging.Rtmpt
             ReturnMessage(connection.ConnectionId + "\n", request);
         }
 
+        private void HandleIdent(RtmptRequest request)
+        {
+            RtmptConnection connection = new RtmptConnection(this, request.Connection.RemoteEndPoint, null, null);
+            FluorineRtmpContext.Initialize(connection);
+            _connections[connection.ConnectionId] = connection;
+            // Return connection id to client
+            ReturnMessage(Ident, request);
+        }
+
         private void ReturnMessage(string message, HttpResponse response)
         {
             response.StatusCode = 200;
@@ -443,7 +460,7 @@ namespace FluorineFx.Messaging.Rtmpt
                 sw.Write("HTTP/1.0 200 OK\r\n");
                 sw.Write("Pragma: no-cache\r\n");
             }
-            sw.Write("Content-Length: " + message.Length.ToString() + "\r\n");
+            sw.Write("Content-Length: " + message.Length + "\r\n");
             sw.Write(string.Format("Content-Type: {0}\r\n", ContentType.RTMPT));
             sw.Write("Connection: Keep-Alive\r\n");
             sw.Write("\r\n");
@@ -539,7 +556,7 @@ namespace FluorineFx.Messaging.Rtmpt
                 if (connection.IsClosing)
                 {
                     // Tell client to close connection
-                    ReturnMessage((byte)0, response);
+                    ReturnMessage(0, response);
                 }
                 else
                     ReturnMessage(connection.PollingDelay, response);
@@ -557,7 +574,7 @@ namespace FluorineFx.Messaging.Rtmpt
                 if (connection.IsClosing)
                 {
                     // Tell client to close connection
-                    ReturnMessage((byte)0, request);
+                    ReturnMessage(0, request);
                 }
                 else
                     ReturnMessage(connection.PollingDelay, request);
