@@ -48,11 +48,11 @@ namespace FluorineFx.IO.Bytecode.Lightweight
         public AMF0ReflectionOptimizer(Type type, AMFReader reader, object instance)
 		{
             _createInstanceMethod = CreateCreateInstanceMethod(type);
-            _readDataMethod = CreateReadDataMethod(type, reader, instance);
 #if !(MONO) && !(NET_2_0) && !(NET_3_5) && !(SILVERLIGHT)
             _ps = new PermissionSet(PermissionState.None);
             _ps.AddPermission(new ReflectionPermission(ReflectionPermissionFlag.MemberAccess));
 #endif
+            _readDataMethod = CreateReadDataMethod(type, reader, instance);
         }
 
         private CreateInstanceInvoker CreateCreateInstanceMethod(System.Type type)
