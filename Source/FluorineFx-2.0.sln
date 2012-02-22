@@ -1,35 +1,15 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx-2.0", "FluorineFx\FluorineFx-2.0.csproj", "{A9B8375B-579D-4F8A-B00C-F2828DB58F3A}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx.ServiceBrowser-2.0", "FluorineFx.ServiceBrowser\FluorineFx.ServiceBrowser-2.0.csproj", "{3EE02BF6-86F1-462A-A004-68EE85821360}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx.NMS-2.0", "FluorineFx.NMS\FluorineFx.NMS-2.0.csproj", "{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolicyServer", "PolicyServer\PolicyServer.csproj", "{09E4708F-276B-45C2-93BF-E626D46EE536}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx.Hosting-2.0", "FluorineFx.Hosting\FluorineFx.Hosting-2.0.csproj", "{BBF4132B-9C14-4AB9-AC0F-6D2432A5D5BB}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
