@@ -97,6 +97,7 @@ namespace FluorineFx.Net
     {
         private string _clientId;
         private Uri _uri;
+		private Uri _proxy;
         private object[] _arguments;
         private INetConnectionClient _netConnectionClient;
         private ObjectEncoding _objectEncoding;
@@ -151,6 +152,22 @@ namespace FluorineFx.Net
             add { DisconnectHandler += value; }
             remove { DisconnectHandler -= value; }
         }
+
+		/// <summary>
+		/// Gets or sets the proxy for the client connection to use.
+		/// </summary>
+		public Uri Proxy
+		{
+			get { return _proxy; }
+			set
+			{
+				if (Connected)
+					throw new ApplicationException("Unable to set proxy after connection");
+
+				_proxy = value;
+			}
+		}
+
         /// <summary>
         /// Gets URI of the application on the server.
         /// </summary>
@@ -296,6 +313,7 @@ namespace FluorineFx.Net
         public void Connect(string command, params object[] arguments)
         {
             _uri = new Uri(command);
+			_proxy = null;
             _arguments = arguments;
             Connect();
         }
@@ -354,7 +372,12 @@ namespace FluorineFx.Net
                 if( ServicePointManager.ServerCertificateValidationCallback == null )
                     ServicePointManager.ServerCertificateValidationCallback = delegate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors) { return true; };
 #endif
-                _netConnectionClient = new RemotingClient(this);
+				_netConnectionClient = new RemotingClient(this);
+
+				// Forward on any proxy details to the RemotingClient.
+				if (_proxy != null)
+					_netConnectionClient.Proxy = _proxy;
+                
                 _netConnectionClient.Connect(_uri.ToString(), _arguments);
                 return;
             }
@@ -365,6 +388,10 @@ namespace FluorineFx.Net
 				// Set an rtmps URI to secure mode.
 				if (_uri.Scheme == "rtmps")
 					netConnectionClient.Secure = true;
+
+				// Forward on any proxy details to the RTMPClient.
+				if (_proxy != null)
+					netConnectionClient.Proxy = _proxy;
                 
 				_netConnectionClient = netConnectionClient;
                 _netConnectionClient.Connect(_uri.ToString(), _arguments);

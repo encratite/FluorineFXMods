@@ -795,6 +795,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\log4net\net\2.0\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Starksoft.Net.Proxy">
+      <HintPath>..\Starksoft.net.proxy\Starksoft.Net.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />

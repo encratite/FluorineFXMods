@@ -16,6 +16,8 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+using System;
+
 using FluorineFx.Messaging.Api;
 using FluorineFx.Messaging.Api.Service;
 using FluorineFx.Messaging.Rtmp.Event;
@@ -30,6 +32,7 @@ namespace FluorineFx.Net
         void Connect(string command, params object[] arguments);
         void Close();
         bool Connected { get; }
+		Uri Proxy { get; set; }
         void Call(string command, IPendingServiceCallback callback, params object[] arguments);
         void Call<T>(string command, Responder<T> responder, params object[] arguments);
         void Call(string endpoint, string destination, string source, string operation, IPendingServiceCallback callback, params object[] arguments);

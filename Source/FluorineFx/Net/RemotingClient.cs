@@ -28,6 +28,8 @@ using FluorineFx.Messaging.Api.Service;
 using FluorineFx.Messaging.Rtmp.Event;
 using FluorineFx.Messaging.Rtmp.Service;
 
+using Starksoft.Net.Proxy;
+
 namespace FluorineFx.Net
 {
     /// <summary>
@@ -36,10 +38,12 @@ namespace FluorineFx.Net
     class RemotingClient : INetConnectionClient
     {
         string _gatewayUrl;
+		Uri _proxy;
         readonly NetConnection _netConnection;
 
         public RemotingClient(NetConnection netConnection)
         {
+			_proxy = null;
             _netConnection = netConnection;
         }
 
@@ -49,6 +53,18 @@ namespace FluorineFx.Net
         {
             get { return null; }
         }
+
+		public Uri Proxy
+		{
+			get
+			{
+				return _proxy;
+			}
+			set
+			{
+				throw new NotImplementedException("Proxies are not yet supported for RemotingClients");
+			}
+		}
 
         public void Connect(string command, params object[] arguments)
         {

@@ -37,6 +37,8 @@ using FluorineFx.Messaging.Messages;
 using FluorineFx.Invocation;
 using FluorineFx.Exceptions;
 
+using Starksoft.Net.Proxy;
+
 namespace FluorineFx.Net
 {
     /// <summary>
@@ -52,10 +54,12 @@ namespace FluorineFx.Net
         readonly ASObject _connectionParameters;
         RtmpClientConnection _connection;
         object[] _connectArguments;
+		private Uri _proxy;
         //IEventDispatcher _streamEventDispatcher = null;
 
         public RtmpClient(NetConnection netConnection)
         {
+			_proxy = null;
 			_netConnection = netConnection;
 			_connectionParameters = new ASObject();
 			_connectionParameters.Add("pageUrl", _netConnection.PageUrl);
@@ -393,7 +397,20 @@ namespace FluorineFx.Net
             string app = uri.LocalPath.TrimStart(new char[] { '/' });
             _connectionParameters["app"] = app;
 
-            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			Socket socket = null;
+
+			if (Proxy != null)
+			{
+				ProxyClientFactory factory = new ProxyClientFactory();
+				IProxyClient proxyClient = factory.CreateProxyClient(ProxyType.Socks5, _proxy.Host, _proxy.Port);
+
+				Uri endpoint = new Uri(command);
+				TcpClient tcpClient = proxyClient.CreateConnection(endpoint.Host, endpoint.Port);
+				socket = tcpClient.Client;
+			}
+			else
+				socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
 #if !SILVERLIGHT
             socket.Connect(uri.Host, port);
 
@@ -455,6 +472,20 @@ namespace FluorineFx.Net
             }
         }
 
+		public Uri Proxy
+		{
+			get
+			{
+				return _proxy;
+			}
+			set
+			{
+				if (Connected)
+					throw new ApplicationException("Unable to switch to a proxy whilst connected");
+				_proxy = value;
+			}
+		}
+
 		public bool Secure
 		{
 			get
@@ -463,13 +494,13 @@ namespace FluorineFx.Net
 			}
 			set
 			{
-				_secure = value;
 				if (Connected)
 					throw new ApplicationException("Unable to switch to a secure stream whilst connected");
+				_secure = value;
 			}
 		}
 
-		private bool _secure;
+		private bool _secure = false;
 
         public void Call(string command, IPendingServiceCallback callback, params object[] arguments)
         {
