@@ -54,21 +54,20 @@ namespace FluorineFx.Net
         object[] _connectArguments;
         //IEventDispatcher _streamEventDispatcher = null;
 
-
         public RtmpClient(NetConnection netConnection)
         {
-            _netConnection = netConnection;
-            _connectionParameters = new ASObject();
-            _connectionParameters.Add("pageUrl", _netConnection.PageUrl);
-            _connectionParameters.Add("objectEncoding", (double)_netConnection.ObjectEncoding);
-            _connectionParameters.Add("capabilities", 15);
-            _connectionParameters.Add("audioCodecs", (double)1639);
-            _connectionParameters.Add("flashVer", _netConnection.PlayerVersion);
-            _connectionParameters.Add("swfUrl", _netConnection.SwfUrl);
-            _connectionParameters.Add("videoFunction", (double)1);
-            _connectionParameters.Add("fpad", false);
-            _connectionParameters.Add("videoCodecs", (double)252);
-        }
+			_netConnection = netConnection;
+			_connectionParameters = new ASObject();
+			_connectionParameters.Add("pageUrl", _netConnection.PageUrl);
+			_connectionParameters.Add("objectEncoding", (double)_netConnection.ObjectEncoding);
+			_connectionParameters.Add("capabilities", 15);
+			_connectionParameters.Add("audioCodecs", (double)1639);
+			_connectionParameters.Add("flashVer", _netConnection.PlayerVersion);
+			_connectionParameters.Add("swfUrl", _netConnection.SwfUrl);
+			_connectionParameters.Add("videoFunction", (double)1);
+			_connectionParameters.Add("fpad", false);
+			_connectionParameters.Add("videoCodecs", (double)252);
+		}
 
         public override void ConnectionOpened(RtmpConnection connection)
         {
@@ -397,7 +396,9 @@ namespace FluorineFx.Net
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 #if !SILVERLIGHT
             socket.Connect(uri.Host, port);
-            _connection = new RtmpClientConnection(this, socket);
+
+			_connection = new RtmpClientConnection(this, socket, _secure, uri.Host);
+
             _connection.Context.ObjectEncoding = _netConnection.ObjectEncoding;
             _connection.BeginHandshake();
 #else
@@ -453,6 +454,22 @@ namespace FluorineFx.Net
                 return false;
             }
         }
+
+		public bool Secure
+		{
+			get
+			{
+				return _secure;
+			}
+			set
+			{
+				_secure = value;
+				if (Connected)
+					throw new ApplicationException("Unable to switch to a secure stream whilst connected");
+			}
+		}
+
+		private bool _secure;
 
         public void Call(string command, IPendingServiceCallback callback, params object[] arguments)
         {

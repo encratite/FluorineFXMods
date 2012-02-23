@@ -358,9 +358,15 @@ namespace FluorineFx.Net
                 _netConnectionClient.Connect(_uri.ToString(), _arguments);
                 return;
             }
-            if (_uri.Scheme == "rtmp")
+            if (_uri.Scheme.StartsWith("rtmp"))
             {
-                _netConnectionClient = new RtmpClient(this);
+				RtmpClient netConnectionClient = new RtmpClient(this);
+
+				// Set an rtmps URI to secure mode.
+				if (_uri.Scheme == "rtmps")
+					netConnectionClient.Secure = true;
+                
+				_netConnectionClient = netConnectionClient;
                 _netConnectionClient.Connect(_uri.ToString(), _arguments);
                 return;
             }

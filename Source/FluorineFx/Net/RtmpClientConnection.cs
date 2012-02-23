@@ -34,6 +34,7 @@ using FluorineFx.Context;
 using FluorineFx.Configuration;
 #if !SILVERLIGHT
 using FluorineFx.Threading;
+using System.Net.Security;
 #endif
 
 namespace FluorineFx.Net
@@ -71,10 +72,19 @@ namespace FluorineFx.Net
         DateTime _lastAction;
         private long _readBytes;
         private long _writtenBytes;
+		readonly bool _secure;
+		readonly string _host;
 
-        public RtmpClientConnection(IRtmpHandler handler, Socket socket)
+		public RtmpClientConnection(IRtmpHandler handler, Socket socket)
+			: this(handler, socket, false, null)
+		{
+		}
+
+        public RtmpClientConnection(IRtmpHandler handler, Socket socket, bool secure, string host)
             : base(handler, RtmpMode.Client, null, null)
 		{
+			_secure = secure;
+			_host = host;
 #if FXCLIENT
             //TODO
             socket.ReceiveBufferSize = 4096;
@@ -86,7 +96,17 @@ namespace FluorineFx.Net
             _handler = handler;
             _readBuffer = ByteBuffer.Allocate(4096);
             _readBuffer.Flip();
-            _rtmpNetworkStream = new RtmpNetworkStream(socket);
+
+			// Wrap a secure connection in an SslStream.
+			if (_secure)
+			{
+				SslStream stream = new SslStream(new NetworkStream(socket));
+				stream.AuthenticateAsClient(host);
+				_rtmpNetworkStream = new RtmpNetworkStream(socket, stream);
+			}
+			else
+				_rtmpNetworkStream = new RtmpNetworkStream(socket);
+
             Context.SetMode(RtmpMode.Client);
 		}
 
