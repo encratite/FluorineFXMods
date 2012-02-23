@@ -284,6 +284,7 @@
     <Compile Include="Net\NetStreamAudioEventArgs.cs" />
     <Compile Include="Net\NetStreamVideoEventArgs.cs" />
     <Compile Include="Net\PlayStatusEventArgs.cs" />
+    <Compile Include="Net\Proxy.cs" />
     <Compile Include="Net\RemotingClient.cs" />
     <Compile Include="Net\Responder.cs" />
     <Compile Include="Net\RtmpClient.cs" />

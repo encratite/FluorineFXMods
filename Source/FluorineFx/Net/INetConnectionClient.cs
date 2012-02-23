@@ -32,7 +32,7 @@ namespace FluorineFx.Net
         void Connect(string command, params object[] arguments);
         void Close();
         bool Connected { get; }
-		Uri Proxy { get; set; }
+		Proxy Proxy { get; set; }
         void Call(string command, IPendingServiceCallback callback, params object[] arguments);
         void Call<T>(string command, Responder<T> responder, params object[] arguments);
         void Call(string endpoint, string destination, string source, string operation, IPendingServiceCallback callback, params object[] arguments);

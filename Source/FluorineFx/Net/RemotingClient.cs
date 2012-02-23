@@ -38,7 +38,7 @@ namespace FluorineFx.Net
     class RemotingClient : INetConnectionClient
     {
         string _gatewayUrl;
-		Uri _proxy;
+		Proxy _proxy;
         readonly NetConnection _netConnection;
 
         public RemotingClient(NetConnection netConnection)
@@ -54,7 +54,7 @@ namespace FluorineFx.Net
             get { return null; }
         }
 
-		public Uri Proxy
+		public Proxy Proxy
 		{
 			get
 			{

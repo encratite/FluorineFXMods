@@ -54,7 +54,7 @@ namespace FluorineFx.Net
         readonly ASObject _connectionParameters;
         RtmpClientConnection _connection;
         object[] _connectArguments;
-		private Uri _proxy;
+		private Proxy _proxy;
         //IEventDispatcher _streamEventDispatcher = null;
 
         public RtmpClient(NetConnection netConnection)
@@ -399,21 +399,28 @@ namespace FluorineFx.Net
 
 			Socket socket = null;
 
+			// Support for proxies in non-Silverlight apps.
+#if !SILVERLIGHT
 			if (Proxy != null)
 			{
 				ProxyClientFactory factory = new ProxyClientFactory();
-				IProxyClient proxyClient = factory.CreateProxyClient(ProxyType.Socks5, _proxy.Host, _proxy.Port);
+				string[] proxyParts = _proxy.Server.Split(':');
+				IProxyClient proxyClient = factory.CreateProxyClient(_proxy.TypeToInternalType(), proxyParts[0], int.Parse(proxyParts[1]));
 
 				Uri endpoint = new Uri(command);
 				TcpClient tcpClient = proxyClient.CreateConnection(endpoint.Host, endpoint.Port);
 				socket = tcpClient.Client;
 			}
 			else
+			{
 				socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+				socket.Connect(uri.Host, port);
+			}
+#else
+			socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+#endif
 
 #if !SILVERLIGHT
-            socket.Connect(uri.Host, port);
-
 			_connection = new RtmpClientConnection(this, socket, _secure, uri.Host);
 
             _connection.Context.ObjectEncoding = _netConnection.ObjectEncoding;
@@ -472,7 +479,7 @@ namespace FluorineFx.Net
             }
         }
 
-		public Uri Proxy
+		public Proxy Proxy
 		{
 			get
 			{

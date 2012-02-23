@@ -97,7 +97,7 @@ namespace FluorineFx.Net
     {
         private string _clientId;
         private Uri _uri;
-		private Uri _proxy;
+		private Proxy _proxy;
         private object[] _arguments;
         private INetConnectionClient _netConnectionClient;
         private ObjectEncoding _objectEncoding;
@@ -123,6 +123,7 @@ namespace FluorineFx.Net
             _objectEncoding = ObjectEncoding.AMF0;
             _headers = new Dictionary<string,AMFHeader>();
             _client = this;
+			_proxy = null;
 #if !(SILVERLIGHT)
             _cookieContainer = new CookieContainer();
 #endif
@@ -156,7 +157,7 @@ namespace FluorineFx.Net
 		/// <summary>
 		/// Gets or sets the proxy for the client connection to use.
 		/// </summary>
-		public Uri Proxy
+		public Proxy Proxy
 		{
 			get { return _proxy; }
 			set
@@ -313,7 +314,6 @@ namespace FluorineFx.Net
         public void Connect(string command, params object[] arguments)
         {
             _uri = new Uri(command);
-			_proxy = null;
             _arguments = arguments;
             Connect();
         }
@@ -375,8 +375,7 @@ namespace FluorineFx.Net
 				_netConnectionClient = new RemotingClient(this);
 
 				// Forward on any proxy details to the RemotingClient.
-				if (_proxy != null)
-					_netConnectionClient.Proxy = _proxy;
+				_netConnectionClient.Proxy = _proxy;
                 
                 _netConnectionClient.Connect(_uri.ToString(), _arguments);
                 return;
@@ -386,12 +385,10 @@ namespace FluorineFx.Net
 				RtmpClient netConnectionClient = new RtmpClient(this);
 
 				// Set an rtmps URI to secure mode.
-				if (_uri.Scheme == "rtmps")
-					netConnectionClient.Secure = true;
+				netConnectionClient.Secure = _uri.Scheme == "rtmps" ? true : false;
 
 				// Forward on any proxy details to the RTMPClient.
-				if (_proxy != null)
-					netConnectionClient.Proxy = _proxy;
+				netConnectionClient.Proxy = _proxy;
                 
 				_netConnectionClient = netConnectionClient;
                 _netConnectionClient.Connect(_uri.ToString(), _arguments);
