@@ -48,7 +48,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\net\4.0\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_4_0;STRONG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_4_0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>
@@ -65,6 +65,9 @@
     <DocumentationFile>
     </DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -287,6 +290,7 @@
     <Compile Include="Net\NetStreamAudioEventArgs.cs" />
     <Compile Include="Net\NetStreamVideoEventArgs.cs" />
     <Compile Include="Net\PlayStatusEventArgs.cs" />
+    <Compile Include="Net\Proxy.cs" />
     <Compile Include="Net\RemotingClient.cs" />
     <Compile Include="Net\Responder.cs" />
     <Compile Include="Net\RtmpClient.cs" />
@@ -805,6 +809,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\log4net\net\2.0\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Starksoft.Net.Proxy, Version=1.0.130.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
