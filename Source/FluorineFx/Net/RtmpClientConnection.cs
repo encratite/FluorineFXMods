@@ -37,6 +37,8 @@ using FluorineFx.Threading;
 using System.Net.Security;
 #endif
 
+using System.Security.Cryptography.X509Certificates;
+
 namespace FluorineFx.Net
 {
     class SocketBufferPool
@@ -100,7 +102,8 @@ namespace FluorineFx.Net
 			// Wrap a secure connection in an SslStream.
 			if (_secure)
 			{
-				SslStream stream = new SslStream(new NetworkStream(socket));
+				//new SslStream(tcpstream, false, new RemoteCertificateValidationCallback(TrustAllCertificatesCallback));
+				SslStream stream = new SslStream(new NetworkStream(socket), false, new RemoteCertificateValidationCallback(TrustAllCertificates));
 				stream.AuthenticateAsClient(host);
 				_rtmpNetworkStream = new RtmpNetworkStream(socket, stream);
 			}
@@ -109,6 +112,13 @@ namespace FluorineFx.Net
 
             Context.SetMode(RtmpMode.Client);
 		}
+
+		public static bool TrustAllCertificates(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
+		{
+			Console.WriteLine("FluorineFX TrustAllCertificates: {0}", certificate);
+			return true;
+		}
+
 
         public override bool IsConnected
         {

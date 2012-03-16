@@ -1,9 +1,5 @@
 *.cache
 *.suo
 *.user
-/Bin
-/Source/PolicyServer/obj
-/Source/FluorineFx.ServiceBrowser/obj
-/Source/FluorineFx.NMS/obj
-/Source/FluorineFx.Hosting/obj
-/Source/FluorineFx/obj
+bin
+obj
