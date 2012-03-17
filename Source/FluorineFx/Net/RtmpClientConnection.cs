@@ -115,7 +115,7 @@ namespace FluorineFx.Net
 
 		public static bool TrustAllCertificates(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
 		{
-			Console.WriteLine("FluorineFX TrustAllCertificates: {0}", certificate);
+			//Console.WriteLine("FluorineFX TrustAllCertificates:\n{0}", certificate);
 			return true;
 		}
 
