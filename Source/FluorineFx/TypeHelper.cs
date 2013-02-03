@@ -52,8 +52,13 @@ namespace FluorineFx
         private static readonly ILog log = LogManager.GetLogger(typeof(TypeHelper));
 #endif
 
+		// These are the assemblies to be checked to resolve types using reflection.
+		static List<Assembly> TargetAssemblies;
+
 		static TypeHelper()
 		{
+			TargetAssemblies = new List<Assembly>();
+
             DefaultSByteNullValue = (SByte)GetNullValue(typeof(SByte));
             DefaultInt16NullValue = (Int16)GetNullValue(typeof(Int16));
             DefaultInt32NullValue = (Int32)GetNullValue(typeof(Int32));
@@ -115,6 +120,7 @@ namespace FluorineFx
         /// <returns></returns>
         static public Assembly[] GetAssemblies()
         {
+			// Console.WriteLine("[FluorineFx] TypeHelper");
 #if SILVERLIGHT
             lock (_syncLock)
             {
@@ -125,6 +131,12 @@ namespace FluorineFx
 #endif
         }
 
+		static public void AddTargetAssembly(Assembly assembly)
+		{
+			// Console.WriteLine("AddTargetAssembly: {0}", assembly.GetName().Name);
+			TargetAssemblies.Add(assembly);
+		}
+
         /// <summary>
         /// This method supports the Fluorine infrastructure and is not intended to be used directly from your code.
         /// </summary>
@@ -134,10 +146,15 @@ namespace FluorineFx
 		{
 			if( string.IsNullOrEmpty(typeName) )
 				return null;
-            Assembly[] assemblies = GetAssemblies();
-			for (int i = 0; i < assemblies.Length; i++)
+            // Assembly[] assemblies = GetAssemblies();
+			// int assemblyCount = assemblies.Length;
+			List<Assembly> assemblies = TargetAssemblies;
+			int assemblyCount = assemblies.Count;
+			// Console.WriteLine("FluorineFx is checking {0} assemblies...", assemblyCount);
+			for (int i = 0; i < assemblyCount; i++)
 			{
 				Assembly assembly = assemblies[i];
+				// Console.WriteLine("{0}: {1} types", assembly.GetName().Name, assembly.GetTypes().Length);
 				Type type = assembly.GetType(typeName, false);
 				if (type != null)
 					return type;

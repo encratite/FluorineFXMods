@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx-2.0", "FluorineFx\FluorineFx-2.0.csproj", "{A9B8375B-579D-4F8A-B00C-F2828DB58F3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluorineFx.ServiceBrowser-2.0", "FluorineFx.ServiceBrowser\FluorineFx.ServiceBrowser-2.0.csproj", "{3EE02BF6-86F1-462A-A004-68EE85821360}"
@@ -28,11 +28,9 @@ Global
 		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2346EFCD-F0E6-48E1-8111-60E7E4DB3C61}.Release|Any CPU.Build.0 = Release|Any CPU
 		{09E4708F-276B-45C2-93BF-E626D46EE536}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{09E4708F-276B-45C2-93BF-E626D46EE536}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09E4708F-276B-45C2-93BF-E626D46EE536}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{09E4708F-276B-45C2-93BF-E626D46EE536}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BBF4132B-9C14-4AB9-AC0F-6D2432A5D5BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BBF4132B-9C14-4AB9-AC0F-6D2432A5D5BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBF4132B-9C14-4AB9-AC0F-6D2432A5D5BB}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -292,6 +292,7 @@ namespace FluorineFx.CodeGenerator
                 CompilerParameters options = new CompilerParameters();
                 options.GenerateInMemory = true;
                 options.GenerateExecutable = false;
+				// Console.WriteLine("[FluorineFx] TemplateEngine");
                 foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
                     //options.ReferencedAssemblies.Add(Path.GetFileName(assembly.Location));

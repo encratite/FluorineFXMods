@@ -271,6 +271,7 @@ namespace FluorineFx.Util
             cp.ReferencedAssemblies.Add("System.Xml.dll");
             cp.ReferencedAssemblies.Add("System.Web.Services.dll");
 
+			// Console.WriteLine("[FluorineFx] WsdlHelper");
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 if (assembly.GlobalAssemblyCache)
